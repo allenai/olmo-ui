@@ -4,10 +4,10 @@ import { Outlet, useParams } from 'react-router-dom';
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
 import { PageContainer } from '@/components/PageContainer';
-import { ResponsiveControlsDrawer } from '@/components/ResponsiveControlsDrawer';
 import { QueryFormContainer } from '@/components/thread/QueryForm/QueryFormContainer';
 import { AgentChatProvider } from '@/contexts/AgentChatProvider/AgentChatProvider';
 import { StreamEventRegistryProvider } from '@/contexts/StreamEventRegistry';
+import { AgentParametersDrawer } from '@/pages/agent/AgentParametersDrawer/AgentParametersDrawer';
 
 export const AgentChatPage = (): ReactNode => {
     const { agentId, threadId } = useParams<{
@@ -25,7 +25,7 @@ export const AgentChatPage = (): ReactNode => {
                         <QueryFormContainer />
                     </ContentContainer>
 
-                    <ResponsiveControlsDrawer />
+                    <AgentParametersDrawer />
                 </PageContainer>
             </AgentChatProvider>
         </StreamEventRegistryProvider>

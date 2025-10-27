@@ -125,10 +125,13 @@ export function areAllModelsCompatible(models: readonly Model[]): boolean {
     return true;
 }
 
+type AgentInferenceParameters = { maxTurns?: number };
+
 export type MessageInferenceParameters = Pick<
     SchemaCreateMessageRequest,
     'temperature' | 'topP' | 'maxTokens' | 'n' | 'logprobs' | 'stop'
->;
+> &
+    AgentInferenceParameters;
 
 export const getInitialInferenceParameters = (
     model?: Model,
@@ -197,6 +200,14 @@ export type ModelInferenceConstraints = {
     };
 };
 
+export type AgentParameterConstraints = {
+    maxTurns: {
+        minValue: number;
+        maxValue: number;
+        step: number;
+    };
+};
+
 /**
  * Get inference constraints for a specific model
  * @param model - If undefined, returns general constraints as fallback
@@ -217,7 +228,7 @@ export const getInferenceConstraints = (model?: Model): ModelInferenceConstraint
         maxTokens: {
             minValue: model?.max_tokens_lower ?? 1,
             maxValue: model?.max_tokens_upper ?? 2048,
-            step: model?.max_tokens_step ?? 1,
+            step: model?.max_tokens_step ?? 100,
         },
     };
 };
