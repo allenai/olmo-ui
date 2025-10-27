@@ -114,8 +114,18 @@ export const AgentChatProvider = ({
         transform: () => [],
 
         inferenceConstraints: undefined,
-        inferenceOpts: {},
+        inferenceOpts: {
+            maxTurns: 10,
+        },
         updateInferenceOpts: noOp,
+
+        agentParameterConstraints: {
+            maxTurns: {
+                minValue: 1,
+                maxValue: 30,
+                step: 1,
+            },
+        },
 
         updateIsToolCallingEnabled: noOp,
         updateUserToolDefinitions: noOp,

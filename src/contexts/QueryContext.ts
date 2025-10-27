@@ -8,7 +8,11 @@ import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadBut
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { RemoteState } from '@/contexts/util';
 
-import { MessageInferenceParameters, ModelInferenceConstraints } from './ThreadProviderHelpers';
+import type {
+    AgentParameterConstraints,
+    MessageInferenceParameters,
+    ModelInferenceConstraints,
+} from './ThreadProviderHelpers';
 
 // Single interface that adapts based on context type
 
@@ -49,6 +53,8 @@ interface QueryContextValue {
     inferenceConstraints?: ModelInferenceConstraints;
     inferenceOpts: MessageInferenceParameters;
     updateInferenceOpts: (newOptions: MessageInferenceParameters) => void;
+
+    agentParameterConstraints?: AgentParameterConstraints;
 
     submitToThreadView: (threadViewId: string, data: QueryFormValues) => Promise<string | null>;
     updateIsToolCallingEnabled: (enabled: boolean) => void;
