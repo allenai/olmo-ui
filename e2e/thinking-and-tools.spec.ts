@@ -56,7 +56,7 @@ test.describe('Thinking and tool calling', () => {
         await page.goto('/');
 
         // Send a prompt that calls an internal tool
-        await page.getByRole('textbox', { name: /^Message/ }).fill('bogusToolCallWithError');
+        await page.getByRole('textbox', { name: /^Message/ }).fill('userToolCalls');
         await page.getByRole('button', { name: 'Submit prompt' }).click();
 
         // Wait for responses to complete
@@ -86,7 +86,7 @@ test.describe('Thinking and tool calling', () => {
         await page.goto('/');
 
         // Send a prompt that calls an internal tool
-        await page.getByRole('textbox', { name: /^Message/ }).fill('userToolCallsWithError');
+        await page.getByRole('textbox', { name: /^Message/ }).fill('bogusToolCallWithError');
         await page.getByRole('button', { name: 'Submit prompt' }).click();
 
         // Wait for responses to complete
