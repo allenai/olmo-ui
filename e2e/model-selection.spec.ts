@@ -39,20 +39,20 @@ test('multiple thread model selection searchParam', async ({ page }) => {
     const model1Select = page.getByRole('combobox', { name: 'Model' }).first();
     const model2Select = page.getByRole('combobox', { name: 'Model' }).nth(1);
 
-    await model1Select.click();
-    await page.getByRole('option', { name: 'OLMo-peteish-dpo-preview' }).click();
-
-    await expect(page).toHaveURL(
-        (
-            url // should changing one, add both modes to searchParams
-        ) => url.searchParams.get('model-1') === 'OLMo-peteish-dpo-preview'
-        // && url.searchParams.get('model-2') === 'tulu2'
-    );
-
     await model2Select.click();
     await page.getByRole('option', { name: 'Tulu2.5' }).click();
 
-    // both should be in URL searchParams now
+    // forst was already tulu2, we changed the second, so they should both be the same now
+    await expect(page).toHaveURL(
+        (url) =>
+            url.searchParams.get('model-1') === 'tulu2' &&
+            url.searchParams.get('model-2') === 'tulu2'
+    );
+
+    await model1Select.click();
+    await page.getByRole('option', { name: 'OLMo-peteish-dpo-preview' }).click();
+
+    // now we changed the first to be OLMo-peteish-...
     await expect(page).toHaveURL(
         (url) =>
             url.searchParams.get('model-1') === 'OLMo-peteish-dpo-preview' &&

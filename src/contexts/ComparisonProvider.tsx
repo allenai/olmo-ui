@@ -374,7 +374,7 @@ const ComparisonProviderContent = ({
         (event: SelectChangeEvent, eventThreadViewId?: string) => {
             const modelId = event.target.value;
 
-            const modelSearchParams = new URLSearchParams(window.location.search);
+            const modelSearchParams = new URLSearchParams(searchParams);
 
             Object.entries(comparisonState).forEach(([threadViewId, state], idx) => {
                 const modelIdForParam =
@@ -390,7 +390,7 @@ const ComparisonProviderContent = ({
                 dispatch({ type: 'setModelId', threadViewId: eventThreadViewId, modelId });
             }
         },
-        [comparisonState, setSearchParams]
+        [comparisonState, searchParams, setSearchParams]
     );
 
     // Checks model compatibility before submission
