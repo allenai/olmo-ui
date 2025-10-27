@@ -11,6 +11,7 @@ export const agentThinkingAndToolCallsResponse: Thread = {
             creator: 'google-oauth2|106113864953374894702',
             role: 'user',
             opts: {
+                // @ts-expect-error: We don't have agent options in schema yet
                 maxTurns: 20,
             },
             root: AGENT_THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
@@ -43,6 +44,7 @@ export const agentThinkingAndToolCallsResponse: Thread = {
             creator: 'google-oauth2|106113864953374894702',
             role: 'assistant',
             opts: {
+                // @ts-expect-error: We don't have agent options in schema yet
                 maxTurns: 20,
             },
             root: AGENT_THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
@@ -83,6 +85,7 @@ export const agentThinkingAndToolCallsResponse: Thread = {
             creator: 'google-oauth2|106113864953374894702',
             role: 'tool_call_result',
             opts: {
+                // @ts-expect-error: We don't have agent options in schema yet
                 maxTurns: 20,
             },
             root: AGENT_THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
@@ -122,6 +125,7 @@ export const agentThinkingAndToolCallsResponse: Thread = {
             creator: 'google-oauth2|106113864953374894702',
             role: 'assistant',
             opts: {
+                // @ts-expect-error: We don't have agent options in schema yet
                 maxTurns: 20,
             },
             root: AGENT_THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
