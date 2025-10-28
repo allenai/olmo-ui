@@ -14,7 +14,7 @@ import {
 export interface MessageProps {
     messageId: MessageId;
 }
-export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
+export const DeepResearchMessage = ({ messageId }: MessageProps): ReactNode => {
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
     const { data: thread } = useThread(threadId);
