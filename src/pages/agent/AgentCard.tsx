@@ -3,8 +3,6 @@ import { ArrowOutward } from '@mui/icons-material';
 import { Link, Typography } from '@mui/material';
 import { generatePath } from 'react-router-dom';
 
-import { Agent } from '@/api/playgroundApi/additionalTypes';
-
 import { agentImages } from './agentLinks';
 
 const cardClassName = css({
@@ -34,8 +32,12 @@ const cardTitle = css({
     justifyContent: 'space-between',
 });
 
-type AgentCardProps = Agent & {
+type AgentCardProps = {
     type: 'playground' | 'link';
+    id: string;
+    name: string;
+    description: string;
+    informationUrl?: string;
     isExternal?: boolean;
 };
 
@@ -46,7 +48,7 @@ export const AgentCard = ({
     description,
     isExternal,
     // camelCase
-    information_url: informationUrl,
+    informationUrl,
 }: AgentCardProps) => {
     // not sure if linked agents should goto informationUrl or another (https://asta.allen.ai ?)
     const url =

@@ -6,13 +6,15 @@ export const agentLinks: Agent[] = [
         id: 'paper-finder',
         name: 'Paper Finder',
         information_url: 'https://asta.allenai.org/',
-        description: 'Paper finder description',
+        description: '',
+        shortDescription: 'Paper finder short description',
     },
     {
         id: 'data-voyager',
         name: 'Data Voyager',
         information_url: 'https://asta.allenai.org/',
-        description: 'Data Voyager description',
+        description: '',
+        shortDescription: 'Data Voyager short description',
     },
 ];
 
