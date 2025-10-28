@@ -1,16 +1,12 @@
+import type { SchemaThread as Thread } from '@/api/playgroundApi/playgroundApiSchema';
+
+const SNIPPET_TOOL_NAMES: string[] = []; // list of tools that will contain snippets in there response
+
 export type Snippet = {
     id: string;
     title: string;
     text: string;
     url: string;
-};
-
-// Placeholder snippet for testing
-const placeholderSnippet: Snippet = {
-    id: 'foo',
-    title: 'Foo Definition',
-    text: "Foo is a term commonly used by programmers when they don't know what to name something",
-    url: 'https://foo.com',
 };
 
 export const parseAsXML = (content: string) => {
@@ -55,11 +51,19 @@ export const replaceCitationsWithMarkdown = (content: string, snippets: Snippet[
     return result;
 };
 
-export const reformatDeepResearch = (content: string) => {
-    // extract snippets...
-    const snippets = [placeholderSnippet];
-    // process text to find replace references with extra info
-    return replaceCitationsWithMarkdown(content, snippets);
+export const getSnippetsFromThread = (thread: Thread) => {
+    // find snippet tool results
+    const snippetToolMessages = thread.messages.filter(
+        (m) =>
+            m.role === 'tool_call_result' &&
+            m.toolCalls &&
+            SNIPPET_TOOL_NAMES.includes(m.toolCalls[0].toolName)
+    );
+
+    const snippets = snippetToolMessages.flatMap((snippetToolMessage) =>
+        extractSnippets(snippetToolMessage.content)
+    );
+    return snippets;
 };
 
 export const extractSnippets: (content: string) => Snippet[] = (content: string) => {
@@ -79,7 +83,6 @@ export const extractSnippets: (content: string) => Snippet[] = (content: string)
             return;
         }
 
-        // Parse snippetContent to extract title, url and text
         const lines = snippetContent.split('\n');
         let title = '';
         let url = '';

@@ -1,4 +1,20 @@
-import { extractSnippets, reformatDeepResearch, Snippet } from './deepResearchFormatting';
+import { extractSnippets, replaceCitationsWithMarkdown, Snippet } from './deepResearchFormatting';
+
+const placeholderSnippet: Snippet = {
+    id: 'foo',
+    title: 'Foo Definition',
+    text: "Foo is a term commonly used by programmers when they don't know what to name something",
+    url: 'https://foo.com',
+};
+
+const placeholderSnippetTwo: Snippet = {
+    id: 'doo',
+    title: 'Doo Definition',
+    text: "Doo is a term commonly used by programmers when they don't know what to name something",
+    url: 'https://doo.com',
+};
+
+const placeHolderSnippets = [placeholderSnippet, placeholderSnippetTwo];
 
 describe('Deep Research Extract Links', () => {
     it('replace a simple citation', () => {
@@ -7,9 +23,18 @@ describe('Deep Research Extract Links', () => {
 
         const expectedParse =
             "[Foo is a term commonly used by programmers when they don't know what to name something](https://foo.com)";
-        const result = reformatDeepResearch(example);
+        const result = replaceCitationsWithMarkdown(example, placeHolderSnippets);
 
         expect(result).toBe(expectedParse);
+
+        const exampleTwo =
+            '<cite id="doo">Foo is a term commonly used by programmers when they don\'t know what to name something</cite>';
+
+        const expectedParseTwo =
+            "[Foo is a term commonly used by programmers when they don't know what to name something](https://doo.com)";
+        const resultTwo = replaceCitationsWithMarkdown(exampleTwo, placeHolderSnippets);
+
+        expect(resultTwo).toBe(expectedParseTwo);
     });
 
     it('replace multiple  simple citations', () => {
@@ -18,7 +43,7 @@ describe('Deep Research Extract Links', () => {
 
         const expectedParse =
             "[Foo is a term commonly used by programmers when they don't know what to name something](https://foo.com) this is more text and [Foo is a term commonly used by programmers when they don't know what to name something](https://foo.com) the end";
-        const result = reformatDeepResearch(example);
+        const result = replaceCitationsWithMarkdown(example, placeHolderSnippets);
 
         expect(result).toBe(expectedParse);
     });
@@ -29,7 +54,7 @@ describe('Deep Research Extract Links', () => {
 
         const expectedParse =
             "[Foo is a term commonly used by programmers when they don't know what to name something](https://foo.com)";
-        const result = reformatDeepResearch(example);
+        const result = replaceCitationsWithMarkdown(example, placeHolderSnippets);
 
         expect(result).toBe(expectedParse);
     });
@@ -40,7 +65,7 @@ describe('Deep Research Extract Links', () => {
 
         const expectedParse =
             '<cite bad="" id="foo" test=""Foo is a term commonly used by programmers when they don\'t know what to name something</cite>';
-        const result = reformatDeepResearch(example);
+        const result = replaceCitationsWithMarkdown(example, placeHolderSnippets);
 
         expect(result).toBe(expectedParse);
     });

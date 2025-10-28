@@ -1,17 +1,38 @@
-import { type ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 
 import { MessageId } from '@/api/playgroundApi/thread';
 
-import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
+// import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
+
+import { useMessage, useThread } from '@/api/playgroundApi/thread';
+import { useThreadView } from '@/pages/comparison/ThreadViewContext';
+import {
+    replaceCitationsWithMarkdown,
+    Snippet,
+    getSnippetsFromThread,
+} from './deepResearchFormatting';
 
 export interface MessageProps {
     messageId: MessageId;
 }
 export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
-    // TODO get all the snippets from chat...
-    // parse out the tags to links...
-    const contentWithMarks = useSpanHighlighting(messageId);
+    const { threadId } = useThreadView();
+    const { message } = useMessage(threadId, messageId);
+    const { data: thread } = useThread(threadId);
 
-    return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
+    const content = useMemo(() => {
+        if (!thread || !message?.content) {
+            return '';
+        }
+
+        const snippets: Snippet[] = getSnippetsFromThread(thread);
+        return replaceCitationsWithMarkdown(message.content, snippets);
+        // TODO we can cache our snippet results to avoid extra parsing and rerendering
+    }, [message?.content, thread]);
+
+    // TODO support olmo trace?
+    //    const contentWithMarks = useSpanHighlighting(messageId);
+
+    return <MarkdownRenderer>{content}</MarkdownRenderer>;
 };
