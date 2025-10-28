@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
+import { StandardMessage } from '@/components/thread/ChatMessage/ChatMessage';
 import { withMockQueryContext } from '@/utils/storybook/withMockQueryContext';
 import { withMockThreadView } from '@/utils/storybook/withMockThreadView';
 import { withMockReactQuery } from '@/utils/storybook/withReactQuery';
 import { createMockMessage, createMockThread } from '@/utils/test/createMockModel';
 
 import { SNIPPET_TOOL_NAMES } from './deepResearchFormatting';
-import { StandardMessage } from '@/components/thread/ChatMessage/ChatMessage';
 
 const mockThread = createMockThread({
     id: 'thread',
