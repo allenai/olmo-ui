@@ -105,7 +105,8 @@ const FadeOverflowContent = ({
 
     const { ref: scrollAnchorRef } = useInView({
         root: container,
-        initialInView: true,
+        initialInView: false,
+        rootMargin: '1px',
         onChange: (inView) => {
             setIsScrolledToBottom(inView);
         },
