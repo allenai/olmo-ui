@@ -8,6 +8,17 @@ import { RemoteState } from '@/contexts/util';
 
 import { useAgents } from './useAgents';
 
+const promptTemplates = [
+    {
+        id: 'p_tmpl_123',
+        content: 'ASD',
+    },
+    {
+        id: 'p_tmpl_456',
+        content: 'BLAH',
+    },
+];
+
 export const AgentPlaceholder = () => {
     const { agentId } = useParams<{ agentId?: string }>();
     const { remoteState } = useQueryContext();
@@ -46,6 +57,19 @@ export const AgentPlaceholder = () => {
                     <Typography variant="h2">{agent?.name}</Typography>
                     <p>{agent?.description}</p>
                 </Stack>
+                {promptTemplates.length > 0 ? (
+                    <>
+                        <Stack>
+                            <p>
+                                Start with one of these sample prompts, or upload an image and ask a
+                                question below.
+                            </p>
+                        </Stack>
+                        {promptTemplates.map(({ id, content }) => (
+                            <div key={id}>{content}</div>
+                        ))}
+                    </>
+                ) : null}
             </Box>
         </ThreadPlaceholderContentWrapper>
     );

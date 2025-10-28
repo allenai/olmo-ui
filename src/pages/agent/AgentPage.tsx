@@ -60,10 +60,25 @@ export const AgentPage = () => {
                         </Typography>
                         <div className={agentCardListClassName}>
                             {agentPageData.agents.map((agent) => (
-                                <AgentCard key={agent.name} type="playground" {...agent} />
+                                <AgentCard
+                                    key={agent.name}
+                                    type="playground"
+                                    id={agent.id}
+                                    name={agent.name}
+                                    description={agent.shortDescription}
+                                    informationUrl={agent.information_url}
+                                />
                             ))}
                             {agentPageData.agentLinks.map((agent) => (
-                                <AgentCard key={agent.name} type="link" {...agent} isExternal />
+                                <AgentCard
+                                    key={agent.name}
+                                    type="link"
+                                    id={agent.id}
+                                    name={agent.name}
+                                    description={agent.shortDescription}
+                                    informationUrl={agent.information_url}
+                                    isExternal
+                                />
                             ))}
                         </div>
                     </div>
