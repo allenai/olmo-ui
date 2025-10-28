@@ -226,7 +226,7 @@ export type paths = {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly '/v4/message/stream': {
+    readonly '/v4/agents/chat': {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -235,7 +235,7 @@ export type paths = {
         };
         readonly get?: never;
         readonly put?: never;
-        /** Stream a prompt response */
+        /** Stream a chat agent response */
         readonly post: {
             readonly parameters: {
                 readonly query?: never;
@@ -243,10 +243,10 @@ export type paths = {
                 readonly path?: never;
                 readonly cookie?: never;
             };
-            /** @description A CreateMessageRequest */
+            /** @description A AgentChatRequest */
             readonly requestBody: {
                 readonly content: {
-                    readonly 'application/json': components['schemas']['CreateMessageRequest'];
+                    readonly 'application/json': components['schemas']['AgentChatRequest'];
                 };
             };
             readonly responses: {
@@ -486,6 +486,33 @@ export type components = {
     schemas: {
         /** AdminModelResponse */
         readonly AdminModelResponse: readonly components['schemas']['ResponseModel'][];
+        /** AgentChatRequest */
+        readonly AgentChatRequest: {
+            /** Agentid */
+            readonly agentId: string;
+            /**
+             * Bypasssafetycheck
+             * @default false
+             */
+            readonly bypassSafetyCheck?: boolean;
+            /**
+             * Captchatoken
+             * @default null
+             */
+            readonly captchaToken?: string | null;
+            /** Content */
+            readonly content: string;
+            /**
+             * Parent
+             * @default null
+             */
+            readonly parent?: string | null;
+            /**
+             * Template
+             * @default null
+             */
+            readonly template?: string | null;
+        };
         /** AuthenticatedClient */
         readonly AuthenticatedClient: {
             /** Client */
@@ -558,8 +585,12 @@ export type components = {
              * @default null
              */
             readonly files?: readonly string[] | null;
-            /** Host */
-            readonly host: string;
+            /**
+             * Host
+             * @deprecated
+             * @default null
+             */
+            readonly host?: string | null;
             /**
              * Logprobs
              * @default null
@@ -937,6 +968,11 @@ export type components = {
             | 'unknown';
         /** FlatMessage */
         readonly FlatMessage: {
+            /**
+             * Agentid
+             * @default null
+             */
+            readonly agentId?: string | null;
             /**
              * Children
              * @default null
@@ -2239,6 +2275,7 @@ export type components = {
     pathItems: never;
 };
 export type SchemaAdminModelResponse = components['schemas']['AdminModelResponse'];
+export type SchemaAgentChatRequest = components['schemas']['AgentChatRequest'];
 export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
 export type SchemaAvailableInfiniGramIndexId = components['schemas']['AvailableInfiniGramIndexId'];
 export type SchemaAvailableTool = components['schemas']['AvailableTool'];

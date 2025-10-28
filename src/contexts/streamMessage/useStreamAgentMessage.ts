@@ -3,7 +3,8 @@ import { useRef } from 'react';
 
 import { type Agent } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
-import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
+import type { SchemaAgentChatRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import { Thread } from '@/api/playgroundApi/thread';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import {
@@ -68,22 +69,20 @@ export const useStreamAgentMessage: UseStreamMessage<AgentChatStreamMutationVari
 
             const { content, captchaToken, parent, files } = request;
 
-            // @ts-expect-error - this isn't properly typed yet
-            const result = await playgroundApiClient.POST('/v4/agent/chat', {
+            const result = await playgroundApiClient.POST('/v4/agents/chat', {
                 parseAs: 'stream',
                 body: {
                     content,
                     captchaToken,
                     files,
                     parent,
-                    agent,
+                    agentId: agent.id,
                     bypassSafetyCheck,
                 },
                 bodySerializer: (body) => {
                     const formData = new FormData();
-                    // @ts-expect-error - this isn't properly typed yet
                     for (const property in body) {
-                        const value = body[property as keyof CreateMessageRequest];
+                        const value = body[property as keyof SchemaAgentChatRequest];
                         mapValueToFormData(formData, property, value);
                     }
 

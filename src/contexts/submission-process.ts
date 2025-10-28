@@ -180,6 +180,8 @@ export const handleSubmissionError = (
     if (isInappropriateFormError(error)) {
         throw error;
     }
+
+    console.error('Submission error', error);
     let snackMessage = errorToAlert(
         `create-message-${new Date().getTime()}`.toLowerCase(),
         'Unable to Submit Message',
