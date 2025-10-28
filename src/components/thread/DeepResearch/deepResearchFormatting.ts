@@ -22,35 +22,6 @@ export const parseAsXML = (content: string) => {
     return { success: true, doc } as const;
 };
 
-export const replaceCitationsWithMarkdown = (content: string, snippets: Snippet[]): string => {
-    const parseResult = parseAsXML(content);
-    if (!parseResult.success) {
-        return content;
-    }
-
-    const citeElements = parseResult.doc.querySelectorAll('cite');
-
-    const snippetMap = new Map(snippets.map((snippet) => [snippet.id, snippet]));
-
-    let result = content;
-
-    citeElements.forEach((cite) => {
-        const id = cite.getAttribute('id');
-        const text = cite.textContent || '';
-
-        if (id) {
-            const snippet = snippetMap.get(id);
-            if (snippet) {
-                const originalTag = cite.outerHTML;
-                const markdownLink = `[${text}](${snippet.url})`;
-                result = result.replace(originalTag, markdownLink);
-            }
-        }
-    });
-
-    return result;
-};
-
 export const getSnippetsFromThread = (thread: Thread) => {
     // find snippet tool results
     const snippetToolMessages = thread.messages.filter(
