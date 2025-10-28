@@ -9,6 +9,8 @@ export interface MessageProps {
     messageId: MessageId;
 }
 export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
+    // TODO get all the snippets from chat...
+    // parse out the tags to links...
     const contentWithMarks = useSpanHighlighting(messageId);
 
     return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;

@@ -1,4 +1,4 @@
-import { reformatDeepResearch } from './deepResearchFormatting';
+import { extractSnippets, reformatDeepResearch, Snippet } from './deepResearchFormatting';
 
 describe('Deep Research Extract Links', () => {
     it('replace a simple citation', () => {
@@ -32,5 +32,76 @@ describe('Deep Research Extract Links', () => {
         const result = reformatDeepResearch(example);
 
         expect(result).toBe(expectedParse);
+    });
+
+    it('on fail return original string', () => {
+        const example =
+            '<cite bad="" id="foo" test=""Foo is a term commonly used by programmers when they don\'t know what to name something</cite>';
+
+        const expectedParse =
+            '<cite bad="" id="foo" test=""Foo is a term commonly used by programmers when they don\'t know what to name something</cite>';
+        const result = reformatDeepResearch(example);
+
+        expect(result).toBe(expectedParse);
+    });
+});
+
+describe('Parse Snippets', () => {
+    it('parse simple snippet', () => {
+        const example = `
+<snippet id="foo">
+Title: Foo Paper
+URL: https://foo.com/
+text: Foo
+</snippet>`;
+
+        const expectedParse: Snippet[] = [
+            {
+                id: 'foo',
+                title: 'Foo Paper',
+                url: 'https://foo.com/',
+                text: 'Foo',
+            },
+        ];
+
+        const result = extractSnippets(example);
+
+        expect(result).toStrictEqual(expectedParse);
+    });
+
+    it('parse multiple simple snippet', () => {
+        const example = `
+<snippet id="foo">
+Title: Foo Paper
+URL: https://foo.com/
+text: Foo
+</snippet>
+
+
+<snippet id="boo">
+Title: boo Paper
+URL: https://boo.com/
+text: Boo
+</snippet>`;
+
+        const expectedParse: Snippet[] = [
+            {
+                id: 'foo',
+                title: 'Foo Paper',
+                url: 'https://foo.com/',
+                text: 'Foo',
+            },
+
+            {
+                id: 'boo',
+                title: 'boo Paper',
+                url: 'https://boo.com/',
+                text: 'Boo',
+            },
+        ];
+
+        const result = extractSnippets(example);
+
+        expect(result).toStrictEqual(expectedParse); // TODO depends on order
     });
 });
