@@ -9,7 +9,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
-import { useStreamMessage } from '@/contexts/useStreamMessage';
+import { useStreamMessage } from '@/contexts/streamMessage/useStreamMessage';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import {
@@ -36,7 +36,7 @@ vi.mock('react-router-dom', () => ({
 }));
 const mockUseParams = vi.mocked(useParams);
 
-vi.mock('@/contexts/useStreamMessage', () => ({
+vi.mock('@/contexts/streamMessage/useStreamMessage', () => ({
     useStreamMessage: vi.fn(),
 }));
 

@@ -3,7 +3,7 @@ import type { FlatMessage, Thread } from '@/api/playgroundApi/thread';
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import type { User } from '@/api/User';
-import type { useStreamMessage } from '@/contexts/useStreamMessage';
+import type { useStreamMessage } from '@/contexts/streamMessage/useStreamMessage';
 import { RemoteState } from '@/contexts/util';
 
 export const createMockModel = (id: string, overrides: Partial<Model> = {}): Model =>

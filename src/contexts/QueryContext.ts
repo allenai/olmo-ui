@@ -46,7 +46,7 @@ interface QueryContextValue {
     // Replaces global state setters, doesn't execute business logic like model compatibility checks
     setModelId: (threadViewId: string, modelId: string) => void;
 
-    inferenceConstraints: ModelInferenceConstraints;
+    inferenceConstraints?: ModelInferenceConstraints;
     inferenceOpts: MessageInferenceParameters;
     updateInferenceOpts: (newOptions: MessageInferenceParameters) => void;
 

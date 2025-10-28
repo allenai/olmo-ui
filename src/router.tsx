@@ -31,6 +31,7 @@ import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/R
 import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelAction';
 import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
 import { AgentChatPage } from './pages/agent/AgentChatPage';
+import { AgentChatThreadContainer } from './pages/agent/AgentChatThreadContainer';
 import { AgentPage } from './pages/agent/AgentPage';
 import { AgentPageControls } from './pages/agent/AgentPageControls';
 import { agentPageLoader } from './pages/agent/agentPageLoader';
@@ -105,22 +106,22 @@ export const routes: RouteObject[] = [
                         handle: { pageControls: <AvatarMenuIconButton /> },
                         children: [
                             {
-                                path: '/agent',
+                                path: links.agent.root,
                                 loader: agentPageLoader(queryClient),
                                 element: <AgentPage />,
                             },
                             {
-                                path: '/agent/:agentId',
+                                path: links.agent.agent,
                                 element: <AgentChatPage />,
                                 children: [
                                     {
-                                        path: '/agent/:agentId',
+                                        path: links.agent.agent,
                                         element: <AgentPlaceholder />,
                                         handle: { pageControls: <AgentPageControls /> },
                                     },
                                     {
-                                        path: '/agent/:agentId/:threadId',
-                                        element: <ThreadDisplayContainer />,
+                                        path: links.agent.thread,
+                                        element: <AgentChatThreadContainer />,
                                         handle: { pageControls: <AgentPageControls /> },
                                     },
                                 ],

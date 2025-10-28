@@ -22,16 +22,9 @@ import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareF
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { links } from '@/Links';
 import { PlaygroundLoaderData } from '@/pages/playgroundLoader';
-import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
 import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
-import { isFirstMessage, StreamingMessageResponse } from './stream-types';
-import {
-    createStreamCallbacks,
-    StreamEventRegistryProvider,
-    useStreamCallbackRegistry,
-    useStreamEvent,
-} from './StreamEventRegistry';
+import { StreamEventRegistryProvider } from './StreamEventRegistry';
 import { processSingleModelSubmission } from './submission-process';
 import {
     getExtraParametersFromThread,
@@ -45,8 +38,11 @@ import {
     MessageInferenceParameters,
     shouldShowCompatibilityWarning,
 } from './ThreadProviderHelpers';
-import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
+import { useCanSubmitThread } from './util/hooks/useCanSubmit';
+import { useChatStreamMessage } from './util/hooks/useChatStreamMessage';
+import { useOnSingleChatSubmit } from './util/hooks/useOnSingleChatSubmit';
+import { useSetShareableForSingleThread } from './util/hooks/useSetShareableForSingleThread';
 
 type SingleThreadProviderProps = PropsWithChildren<{
     initialState?: PlaygroundLoaderData;
@@ -54,6 +50,8 @@ type SingleThreadProviderProps = PropsWithChildren<{
 
 const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
     const { id: threadId } = useParams<{ id: string }>();
+    const canSubmit = useCanSubmitThread(threadId);
+
     const [selectedModelId, setSelectedModelId] = useState(initialState?.modelId);
 
     const [userToolDefinitions, setUserToolDefinitions] = useState(
@@ -79,7 +77,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();
 
-    const allModels = useModels({});
+    const allModels = useModels();
 
     const availableModels = useMemo(() => {
         return allModels.filter((model) => isModelAvailable(model) || model.id === selectedModelId);
@@ -88,57 +86,16 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const { data: promptTemplate } = usePromptTemplateById(initialState?.promptTemplateId);
 
     const navigate = useNavigate();
-    const userInfo = useAppContext(useShallow((state) => state.userInfo));
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
-    const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
-    const clearStreamError = useAppContext(useShallow((state) => state.clearStreamError));
 
-    // Get the stream event registry
-    const callbackRegistryRef = useStreamCallbackRegistry();
+    useSetShareableForSingleThread(threadId);
 
-    // Create callbacks that call all registered handlers
-    const streamCallbacks = useMemo(
-        () => createStreamCallbacks(callbackRegistryRef),
-        [callbackRegistryRef]
-    );
-
-    // Handle nav on first message
-    useStreamEvent(
-        'onFirstMessage',
-        useCallback(
-            (_threadViewId: string, message: StreamingMessageResponse) => {
-                if (isFirstMessage(message) && !threadId) {
-                    navigate(links.thread(message.id));
-                }
-            },
-            [threadId, navigate]
-        )
-    );
-
-    const streamMessage = useStreamMessage(streamCallbacks);
-
-    // This is just a temp fix for feature parity with production
-    // When multiple streams from playground are possible, remove this
-    useAbortStreamOnNavigation({
-        abortStreams: streamMessage.abortAllStreams,
-    });
+    const streamMessage = useChatStreamMessage(threadId);
 
     const selectedModel = useMemo(() => {
         const firstAvailable = availableModels.at(0);
         return availableModels.find((model) => model.id === selectedModelId) || firstAvailable;
     }, [availableModels, selectedModelId]);
-
-    const canSubmit = useMemo(() => {
-        if (!userInfo?.client) return false;
-        if (!threadId) return true;
-
-        const thread = getThread(threadId);
-        if (!thread?.messages.length) {
-            return false;
-        }
-
-        return thread.messages[0]?.creator === userInfo.client;
-    }, [threadId, userInfo]);
 
     const autofocus = useMemo(() => !threadId, [threadId]);
 
@@ -148,13 +105,9 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         return `${actionText} ${modelText}`;
     }, [threadId, selectedModel]);
 
-    const canCallTools = useMemo(() => {
-        return Boolean(selectedModel?.can_call_tools);
-    }, [selectedModel]);
+    const canCallTools = Boolean(selectedModel?.can_call_tools);
 
-    const areFilesAllowed = useMemo(() => {
-        return Boolean(selectedModel?.accepts_files);
-    }, [selectedModel]);
+    const areFilesAllowed = Boolean(selectedModel?.accepts_files);
 
     const isLimitReached = useMemo(() => {
         if (!threadId) {
@@ -162,10 +115,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         }
 
         return Boolean(getThread(threadId)?.messages.at(-1)?.isLimitReached);
-    }, [threadId]);
-
-    const isShareReady = useMemo(() => {
-        return Boolean(threadId);
     }, [threadId]);
 
     useEffect(() => {
@@ -206,11 +155,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
         setIsToolCallingEnabled(Boolean(toolDefs));
     }, [threadId, selectedModel, promptTemplate?.toolDefinitions]);
-
-    // Sync local state with any necessary global UI state
-    useEffect(() => {
-        setIsShareReady(isShareReady);
-    }, [isShareReady, setIsShareReady]);
 
     const selectModel = useCallback((modelId: string) => {
         trackModelSelection(modelId);
@@ -305,20 +249,9 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         ]
     );
 
-    const onSubmit = useCallback(
-        async (data: QueryFormValues): Promise<void> => {
-            // this should not be assumed
-            // TODO: Fix comparison (all of it)
-            const threadViewId = '0';
-
-            // Clear stream errors on new submission
-            clearStreamError(threadViewId);
-
-            streamMessage.prepareForNewSubmission();
-
-            await submitToThreadView(threadViewId, data);
-        },
-        [clearStreamError, streamMessage, submitToThreadView]
+    const onSubmit = useOnSingleChatSubmit(
+        streamMessage.prepareForNewSubmission,
+        submitToThreadView
     );
 
     const handleAbort = useCallback(

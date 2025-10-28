@@ -5,6 +5,7 @@ import { Role } from '@/api/Role';
 import { PaginationData } from '@/api/Schema';
 import type { Chunk, StreamingMessageResponse } from '@/contexts/stream-types';
 
+import { formatStreamMessage } from '../mockUtils';
 import highlightStressTestMessage from './responses/highlightStressTestMessage';
 import documentWithMultipleSnippetsResponse from './responses/v4/documentWithMultipleSnippetsResponse';
 import duplicateDocumentsResponse from './responses/v4/duplicateDocumentMessageResponse';
@@ -271,10 +272,6 @@ const isValidThreadRequestId = (id: string): id is v4ThreadResponseIds => {
     return id in v4ThreadResponses;
 };
 
-const formatMessage = (message: StreamingMessageResponse) => {
-    return JSON.stringify(message) + '\n';
-};
-
 const encoder = new TextEncoder();
 
 export const v4ThreadHandlers = [
@@ -328,7 +325,7 @@ export const v4ThreadHandlers = [
                     const chunkType = isThinkingMode ? 'thinking' : 'modelResponse';
 
                     await delay();
-                    controller.enqueue(encoder.encode(formatMessage(response[0])));
+                    controller.enqueue(encoder.encode(formatStreamMessage(response[0])));
 
                     let responsePosition = 1;
                     let maxRepetitions = 0;
@@ -339,7 +336,7 @@ export const v4ThreadHandlers = [
 
                             controller.enqueue(
                                 encoder.encode(
-                                    formatMessage({
+                                    formatStreamMessage({
                                         type: chunkType,
                                         message: LOREM_IPSUM_MESSAGE_ID,
                                         content: ' ',
@@ -354,18 +351,18 @@ export const v4ThreadHandlers = [
                         const message = response[responsePosition];
                         // @ts-expect-error - should probably add a type guard or something here instead of just forcing this
                         message.type = chunkType;
-                        controller.enqueue(encoder.encode(formatMessage(message)));
+                        controller.enqueue(encoder.encode(formatStreamMessage(message)));
 
                         responsePosition++;
                     }
 
                     await delay(25);
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    controller.enqueue(encoder.encode(formatMessage(response.at(-1)!)));
+                    controller.enqueue(encoder.encode(formatStreamMessage(response.at(-1)!)));
                 } else {
                     for (const message of response) {
                         await delay();
-                        controller.enqueue(encoder.encode(formatMessage(message)));
+                        controller.enqueue(encoder.encode(formatStreamMessage(message)));
                     }
                 }
 

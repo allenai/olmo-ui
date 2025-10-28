@@ -2,6 +2,7 @@ import { http, HttpResponse, passthrough } from 'msw';
 
 import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
 
+import { agentHandlers } from './agentHandlers';
 import { attributionHandlers } from './attributionHandlers';
 import { messageHandlers } from './messageHandlers';
 import { messageStreamHandlers } from './messageStreamHandlers';
@@ -20,6 +21,7 @@ export const handlers = [
     ...v4ModelsHandlers,
     ...v4TranscriptionHandlers,
     ...v4PromptTemplatesHandlers,
+    ...agentHandlers,
 
     http.get(`${process.env.VITE_API_URL}${WhoamiApiUrl}`, () => {
         return HttpResponse.json({
