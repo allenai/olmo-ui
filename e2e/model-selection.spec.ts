@@ -42,7 +42,7 @@ test('multiple thread model selection searchParam', async ({ page }) => {
     await model2Select.click();
     await page.getByRole('option', { name: 'Tulu2.5' }).click();
 
-    // forst was already tulu2, we changed the second, so they should both be the same now
+    // first was already tulu2, we changed the second, so they should both be the same now
     await expect(page).toHaveURL(
         (url) =>
             url.searchParams.get('model-1') === 'tulu2' &&
