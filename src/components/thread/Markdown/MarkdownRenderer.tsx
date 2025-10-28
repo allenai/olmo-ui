@@ -5,6 +5,7 @@ import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
 
 import { AttributionHighlight } from '@/components/thread/attribution/AttributionHighlight';
+import { DeepResearchCite } from '@/components/thread/DeepResearch/DeepResearchMessage';
 
 import { CodeBlock } from '../CodeBlock';
 import { CustomDivider, CustomLink, CustomParagraph } from './CustomComponents';
@@ -15,7 +16,7 @@ interface MarkdownRendererProps {
 
 const extendedSchema = {
     ...defaultSchema,
-    tagNames: [...(defaultSchema.tagNames || []), 'attribution-highlight'],
+    tagNames: [...(defaultSchema.tagNames || []), 'attribution-highlight', 'cite'],
     attributes: {
         ...defaultSchema.attributes,
         '*': [...(defaultSchema.attributes?.['*'] || []), 'style'],
@@ -23,6 +24,7 @@ const extendedSchema = {
         div: [...(defaultSchema.attributes?.div || []), 'className', 'style'],
         code: [...(defaultSchema.attributes?.code || []), 'className'],
         mark: [...(defaultSchema.attributes?.mark || []), 'span'],
+        cite: [...(defaultSchema.attributes?.cite || []), 'id'],
     },
 };
 
@@ -39,6 +41,7 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
                 hr: CustomDivider,
                 a: CustomLink,
                 'attribution-highlight': AttributionHighlight,
+                cite: DeepResearchCite,
             }}>
             {markdown}
         </Box>

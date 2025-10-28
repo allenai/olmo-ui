@@ -1,36 +1,37 @@
-import { type ReactNode, useMemo } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 
-import { MessageId, useMessage, useThread } from '@/api/playgroundApi/thread';
+import { MessageId, useThread } from '@/api/playgroundApi/thread';
+import { CustomLink } from '@/components/thread/Markdown/CustomComponents';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 // import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
-import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
-import {
-    getSnippetsFromThread,
-    replaceCitationsWithMarkdown,
-    Snippet,
-} from './deepResearchFormatting';
+import { getSnippetsFromThread, Snippet } from './deepResearchFormatting';
 
 export interface MessageProps {
     messageId: MessageId;
 }
-export const DeepResearchMessage = ({ messageId }: MessageProps): ReactNode => {
+export interface DeepResearchCiteProps extends PropsWithChildren {
+    id?: string | undefined;
+}
+
+export const DeepResearchCite = (props: DeepResearchCiteProps) => {
     const { threadId } = useThreadView();
-    const { message } = useMessage(threadId, messageId);
     const { data: thread } = useThread(threadId);
 
-    const content = useMemo(() => {
-        if (!thread || !message?.content) {
-            return '';
+    const snippet = useMemo(() => {
+        if (!thread || !props.id) {
+            return undefined;
         }
-
         const snippets: Snippet[] = getSnippetsFromThread(thread);
-        return replaceCitationsWithMarkdown(message.content, snippets);
-        // TODO we can cache our snippet results to avoid extra parsing and rerendering
-    }, [message?.content, thread]);
+        // something in the markdown prefixes the id with "user-content-" Likely to avoid colliding with existing css class, however this make matching tricky.
+        // We also need to be careful updating this library as this could change
+        // TODO: Add Test for this
+        return snippets.find((s) => 'user-content-' + s.id === props.id);
+    }, [props.id, thread]);
 
-    // TODO support olmo trace?
-    //    const contentWithMarks = useSpanHighlighting(messageId);
+    if (!snippet) {
+        return <span>props.children</span>;
+    }
 
-    return <MarkdownRenderer>{content}</MarkdownRenderer>;
+    return <CustomLink href={snippet.url}>{props.children}</CustomLink>;
 };

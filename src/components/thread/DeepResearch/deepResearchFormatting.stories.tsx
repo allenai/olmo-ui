@@ -7,7 +7,7 @@ import { withMockReactQuery } from '@/utils/storybook/withReactQuery';
 import { createMockMessage, createMockThread } from '@/utils/test/createMockModel';
 
 import { SNIPPET_TOOL_NAMES } from './deepResearchFormatting';
-import { DeepResearchMessage } from './DeepResearchMessage';
+import { StandardMessage } from '@/components/thread/ChatMessage/ChatMessage';
 
 const mockThread = createMockThread({
     id: 'thread',
@@ -47,12 +47,12 @@ For more information, check out <cite id="snippet-1">the React documentation</ci
 });
 
 const meta = {
-    component: DeepResearchMessage,
+    component: StandardMessage,
     decorators: [withMockReactQuery, withMockQueryContext, withMockThreadView],
     parameters: {
         mockData: [{ queryKey: threadOptions(mockThread.id).queryKey, data: mockThread }],
     },
-} satisfies Meta<typeof DeepResearchMessage>;
+} satisfies Meta<typeof StandardMessage>;
 
 export default meta;
 
