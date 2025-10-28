@@ -1,16 +1,14 @@
-import { useMemo, type ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
-import { MessageId } from '@/api/playgroundApi/thread';
+import { MessageId, useMessage, useThread } from '@/api/playgroundApi/thread';
+import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 // import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
-
-import { useMessage, useThread } from '@/api/playgroundApi/thread';
-import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 import {
+    getSnippetsFromThread,
     replaceCitationsWithMarkdown,
     Snippet,
-    getSnippetsFromThread,
 } from './deepResearchFormatting';
 
 export interface MessageProps {
