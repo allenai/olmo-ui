@@ -6,9 +6,8 @@ import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
 import { PageContainer } from '@/components/PageContainer';
 import { Ai2MarkLogoSVG } from '@/components/svg/Ai2MarkLogoSVG';
-
-import { AgentCard } from './AgentCard';
-import { type AgentLoaderData } from './agentPageLoader';
+import { type AgentLoaderData } from '@/pages/agent/agentPageLoader';
+import { AgentCard } from '@/pages/agent/components/AgentCard';
 
 const agentPageContentWrapper = css({
     display: 'flex',

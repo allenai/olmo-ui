@@ -5,9 +5,8 @@ import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { AGENT_CHAT_STREAM_MUTATION_KEY } from '@/contexts/streamMessage/useStreamAgentMessage';
 import { RemoteState } from '@/contexts/util';
+import type { AgentChatPageParams } from '@/pages/agent/agentTypes';
 import { ThreadViewProvider, useThreadView } from '@/pages/comparison/ThreadViewContext';
-
-import { AgentChatPageParams } from './agentTypes';
 
 const ThreadDisplayContent = () => {
     const {
