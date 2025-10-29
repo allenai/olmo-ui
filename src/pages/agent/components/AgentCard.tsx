@@ -4,8 +4,7 @@ import { Typography } from '@mui/material';
 import { generatePath } from 'react-router-dom';
 
 import { LinkCard } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCard';
-
-import { agentImages } from './agentLinks';
+import { agentImages } from '@/pages/agent/agentLinks';
 
 const cardTitle = css({
     fontFamily: 'heading',

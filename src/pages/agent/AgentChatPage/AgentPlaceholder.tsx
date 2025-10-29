@@ -5,8 +5,7 @@ import { ImageSpinner } from '@/components/ImageSpinner';
 import { ThreadPlaceholderContentWrapper } from '@/components/thread/ThreadPlaceholder/ThreadPlaceholderContentWrapper';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';
-
-import { useAgents } from './useAgents';
+import { useAgents } from '@/pages/agent/useAgents';
 
 const promptTemplates = [
     {
