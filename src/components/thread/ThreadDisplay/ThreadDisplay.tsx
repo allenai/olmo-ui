@@ -197,7 +197,7 @@ export const ThreadDisplayView = ({
                 }}
             />
             <ThreadMaxWidthContainer>
-                <Box gridColumn="2 / -1">
+                <Box gridColumn="1 / -1">
                     <LegalNotice />
                 </Box>
                 {children}
@@ -248,7 +248,7 @@ export const ThreadDisplay = ({
             {(childMessageIds.length > 0 || hasError) && (
                 <Divider
                     sx={{
-                        gridColumn: '2 / -1',
+                        gridColumn: '1 / -1',
                         borderColor: getLegalNoticeTextColor(0.25),
                         marginY: '1em',
                     }}

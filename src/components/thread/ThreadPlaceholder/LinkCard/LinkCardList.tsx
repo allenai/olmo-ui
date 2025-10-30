@@ -11,7 +11,6 @@ const linkCardList = css({
         base: '1fr',
         md: 'repeat(auto-fit, minmax(min(100%, var(--max-width, 30%)), 1fr))',
     },
-
     gap: '3',
 });
 

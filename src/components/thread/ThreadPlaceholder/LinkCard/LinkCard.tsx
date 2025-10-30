@@ -14,7 +14,7 @@ const linkCard = cva({
         textAlign: 'left',
         fontWeight: 'medium',
         cursor: 'pointer',
-        alignContent: 'center',
+        alignContent: 'start',
     },
     variants: {
         cardType: {
@@ -24,9 +24,9 @@ const linkCard = cva({
                     base: '35cqw 1fr',
                     md: '1fr',
                 },
-                minHeight: {
-                    base: '[100px]',
-                    md: 'auto',
+                gridTemplateRows: {
+                    base: '1fr',
+                    md: '1fr auto',
                 },
             },
         },
@@ -36,10 +36,14 @@ const linkCard = cva({
 const imageContainer = css({
     borderRadius: 'sm',
     overflow: 'hidden',
-    objectFit: 'contain',
+    maxHeight: '[120px]', // default
+});
+
+const imageClassName = css({
+    width: '[100%]',
+    height: '[100%]',
+    objectFit: 'cover',
     objectPosition: 'center',
-    // set explcit elsewhere ?
-    maxHeight: '[150px]',
 });
 
 export interface LinkCardProps extends PropsWithChildren {
@@ -56,7 +60,7 @@ export const LinkCard = ({ url, image, alt, className, children }: LinkCardProps
         <Link to={url} className={cx(linkCard({ cardType }), className)}>
             {image ? (
                 <div className={imageContainer}>
-                    <img src={image} alt={alt} className={css({ width: '[100%]' })} />
+                    <img src={image} alt={alt} className={imageClassName} />
                 </div>
             ) : null}
             <div>{children}</div>

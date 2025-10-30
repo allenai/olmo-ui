@@ -1,4 +1,4 @@
-import type { SchemaModelResponse, SchemaPromptTemplateResponseList } from './playgroundApiSchema';
+import type { SchemaModelResponse } from './playgroundApiSchema';
 
 export type Model = SchemaModelResponse[number];
 
@@ -10,6 +10,4 @@ export type Agent = {
     shortDescription: string;
     // snake_case :(
     information_url?: string;
-    // this probably isn't right
-    promptTemplates?: SchemaPromptTemplateResponseList;
 };

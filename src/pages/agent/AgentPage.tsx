@@ -1,11 +1,12 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
+import { cx } from '@allenai/varnish-ui';
 import { Typography } from '@mui/material';
 import { useLoaderData } from 'react-router-dom';
 
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
 import { PageContainer } from '@/components/PageContainer';
-import { Ai2MarkLogoSVG } from '@/components/svg/Ai2MarkLogoSVG';
+import { LinkCardList } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCardList';
 import { type AgentLoaderData } from '@/pages/agent/agentPageLoader';
 import { AgentCard } from '@/pages/agent/components/AgentCard';
 
@@ -20,19 +21,14 @@ const agentPageContentWrapper = css({
     },
     overflow: 'auto',
     alignItems: 'center',
-    maxWidth: 'breakpoint-lg',
+    maxWidth: 'breakpoint-sm',
+    width: '[100%]',
     marginInline: 'auto',
+    marginTop: '[10dvh]',
 });
 
 const agentCardListClassName = css({
-    display: 'grid',
-    gridTemplateColumns: {
-        base: '1fr 2fr',
-        md: 'repeat(3, 1fr)',
-    },
-    gap: '3',
-    alignSelf: 'center',
-    justifyItems: 'center',
+    gap: '8',
     width: '[100%]',
 });
 
@@ -44,20 +40,14 @@ export const AgentPage = () => {
             <PageContainer>
                 <ContentContainer>
                     <div className={agentPageContentWrapper}>
-                        <Ai2MarkLogoSVG
-                            title="Ai2"
-                            sx={{
-                                display: { xs: 'none', lg: 'block' },
-                                marginInline: 'auto',
-                            }}
-                        />
                         <Typography variant="h1" component="h2" sx={{ textAlign: 'center' }}>
                             Agents
                         </Typography>
                         <Typography variant="h4" component="p">
                             Explore our agents
                         </Typography>
-                        <div className={agentCardListClassName}>
+                        <LinkCardList
+                            className={cx(agentCardListClassName, css({ marginTop: '[60px]' }))}>
                             {agentPageData.agents.map((agent) => (
                                 <AgentCard
                                     key={agent.name}
@@ -68,18 +58,22 @@ export const AgentPage = () => {
                                     informationUrl={agent.information_url}
                                 />
                             ))}
-                            {agentPageData.agentLinks.map((agent) => (
-                                <AgentCard
-                                    key={agent.name}
-                                    type="link"
-                                    id={agent.id}
-                                    name={agent.name}
-                                    description={agent.shortDescription}
-                                    informationUrl={agent.information_url}
-                                    isExternal
-                                />
-                            ))}
-                        </div>
+                        </LinkCardList>
+                        {agentPageData.agentLinks.length > 0 ? (
+                            <LinkCardList className={agentCardListClassName}>
+                                {agentPageData.agentLinks.map((agent) => (
+                                    <AgentCard
+                                        key={agent.name}
+                                        type="link"
+                                        id={agent.id}
+                                        name={agent.name}
+                                        description={agent.shortDescription}
+                                        informationUrl={agent.information_url}
+                                        isExternal
+                                    />
+                                ))}
+                            </LinkCardList>
+                        ) : null}
                     </div>
                 </ContentContainer>
             </PageContainer>
