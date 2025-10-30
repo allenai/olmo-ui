@@ -503,6 +503,11 @@ export type components = {
             /** Content */
             readonly content: string;
             /**
+             * Maxsteps
+             * @default null
+             */
+            readonly maxSteps?: number | null;
+            /**
              * Parent
              * @default null
              */
