@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { links } from '@/Links';
+import { PARAM_SELECTED_MODEL } from '@/pages/queryParameterConsts';
 
 export const NewChatButton = ({
     includeModelIdParam = true,
@@ -12,7 +13,7 @@ export const NewChatButton = ({
     includeModelIdParam?: boolean;
 }): ReactNode => {
     const [searchParams] = useSearchParams();
-    const modelId = searchParams.get('model');
+    const modelId = searchParams.get(PARAM_SELECTED_MODEL);
 
     const urlToGoto =
         modelId && includeModelIdParam ? `${links.playground}?model=${modelId}` : links.playground;

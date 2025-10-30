@@ -1,3 +1,5 @@
+import { PARAM_SELECTED_MODEL } from '@/pages/queryParameterConsts';
+
 import { expect, test } from './playwright-utils';
 
 test('model selection', async ({ page }) => {
@@ -28,7 +30,7 @@ test('model selection searchParam', async ({ page }) => {
     await page.getByRole('option', { name: 'OLMo-peteish-dpo-preview' }).click();
 
     await expect(page).toHaveURL(
-        (url) => url.searchParams.get('model') === 'OLMo-peteish-dpo-preview'
+        (url) => url.searchParams.get(PARAM_SELECTED_MODEL) === 'OLMo-peteish-dpo-preview'
     );
 });
 
@@ -71,6 +73,6 @@ test('presists model searchParam on new thread', async ({ page }) => {
 
     // should still have the url parameter
     await expect(page).toHaveURL(
-        (url) => url.searchParams.get('model') === 'OLMo-peteish-dpo-preview'
+        (url) => url.searchParams.get(PARAM_SELECTED_MODEL) === 'OLMo-peteish-dpo-preview'
     );
 });

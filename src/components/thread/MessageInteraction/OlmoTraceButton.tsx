@@ -21,8 +21,8 @@ import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { useSelectedModel, useThreadView } from '@/pages/comparison/ThreadViewContext';
+import { PARAM_SELECTED_MESSAGE } from '@/pages/queryParameterConsts';
 
-import { PARAM_SELECTED_MESSAGE } from '../ThreadDisplay/selectedThreadPageLoader';
 import { DismissibleHint } from './DismissibleHint';
 import { FeatureToggleButton } from './FeatureToggleButton';
 import { useOneTimeHint } from './useOneTimeHint';

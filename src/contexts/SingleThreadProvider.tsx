@@ -22,6 +22,8 @@ import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareF
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { links } from '@/Links';
 import { PlaygroundLoaderData } from '@/pages/playgroundLoader';
+import { PARAM_SELECTED_MODEL } from '@/pages/queryParameterConsts';
+import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
 import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
 import { StreamEventRegistryProvider } from './StreamEventRegistry';
@@ -193,7 +195,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 // Single Thread handling
                 const modelId = event.target.value;
                 setSearchParams((searchParams) => {
-                    searchParams.set('model', modelId);
+                    searchParams.set(PARAM_SELECTED_MODEL, modelId);
                     return searchParams.toString();
                 });
                 selectModel(modelId);
