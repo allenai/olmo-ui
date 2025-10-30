@@ -127,7 +127,7 @@ export const NavigationLink = ({
                     height: '1.25rem',
                     width: '1.25rem',
                     '& svg': { fontSize: '1.25rem' },
-                    opacity: 0.5,
+                    opacity: 0.53,
                     '.Mui-selected &, &.Mui-focusVisible': { opacity: 1 },
                 }}>
                 {/* We need something to take up space if this item is inset */}

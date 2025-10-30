@@ -131,8 +131,8 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         sx={(theme) => {
                             // start styles stolen from MUI https://github.com/mui/material-ui/blob/e0894407dd8c564f853452dbed278f3fa7c04933/packages/mui-material/src/InputBase/InputBase.js#L109
                             const placeholderStyles = {
-                                // --color-transparent-text-accent is defined in AppLayout
-                                color: 'var(--color-transparent-text-accent, currentColor)',
+                                // placeholder has a fallback too
+                                color: 'var(--vui-colors-text-placeholder-55)',
                                 transition: theme.transitions.create('opacity', {
                                     duration: theme.transitions.duration.shorter,
                                 }),

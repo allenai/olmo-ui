@@ -46,6 +46,9 @@ const toolCallResponseRecipe = sva({
                 base: 'text',
                 _dark: 'white',
             },
+            _placeholder: {
+                color: 'text.placeholder-55',
+            },
         },
         error: {
             gridArea: 'error',
