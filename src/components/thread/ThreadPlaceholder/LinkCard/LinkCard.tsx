@@ -1,26 +1,35 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
+import { css, cva } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
 import type { PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
 
-const linkCardClassName = css({
-    display: 'grid',
-    gap: '4',
-    appearance: 'none',
-    backgroundColor: 'elements.overlay.background',
-    padding: '4',
-    borderRadius: 'lg',
-    textAlign: 'left',
-    fontWeight: 'medium',
-    cursor: 'pointer',
-    alignContent: 'center',
-    gridTemplateColumns: {
-        base: '35cqw 1fr',
-        md: '1fr',
+const linkCard = cva({
+    base: {
+        display: 'grid',
+        gap: '4',
+        appearance: 'none',
+        backgroundColor: 'elements.overlay.background',
+        padding: '4',
+        borderRadius: 'lg',
+        textAlign: 'left',
+        fontWeight: 'medium',
+        cursor: 'pointer',
+        alignContent: 'center',
     },
-    height: {
-        base: '[100px]',
-        md: 'auto',
+    variants: {
+        cardType: {
+            text: {}, // defaults
+            image: {
+                gridTemplateColumns: {
+                    base: '35cqw 1fr',
+                    md: '1fr',
+                },
+                minHeight: {
+                    base: '[100px]',
+                    md: 'auto',
+                },
+            },
+        },
     },
 });
 
@@ -41,8 +50,10 @@ export interface LinkCardProps extends PropsWithChildren {
 }
 
 export const LinkCard = ({ url, image, alt, className, children }: LinkCardProps) => {
+    const cardType = image ? 'image' : 'text';
+
     return (
-        <Link to={url} className={cx(linkCardClassName, className)}>
+        <Link to={url} className={cx(linkCard({ cardType }), className)}>
             {image ? (
                 <div className={imageContainer}>
                     <img src={image} alt={alt} className={css({ width: '[100%]' })} />
