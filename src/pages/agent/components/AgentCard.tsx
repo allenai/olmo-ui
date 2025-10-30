@@ -21,6 +21,13 @@ type AgentCardProps = {
     isExternal?: boolean;
 };
 
+const agentCardclassName = css({
+    height: {
+        base: '[125px]',
+        md: 'auto',
+    },
+});
+
 export const AgentCard = ({
     id,
     type,
@@ -38,7 +45,7 @@ export const AgentCard = ({
     const imageUrl = agentImages[id];
 
     return (
-        <LinkCard url={url} image={imageUrl} alt={name}>
+        <LinkCard url={url} image={imageUrl} alt={name} className={agentCardclassName}>
             <div className={cardTitle}>
                 <Typography variant="h3">{name}</Typography>
                 {isExternal ? <ArrowOutward /> : null}

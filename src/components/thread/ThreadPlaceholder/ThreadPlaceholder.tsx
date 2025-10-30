@@ -17,7 +17,7 @@ export const ThreadPlaceholder = () => {
 
     return (
         <ThreadPlaceholderContentWrapper>
-            <Box gridColumn="2 / -1">
+            <Box gridColumn="1/-1">
                 <LegalNotice />
             </Box>
             <Box

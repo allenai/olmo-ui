@@ -27,7 +27,7 @@ const agentPageContentWrapper = css({
 const agentCardListClassName = css({
     display: 'grid',
     gridTemplateColumns: {
-        base: '1fr 2fr',
+        base: '1fr',
         md: 'repeat(3, 1fr)',
     },
     gap: '3',
@@ -68,17 +68,19 @@ export const AgentPage = () => {
                                     informationUrl={agent.information_url}
                                 />
                             ))}
-                            {agentPageData.agentLinks.map((agent) => (
-                                <AgentCard
-                                    key={agent.name}
-                                    type="link"
-                                    id={agent.id}
-                                    name={agent.name}
-                                    description={agent.shortDescription}
-                                    informationUrl={agent.information_url}
-                                    isExternal
-                                />
-                            ))}
+                            {agentPageData.agentLinks.length > 0
+                                ? agentPageData.agentLinks.map((agent) => (
+                                      <AgentCard
+                                          key={agent.name}
+                                          type="link"
+                                          id={agent.id}
+                                          name={agent.name}
+                                          description={agent.shortDescription}
+                                          informationUrl={agent.information_url}
+                                          isExternal
+                                      />
+                                  ))
+                                : null}
                         </div>
                     </div>
                 </ContentContainer>

@@ -32,7 +32,7 @@ import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/upd
 import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
 import { AgentChatPage } from './pages/agent/AgentChatPage/AgentChatPage';
 import { AgentChatThreadContainer } from './pages/agent/AgentChatPage/AgentChatThreadContainer';
-import { AgentPlaceholder } from './pages/agent/AgentChatPage/AgentPlaceholder';
+import { AgentPlaceholder } from './pages/agent/AgentChatPage/AgentPlaceholder/AgentPlaceholder';
 import { AgentPage } from './pages/agent/AgentPage';
 import { agentPageLoader } from './pages/agent/agentPageLoader';
 import { AgentPageControls } from './pages/agent/components/AgentPageControls';
