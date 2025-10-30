@@ -22,7 +22,7 @@ jobs:
       - name: Test using Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 22
           cache: "yarn"
       - run: yarn install --frozen-lockfile
       - run: yarn test:base
@@ -35,7 +35,7 @@ jobs:
       - name: Test using Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 22
           cache: "yarn"
       - run: yarn install --frozen-lockfile
       - name: build
@@ -49,7 +49,7 @@ jobs:
       - name: Test using Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 22
           cache: "yarn"
       - run: yarn install --frozen-lockfile
       - run: yarn lint
