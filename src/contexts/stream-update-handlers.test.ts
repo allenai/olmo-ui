@@ -458,7 +458,7 @@ describe('updateThreadWithError', () => {
         };
 
         const chunk: SchemaErrorChunk = {
-            type: 'responseWithError',
+            type: 'error',
             message: 'fake-message-2',
             ...errorChunk,
         };

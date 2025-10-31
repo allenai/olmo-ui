@@ -535,7 +535,7 @@ export const bogusToolCallsStreamErrorResponse = [
         errorDescription:
             "Could not find tool 'get_weather_in_seattle'. The model tried to call a tool that is not defined.",
         errorSeverity: 'error',
-        type: 'responseWithError',
+        type: 'error',
     },
     // END user tool call chunks
     {

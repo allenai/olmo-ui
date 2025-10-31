@@ -347,17 +347,19 @@ export type paths = {
         /** Get messages */
         readonly get: {
             readonly parameters: {
-                readonly query?: never;
+                readonly query?: {
+                    readonly offset?: number | null;
+                    readonly limit?: number;
+                    readonly sort?: string | null;
+                    readonly order?: components['schemas']['SortDirection'];
+                    readonly creator?: string | null;
+                    readonly deleted?: boolean;
+                };
                 readonly header?: never;
                 readonly path?: never;
                 readonly cookie?: never;
             };
-            /** @description A GetThreadsRequest */
-            readonly requestBody: {
-                readonly content: {
-                    readonly 'application/json': components['schemas']['GetThreadsRequest'];
-                };
-            };
+            readonly requestBody?: never;
             readonly responses: {
                 /** @description A GetThreadsResponse */
                 readonly 200: {
@@ -929,7 +931,7 @@ export type components = {
              * Type
              * @constant
              */
-            readonly type: 'responseWithError';
+            readonly type: 'error';
         };
         /**
          * ErrorCode

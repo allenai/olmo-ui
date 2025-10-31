@@ -73,7 +73,7 @@ export const isToolCallChunk = (
 };
 
 export const isErrorChunk = (message: StreamingMessageResponse): message is SchemaErrorChunk => {
-    return isChunk(message) && message.type === 'responseWithError';
+    return isChunk(message) && message.type === 'error';
 };
 
 export const isThinkingChunk = (
