@@ -3,7 +3,6 @@ import { PropsWithChildren } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT, SMALL_LAYOUT_BREAKPOINT } from '@/constants';
 
-import { useColorMode } from './ColorModeProvider';
 import { DesktopPageControls } from './DesktopPageControls';
 import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { OlmoAppBar } from './OlmoAppBar';
@@ -11,10 +10,8 @@ import { OlmoAppBar } from './OlmoAppBar';
 interface AppLayout extends PropsWithChildren {}
 
 export const AppLayout = ({ children }: AppLayout) => {
-    const { colorMode } = useColorMode();
-
     return (
-        <OuterContainer className={colorMode}>
+        <OuterContainer>
             <OlmoAppBar />
             <GlobalSnackMessageList />
             <Container

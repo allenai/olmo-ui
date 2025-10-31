@@ -13,7 +13,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
-import { useColorMode } from './ColorModeProvider';
 import { TermAndConditionsLink } from './TermsAndConditionsLink';
 
 type FormValues = {
@@ -32,7 +31,6 @@ export const TermsAndDataCollectionModal = ({
     initialTermsAndConditionsValue,
     initialDataCollectionValue,
 }: TermsAndDataCollectionModalProps) => {
-    const { colorMode } = useColorMode();
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     const updateTermsAndOrConsent = useAppContext(
@@ -72,7 +70,7 @@ export const TermsAndDataCollectionModal = ({
 
     return (
         <Modal
-            className={cx(colorMode, modalClass)}
+            className={modalClass}
             isOpen={isOpen}
             isDismissable={false}
             isKeyboardDismissDisabled={true}>

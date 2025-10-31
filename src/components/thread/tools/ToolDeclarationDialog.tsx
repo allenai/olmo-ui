@@ -1,4 +1,4 @@
-import { css, cx } from '@allenai/varnish-panda-runtime/css';
+import { css } from '@allenai/varnish-panda-runtime/css';
 import {
     Button,
     Checkbox,
@@ -33,7 +33,6 @@ import * as z from 'zod';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { SchemaAvailableTool, SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
-import { useColorMode } from '@/components/ColorModeProvider';
 import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextArea';
 import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
@@ -126,7 +125,6 @@ export function ToolDeclarationDialog({
     onReset,
     onClose,
 }: ToolDeclarationDialogProps) {
-    const { colorMode } = useColorMode();
     const initialTab = tools && tools.length > 0 ? 'system-functions' : 'user-functions';
     const [tabSelected, setTabSelect] = useState<Key>(initialTab);
 
@@ -171,7 +169,7 @@ export function ToolDeclarationDialog({
 
     return (
         <Modal
-            className={cx(colorMode, modalBase)}
+            className={modalBase}
             contentClassName={modalContentContainerClassName}
             isOpen={isOpen}
             isDismissable
