@@ -1,4 +1,5 @@
-import { Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { ReactNode } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { links } from '../Links';
@@ -8,24 +9,40 @@ import { DeleteThreadIconButton } from './thread/DeleteThreadButton';
 
 interface ThreadLinkProps {
     content: string;
-    created: Date;
-    id: string;
+    creator: string;
+    createdDate: Date;
+    threadId: string;
+    icon?: ReactNode;
+    handleDelete: () => void;
 }
 
-export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
+export const ThreadLink = ({
+    content,
+    creator,
+    createdDate,
+    threadId,
+    icon,
+    handleDelete,
+}: ThreadLinkProps) => {
     const { id: idParameter } = useParams();
-
-    const isSelected = idParameter === id;
+    const isSelected = idParameter === threadId;
 
     return (
         <ListItem
             disablePadding
             sx={{ position: 'relative', minHeight: (theme) => theme.spacing(5) }}
-            secondaryAction={<DeleteThreadIconButton threadId={id} />}>
+            secondaryAction={
+                <DeleteThreadIconButton
+                    isSelectedThread={isSelected}
+                    creator={creator}
+                    createdDate={createdDate}
+                    onClick={handleDelete}
+                />
+            }>
             <ListItemButton
                 alignItems="center"
                 selected={isSelected}
-                title={formatDateForHistory(created)}
+                title={formatDateForHistory(createdDate)}
                 sx={{
                     minHeight: (theme) => theme.spacing(5),
                     gap: (theme) => theme.spacing(1),
@@ -48,7 +65,8 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                     }),
                 }}
                 component={Link}
-                href={links.thread(id)}>
+                href={links.thread(threadId)}>
+                {!!icon && <ListItemIcon>{icon}</ListItemIcon>}
                 <ListItemText
                     primaryTypographyProps={{
                         variant: 'caption',

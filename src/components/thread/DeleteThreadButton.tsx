@@ -1,16 +1,11 @@
 import { DeleteOutlined } from '@mui/icons-material';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
-import { links } from '@/Links';
-import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { isOlderThan30Days } from '@/utils/date-utils';
 
 import { IconButtonWithTooltip } from '../IconButtonWithTooltip';
-import { DeleteThreadDialog } from './DeleteThreadDialog';
 import { ResponsiveButton, ResponsiveButtonProps } from './ResponsiveButton';
 
 type DeleteThreadButtonProps = Partial<
@@ -55,99 +50,49 @@ export const DeleteThreadButton = ({
     );
 };
 
-export const DeleteThreadIconButton = ({ threadId }: { threadId: string }) => {
+interface DeleteThreadIconButtonProps {
+    creator: string;
+    createdDate: Date;
+    isSelectedThread: boolean;
+    onClick: () => void;
+}
+
+export const DeleteThreadIconButton = ({
+    isSelectedThread,
+    createdDate,
+    creator,
+    onClick,
+}: DeleteThreadIconButtonProps) => {
     const userInfo = useAppContext((state) => state.userInfo);
-    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
-    const allThreads = useAppContext((state) => state.allThreads);
-    const thread = allThreads.find((thread) => thread.id === threadId);
     const { isAuthenticated } = useUserAuthInfo();
 
-    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const isPastThirtyDays = isOlderThan30Days(createdDate);
+    const isCreator = userInfo?.client && creator === userInfo.client;
 
-    if (!thread || !userInfo || !isAuthenticated) {
+    if (!isAuthenticated || isPastThirtyDays || !isCreator) {
         return null;
     }
 
-    const [firstMessage] = thread.messages;
-    const isPastThirtyDays = isOlderThan30Days(new Date(firstMessage.created));
-
-    const canUseDeleteButton = firstMessage.creator === userInfo.client;
-
-    const handleClickDelete = () => {
-        setDeleteDialogOpen(true);
-    };
-
-    if (isPastThirtyDays || !canUseDeleteButton) {
-        return null;
-    }
-
-    const isSelectedThread = selectedThreadId === threadId;
-
     return (
-        <>
-            <DeleteDialog
-                threadId={threadId}
-                openDialog={isDeleteDialogOpen}
-                setOpenDialog={setDeleteDialogOpen}
-            />
-            <IconButtonWithTooltip
-                sx={(theme) => ({
-                    color: isSelectedThread
-                        ? theme.color['dark-teal-100'].hex
-                        : theme.palette.text.drawer.primary,
-                    opacity: isSelectedThread ? 1 : 0,
-                    transition: '300ms opacity ease-in-out',
-                    '.Mui-focusVisible ~ div > &': {
-                        opacity: 1,
-                    },
-                    '&.Mui-focusVisible, li:hover &': {
-                        opacity: 1,
-                    },
-                })}
-                placement="right"
-                onClick={handleClickDelete}
-                disabled={!canUseDeleteButton}
-                label="Delete thread">
-                <DeleteOutlined />
-            </IconButtonWithTooltip>
-        </>
-    );
-};
-
-export const DeleteDialog = ({
-    openDialog,
-    setOpenDialog,
-    threadId,
-}: {
-    openDialog: boolean;
-    setOpenDialog: (_: boolean) => void;
-    threadId: string;
-}) => {
-    const nav = useNavigate();
-    const deleteThread = useAppContext((state) => state.deleteThread);
-
-    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
-
-    const handleDeleteThread = async () => {
-        if (threadId) {
-            await deleteThread(threadId);
-            setOpenDialog(false);
-            nav(links.playground);
-            addSnackMessage({
-                id: `thread-delete-${new Date().getTime()}`.toLowerCase(),
-                type: SnackMessageType.Brief,
-                message: 'Thread Deleted',
-            });
-        }
-    };
-
-    return (
-        <DeleteThreadDialog
-            open={openDialog}
-            onCancel={() => {
-                setOpenDialog(false);
-            }}
-            handleDeleteThread={handleDeleteThread}
-        />
+        <IconButtonWithTooltip
+            sx={(theme) => ({
+                color: isSelectedThread
+                    ? theme.color['dark-teal-100'].hex
+                    : theme.palette.text.drawer.primary,
+                opacity: isSelectedThread ? 1 : 0,
+                transition: '300ms opacity ease-in-out',
+                '.Mui-focusVisible ~ div > &': {
+                    opacity: 1,
+                },
+                '&.Mui-focusVisible, li:hover &': {
+                    opacity: 1,
+                },
+            })}
+            placement="right"
+            onClick={onClick}
+            disabled={!isCreator}
+            label="Delete thread">
+            <DeleteOutlined />
+        </IconButtonWithTooltip>
     );
 };

@@ -1,4 +1,4 @@
-import CloseIcon from '@mui/icons-material/Close';
+import { Chat, Close, PhotoCamera, Robot, SmartToy } from '@mui/icons-material';
 import {
     Box,
     CircularProgress,
@@ -10,74 +10,100 @@ import {
     Typography,
 } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import { KeyboardEventHandler, useEffect, useState } from 'react';
+import { KeyboardEventHandler, ReactNode, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
+import { useNavigate } from 'react-router-dom';
 
-import { Thread } from '@/api/playgroundApi/thread';
+import { FlatMessage } from '@/api/playgroundApi/thread';
+import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
-import { RemoteState } from '@/contexts/util';
+import { links } from '@/Links';
 import { DrawerId } from '@/slices/DrawerSlice';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-import { AnonymousUserExpirationMessage } from './AnonymousUserExpirationMessage';
+import { DeleteThreadDialog } from '../DeleteThreadDialog';
 import { HistoryDivider, HistoryDrawerSection } from './HistoryDrawerSection';
-
-const LIMIT = 10;
-const PAGE_SIZE = 10;
+import { HistoryExpirationMessage } from './HistoryExpirationMessage';
+import { invalidateThreadsCache, useDeleteThread, useThreads } from './useThreads';
 
 export const HISTORY_DRAWER_ID: DrawerId = 'history';
 
-export const HistoryDrawer = (): JSX.Element => {
+export interface HistoryItem {
+    id: string;
+    icon: ReactNode;
+    content?: string;
+    creator: string;
+    createdDate: Date;
+    handleDelete: () => void;
+}
+
+export const HistoryDrawer = () => {
+    const nav = useNavigate();
     const closeDrawer = useAppContext((state) => state.closeDrawer);
-    const userInfo = useAppContext((state) => state.userInfo);
-    const getMessageList = useAppContext((state) => state.getMessageList);
-    const messageListState = useAppContext((state) => state.messageListState);
-    const allThreads = useAppContext((state) => state.allThreads);
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+    const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
+
+    const { mutateAsync: deleteThread } = useDeleteThread();
+    const [threadToDelete, setThreadToDelete] = useState<string>();
+    const handleConfirmDelete = async () => {
+        if (threadToDelete) {
+            await deleteThread(threadToDelete);
+            setThreadToDelete(undefined);
+            invalidateThreadsCache();
+            nav(links.playground);
+            addSnackMessage({
+                id: `thread-delete-${new Date().getTime()}`.toLowerCase(),
+                type: SnackMessageType.Brief,
+                message: 'Thread Deleted',
+            });
+        }
+    };
+    const handleCancelDelete = () => {
+        setThreadToDelete(undefined);
+    };
+
+    const { data, isPending, isFetchingNextPage, isError, hasNextPage, fetchNextPage } =
+        useThreads();
+    const threadList = data?.pages.flatMap((page) => page.threads);
+    const history = (threadList ?? []).map((thread) => {
+        const firstMessage = thread.messages[0];
+        const firstUserMessage = thread.messages.find((message) => {
+            return message.role === Role.User;
+        });
+        const createdDate = firstMessage.created ? new Date(firstMessage.created) : new Date();
+
+        return {
+            id: thread.id,
+            // icon: getThreadIcon(),
+            content: firstUserMessage?.content,
+            creator: firstMessage.creator,
+            createdDate,
+            handleDelete: () => {
+                setThreadToDelete(thread.id);
+            },
+        } satisfies HistoryItem;
+    });
+
     const handleDrawerClose = () => {
         closeDrawer(HISTORY_DRAWER_ID);
     };
-    const hasMoreThreadsToFetch = useAppContext((state) => {
-        const totalThreadsOnServer = state.messageList.meta.total;
-        const loadedThreadCount = state.allThreads.length;
 
-        return totalThreadsOnServer !== 0 && loadedThreadCount < totalThreadsOnServer;
-    });
-    const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
-    const [offset, setOffSet] = useState(0);
-    const creator = userInfo?.client;
-
-    useEffect(() => {
-        // load messages when its open
-        if (creator) {
-            getMessageList(offset, creator, LIMIT);
-        }
-    }, [creator]);
-
-    const threadsFromToday: Thread[] = [];
-    const threadsFromThisWeek: Thread[] = [];
-    const threadsOlderThanAWeek: Thread[] = [];
-
-    allThreads.forEach((thread) => {
-        const m = thread.messages.at(0);
-        if (m) {
-            if (isCurrentDay(new Date(m.created))) {
-                threadsFromToday.push(thread);
-            } else if (isPastWeek(new Date(m.created))) {
-                threadsFromThisWeek.push(thread);
+    const segmentedHistory = history.reduce(
+        (acc, cur) => {
+            if (isCurrentDay(cur.createdDate)) {
+                acc.today.push(cur);
+            } else if (isPastWeek(cur.createdDate)) {
+                acc.thisWeek.push(cur);
             } else {
-                threadsOlderThanAWeek.push(thread);
+                acc.older.push(cur);
             }
-        }
-    });
-
-    const handleScroll = async () => {
-        if (messageListState !== RemoteState.Loading) {
-            await getMessageList(offset + PAGE_SIZE, creator, LIMIT);
-            setOffSet(offset + PAGE_SIZE);
-        }
-    };
+            return acc;
+        },
+        { today: [] as HistoryItem[], thisWeek: [] as HistoryItem[], older: [] as HistoryItem[] }
+    );
 
     const onKeyDownEscapeHandler: KeyboardEventHandler = (
         event: React.KeyboardEvent<HTMLDivElement>
@@ -88,11 +114,13 @@ export const HistoryDrawer = (): JSX.Element => {
     };
 
     const [sentryRef, { rootRef }] = useInfiniteScroll({
-        loading: messageListState === RemoteState.Loading,
-        hasNextPage: hasMoreThreadsToFetch,
-        onLoadMore: handleScroll,
-        disabled: messageListState === RemoteState.Error,
+        loading: isPending,
+        hasNextPage,
+        disabled: isError,
         delayInMs: 100,
+        onLoadMore: () => {
+            void fetchNextPage();
+        },
     });
 
     useCloseDrawerOnNavigation({
@@ -130,22 +158,25 @@ export const HistoryDrawer = (): JSX.Element => {
                                 opacity: 0.5,
                             }}
                             aria-label="close history drawer">
-                            <CloseIcon />
+                            <Close />
                         </IconButton>
                     </Stack>
                 </Box>
             }
             desktopDrawerSx={{ gridArea: 'nav', width: (theme) => theme.spacing(40) }}>
             <Stack direction="column" ref={rootRef} sx={{ overflowY: 'auto' }}>
-                <AnonymousUserExpirationMessage />
-                <HistoryDrawerSection heading="Today" threads={threadsFromToday} hasDivider />
+                <HistoryExpirationMessage />
+                <HistoryDrawerSection heading="Today" history={segmentedHistory.today} hasDivider />
                 <HistoryDrawerSection
                     heading="Previous 7 Days"
-                    threads={threadsFromThisWeek}
+                    history={segmentedHistory.thisWeek}
                     hasDivider
                 />
-                <HistoryDrawerSection heading="Older Than A Week" threads={threadsOlderThanAWeek} />
-                {(hasMoreThreadsToFetch || messageListState === RemoteState.Loading) && (
+                <HistoryDrawerSection
+                    heading="Older Than A Week"
+                    history={segmentedHistory.older}
+                />
+                {(hasNextPage || isFetchingNextPage) && (
                     <>
                         <HistoryDivider />
                         <CircularProgress
@@ -156,7 +187,7 @@ export const HistoryDrawer = (): JSX.Element => {
                         />
                     </>
                 )}
-                {(hasMoreThreadsToFetch || messageListState === RemoteState.Loaded) && (
+                {(hasNextPage || !isFetchingNextPage) && (
                     <>
                         <HistoryDivider />
                         <ListItem ref={sentryRef}>
@@ -168,14 +199,22 @@ export const HistoryDrawer = (): JSX.Element => {
                                     fontWeight: 'bold',
                                     sx: { margin: 0, fontVariantNumeric: 'tabular-nums' },
                                 }}>
-                                {hasMoreThreadsToFetch && (
-                                    <Skeleton animation="wave" variant="text" />
-                                )}
+                                {hasNextPage && <Skeleton animation="wave" variant="text" />}
                             </ListItemText>
                         </ListItem>
                     </>
                 )}
             </Stack>
+            <DeleteThreadDialog
+                open={Boolean(threadToDelete)}
+                onCancel={handleCancelDelete}
+                handleDeleteThread={handleConfirmDelete}
+            />
         </ResponsiveDrawer>
     );
 };
+
+// function getThreadIcon(message: FlatMessage): ReactNode {
+//     if (message.agentId) return <SmartToy />;
+//     if (message.)
+// }

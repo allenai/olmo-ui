@@ -5,6 +5,7 @@ import { CreateMessageRequest, threadOptions } from '@/api/playgroundApi/thread'
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
+import { invalidateThreadsCache } from '@/components/thread/history/useThreads';
 import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFormSubmitException';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
@@ -422,13 +423,14 @@ export const processStreamResponse = async (
     let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
 
     const chunks = readStream(response, abortController.signal);
+    const isCreatingNewThread = rootThreadId == null;
 
     for await (const chunk of chunks) {
         // return the root thread id (this shouldn't be undefined anymore)
         streamingRootThreadId = await updateCacheWithMessagePart(
             chunk,
             streamingRootThreadId,
-            rootThreadId == null, // = isCreatingNewThread
+            isCreatingNewThread,
             threadViewId,
             onFirstMessage
         );
@@ -437,6 +439,9 @@ export const processStreamResponse = async (
     // Mark stream as completed
     onCompleteStream?.(threadViewId);
     clearStreamingState(streamingRootThreadId);
+    if (isCreatingNewThread) {
+        invalidateThreadsCache();
+    }
 
     // Return the final thread ID for parallel streaming navigation
     return streamingRootThreadId;
