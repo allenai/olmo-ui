@@ -1,4 +1,5 @@
 import type {
+    SchemaErrorChunk,
     SchemaModelResponseChunk,
     SchemaThinkingChunk,
     SchemaToolCall,
@@ -9,6 +10,7 @@ import type { FlatMessage } from '@/api/playgroundApi/thread';
 import type { MessageChunk, StreamingThread } from './stream-types';
 import {
     mergeMessages,
+    updateThreadWithError,
     updateThreadWithMessageContent,
     updateThreadWithThinking,
     updateThreadWithToolCall,
@@ -398,6 +400,80 @@ describe('updateThreadWithThinking', () => {
             expect(messageWithUpdatedThinking.thinking).toEqual(expected);
         }
     );
+});
+
+describe('updateThreadWithError', () => {
+    it.for([
+        {
+            errorChunk: {
+                errorCode: 'toolCallError' as const,
+                errorDescription: 'Test error',
+                errorSeverity: undefined,
+            },
+        },
+        {
+            errorChunk: {
+                errorCode: 'toolCallError' as const,
+                errorDescription: 'Test error',
+                errorSeverity: 'warning' as const,
+            },
+        },
+    ])('should set error properties on message when error chunk sent', ({ errorChunk }) => {
+        const initialAssistantMessage = {
+            content: 'initial content',
+            created: '2025-08-14T20:29:22.385Z',
+            creator: 'me',
+            id: 'fake-message-2',
+            isLimitReached: false,
+            isOlderThan30Days: false,
+            modelId: 'model',
+            modelHost: 'modelHost',
+            opts: {},
+            role: 'assistant',
+            root: 'fake-message-1',
+            snippet: 'initial content',
+            ...errorChunk,
+        } as const satisfies FlatMessage;
+
+        const initialThread: StreamingThread = {
+            id: 'test-thread',
+            messages: [
+                {
+                    content: 'user message',
+                    created: '2025-08-14T20:29:22.385Z',
+                    creator: 'me',
+                    id: 'fake-message-1',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    modelId: 'model',
+                    modelHost: 'modelHost',
+                    opts: {},
+                    role: 'user',
+                    root: 'fake-message-1',
+                    snippet: 'user message',
+                    ...errorChunk,
+                },
+                initialAssistantMessage,
+            ],
+        };
+
+        const chunk: SchemaErrorChunk = {
+            type: 'responseWithError',
+            message: 'fake-message-2',
+            ...errorChunk,
+        };
+
+        const updatedThread = updateThreadWithError(chunk)(initialThread);
+
+        const messageWithUpdatedThinking = updatedThread.messages.find(
+            (message) => message.id === initialAssistantMessage.id
+        )!;
+
+        expect(messageWithUpdatedThinking).toBeDefined();
+        expect(messageWithUpdatedThinking.errorCode).toEqual(errorChunk.errorCode);
+        expect(messageWithUpdatedThinking.errorDescription).toEqual(errorChunk.errorDescription);
+        expect(messageWithUpdatedThinking.errorSeverity).toEqual(errorChunk.errorSeverity);
+    });
 });
 
 describe('updateThreadWithMessageContent', () => {

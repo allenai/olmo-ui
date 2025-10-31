@@ -11,7 +11,7 @@ interface AllToolCallsProps {
 }
 
 export default function AllToolCalls({ toolCalls, threadId }: AllToolCallsProps): ReactNode {
-    if (toolCalls == null) {
+    if (toolCalls == null || toolCalls.length === 0) {
         return null;
     }
 

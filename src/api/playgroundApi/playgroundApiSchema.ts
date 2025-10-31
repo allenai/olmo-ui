@@ -916,6 +916,31 @@ export type components = {
             readonly name: string;
             readonly parameters: components['schemas']['ParameterDef'];
         };
+        /** ErrorChunk */
+        readonly ErrorChunk: {
+            readonly errorCode: components['schemas']['ErrorCode'];
+            /** Errordescription */
+            readonly errorDescription: string;
+            /** @default error */
+            readonly errorSeverity?: components['schemas']['ErrorSeverity'];
+            /** Message */
+            readonly message: string;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'responseWithError';
+        };
+        /**
+         * ErrorCode
+         * @enum {string}
+         */
+        readonly ErrorCode: 'toolCallError';
+        /**
+         * ErrorSeverity
+         * @enum {string}
+         */
+        readonly ErrorSeverity: 'error' | 'warning' | 'info';
         /**
          * FileRequiredToPromptOption
          * @enum {string}
@@ -961,6 +986,15 @@ export type components = {
              * @default null
              */
             readonly deleted?: string | null;
+            /** @default null */
+            readonly errorCode?: components['schemas']['ErrorCode'] | null;
+            /**
+             * Errordescription
+             * @default null
+             */
+            readonly errorDescription?: string | null;
+            /** @default null */
+            readonly errorSeverity?: components['schemas']['ErrorSeverity'] | null;
             /**
              * Expirationtime
              * @default null
@@ -2248,6 +2282,9 @@ export type SchemaCreateMultiModalModelConfigRequest =
 export type SchemaCreateTextOnlyModelConfigRequest =
     components['schemas']['CreateTextOnlyModelConfigRequest'];
 export type SchemaCreateToolDefinition = components['schemas']['CreateToolDefinition'];
+export type SchemaErrorChunk = components['schemas']['ErrorChunk'];
+export type SchemaErrorCode = components['schemas']['ErrorCode'];
+export type SchemaErrorSeverity = components['schemas']['ErrorSeverity'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
 export type SchemaFinishReason = components['schemas']['FinishReason'];
 export type SchemaFlatMessage = components['schemas']['FlatMessage'];
@@ -2315,6 +2352,12 @@ export const createMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
 export const createTextOnlyModelConfigRequestPromptTypeValues: ReadonlyArray<
     components['schemas']['CreateTextOnlyModelConfigRequest']['promptType']
 > = ['text_only'];
+export const errorCodeValues: ReadonlyArray<components['schemas']['ErrorCode']> = ['toolCallError'];
+export const errorSeverityValues: ReadonlyArray<components['schemas']['ErrorSeverity']> = [
+    'error',
+    'warning',
+    'info',
+];
 export const fileRequiredToPromptOptionValues: ReadonlyArray<
     components['schemas']['FileRequiredToPromptOption']
 > = ['first_message', 'all_messages', 'no_requirement'];

@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Box, ImageList, ImageListItem, Typography } from '@mui/material';
+import { Alert, Box, ImageList, ImageListItem, Typography } from '@mui/material';
 import { PropsWithChildren, type ReactNode, useState } from 'react';
 
 import { Label } from '@/api/Label';
@@ -66,6 +66,21 @@ export const RawMessage = ({ messageId }: MessageProps): ReactNode => {
             <Typography variant="body2">Message Content</Typography>
             <div className={cleanWrap}>{escapeForDisplay(content)}</div>
         </div>
+    );
+};
+
+export const InlineAlertMessage = ({ messageId }: MessageProps): ReactNode => {
+    const { threadId } = useThreadView();
+    const { message } = useMessage(threadId, messageId);
+    if (!message?.errorDescription) return null;
+
+    return (
+        <Alert
+            variant="outlined"
+            severity={message.errorSeverity ?? 'error'}
+            sx={{ marginBottom: 2 }}>
+            {message.errorDescription}
+        </Alert>
     );
 };
 
@@ -153,6 +168,7 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
                     ))}
                 </ImageList>
                 <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
+                <InlineAlertMessage messageId={messageId} />
 
                 <MessageInteraction
                     role={role as Role}

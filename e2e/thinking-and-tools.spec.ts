@@ -81,4 +81,21 @@ test.describe('Thinking and tool calling', () => {
 
         await expect(page.getByText('The weather in Seattle is rainy')).toBeVisible();
     });
+
+    test('shows user tool calls error when tool does not exist', async ({ page }) => {
+        await page.goto('/');
+
+        // Send a prompt that calls an internal tool
+        await page.getByRole('textbox', { name: /^Message/ }).fill('bogusToolCallWithError');
+        await page.getByRole('button', { name: 'Submit prompt' }).click();
+
+        // Wait for responses to complete
+        await expect(page.locator('[data-is-streaming="true"]')).not.toBeVisible();
+
+        const userToolCallWidget = page.locator('[data-widget-type="tool-call"]');
+
+        await expect(userToolCallWidget.getByLabel(/^tool call/)).not.toBeVisible();
+
+        await expect(page.getByText("Could not find tool 'get_weather_in_seattle'.")).toBeVisible();
+    });
 });

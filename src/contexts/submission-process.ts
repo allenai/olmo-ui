@@ -15,6 +15,7 @@ import type { ExtraParameters } from './QueryContext';
 import {
     containsMessages,
     isChunk,
+    isErrorChunk,
     isFirstMessage,
     isMessageStreamError,
     isModelResponseChunk,
@@ -27,6 +28,7 @@ import {
 } from './stream-types';
 import {
     mergeMessages,
+    updateThreadWithError,
     updateThreadWithMessageContent,
     updateThreadWithThinking,
     updateThreadWithToolCall,
@@ -151,6 +153,8 @@ export const updateCacheWithMessagePart = async (
             queryClient.setQueryData(queryKey, mergeMessages(message));
         } else if (isToolCallChunk(message)) {
             queryClient.setQueryData(queryKey, updateThreadWithToolCall(message));
+        } else if (isErrorChunk(message)) {
+            queryClient.setQueryData(queryKey, updateThreadWithError(message));
         } else if (isThinkingChunk(message)) {
             queryClient.setQueryData(queryKey, updateThreadWithThinking(message));
         } else if (isModelResponseChunk(message) || isOldMessageChunk(message)) {
