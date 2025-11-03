@@ -4,7 +4,8 @@ const availableAgents: Agent[] = [
     {
         id: 'deep-research',
         name: 'Deep Research',
-        description: 'Deep Research agent',
+        shortDescription: 'Deep research short description',
+        description: 'Deep Research agent long description',
     },
 ];
 

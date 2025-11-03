@@ -1,10 +1,9 @@
 import { QueryClient } from '@tanstack/react-query';
 import { LoaderFunction } from 'react-router-dom';
 
-import { Agent } from '@/api/playgroundApi/additionalTypes';
-
-import { agentLinks } from './agentLinks';
-import { useAgents } from './useAgents';
+import type { Agent } from '@/api/playgroundApi/additionalTypes';
+// import { agentLinks } from '@/pages/agent/agentLinks';
+import { useAgents } from '@/pages/agent/useAgents';
 
 // Mocking potential types for needs
 export type AgentLoaderData = {
@@ -20,7 +19,7 @@ export const agentPageLoader =
         // Mocking potential data
         const loaderData: AgentLoaderData = {
             agents,
-            agentLinks,
+            agentLinks: [],
         };
 
         return Promise.resolve(loaderData);

@@ -7,5 +7,7 @@ export type Agent = {
     id: string;
     name: string;
     description: string;
+    shortDescription: string;
+    // snake_case :(
     information_url?: string;
 };

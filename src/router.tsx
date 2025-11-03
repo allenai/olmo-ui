@@ -30,12 +30,12 @@ import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
 import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelAction';
 import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
-import { AgentChatPage } from './pages/agent/AgentChatPage';
-import { AgentChatThreadContainer } from './pages/agent/AgentChatThreadContainer';
+import { AgentChatPage } from './pages/agent/AgentChatPage/AgentChatPage';
+import { AgentChatThreadContainer } from './pages/agent/AgentChatPage/AgentChatThreadContainer';
+import { AgentPlaceholder } from './pages/agent/AgentChatPage/AgentPlaceholder/AgentPlaceholder';
 import { AgentPage } from './pages/agent/AgentPage';
-import { AgentPageControls } from './pages/agent/AgentPageControls';
 import { agentPageLoader } from './pages/agent/agentPageLoader';
-import { AgentPlaceholder } from './pages/agent/AgentPlaceholder';
+import { AgentPageControls } from './pages/agent/components/AgentPageControls';
 import { CompareThreadDisplay } from './pages/comparison/CompareThreadDisplay';
 import { ComparisonPage } from './pages/comparison/ComparisonPage';
 import { comparisonPageLoader } from './pages/comparison/comparisonPageLoader';

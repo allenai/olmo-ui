@@ -1,4 +1,6 @@
-import type { ReactNode } from 'react';
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { Typography } from '@mui/material';
+import type { PropsWithChildren, ReactNode } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
 import { ContentContainer } from '@/components/ContentContainer';
@@ -9,11 +11,17 @@ import { AgentChatProvider } from '@/contexts/AgentChatProvider/AgentChatProvide
 import { StreamEventRegistryProvider } from '@/contexts/StreamEventRegistry';
 import { AgentParametersDrawer } from '@/pages/agent/AgentParametersDrawer/AgentParametersDrawer';
 
+import { useAgents } from '../useAgents';
+
 export const AgentChatPage = (): ReactNode => {
     const { agentId, threadId } = useParams<{
         agentId?: string;
         threadId?: string;
     }>();
+
+    const agent = useAgents({
+        select: (agents) => agents.find((agent) => agent.id === agentId),
+    });
 
     return (
         <StreamEventRegistryProvider>
@@ -21,6 +29,7 @@ export const AgentChatPage = (): ReactNode => {
                 <MetaTags />
                 <PageContainer>
                     <ContentContainer>
+                        <AgentName>{agent?.name}</AgentName>
                         <Outlet />
                         <QueryFormContainer />
                     </ContentContainer>
@@ -29,5 +38,21 @@ export const AgentChatPage = (): ReactNode => {
                 </PageContainer>
             </AgentChatProvider>
         </StreamEventRegistryProvider>
+    );
+};
+
+const AgentName = ({ children }: PropsWithChildren) => {
+    return (
+        <div
+            className={css({
+                paddingBlockEnd: '4',
+                marginInline: 'auto',
+                width: '[100%]',
+                maxWidth: '[750px]',
+            })}>
+            <Typography component="h2" variant="h5" marginInline={2}>
+                {children}
+            </Typography>
+        </div>
     );
 };
