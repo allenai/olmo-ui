@@ -22,9 +22,8 @@ export const DeepResearchCite = (props: DeepResearchCiteProps) => {
                 return undefined;
             }
             const snippets: Snippet[] = getSnippetsFromThread(thread);
-            // something in the markdown prefixes the id with "user-content-" Likely to avoid colliding with existing css class, however this make matching tricky.
-            // We also need to be careful updating this library as this could change
-            // TODO: Add Test for this
+            // Rehype sanitize prefixes the id with "user-content-" to avoid colliding with existing css class
+            // https://github.com/rehypejs/rehype-sanitize#example-headings-dom-clobbering
             return snippets.find((s) => SANITIZED_ID_PREFIX + s.id === props.id);
         },
         [props.id]
