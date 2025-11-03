@@ -1,9 +1,8 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Typography } from '@mui/material';
-import type { ReactNode } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
-import { Agent } from '@/api/playgroundApi/additionalTypes';
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
 import { PageContainer } from '@/components/PageContainer';
@@ -30,7 +29,7 @@ export const AgentChatPage = (): ReactNode => {
                 <MetaTags />
                 <PageContainer>
                     <ContentContainer>
-                        <AgentName agent={agent} />
+                        <AgentName>{agent?.name}</AgentName>
                         <Outlet />
                         <QueryFormContainer />
                     </ContentContainer>
@@ -42,7 +41,7 @@ export const AgentChatPage = (): ReactNode => {
     );
 };
 
-const AgentName = ({ agent }: { agent?: Agent }) => {
+const AgentName = ({ children }: PropsWithChildren) => {
     return (
         <div
             className={css({
@@ -52,7 +51,7 @@ const AgentName = ({ agent }: { agent?: Agent }) => {
                 maxWidth: '[750px]',
             })}>
             <Typography component="h2" variant="h5" marginInline={2}>
-                {agent?.name}
+                {children}
             </Typography>
         </div>
     );
