@@ -23,7 +23,6 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 import { links } from '@/Links';
 import { PlaygroundLoaderData } from '@/pages/playgroundLoader';
 import { PARAM_SELECTED_MODEL } from '@/pages/queryParameterConsts';
-import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
 import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
 import { StreamEventRegistryProvider } from './StreamEventRegistry';
@@ -89,7 +88,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const navigate = useNavigate();
     const [_, setSearchParams] = useSearchParams();
-    const userInfo = useAppContext(useShallow((state) => state.userInfo));
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
 
     useSetShareableForSingleThread(threadId);
