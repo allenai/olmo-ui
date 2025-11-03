@@ -1,6 +1,7 @@
-import { generatePath } from 'react-router-dom';
+import { createSearchParams, generatePath } from 'react-router-dom';
 
 import { links } from '@/Links';
+import { PARAM_SELECTED_TEMPLATE } from '@/pages/queryParameterConsts';
 
 type AgentTemplatePathParams = {
     agentId: string;
@@ -11,5 +12,8 @@ export const makeAgentTemplatePath = ({ agentId, templateId }: AgentTemplatePath
     const path = generatePath(links.agent.agent, {
         agentId,
     });
-    return `${path}?template=${templateId}`;
+    const templateParam = createSearchParams({
+        [PARAM_SELECTED_TEMPLATE]: templateId,
+    });
+    return `${path}?${templateParam}`;
 };
