@@ -36,7 +36,7 @@ const linkCard = cva({
 const imageContainer = css({
     borderRadius: 'sm',
     overflow: 'hidden',
-    maxHeight: '[120px]', // default
+    maxHeight: '[7.5em]', // default
 });
 
 const imageClassName = css({
