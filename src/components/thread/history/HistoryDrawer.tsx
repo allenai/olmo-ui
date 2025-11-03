@@ -1,4 +1,4 @@
-import { Chat, Close, PhotoCamera, Robot, SmartToy } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 import {
     Box,
     CircularProgress,
@@ -10,14 +10,14 @@ import {
     Typography,
 } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import { KeyboardEventHandler, ReactNode, useState } from 'react';
+import { KeyboardEventHandler, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useNavigate } from 'react-router-dom';
 
-import { FlatMessage } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
+import { ThreadLinkProps } from '@/components/ThreadLink';
 import { links } from '@/Links';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
@@ -30,15 +30,6 @@ import { HistoryExpirationMessage } from './HistoryExpirationMessage';
 import { invalidateThreadsCache, useDeleteThread, useThreads } from './useThreads';
 
 export const HISTORY_DRAWER_ID: DrawerId = 'history';
-
-export interface HistoryItem {
-    id: string;
-    icon: ReactNode;
-    content?: string;
-    creator: string;
-    createdDate: Date;
-    handleDelete: () => void;
-}
 
 export const HistoryDrawer = () => {
     const nav = useNavigate();
@@ -76,15 +67,15 @@ export const HistoryDrawer = () => {
         const createdDate = firstMessage.created ? new Date(firstMessage.created) : new Date();
 
         return {
-            id: thread.id,
-            // icon: getThreadIcon(),
+            threadId: thread.id,
+            linkType: 'model',
             content: firstUserMessage?.content,
             creator: firstMessage.creator,
             createdDate,
             handleDelete: () => {
                 setThreadToDelete(thread.id);
             },
-        } satisfies HistoryItem;
+        } satisfies ThreadLinkProps;
     });
 
     const handleDrawerClose = () => {
@@ -102,7 +93,11 @@ export const HistoryDrawer = () => {
             }
             return acc;
         },
-        { today: [] as HistoryItem[], thisWeek: [] as HistoryItem[], older: [] as HistoryItem[] }
+        {
+            today: [] as ThreadLinkProps[],
+            thisWeek: [] as ThreadLinkProps[],
+            older: [] as ThreadLinkProps[],
+        }
     );
 
     const onKeyDownEscapeHandler: KeyboardEventHandler = (
@@ -213,8 +208,3 @@ export const HistoryDrawer = () => {
         </ResponsiveDrawer>
     );
 };
-
-// function getThreadIcon(message: FlatMessage): ReactNode {
-//     if (message.agentId) return <SmartToy />;
-//     if (message.)
-// }

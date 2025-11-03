@@ -1,5 +1,5 @@
+import { ChatOutlined, SmartToy } from '@mui/icons-material';
 import { Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { ReactNode } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { links } from '../Links';
@@ -7,21 +7,21 @@ import { formatDateForHistory } from '../utils/formatDateForHistory';
 import { ChevronIcon } from './assets/ChevronIcon';
 import { DeleteThreadIconButton } from './thread/DeleteThreadButton';
 
-interface ThreadLinkProps {
-    content: string;
+export interface ThreadLinkProps {
+    threadId: string;
+    linkType: 'model' | 'agent';
+    content?: string;
     creator: string;
     createdDate: Date;
-    threadId: string;
-    icon?: ReactNode;
     handleDelete: () => void;
 }
 
 export const ThreadLink = ({
-    content,
+    threadId,
+    linkType,
+    content = 'message...',
     creator,
     createdDate,
-    threadId,
-    icon,
     handleDelete,
 }: ThreadLinkProps) => {
     const { id: idParameter } = useParams();
@@ -63,10 +63,22 @@ export const ThreadLink = ({
                         backgroundColor: theme.palette.secondary.light,
                         color: theme.color['dark-teal-100'].hex,
                     }),
+                    '& .MuiListItemIcon-root': {
+                        fontSize: '1rem',
+                        color: 'inherit',
+                        opacity: 0.5,
+                        minWidth: '1rem',
+                    },
                 }}
                 component={Link}
-                href={links.thread(threadId)}>
-                {!!icon && <ListItemIcon>{icon}</ListItemIcon>}
+                href={linkType === 'agent' ? links.thread(threadId) : links.thread(threadId)}>
+                <ListItemIcon>
+                    {linkType === 'agent' ? (
+                        <SmartToy fontSize="inherit" />
+                    ) : (
+                        <ChatOutlined fontSize="inherit" />
+                    )}
+                </ListItemIcon>
                 <ListItemText
                     primaryTypographyProps={{
                         variant: 'caption',

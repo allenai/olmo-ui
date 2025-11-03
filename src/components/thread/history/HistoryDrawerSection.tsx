@@ -1,13 +1,11 @@
 import { Divider, List, styled, useTheme } from '@mui/material';
 
 import { NavigationHeading } from '@/components/OlmoAppBar/NavigationHeading';
-import { ThreadLink } from '@/components/ThreadLink';
-
-import { HistoryItem } from './HistoryDrawer';
+import { ThreadLink, ThreadLinkProps } from '@/components/ThreadLink';
 
 interface HistoryDrawerSectionProps {
     heading: string;
-    history: HistoryItem[];
+    history: ThreadLinkProps[];
     hasDivider?: boolean;
 }
 
@@ -29,16 +27,7 @@ export const HistoryDrawerSection = ({
                     {heading}
                 </NavigationHeading>
                 {history.map((item) => {
-                    return (
-                        <ThreadLink
-                            key={item.id}
-                            content={item.content ?? 'message...'}
-                            creator={item.creator}
-                            createdDate={item.createdDate}
-                            threadId={item.id}
-                            handleDelete={item.handleDelete}
-                        />
-                    );
+                    return <ThreadLink key={item.threadId} {...item} />;
                 })}
             </List>
             {hasDivider && <HistoryDivider />}
