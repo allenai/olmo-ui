@@ -16,7 +16,9 @@ export const NewChatButton = ({
     const modelId = searchParams.get(PARAM_SELECTED_MODEL);
 
     const urlToGoto =
-        modelId && includeModelIdParam ? `${links.playground}?model=${modelId}` : links.playground;
+        modelId && includeModelIdParam
+            ? `${links.playground}?${PARAM_SELECTED_MODEL}=${modelId}`
+            : links.playground;
 
     return (
         <ListItem disablePadding dense>
