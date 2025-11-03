@@ -1,8 +1,10 @@
-import { PropsWithChildren, useMemo } from 'react';
+import { PropsWithChildren, useCallback } from 'react';
 
+import { SchemaThread as Thread } from '@/api/playgroundApi/playgroundApiSchema';
 import { useThread } from '@/api/playgroundApi/thread';
 import { CustomLink } from '@/components/thread/Markdown/CustomComponents';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
+
 import { getSnippetsFromThread, Snippet } from './deepResearchFormatting';
 
 export interface DeepResearchCiteProps extends PropsWithChildren {
@@ -13,18 +15,22 @@ const SANITIZED_ID_PREFIX = 'user-content-';
 
 export const DeepResearchCite = (props: DeepResearchCiteProps) => {
     const { threadId } = useThreadView();
-    const { data: thread } = useThread(threadId);
 
-    const snippet = useMemo(() => {
-        if (!thread || !props.id) {
-            return undefined;
-        }
-        const snippets: Snippet[] = getSnippetsFromThread(thread);
-        // something in the markdown prefixes the id with "user-content-" Likely to avoid colliding with existing css class, however this make matching tricky.
-        // We also need to be careful updating this library as this could change
-        // TODO: Add Test for this
-        return snippets.find((s) => SANITIZED_ID_PREFIX + s.id === props.id);
-    }, [props.id, thread]);
+    const snippetSelect = useCallback(
+        (thread: Thread) => {
+            if (!props.id) {
+                return undefined;
+            }
+            const snippets: Snippet[] = getSnippetsFromThread(thread);
+            // something in the markdown prefixes the id with "user-content-" Likely to avoid colliding with existing css class, however this make matching tricky.
+            // We also need to be careful updating this library as this could change
+            // TODO: Add Test for this
+            return snippets.find((s) => SANITIZED_ID_PREFIX + s.id === props.id);
+        },
+        [props.id]
+    );
+
+    const { data: snippet } = useThread(threadId, snippetSelect);
 
     if (!snippet) {
         return <span>props.children</span>;
