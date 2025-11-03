@@ -3,6 +3,7 @@ import { PropsWithChildren, useCallback } from 'react';
 import { SchemaThread as Thread } from '@/api/playgroundApi/playgroundApiSchema';
 import { useThread } from '@/api/playgroundApi/thread';
 import { CustomLink } from '@/components/thread/Markdown/CustomComponents';
+import { SANITIZED_ID_PREFIX } from '@/components/thread/Markdown/MarkdownRenderConstants';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 import { getSnippetsFromThread, Snippet } from './deepResearchFormatting';
@@ -10,8 +11,6 @@ import { getSnippetsFromThread, Snippet } from './deepResearchFormatting';
 export interface DeepResearchCiteProps extends PropsWithChildren {
     id?: string | undefined;
 }
-
-const SANITIZED_ID_PREFIX = 'user-content-';
 
 export const DeepResearchCite = (props: DeepResearchCiteProps) => {
     const { threadId } = useThreadView();

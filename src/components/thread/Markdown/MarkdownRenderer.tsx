@@ -9,13 +9,15 @@ import { DeepResearchCite } from '@/components/thread/DeepResearch/DeepResearchM
 
 import { CodeBlock } from '../CodeBlock';
 import { CustomDivider, CustomLink, CustomParagraph } from './CustomComponents';
+import { SANITIZED_ID_PREFIX } from './MarkdownRenderConstants';
 
 interface MarkdownRendererProps {
     children: string;
 }
 
-const extendedSchema = {
+const extendedSchema: typeof defaultSchema = {
     ...defaultSchema,
+    clobberPrefix: SANITIZED_ID_PREFIX,
     tagNames: [...(defaultSchema.tagNames || []), 'attribution-highlight', 'cite'],
     attributes: {
         ...defaultSchema.attributes,
