@@ -19,18 +19,18 @@ const isValidThreadRequestId = (id: string): id is v4AgentThreadResponseIds => {
 
 export const agentHandlers = [
     // use typedHttp!
-    http.get('/v4/agent', () => {
+    http.get('/v4/agents', () => {
         // list
     }),
     // use typedHttp!
-    http.post('/v4/agent/chat', () => {
+    http.post('/v4/agents/chat', () => {
         // @ts-expect-error We dont have types for agents messages yet (no maxTurns returned)
         const stream = createStreamFromResponse(agentThinkingAndToolCallsStreamResponse, 10);
 
         return new HttpResponse(stream);
     }),
     // use typedHttp!
-    http.get('v4/agent/deep-seek/{thread_id}', ({ params: { thread_id: threadId } }) => {
+    http.get('/v4/agents/deep-seek/{thread_id}', ({ params: { thread_id: threadId } }) => {
         if (typeof threadId === 'string' && isValidThreadRequestId(threadId)) {
             const resp = v4AgentThreadResponses[threadId];
             return HttpResponse.json(resp, { status: 200 });
