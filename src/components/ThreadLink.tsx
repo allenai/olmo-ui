@@ -1,6 +1,6 @@
 import { ChatOutlined, SmartToy } from '@mui/icons-material';
 import { Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { generatePath, useParams } from 'react-router-dom';
 
 import { links } from '../Links';
 import { formatDateForHistory } from '../utils/formatDateForHistory';
@@ -9,7 +9,7 @@ import { DeleteThreadIconButton } from './thread/DeleteThreadButton';
 
 export interface ThreadLinkProps {
     threadId: string;
-    linkType: 'model' | 'agent';
+    agentId?: string;
     content?: string;
     creator: string;
     createdDate: Date;
@@ -18,7 +18,7 @@ export interface ThreadLinkProps {
 
 export const ThreadLink = ({
     threadId,
-    linkType,
+    agentId,
     content = 'message...',
     creator,
     createdDate,
@@ -71,9 +71,13 @@ export const ThreadLink = ({
                     },
                 }}
                 component={Link}
-                href={linkType === 'agent' ? links.thread(threadId) : links.thread(threadId)}>
+                href={
+                    agentId
+                        ? generatePath(links.agent.thread, { agentId, threadId })
+                        : links.thread(threadId)
+                }>
                 <ListItemIcon>
-                    {linkType === 'agent' ? (
+                    {agentId ? (
                         <SmartToy fontSize="inherit" />
                     ) : (
                         <ChatOutlined fontSize="inherit" />

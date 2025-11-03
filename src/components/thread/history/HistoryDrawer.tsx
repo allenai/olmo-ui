@@ -68,7 +68,7 @@ export const HistoryDrawer = () => {
 
         return {
             threadId: thread.id,
-            linkType: 'model',
+            agentId: firstMessage.agentId ?? undefined,
             content: firstUserMessage?.content,
             creator: firstMessage.creator,
             createdDate,
