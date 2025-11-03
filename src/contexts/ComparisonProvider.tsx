@@ -90,7 +90,7 @@ const ComparisonProviderContent = ({
     initialState,
     promptTemplateId,
 }: ComparisonProviderProps) => {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const threadParamsList = parseComparisonSearchParams(searchParams);
 
     const threadIds = useMemo(() => {
@@ -370,6 +370,29 @@ const ComparisonProviderContent = ({
             .filter((item): item is { threadViewId: string; model: Model } => item !== null);
     }, [comparisonState, models]);
 
+    const onModelChange = useCallback(
+        (event: SelectChangeEvent, eventThreadViewId?: string) => {
+            const modelId = event.target.value;
+
+            const modelSearchParams = new URLSearchParams(searchParams);
+
+            Object.entries(comparisonState).forEach(([threadViewId, state], idx) => {
+                const modelIdForParam =
+                    threadViewId === eventThreadViewId ? modelId : state.modelId;
+                if (modelIdForParam) {
+                    modelSearchParams.set(`model-${idx + 1}`, modelIdForParam);
+                }
+            });
+
+            setSearchParams(modelSearchParams);
+
+            if (eventThreadViewId) {
+                dispatch({ type: 'setModelId', threadViewId: eventThreadViewId, modelId });
+            }
+        },
+        [comparisonState, searchParams, setSearchParams]
+    );
+
     // Checks model compatibility before submission
     const checkCompatibilityAndSubmit = useCallback(
         async (data: QueryFormValues): Promise<void> => {
@@ -460,11 +483,7 @@ const ComparisonProviderContent = ({
                 acceptedFileTypes: Array.from(reducedFileUploadProps.acceptedFileTypes),
             },
 
-            onModelChange: (event: SelectChangeEvent, threadViewId?: string) => {
-                if (!threadViewId) return;
-                dispatch({ type: 'setModelId', threadViewId, modelId: event.target.value });
-            },
-
+            onModelChange,
             getThreadViewModel: (threadViewId?: string) => {
                 if (!threadViewId) return undefined;
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -523,13 +542,13 @@ const ComparisonProviderContent = ({
         isLimitReached,
         reducedFileUploadProps,
         isFileUploadDisabled,
+        onModelChange,
         checkCompatibilityAndSubmit,
         inferenceOpts,
         submitToThreadView,
-        comparisonState,
         bypassSafetyCheck,
-        setBypassSafetyCheck,
         extraParameters,
+        comparisonState,
     ]);
 
     return (

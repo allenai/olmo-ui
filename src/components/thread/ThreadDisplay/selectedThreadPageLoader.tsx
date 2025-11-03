@@ -8,11 +8,10 @@ import { appContext } from '@/AppContext';
 import { selectModelIdForThread } from '@/contexts/modelSelectionUtils';
 import { getFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
+import { PARAM_SELECTED_MESSAGE } from '@/pages/queryParameterConsts';
 import { AlertMessageSeverity, SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { getModelsQueryOptions } from '../ModelSelect/useModels';
-
-export const PARAM_SELECTED_MESSAGE = 'selectedMessage';
 
 export interface SelectedThreadLoaderData {
     selectedThread: Thread;

@@ -5,9 +5,9 @@ import { MemoryRouter } from 'react-router-dom';
 
 import * as AppContext from '@/AppContext';
 import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
+import { PARAM_SELECTED_MESSAGE } from '@/pages/queryParameterConsts';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
-import { PARAM_SELECTED_MESSAGE } from '../ThreadDisplay/selectedThreadPageLoader';
 import { OlmoTraceButton } from './OlmoTraceButton';
 
 const FakeThreadViewProvider = ({ children }: { children: React.ReactNode }) => (

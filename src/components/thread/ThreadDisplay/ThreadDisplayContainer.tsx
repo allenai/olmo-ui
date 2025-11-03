@@ -7,9 +7,10 @@ import { useQueryContext } from '@/contexts/QueryContext';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
 import { ThreadViewProvider, useThreadView } from '@/pages/comparison/ThreadViewContext';
+import { PARAM_SELECTED_MESSAGE } from '@/pages/queryParameterConsts';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
-import { PARAM_SELECTED_MESSAGE, SelectedThreadLoaderData } from './selectedThreadPageLoader';
+import { SelectedThreadLoaderData } from './selectedThreadPageLoader';
 import { ThreadDisplay } from './ThreadDisplay';
 
 const ThreadDisplayContent = () => {

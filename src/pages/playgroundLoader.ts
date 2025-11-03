@@ -7,6 +7,8 @@ import { getModelsQueryOptions } from '@/components/thread/ModelSelect/useModels
 import { getPromptTemplatesQueryOptions } from '@/components/thread/promptTemplates/usePromptTemplates';
 import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
+
+import { PARAM_SELECTED_MODEL, PARAM_SELECTED_TEMPLATE } from './queryParameterConsts';
 const MODEL_DEPRECATION_NOTICE_GIVEN_KEY = 'model-deprecation-notice-2025-06-10T22:00:00Z';
 const MODEL_DEPRECATION_DATE = new Date('2025-06-10T22:00:00Z');
 
@@ -30,8 +32,8 @@ export const playgroundLoader =
         const searchParams = new URL(request.url).searchParams;
 
         const { id: threadId } = params;
-        const promptTemplateId = !threadId ? searchParams.get('template') : null; // only apply to new threads
-        const modelId = searchParams.get('model');
+        const promptTemplateId = !threadId ? searchParams.get(PARAM_SELECTED_TEMPLATE) : null; // only apply to new threads
+        const modelId = searchParams.get(PARAM_SELECTED_MODEL);
 
         // Ensure models are loaded before rendering -- use cache if available
         await queryClient.ensureQueryData(getModelsQueryOptions);

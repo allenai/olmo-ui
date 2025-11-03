@@ -9,7 +9,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
@@ -22,6 +22,7 @@ import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareF
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { links } from '@/Links';
 import { PlaygroundLoaderData } from '@/pages/playgroundLoader';
+import { PARAM_SELECTED_MODEL } from '@/pages/queryParameterConsts';
 
 import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
 import { StreamEventRegistryProvider } from './StreamEventRegistry';
@@ -86,6 +87,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const { data: promptTemplate } = usePromptTemplateById(initialState?.promptTemplateId);
 
     const navigate = useNavigate();
+    const [_, setSearchParams] = useSearchParams();
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
 
     useSetShareableForSingleThread(threadId);
@@ -188,10 +190,16 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 modelIdToSwitchTo.current = event.target.value;
                 setShouldShowModelSwitchWarning(true);
             } else {
-                selectModel(event.target.value);
+                // Single Thread handling
+                const modelId = event.target.value;
+                setSearchParams((searchParams) => {
+                    searchParams.set(PARAM_SELECTED_MODEL, modelId);
+                    return searchParams.toString();
+                });
+                selectModel(modelId);
             }
         },
-        [availableModels, selectedModel, threadId, selectModel]
+        [availableModels, threadId, selectedModel, setSearchParams, selectModel]
     );
 
     const handleModelSwitchWarningConfirm = useCallback(() => {
