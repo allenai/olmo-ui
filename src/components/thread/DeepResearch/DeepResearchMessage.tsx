@@ -1,18 +1,15 @@
 import { PropsWithChildren, useMemo } from 'react';
 
-import { MessageId, useThread } from '@/api/playgroundApi/thread';
+import { useThread } from '@/api/playgroundApi/thread';
 import { CustomLink } from '@/components/thread/Markdown/CustomComponents';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
-
-// import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { getSnippetsFromThread, Snippet } from './deepResearchFormatting';
 
-export interface MessageProps {
-    messageId: MessageId;
-}
 export interface DeepResearchCiteProps extends PropsWithChildren {
     id?: string | undefined;
 }
+
+const SANITIZED_ID_PREFIX = 'user-content-';
 
 export const DeepResearchCite = (props: DeepResearchCiteProps) => {
     const { threadId } = useThreadView();
@@ -26,7 +23,7 @@ export const DeepResearchCite = (props: DeepResearchCiteProps) => {
         // something in the markdown prefixes the id with "user-content-" Likely to avoid colliding with existing css class, however this make matching tricky.
         // We also need to be careful updating this library as this could change
         // TODO: Add Test for this
-        return snippets.find((s) => 'user-content-' + s.id === props.id);
+        return snippets.find((s) => SANITIZED_ID_PREFIX + s.id === props.id);
     }, [props.id, thread]);
 
     if (!snippet) {
