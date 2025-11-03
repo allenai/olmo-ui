@@ -1,8 +1,7 @@
 import { AddBoxOutlined } from '@mui/icons-material';
 import { alpha } from '@mui/material';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
-import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
@@ -15,7 +14,7 @@ export const NewThreadIconButton = ({
     includeModelIdParam?: boolean;
 }) => {
     // Checking for falsey here because the initial value is an empty string
-    const shouldHideNewThreadButton = useAppContext((state) => !state.selectedThreadRootId);
+    const { id: threadId } = useParams();
     const isDesktop = useDesktopOrUp();
 
     const [searchParams] = useSearchParams();
@@ -24,14 +23,14 @@ export const NewThreadIconButton = ({
     const urlToGoto =
         modelId && includeModelIdParam ? `${links.playground}?model=${modelId}` : links.playground;
 
-    if (shouldHideNewThreadButton && isDesktop) {
+    if (isDesktop) {
         return null;
     }
 
     return (
         <IconButtonWithTooltip
             desktopPlacement="left"
-            disabled={shouldHideNewThreadButton}
+            disabled={!threadId}
             href={urlToGoto}
             label="Create a new thread"
             sx={(theme) => ({
