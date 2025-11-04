@@ -1,5 +1,5 @@
 import { IDLE_NAVIGATION } from '@remix-run/router';
-import { render, screen, waitFor } from '@test-utils';
+import { act, render, screen, waitFor } from '@test-utils';
 import { http, HttpResponse } from 'msw';
 
 import * as AppContext from '@/AppContext';
@@ -54,7 +54,7 @@ describe('ToolCallDisplay', () => {
         });
 
         await waitFor(() => {
-            expect(screen.getByLabelText('This model allows tool calling.')).toBeVisible();
+            expect(screen.getByLabelText('This model allows tool calling')).toBeVisible();
         });
     });
 
@@ -65,8 +65,26 @@ describe('ToolCallDisplay', () => {
 
         await waitFor(() => {
             expect(
-                screen.queryByLabelText('This model allows tool calling.')
+                screen.queryByLabelText('This model allows tool calling')
             ).not.toBeInTheDocument();
+        });
+    });
+
+    it('should enable the link when toggled', async () => {
+        renderWithProvider({
+            selectedModelId: 'has-tools',
+        });
+
+        await waitFor(() => {
+            expect(screen.getByRole('button', { name: 'Add or edit tools' })).toBeDisabled();
+        });
+
+        act(() => {
+            screen.getByRole('switch').click();
+        });
+
+        await waitFor(() => {
+            expect(screen.getByRole('button', { name: 'Add or edit tools' })).toBeEnabled();
         });
     });
 });
