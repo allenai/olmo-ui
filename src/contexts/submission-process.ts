@@ -127,8 +127,6 @@ export const updateCacheWithMessagePart = async (
 ): Promise<string | undefined> => {
     let currentThreadId = threadId;
 
-    const state = appContext.getState();
-
     if (isCreatingNewThread && isFirstMessage(message)) {
         currentThreadId = message.id;
         if (currentThreadId) {
@@ -165,12 +163,6 @@ export const updateCacheWithMessagePart = async (
 
     if (isChunk(message) && message.type === 'end') {
         clearStreamingState(message.message);
-
-        if (isCreatingNewThread) {
-            const { queryKey } = threadOptions(message.message);
-            const currentThread = queryClient.getQueryData(queryKey);
-            state.addThreadToAllThreads(currentThread as StreamingThread);
-        }
     }
 
     return currentThreadId;
