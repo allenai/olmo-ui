@@ -32,6 +32,7 @@ export const ThreadLink = ({
         <ListItem
             disablePadding
             sx={{
+                color: (theme) => theme.palette.text.drawer.primary,
                 position: 'relative',
                 minHeight: (theme) => theme.spacing(5),
                 '& .MuiIconButton-root': {
