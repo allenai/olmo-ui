@@ -14,8 +14,6 @@ export const createModelAction =
             body: (await request.json()) as SchemaRootCreateModelConfigRequest,
         });
 
-        console.log('model config endpoint response', response.error);
-
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (response.error) {
             // @ts-expect-error - Our error responses aren't typed correctly
