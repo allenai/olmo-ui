@@ -7,11 +7,9 @@ import {
     type ParameterToggleProps,
 } from '@/components/thread/parameter/inputs/ParameterToggle';
 import { ToolDeclarationDialog } from '@/components/thread/tools/ToolDeclarationDialog';
+import { TOOL_CALLING_INFO } from '@/components/toolCalling/toolCallingConsts';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
-
-const TOOL_CALLING_INFO =
-    'If enabled, this allows you to define functions that the model can call. Use the edit or view button to create or modify the function definitions.';
 
 const ToolsDialog = ({
     isOpen,
