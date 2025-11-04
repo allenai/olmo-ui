@@ -1,10 +1,11 @@
-import { ChatOutlined, SmartToy } from '@mui/icons-material';
 import { Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { generatePath, useParams } from 'react-router-dom';
 
 import { links } from '../Links';
 import { formatDateForHistory } from '../utils/formatDateForHistory';
+import { AgentIcon } from './assets/AgentIcon';
 import { ChevronIcon } from './assets/ChevronIcon';
+import { ModelIcon } from './assets/ModelIcon';
 import { DeleteThreadIconButton } from './thread/DeleteThreadButton';
 
 export interface ThreadLinkProps {
@@ -77,11 +78,7 @@ export const ThreadLink = ({
                         : links.thread(threadId)
                 }>
                 <ListItemIcon>
-                    {agentId ? (
-                        <SmartToy fontSize="inherit" />
-                    ) : (
-                        <ChatOutlined fontSize="inherit" />
-                    )}
+                    {agentId ? <AgentIcon fontSize="inherit" /> : <ModelIcon fontSize="inherit" />}
                 </ListItemIcon>
                 <ListItemText
                     primaryTypographyProps={{
