@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Box, BoxProps, IconButton, Typography } from '@mui/material';
 import { ReactNode, useRef, useState } from 'react';
@@ -67,6 +68,7 @@ export const ParameterDrawerInputWrapper = ({
                         isTooltipOpen={isTooltipOpen}
                         onTooltipClose={handleTooltipClose}
                         tooltipIdSuffix={`${inputId}-description`}
+                        tooltipClassName={css({ right: '2' })}
                         placement={tooltipPlacement}>
                         <IconButton
                             tabIndex={0}
