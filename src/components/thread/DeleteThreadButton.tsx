@@ -53,12 +53,10 @@ export const DeleteThreadButton = ({
 interface DeleteThreadIconButtonProps {
     creator: string;
     createdDate: Date;
-    isSelectedThread: boolean;
     onClick: () => void;
 }
 
 export const DeleteThreadIconButton = ({
-    isSelectedThread,
     createdDate,
     creator,
     onClick,
@@ -75,12 +73,7 @@ export const DeleteThreadIconButton = ({
 
     return (
         <IconButtonWithTooltip
-            sx={(theme) => ({
-                color: isSelectedThread
-                    ? theme.color['dark-teal-100'].hex
-                    : theme.palette.text.drawer.primary,
-                opacity: isSelectedThread ? 1 : 0,
-                transition: '300ms opacity ease-in-out',
+            sx={() => ({
                 '.Mui-focusVisible ~ div > &': {
                     opacity: 1,
                 },
@@ -88,6 +81,7 @@ export const DeleteThreadIconButton = ({
                     opacity: 1,
                 },
             })}
+            color="inherit"
             placement="right"
             onClick={onClick}
             disabled={!isCreator}

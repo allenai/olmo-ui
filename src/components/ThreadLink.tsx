@@ -1,3 +1,4 @@
+import { ChatOutlined as ChatIcon } from '@mui/icons-material';
 import { Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { generatePath, useParams } from 'react-router-dom';
 
@@ -5,7 +6,6 @@ import { links } from '../Links';
 import { formatDateForHistory } from '../utils/formatDateForHistory';
 import { AgentIcon } from './assets/AgentIcon';
 import { ChevronIcon } from './assets/ChevronIcon';
-import { ModelIcon } from './assets/ModelIcon';
 import { DeleteThreadIconButton } from './thread/DeleteThreadButton';
 
 export interface ThreadLinkProps {
@@ -31,10 +31,19 @@ export const ThreadLink = ({
     return (
         <ListItem
             disablePadding
-            sx={{ position: 'relative', minHeight: (theme) => theme.spacing(5) }}
+            sx={{
+                position: 'relative',
+                minHeight: (theme) => theme.spacing(5),
+                '& .MuiIconButton-root': {
+                    opacity: 0,
+                    transition: '300ms opacity ease-in-out',
+                    '&.Mui-focusVisible': {
+                        opacity: 1,
+                    },
+                },
+            }}
             secondaryAction={
                 <DeleteThreadIconButton
-                    isSelectedThread={isSelected}
                     creator={creator}
                     createdDate={createdDate}
                     onClick={handleDelete}
@@ -47,20 +56,15 @@ export const ThreadLink = ({
                 sx={{
                     minHeight: (theme) => theme.spacing(5),
                     gap: (theme) => theme.spacing(1),
-                    color: (theme) => theme.palette.text.drawer.primary,
                     '&.Mui-selected': {
                         backgroundColor: (theme) => theme.palette.secondary.light,
                         color: (theme) => theme.color['dark-teal-100'].hex,
-                        fontWeight: 'normal',
-
                         '&:hover': {
                             backgroundColor: (theme) => theme.palette.secondary.light,
                             color: (theme) => theme.color['dark-teal-100'].hex,
-                            fontWeight: 'normal',
                         },
                     },
-
-                    '&.Mui-focusVisible': (theme) => ({
+                    '&&.Mui-focusVisible': (theme) => ({
                         backgroundColor: theme.palette.secondary.light,
                         color: theme.color['dark-teal-100'].hex,
                     }),
@@ -78,7 +82,7 @@ export const ThreadLink = ({
                         : links.thread(threadId)
                 }>
                 <ListItemIcon>
-                    {agentId ? <AgentIcon fontSize="inherit" /> : <ModelIcon fontSize="inherit" />}
+                    {agentId ? <AgentIcon fontSize="inherit" /> : <ChatIcon fontSize="inherit" />}
                 </ListItemIcon>
                 <ListItemText
                     primaryTypographyProps={{
