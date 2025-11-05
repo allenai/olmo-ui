@@ -1,6 +1,6 @@
 import type { SchemaThread as Thread } from '@/api/playgroundApi/playgroundApiSchema';
 
-export const SNIPPET_TOOL_NAMES: string[] = ['EXAMPLE_TODO_TOOL_NAME']; // list of tools that will contain snippets in there response
+export const SNIPPET_TOOL_NAMES: string[] = ['browse_webpage']; // List of tools that will contain snippets in there response
 
 export type Snippet = {
     id: string;
