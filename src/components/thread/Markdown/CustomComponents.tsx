@@ -1,5 +1,5 @@
 import { alpha, Divider, Link, styled } from '@mui/material';
-import { HTMLAttributes } from 'react';
+import { AnchorHTMLAttributes, HTMLAttributes } from 'react';
 
 export const CustomDivider = (props: HTMLAttributes<HTMLHRElement>) => (
     <Divider
@@ -22,7 +22,7 @@ export const CustomParagraph = styled('p')({
     marginBlockEnd: '1em',
 });
 
-export const CustomLink = (props: HTMLAttributes<HTMLAnchorElement>) => (
+export const CustomLink = (props: AnchorHTMLAttributes<HTMLAnchorElement>) => (
     <Link
         {...props}
         target="_blank"
