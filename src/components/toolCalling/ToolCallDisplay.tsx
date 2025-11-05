@@ -125,7 +125,6 @@ const ToolCallDisplayToggle = () => {
                             className={css({
                                 paddingInline: '2',
                             })}
-                            isDisabled={!isToolCallingEnabled}
                             onClick={handleToolDialogOpen}>
                             Add or edit tools
                         </Button>

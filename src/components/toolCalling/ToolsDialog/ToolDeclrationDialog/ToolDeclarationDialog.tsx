@@ -2,10 +2,11 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, IconButton, Modal, ModalActions } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
-import { type Key } from 'react-aria-components';
+import { Key } from 'react-aria-components';
 import { Resolver, useForm } from 'react-hook-form';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
+import { useQueryContext } from '@/contexts/QueryContext';
 
 import { TabbedContent } from './TabbedContent';
 import { validateToolDefinitions } from './toolDeclarationUtils';
@@ -98,53 +99,90 @@ export function ToolDeclarationDialog({
     const formId = 'function-declaration-form';
 
     return (
-        <Modal
-            className={modalBase}
-            contentClassName={modalContentContainerClassName}
-            isOpen={isOpen}
-            isDismissable
-            fullWidth
-            size="large"
-            heading="Tool declarations"
-            headingClassName={modalHeading}
-            dialogClassName={css({ height: '[100%]' })}
-            closeButton={
-                <IconButton onClick={onClose} aria-label="Close tool declarations dialog">
-                    <CloseIcon />
-                </IconButton>
-            }
-            buttons={
-                <ModalActions fullWidth>
-                    <Button
-                        shape="rounded"
-                        color="secondary"
-                        onClick={handleReset}
-                        aria-label="Reset form"
-                        isDisabled={isDisabled}>
-                        Reset
-                    </Button>
-                    <Button
-                        shape="rounded"
-                        color="secondary"
-                        variant="contained"
-                        type="submit"
-                        form={formId}
-                        aria-label="Save tool declarations"
-                        isDisabled={isDisabled}>
-                        Save
-                    </Button>
-                </ModalActions>
-            }>
-            <form id={formId} onSubmit={handleSave} className={css({ height: '[100%]' })}>
-                <TabbedContent
-                    tabSelected={tabSelected}
-                    setTabSelect={setTabSelect}
-                    isDisabled={isDisabled}
-                    control={control}
-                    tools={tools}
-                    setValue={setValue}
-                />
-            </form>
-        </Modal>
+        <>
+            <Modal
+                className={modalBase}
+                contentClassName={modalContentContainerClassName}
+                isOpen={isOpen}
+                isDismissable
+                fullWidth
+                size="large"
+                heading="Tool declarations"
+                headingClassName={modalHeading}
+                dialogClassName={css({ height: '[100%]' })}
+                closeButton={
+                    <IconButton onClick={onClose} aria-label="Close tool declarations dialog">
+                        <CloseIcon />
+                    </IconButton>
+                }
+                buttons={
+                    <ModalActions
+                        fullWidth
+                        className={css({
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            width: '[100%]',
+                        })}>
+                        <Button
+                            shape="rounded"
+                            color="secondary"
+                            onClick={handleReset}
+                            aria-label="Reset form"
+                            isDisabled={isDisabled}>
+                            Reset
+                        </Button>
+                        {/* <DropdownButton formId={formId} reset={handleReset} save={save} /> */}
+                        <div
+                            className={css({
+                                isolation: 'isolate',
+                                display: 'flex',
+                                gap: '3',
+                            })}>
+                            <SaveAndEnable onClick={handleSave} formId={formId} />
+                            <Button
+                                shape="rounded"
+                                color="secondary"
+                                variant="contained"
+                                form={formId}
+                                aria-label="Save tool declarations"
+                                onClick={handleSave}>
+                                Save
+                            </Button>
+                        </div>
+                    </ModalActions>
+                }>
+                <form id={formId} onSubmit={handleSave} className={css({ height: '[100%]' })}>
+                    <TabbedContent
+                        tabSelected={tabSelected}
+                        setTabSelect={setTabSelect}
+                        isDisabled={isDisabled}
+                        control={control}
+                        tools={tools}
+                        setValue={setValue}
+                    />
+                </form>
+            </Modal>
+        </>
     );
 }
+
+const SaveAndEnable = ({ formId, onClick: saveForm }: { formId: string; onClick: () => void }) => {
+    const { updateIsToolCallingEnabled, isToolCallingEnabled } = useQueryContext();
+
+    const handleSave = () => {
+        saveForm();
+        updateIsToolCallingEnabled(!isToolCallingEnabled);
+    };
+
+    return (
+        <Button
+            shape="rounded"
+            color="secondary"
+            variant="contained"
+            form={formId}
+            aria-label="Save tool declarations"
+            onClick={handleSave}>
+            Save and {isToolCallingEnabled ? 'disable' : 'enable'}
+        </Button>
+    );
+};
