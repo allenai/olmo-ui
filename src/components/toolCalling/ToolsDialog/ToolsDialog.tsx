@@ -17,6 +17,8 @@ export const ToolsDialog = ({
         availableTools,
         userToolDefinitions,
         updateUserToolDefinitions,
+        isToolCallingEnabled,
+        updateIsToolCallingEnabled,
         updateSelectedTools,
         selectedTools,
     } = useQueryContext();
@@ -27,15 +29,17 @@ export const ToolsDialog = ({
             jsonData={userToolDefinitions ?? undefined}
             availableTools={availableTools}
             selectedTools={selectedTools}
+            isToolCallingEnabled={isToolCallingEnabled}
             isDisabled={threadStarted}
             isOpen={isOpen}
             onClose={handleClose}
-            onSave={({ declaration, tools }) => {
+            onSave={({ declaration, tools }, toolCallingEnabled) => {
                 analyticsClient.trackParametersUpdate({
                     parameterUpdated: 'tool_definitions',
                 });
                 updateUserToolDefinitions(declaration);
                 updateSelectedTools(tools);
+                updateIsToolCallingEnabled(toolCallingEnabled);
                 addSnackMessage({
                     id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
                     type: SnackMessageType.Brief,

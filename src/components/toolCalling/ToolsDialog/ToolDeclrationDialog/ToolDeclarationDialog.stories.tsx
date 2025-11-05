@@ -51,6 +51,7 @@ const availableTools = [
 export const Default: Story = {
     args: {
         isOpen: true,
+        isToolCallingEnabled: true,
         isDisabled: false,
         onSave: fn(),
         onReset: fn(),
@@ -63,6 +64,7 @@ export const Default: Story = {
 export const Disabled: Story = {
     args: {
         isOpen: true,
+        isToolCallingEnabled: true,
         isDisabled: true,
         onSave: fn(),
         onReset: fn(),
@@ -99,6 +101,7 @@ export const WithTrigger: Story = {
     args: {
         isOpen: false,
         isDisabled: false,
+        isToolCallingEnabled: true,
         onSave: fn(),
         onReset: fn(),
         jsonData,

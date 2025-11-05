@@ -1,12 +1,11 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Button, IconButton, Modal, ModalActions } from '@allenai/varnish-ui';
+import { Button, IconButton, Modal, ModalActions, Switch } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import { Key } from 'react-aria-components';
 import { Resolver, useForm } from 'react-hook-form';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { useQueryContext } from '@/contexts/QueryContext';
 
 import { TabbedContent } from './TabbedContent';
 import { validateToolDefinitions } from './toolDeclarationUtils';
@@ -38,18 +37,44 @@ export interface DataFields {
 export interface ToolDeclarationDialogProps {
     availableTools: Model['available_tools'];
     selectedTools: string[];
+    isToolCallingEnabled: boolean;
     jsonData?: string;
     isOpen?: boolean;
     isDisabled?: boolean;
-    onSave: (data: DataFields) => void;
+    onSave: (data: DataFields, toolCallingEnabled: boolean) => void;
     onReset?: () => void;
     onClose?: () => void;
 }
+
+interface ToolCallSwitchProps {
+    isSelected: boolean;
+    onChange: () => void;
+}
+
+const ToolCallSwitch = ({ isSelected, onChange }: ToolCallSwitchProps) => {
+    return (
+        <div
+            className={css({
+                display: 'flex',
+                gap: '3',
+                alignItems: 'center',
+            })}>
+            <label htmlFor="form-actions-tool-calling-switch">Enable tool calling</label>
+            <Switch
+                id="form-actions-tool-calling-switch"
+                size="large"
+                isSelected={isSelected}
+                onChange={onChange}
+            />
+        </div>
+    );
+};
 
 export function ToolDeclarationDialog({
     jsonData = '[]',
     availableTools: tools,
     selectedTools,
+    isToolCallingEnabled,
     isOpen,
     isDisabled,
     onSave,
@@ -58,6 +83,7 @@ export function ToolDeclarationDialog({
 }: ToolDeclarationDialogProps) {
     const initialTab = tools && tools.length > 0 ? 'system-functions' : 'user-functions';
     const [tabSelected, setTabSelect] = useState<Key>(initialTab);
+    const [isSwitchSelected, setSwitchSelected] = useState(isToolCallingEnabled);
 
     const resolver: Resolver<DataFields> = (data) => {
         const validJson = validateToolDefinitions(data.declaration);
@@ -87,13 +113,17 @@ export function ToolDeclarationDialog({
     }, [selectedTools, setValue]);
 
     const handleSave = handleSubmit((data) => {
-        onSave(data);
+        onSave(data, isSwitchSelected);
         onClose?.();
     });
 
     const handleReset = () => {
         reset();
         onReset?.();
+    };
+
+    const handleToolCallEnabled = () => {
+        setSwitchSelected(!isSwitchSelected);
     };
 
     const formId = 'function-declaration-form';
@@ -131,14 +161,15 @@ export function ToolDeclarationDialog({
                             isDisabled={isDisabled}>
                             Reset
                         </Button>
-                        {/* <DropdownButton formId={formId} reset={handleReset} save={save} /> */}
                         <div
                             className={css({
-                                isolation: 'isolate',
                                 display: 'flex',
-                                gap: '3',
+                                gap: '6',
                             })}>
-                            <SaveAndEnable onClick={handleSave} formId={formId} />
+                            <ToolCallSwitch
+                                isSelected={isSwitchSelected}
+                                onChange={handleToolCallEnabled}
+                            />
                             <Button
                                 shape="rounded"
                                 color="secondary"
@@ -165,24 +196,3 @@ export function ToolDeclarationDialog({
         </>
     );
 }
-
-const SaveAndEnable = ({ formId, onClick: saveForm }: { formId: string; onClick: () => void }) => {
-    const { updateIsToolCallingEnabled, isToolCallingEnabled } = useQueryContext();
-
-    const handleSave = () => {
-        saveForm();
-        updateIsToolCallingEnabled(!isToolCallingEnabled);
-    };
-
-    return (
-        <Button
-            shape="rounded"
-            color="secondary"
-            variant="contained"
-            form={formId}
-            aria-label="Save tool declarations"
-            onClick={handleSave}>
-            Save and {isToolCallingEnabled ? 'disable' : 'enable'}
-        </Button>
-    );
-};
