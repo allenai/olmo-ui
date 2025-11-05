@@ -15,6 +15,7 @@ import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
+import { AgentIcon } from '../assets/AgentIcon';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { NavigationFooter } from './Footer/NavigationFooter';
@@ -90,7 +91,7 @@ export const NavigationDrawer = ({
                         </NavigationLink>
                         {isAgentPageEnabled ? (
                             <NavigationLink
-                                icon={<ViewColumnIcon />}
+                                icon={<AgentIcon />}
                                 selected={curriedDoesMatchPath(links.agent.root)}
                                 href={links.agent.root}
                                 DisclosureIcon={ScienceIcon}

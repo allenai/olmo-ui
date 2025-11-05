@@ -1,6 +1,4 @@
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { NullishPartial } from '@/util';
-import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { ClientBase } from './ClientBase';
 import { Label } from './Label';
@@ -10,8 +8,6 @@ import { InferenceOpts, PaginationData } from './Schema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
-export const v4MessageApiUrl = '/v4/message';
-export const v4ThreadApiUrl = '/v4/threads/';
 
 export type RequestInferenceOpts = NullishPartial<InferenceOpts>;
 
@@ -20,18 +16,6 @@ export interface Logprob {
     offset: number;
     prob: number;
 }
-
-export type V4CreateMessageRequest = RequestInferenceOpts & {
-    content: string;
-    role?: Role; // in the case of edited messages
-    original?: string; // in the case of edited messages
-    parent?: string;
-    private?: boolean;
-    template?: string;
-    model: string;
-    host: string;
-    files?: FileList;
-};
 
 export interface Message {
     children?: Message[] | null;
@@ -132,30 +116,7 @@ export interface FirstMessage extends JSONMessage {
     final: false;
 }
 
-export interface FinalMessage extends JSONMessage {
-    final: true;
-    children: JSONMessage[];
-}
-
 export type MessageStreamPart = JSONMessage | MessageChunk | MessageStreamErrorType;
-
-export const isMessageWithMetadata = (message: MessageStreamPart): message is JSONMessage => {
-    return 'id' in message;
-};
-
-export const isFirstMessage = (message: MessageStreamPart): message is FirstMessage => {
-    return isMessageWithMetadata(message) && !message.final;
-};
-
-export const isMessageChunk = (message: MessageStreamPart): message is MessageChunk => {
-    return 'content' in message && !isMessageWithMetadata(message);
-};
-
-export const isMessageStreamError = (
-    message: MessageStreamPart
-): message is MessageStreamErrorType => {
-    return 'error' in message;
-};
 
 export const parseMessage = (message: JSONMessage): Message => {
     return {
@@ -167,124 +128,10 @@ export const parseMessage = (message: JSONMessage): Message => {
 };
 
 export class MessageClient extends ClientBase {
-    getMessage = async (threadId: string): Promise<Message> => {
-        const url = this.createURL(MessageApiUrl, threadId);
-
-        const messageResponse = await this.fetch<JSONMessage>(url);
-
-        return parseMessage(messageResponse);
-    };
-
     deleteThread = async (threadId: string): Promise<void> => {
         const url = this.createURL(MessageApiUrl, threadId);
 
         return this.fetch(url, { method: 'DELETE' });
-    };
-
-    // TODO: return metadata from API
-    //   - https://github.com/allenai/playground-issues-repo/issues/463
-    // also:
-    // TODO: replace with react-query:
-    //   - https://github.com/allenai/playground-issues-repo/issues/454
-    getAllThreads = async (
-        offset: number = 0,
-        creator?: string,
-        limit?: number
-    ): Promise<ThreadList> => {
-        const url = this.createURL(v4ThreadApiUrl);
-        if (limit) {
-            url.searchParams.set('limit', limit.toString());
-        }
-
-        url.searchParams.set('offset', offset.toString());
-
-        if (creator != null) {
-            url.searchParams.set('creator', creator);
-        }
-
-        const { threads, meta } = await this.fetch<ThreadList>(url);
-
-        return {
-            threads,
-            meta,
-        };
-    };
-
-    sendMessage = async (
-        createMessageRequest: V4CreateMessageRequest,
-        abortController: AbortController
-    ) => {
-        const url = this.createURL(v4MessageApiUrl, 'stream');
-
-        const formData = new FormData();
-
-        for (const property in createMessageRequest) {
-            const value = createMessageRequest[property as keyof typeof createMessageRequest];
-            mapValueToFormData(formData, property, value);
-        }
-
-        // This opts out of the default fetch handling in this.fetch
-        // Since this is a stream we can't unpack it the same way we do in this.fetch
-        const response = await fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: await this.createStandardHeaders(undefined, true),
-            credentials: 'include',
-            signal: abortController.signal,
-        });
-
-        if (response.status === 401) {
-            this.login();
-        }
-
-        if (!response.ok) {
-            if (response.status === 400) {
-                const body = (await response.json()) as {
-                    error: {
-                        code: number;
-                        message: string;
-                        validation_errors?: {
-                            loc: unknown[];
-                            msg: string;
-                            type: string;
-                            url: string;
-                        }[];
-                    };
-                };
-
-                if (body.error.validation_errors) {
-                    const captchaTokenValidationErrors = body.error.validation_errors.filter(
-                        (error) => error.loc.some((location) => location === 'captchaToken')
-                    );
-                    if (captchaTokenValidationErrors.length > 0) {
-                        const captchaErrorTypes = captchaTokenValidationErrors.reduce(
-                            (acc, curr) => {
-                                acc.add(curr.type);
-                                return acc;
-                            },
-                            new Set<string>()
-                        );
-
-                        analyticsClient.trackCaptchaError(Array.from(captchaErrorTypes.values()));
-                    }
-
-                    throw new StreamValidationError(
-                        response.status,
-                        body.error.validation_errors.map(
-                            (err) => `${err.loc.join(', ')}: ${err.msg}`
-                        )
-                    );
-                }
-                throw new StreamBadRequestError(response.status, body.error.message);
-            }
-
-            throw new Error(`POST ${url.toString()}: ${response.status} ${response.statusText}`);
-        }
-        if (!response.body) {
-            throw new Error(`POST ${url.toString()}: missing response body`);
-        }
-
-        return response.body;
     };
 }
 

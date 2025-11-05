@@ -26,6 +26,12 @@ module.exports = {
             rules: {
                 // Typescript handles no undefined for us already. We can safely disable this in TS files
                 'no-undef': 'off',
+                'no-void': [
+                    'error',
+                    {
+                        allowAsStatement: true,
+                    },
+                ],
 
                 // TODO: Fix these warnings and make these errors again
                 '@typescript-eslint/no-unsafe-assignment': 'warn',

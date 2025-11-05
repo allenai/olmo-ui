@@ -13,14 +13,12 @@ import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
 import { createModelSlice, ModelSlice } from './slices/ModelSlice';
 import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/SelectedThreadSlice';
 import { createSnackMessageSlice, SnackMessageSlice } from './slices/SnackMessageSlice';
-import { createThreadSlice, ThreadSlice } from './slices/ThreadSlice';
 import { createThreadStreamSlice, ThreadStreamSlice } from './slices/ThreadStreamSlice';
 import { createThreadUpdateSlice, ThreadUpdateSlice } from './slices/ThreadUpdateSlice';
 import { createTranscriptionSlice, TranscriptionSlice } from './slices/TranscriptionSlice';
 import { createUserSlice, UserSlice } from './slices/UserSlice';
 
 export type AppContextState = LabelSlice &
-    ThreadSlice &
     ThreadStreamSlice &
     SnackMessageSlice &
     UserSlice &
@@ -50,7 +48,6 @@ export const createAppContext = (
                 deepmerge(
                     {
                         ...createSnackMessageSlice(...store),
-                        ...createThreadSlice(...store),
                         ...createThreadStreamSlice(...store),
                         ...createLabelSlice(...store),
                         ...createUserSlice(...store),

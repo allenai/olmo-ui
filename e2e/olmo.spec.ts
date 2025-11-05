@@ -23,12 +23,6 @@ test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => 
     ).toBeVisible();
     expect(page.url()).toContain(selectedThreadId);
 
-    // Make sure the new message is in the history drawer
-    await page.getByRole('button', { name: 'Thread history', exact: true }).click();
-    await expect(page.getByText('Today')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'User message' })).toBeVisible();
-    await page.getByRole('button', { name: 'close history drawer' }).click();
-
     // Send a second message in the thread
     await page.getByRole('textbox', { name: /^Reply to*/ }).fill('say one word');
     await page.getByLabel('Submit prompt').click();

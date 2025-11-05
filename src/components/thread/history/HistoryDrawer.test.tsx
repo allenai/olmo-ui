@@ -1,8 +1,9 @@
+import { IDLE_NAVIGATION } from '@remix-run/router';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@test-utils';
-import * as reactRouter from 'react-router-dom';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
-import { Role } from '@/api/Role';
+import { queryClient } from '@/api/query-client';
 import * as appContext from '@/AppContext';
 import { links } from '@/Links';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -11,37 +12,55 @@ import * as useCloseDrawerOnNavigation from '@/utils/useClosingDrawerOnNavigatio
 
 import { HISTORY_DRAWER_ID, HistoryDrawer } from './HistoryDrawer';
 
-describe('HistoryDrawer', () => {
-    it('should show a message about history to anonymous users', () => {
-        vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
-        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(
-            getFakeUseUserAuthInfo({ isAuthenticated: false })
-        );
-        vi.spyOn(useCloseDrawerOnNavigation, 'useCloseDrawerOnNavigation').mockImplementation(
-            () => {}
-        );
-        const currentPathname = '/thread/foo';
-        vi.spyOn(reactRouter, 'useLocation').mockImplementation(() => ({
-            pathname: currentPathname,
-            search: '',
-            hash: '',
-            state: undefined,
-            key: 'thread-foo',
-        }));
-
-        render(
+const renderWithProvider = () => {
+    return render(
+        <QueryClientProvider client={queryClient}>
             <FakeAppContextProvider
                 initialState={{
                     currentOpenDrawer: HISTORY_DRAWER_ID,
-                    getMessageList: () =>
-                        Promise.resolve({
-                            messages: [],
-                            meta: { total: 0, offset: 0, limit: 10, sort: 'ASC' },
-                        }),
                 }}>
                 <HistoryDrawer />
             </FakeAppContextProvider>
+        </QueryClientProvider>
+    );
+};
+
+const currentPathname = '/thread/foo';
+
+vi.mock('react-router-dom', () => ({
+    useNavigate: () => vi.fn(),
+    useParams: vi.fn(() => ({ id: undefined })),
+    useLocation: () => ({
+        pathname: currentPathname,
+        search: '',
+        hash: '',
+        state: undefined,
+        key: 'thread-foo',
+    }),
+    useNavigation: () => IDLE_NAVIGATION,
+    useSearchParams: vi.fn(() => [new URLSearchParams(), vi.fn()]),
+}));
+
+beforeEach(() => {
+    // IntersectionObserver isn't available in test environment
+    const mockIntersectionObserver = vi.fn();
+    mockIntersectionObserver.mockReturnValue({
+        observe: () => null,
+        unobserve: () => null,
+        disconnect: () => null,
+    });
+    window.IntersectionObserver = mockIntersectionObserver;
+    vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
+    vi.spyOn(useCloseDrawerOnNavigation, 'useCloseDrawerOnNavigation').mockImplementation(() => {});
+});
+
+describe('HistoryDrawer', () => {
+    it('should show a message about history to anonymous users', () => {
+        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(
+            getFakeUseUserAuthInfo({ isAuthenticated: false })
         );
+
+        renderWithProvider();
 
         expect(screen.getByText('Thread History')).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Log in' })).toBeInTheDocument();
@@ -52,138 +71,22 @@ describe('HistoryDrawer', () => {
     });
 
     it('should not show a message about history to authenticated users', () => {
-        vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
         vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(
             getFakeUseUserAuthInfo({ isAuthenticated: true })
         );
-        vi.spyOn(useCloseDrawerOnNavigation, 'useCloseDrawerOnNavigation').mockImplementation(
-            () => {}
-        );
-        vi.spyOn(reactRouter, 'useLocation').mockImplementation(() => ({
-            pathname: '/thread/foo',
-            search: '',
-            hash: '',
-            state: undefined,
-            key: 'thread-foo',
-        }));
 
-        render(
-            <FakeAppContextProvider
-                initialState={{
-                    currentOpenDrawer: HISTORY_DRAWER_ID,
-                    getMessageList: () =>
-                        Promise.resolve({
-                            messages: [],
-                            meta: { total: 0, offset: 0, limit: 10, sort: 'ASC' },
-                        }),
-                }}>
-                <HistoryDrawer />
-            </FakeAppContextProvider>
-        );
+        renderWithProvider();
 
         expect(screen.getByText('Thread History')).toBeInTheDocument();
         expect(screen.queryByRole('link', { name: 'Log in' })).not.toBeInTheDocument();
     });
 
     it('should show the content of a user message if a system message is the root', async () => {
-        vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
         vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(
             getFakeUseUserAuthInfo({ isAuthenticated: true })
         );
-        vi.spyOn(useCloseDrawerOnNavigation, 'useCloseDrawerOnNavigation').mockImplementation(
-            () => {}
-        );
-        vi.spyOn(reactRouter, 'useLocation').mockImplementation(() => ({
-            pathname: '/thread/foo',
-            search: '',
-            hash: '',
-            state: undefined,
-            key: 'thread-foo',
-        }));
 
-        const rootMessageId = 'msg_G8D2Q9Y8Q3';
-        const createdDate = new Date();
-
-        render(
-            <FakeAppContextProvider
-                initialState={{
-                    currentOpenDrawer: HISTORY_DRAWER_ID,
-                    allThreads: [
-                        {
-                            id: rootMessageId,
-                            messages: [
-                                {
-                                    id: rootMessageId,
-                                    content: 'System message',
-                                    snippet: 'System message',
-                                    creator: 'murphy@allenai.org',
-                                    role: Role.System,
-                                    opts: {
-                                        maxTokens: 2048,
-                                        n: 1,
-                                        temperature: 1.0,
-                                        topP: 1.0,
-                                    },
-                                    modelHost: 'modal',
-                                    modelId: 'Tulu-v3-8-dpo-preview',
-                                    root: rootMessageId,
-                                    created: createdDate.toString(),
-                                    final: true,
-                                    labels: [],
-                                    private: false,
-                                },
-                                {
-                                    id: 'msg_G8D2Q9Y8Q4',
-                                    content: 'First existing message',
-                                    snippet: 'First existing message',
-                                    creator: 'murphy@allenai.org',
-                                    role: Role.User,
-                                    opts: {
-                                        maxTokens: 2048,
-                                        n: 1,
-                                        temperature: 1.0,
-                                        topP: 1.0,
-                                    },
-                                    modelHost: 'modal',
-                                    modelId: 'Tulu-v3-8-dpo-preview',
-                                    root: rootMessageId,
-                                    created: createdDate.toString(),
-
-                                    final: true,
-                                    labels: [],
-                                    private: false,
-                                },
-                                {
-                                    completion: 'cpl_K4T8N7R4S8',
-                                    content: 'Ether',
-                                    created: createdDate.toString(),
-                                    creator: 'murphy@allenai.org',
-                                    final: true,
-                                    id: 'msg_D6H1N4L6L2',
-                                    labels: [],
-                                    // logprobs: [],
-                                    modelType: 'chat',
-                                    opts: {
-                                        maxTokens: 2048,
-                                        n: 1,
-                                        temperature: 1.0,
-                                        topP: 1.0,
-                                    },
-                                    parent: rootMessageId,
-                                    private: false,
-                                    role: Role.LLM,
-                                    root: rootMessageId,
-                                    snippet: 'Ether',
-                                    modelHost: 'modal',
-                                    modelId: 'Tulu-v3-8-dpo-preview',
-                                },
-                            ],
-                        },
-                    ],
-                }}>
-                <HistoryDrawer />
-            </FakeAppContextProvider>
-        );
+        renderWithProvider();
 
         expect(screen.getByText('Thread History')).toBeInTheDocument();
         expect(screen.queryByText('System message')).not.toBeInTheDocument();

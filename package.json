@@ -160,7 +160,7 @@
     "openapi-msw": "^1.2.0",
     "openapi-typescript": "^7.6.1",
     "prettier": "^3.2.5",
-    "react-infinite-scroll-hook": "^4.1.1",
+    "react-infinite-scroll-hook": "^6.0.1",
     "react-refresh": "^0.14.0",
     "react-refresh-typescript": "^2.0.9",
     "react-stately": "^3.37.0",

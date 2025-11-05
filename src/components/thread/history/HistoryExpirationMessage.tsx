@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { links } from '@/Links';
 
-export const AnonymousUserExpirationMessage = (): ReactNode => {
+export const HistoryExpirationMessage = (): ReactNode => {
     const { isAuthenticated } = useUserAuthInfo();
     const location = useLocation();
 
