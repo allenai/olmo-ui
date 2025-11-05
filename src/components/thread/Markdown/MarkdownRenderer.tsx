@@ -1,9 +1,12 @@
+import rehypeMathML from '@daiji256/rehype-mathml';
 import { Box } from '@mui/material';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
 
+import { MathBlock } from '@/components/markdownMath/MathBlock';
+import remarkMath from '@/components/markdownMath/remark-math/remark-math';
 import { AttributionHighlight } from '@/components/thread/attribution/AttributionHighlight';
 import { DeepResearchCite } from '@/components/thread/DeepResearch/DeepResearchMessage';
 
@@ -35,8 +38,10 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
         // @ts-expect-error - We add attribution-highlight as a custom element
         <Box
             component={Markdown}
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
+            remarkPlugins={[remarkGfm, remarkMath]}
+            // mathML needs to be last, or sanitize removes all the math elements
+            // we trust the output of mathML
+            rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema], rehypeMathML]}
             components={{
                 code: CodeBlock,
                 p: CustomParagraph,
@@ -44,6 +49,7 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
                 a: CustomLink,
                 'attribution-highlight': AttributionHighlight,
                 cite: DeepResearchCite,
+                math: MathBlock,
             }}>
             {markdown}
         </Box>

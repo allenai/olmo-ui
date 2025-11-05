@@ -47,6 +47,7 @@
     "@allenai/varnish-ui": "^1.2.15-alpha.0",
     "@allenai/varnish2": "^3.0.8-alpha.0",
     "@auth0/auth0-spa-js": "^2.6.0",
+    "@daiji256/rehype-mathml": "^1.2.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@msw/playwright": "^0.4.2",
