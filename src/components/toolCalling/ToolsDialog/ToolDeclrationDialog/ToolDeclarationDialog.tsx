@@ -37,7 +37,7 @@ export interface DataFields {
 export interface ToolDeclarationDialogProps {
     availableTools: Model['available_tools'];
     selectedTools: string[];
-    isToolCallingEnabled: boolean;
+    isToolCallingEnabled?: boolean;
     jsonData?: string;
     isOpen?: boolean;
     isDisabled?: boolean;
@@ -83,7 +83,7 @@ export function ToolDeclarationDialog({
 }: ToolDeclarationDialogProps) {
     const initialTab = tools && tools.length > 0 ? 'system-functions' : 'user-functions';
     const [tabSelected, setTabSelect] = useState<Key>(initialTab);
-    const [isSwitchSelected, setSwitchSelected] = useState(isToolCallingEnabled);
+    const [isSwitchSelected, setSwitchSelected] = useState(!!isToolCallingEnabled);
 
     const resolver: Resolver<DataFields> = (data) => {
         const validJson = validateToolDefinitions(data.declaration);

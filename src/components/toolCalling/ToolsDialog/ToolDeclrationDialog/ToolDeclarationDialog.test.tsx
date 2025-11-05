@@ -31,7 +31,6 @@ describe('ToolDeclarationDialog', () => {
         render(
             <ToolDeclarationDialog
                 isOpen={true}
-                isToolCallingEnabled
                 availableTools={availableTools}
                 selectedTools={availableTools.map((t) => t.name)}
                 onSave={() => {}}
@@ -55,7 +54,6 @@ describe('ToolDeclarationDialog', () => {
             <ToolDeclarationDialog
                 isOpen={true}
                 availableTools={availableTools}
-                isToolCallingEnabled
                 selectedTools={availableTools.map((t) => t.name)}
                 onSave={() => {}}
             />
