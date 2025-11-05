@@ -10,7 +10,7 @@ import {
     Typography,
 } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import { KeyboardEventHandler, useState } from 'react';
+import { KeyboardEventHandler, ReactNode, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,7 +31,7 @@ import { invalidateThreadsCache, useDeleteThread, useThreads } from './useThread
 
 export const HISTORY_DRAWER_ID: DrawerId = 'history';
 
-export const HistoryDrawer = () => {
+export const HistoryDrawer = (): ReactNode => {
     const nav = useNavigate();
     const closeDrawer = useAppContext((state) => state.closeDrawer);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
