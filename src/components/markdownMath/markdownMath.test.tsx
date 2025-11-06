@@ -1,17 +1,15 @@
 import { render, waitFor } from '@test-utils';
 
-import { MarkdownRenderer } from '@/components/thread/Markdown/MarkdownRenderer';
-
-import { markdownWithMathBlock } from './markdownConsts';
+import { MathBlock } from './MathBlock';
 
 describe('Math Markdown rendering', () => {
-    it('should should re', async () => {
-        const { container } = render(<MarkdownRenderer>{markdownWithMathBlock}</MarkdownRenderer>);
+    it('should render MathML elements', async () => {
+        const { container } = render(<MathBlock>{`\\sqrt{4}`}</MathBlock>);
+        const expectedMathML = container.querySelector('math > msqrt');
 
         await waitFor(() => {
-            const mathEl = container.querySelector('math');
-
-            expect(mathEl).toBeVisible();
+            // need better testing, but support for MathML seems lacking here
+            expect(expectedMathML?.textContent).toBe('4');
         });
     });
 });

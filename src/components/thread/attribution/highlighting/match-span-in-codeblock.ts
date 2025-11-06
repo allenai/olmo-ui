@@ -1,4 +1,7 @@
 // This regex is used to pull the text and span ID out of attribution highlight directives
 // If you're using .match you can use .groups.spanText or .groups.spanId to get the respective values
 export const attributionHighlightRegex =
-    /<attribution-highlight span="(?<spanId>.*)">(?<spanText>.*)<\/attribution-highlight>/gm;
+    /<attribution-highlight span="(?<spanId>[^"]*)">(?<spanText>.*)<\/attribution-highlight>/gm;
+
+// matches any attribution tag (for removal)
+export const attributionAllTagsRegex = /<\/?attribution-highlight(\s+span="[^"]*"\s*)?>/gm;

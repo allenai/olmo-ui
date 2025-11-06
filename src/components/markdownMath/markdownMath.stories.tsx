@@ -3,9 +3,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MarkdownRenderer } from '@/components/thread/Markdown/MarkdownRenderer';
 
 import {
-    markdownWithMathBlock,
-    markdownWithMathWithBracketsBlock,
-    markdownWithMathWithBracketsInline,
+    markdownBlockBrackets,
+    markdownBlockDollars,
+    markdownInlineBrackets,
+    markdownInlineDollars,
+    markdownMathBlock,
 } from './markdownConsts';
 
 const meta = {
@@ -18,18 +20,30 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        children: markdownWithMathWithBracketsInline,
+        children: markdownMathBlock,
     },
 };
 
-export const Block: Story = {
+export const InlineBrackets: Story = {
     args: {
-        children: markdownWithMathWithBracketsBlock,
+        children: markdownInlineBrackets,
     },
 };
 
-export const Fenced: Story = {
+export const BlockBrackets: Story = {
     args: {
-        children: markdownWithMathBlock,
+        children: markdownBlockBrackets,
+    },
+};
+
+export const InlineDollars: Story = {
+    args: {
+        children: markdownInlineDollars,
+    },
+};
+
+export const BlockDollars: Story = {
+    args: {
+        children: markdownBlockDollars,
     },
 };
