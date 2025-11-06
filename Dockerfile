@@ -22,7 +22,7 @@ WORKDIR /ui
 ARG SKIFF_ENV_ARG
 ENV SKIFF_ENV=$SKIFF_ENV_ARG
 ENV NODE_ENV=production
-ENV VITE_API_URL=https://olmo-api.allen.ai
+ENV VITE_API_URL=https://olmo-api-dr-tulu-tools.allen.ai/
 ENV VITE_DOLMA_API_URL=/api
 
 RUN yarn build
