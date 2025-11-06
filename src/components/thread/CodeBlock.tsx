@@ -55,9 +55,7 @@ export const CodeBlock = ({
                     inline={inlineComputed}>
                     {childrenWithoutAttributionHighlights}
                 </ThemeSyntaxHighlighter>
-                {spansInsideThisCodeBlock.length > 0 && (
-                    // I had this disabled for inline, but its enabled now
-                    // to verify matches with spans inside (even if they are inline)
+                {!inline && spansInsideThisCodeBlock.length > 0 && (
                     <Button
                         variant="outlined"
                         sx={(theme) => ({
