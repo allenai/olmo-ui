@@ -40,8 +40,6 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
         <Box
             component={Markdown}
             remarkPlugins={[remarkGfm, customRemarkMath]}
-            // mathML needs to be last, or sanitize removes all the math elements
-            // we trust the output of mathML
             rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{
                 code: CodeBlock,
