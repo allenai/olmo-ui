@@ -171,7 +171,7 @@ export const HistoryDrawer = (): ReactNode => {
                     heading="Older Than A Week"
                     history={segmentedHistory.older}
                 />
-                {(hasNextPage || isFetchingNextPage) && (
+                {isFetchingNextPage && (
                     <>
                         <HistoryDivider />
                         <CircularProgress
@@ -182,7 +182,7 @@ export const HistoryDrawer = (): ReactNode => {
                         />
                     </>
                 )}
-                {(hasNextPage || !isFetchingNextPage) && (
+                {!isFetchingNextPage && (
                     <>
                         <HistoryDivider />
                         <ListItem ref={sentryRef}>
