@@ -1,14 +1,24 @@
 import { useRef } from 'react';
+
+import { varnishTheme } from '@allenai/varnish2/theme';
 import { PlayerRef } from '@remotion/player';
 import { useCurrentPlayerFrame } from './use-current-player-frame';
 import { Player } from '@remotion/player';
-import { AbsoluteFill, useCurrentFrame } from 'remotion';
-import { OffthreadVideo, staticFile } from 'remotion';
+import {
+    OffthreadVideo,
+    staticFile,
+    AbsoluteFill,
+    useCurrentFrame,
+    useVideoConfig,
+    interpolate,
+} from 'remotion';
+
 import {
     videoCountingExample,
     VideoTrackingPoints,
     VideoFramePoints,
     VideoTrackingObject,
+    Point,
 } from './example';
 
 const FPS = 30;
@@ -36,8 +46,8 @@ export const MolmoVideo: React.FC = () => {
                 ref={playerRef}
                 component={MyComposition}
                 durationInFrames={120}
-                compositionWidth={500}
-                compositionHeight={500}
+                compositionWidth={1460 / 2}
+                compositionHeight={864 / 2}
                 fps={FPS}
                 controls
             />
@@ -55,7 +65,6 @@ export const TimeDisplay: React.FC<{
 };
 
 export const VideoTracking: React.FC = () => {
-    const frame = useCurrentFrame();
     const data = videoCountingExample;
 
     return (
@@ -79,9 +88,9 @@ export const VideoTrackingObjectComponent: React.FC<{
     );
 };
 
-const preTimestampOffset = 0.25;
+const preTimestampOffset = 0.05;
 
-const postTimestampOffset = 0.25;
+const postTimestampOffset = 0.75;
 
 export const FramePointComponent: React.FC<{
     framePoint: VideoFramePoints;
@@ -96,5 +105,37 @@ export const FramePointComponent: React.FC<{
         return null;
     }
 
-    return <div>hello</div>;
+    const circleRadius = interpolate(
+        time,
+        [pointShowStart, framePoint.frameTimestamp, pointShowEnd],
+        [0.5, 1, 0]
+    );
+
+    return (
+        <>
+            {framePoint.points.map((point) => (
+                <SVGPoint point={point} circleRadius={circleRadius * 10} />
+            ))}
+        </>
+    );
+};
+
+const SVGPoint: React.FC<{
+    point: Point;
+    circleRadius: number;
+}> = ({ point, circleRadius = 10 }) => {
+    const { height, width } = useVideoConfig();
+
+    return (
+        <svg width={width} height={height}>
+            <circle
+                cx={point.x * 100 + '%'}
+                cy={point.y * 100 + '%'}
+                r={circleRadius}
+                stroke="white"
+                strokeWidth="3"
+                fill={varnishTheme.palette.primary.main}
+            />
+        </svg>
+    );
 };
