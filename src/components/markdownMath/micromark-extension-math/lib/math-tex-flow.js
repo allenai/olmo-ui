@@ -25,9 +25,11 @@ const nonLazyContinuation = {
  * @type {Tokenizer}
  */
 function tokenizeMathFenced(effects, ok, nok) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     const tail = self.events[self.events.length - 1];
     const initialSize =
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         tail && tail[1].type === types.linePrefix
             ? tail[2].sliceSerialize(tail[1], true).length
             : 0;
@@ -327,6 +329,7 @@ function tokenizeMathFenced(effects, ok, nok) {
  * @type {Tokenizer}
  */
 function tokenizeNonLazyContinuation(effects, ok, nok) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
 
     return start;

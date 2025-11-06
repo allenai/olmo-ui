@@ -1,5 +1,5 @@
 /**
- * @import {Options} from 'micromark-extension-llm-math'
+ * @import {ToOptions as Options} from 'mdast-util-math''
  * @import {Construct, Previous, Resolver, State, Token, TokenizeContext, Tokenizer} from 'micromark-util-types'
  */
 
@@ -36,6 +36,7 @@ export function mathText(options) {
      * @type {Tokenizer}
      */
     function tokenizeMathText(effects, ok, nok) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this;
         let sizeOpen = 0;
         /** @type {number} */

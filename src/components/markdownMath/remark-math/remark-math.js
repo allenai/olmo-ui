@@ -3,7 +3,7 @@
 // but using local version of micromark-extensions-math
 /**
  * @import {Root} from 'mdast'
- * @import {Options} from 'remark-math'
+ * @import {ToOptions as Options} from 'mdast-util-math'
  * @import {} from 'remark-parse'
  * @import {} from 'remark-stringify'
  * @import {Processor} from 'unified'

@@ -1,5 +1,5 @@
 /**
- * @import {HtmlOptions as Options} from 'micromark-extension-llm-math'
+ * @import {Options} from '..'
  * @import {HtmlExtension} from 'micromark-util-types'
  */
 
