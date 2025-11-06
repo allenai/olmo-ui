@@ -1,25 +1,23 @@
-import { useRef } from 'react';
-
 import { varnishTheme } from '@allenai/varnish2/theme';
-import { PlayerRef } from '@remotion/player';
-import { useCurrentPlayerFrame } from './use-current-player-frame';
-import { Player } from '@remotion/player';
+import { Player, PlayerRef } from '@remotion/player';
+import { useRef } from 'react';
 import {
+    AbsoluteFill,
+    interpolate,
     OffthreadVideo,
     staticFile,
-    AbsoluteFill,
     useCurrentFrame,
     useVideoConfig,
-    interpolate,
 } from 'remotion';
 
 import {
+    Point,
     videoCountingExample,
-    VideoTrackingPoints,
     VideoFramePoints,
     VideoTrackingObject,
-    Point,
+    VideoTrackingPoints,
 } from './example';
+import { useCurrentPlayerFrame } from './use-current-player-frame';
 
 const FPS = 30;
 
