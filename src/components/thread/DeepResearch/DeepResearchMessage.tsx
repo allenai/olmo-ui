@@ -31,7 +31,7 @@ export const DeepResearchCite = (props: DeepResearchCiteProps) => {
     const { data: snippet } = useThread(threadId, snippetSelect);
 
     if (!snippet) {
-        return <span>props.children</span>;
+        return <span>{props.children}</span>;
     }
 
     return <CustomLink href={snippet.url}>{props.children}</CustomLink>;
