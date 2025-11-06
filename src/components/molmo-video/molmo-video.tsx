@@ -23,7 +23,7 @@ import {
 
 const FPS = 30;
 
-export const MyComposition = () => {
+export const MyComposition: React.FC<{ fileName: string }> = ({ fileName }) => {
     return (
         <AbsoluteFill>
             <AbsoluteFill>
@@ -31,7 +31,7 @@ export const MyComposition = () => {
                     <VideoTracking />
                 </AbsoluteFill>
 
-                <OffthreadVideo src={staticFile('video.mp4')} />
+                <OffthreadVideo src={staticFile(fileName)} />
             </AbsoluteFill>
         </AbsoluteFill>
     );
@@ -45,7 +45,8 @@ export const MolmoVideo: React.FC = () => {
             <Player
                 ref={playerRef}
                 component={MyComposition}
-                durationInFrames={120}
+                inputProps={{ fileName: 'mclaren-track.MP4' }}
+                durationInFrames={10 * FPS}
                 compositionWidth={1460 / 2}
                 compositionHeight={864 / 2}
                 fps={FPS}
