@@ -16,7 +16,7 @@ import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighligh
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
-import { hasPoints } from '../points/isPointResponse';
+import { hasPoints } from '../points/pointsParsingMolmo1/isPointResponse';
 import { MessageThinking } from '../ThreadDisplay/MessageThinking';
 import { MAX_THREAD_IMAGE_HEIGHT } from '../ThreadDisplay/threadDisplayConsts';
 import AllToolCalls from '../tools/AllToolCalls';
