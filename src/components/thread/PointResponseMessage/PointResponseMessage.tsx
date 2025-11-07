@@ -8,8 +8,8 @@ import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 import { type MessageProps, StandardMessage } from '../ChatMessage/ChatMessage';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
-import { extractPointData, Point, PointInfo } from '../points/extractPointData';
-import { pointRegex } from '../points/pointRegex';
+import { extractPointData, Point, PointInfo } from '../points/pointsParsingMolmo1/extractPointData';
+import { pointRegex } from '../points/pointsParsingMolmo1/pointRegex';
 import { MAX_THREAD_IMAGE_HEIGHT } from '../ThreadDisplay/threadDisplayConsts';
 import { PointPictureModal } from './PointPictureModal';
 

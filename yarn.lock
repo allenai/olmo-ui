@@ -10510,6 +10510,11 @@ partial-json@0.1.7:
   resolved "https://registry.yarnpkg.com/partial-json/-/partial-json-0.1.7.tgz#b735a89edb3e25f231a3c4caeaae71dc9f578605"
   integrity sha512-Njv/59hHaokb/hRUjce3Hdv12wd60MtM9Z5Olmn+nehe0QDAsRtRbJPvJ0Z91TusF0SuZRIvnM+S4l6EIP8leA==
 
+partial-xml-stream-parser@^1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/partial-xml-stream-parser/-/partial-xml-stream-parser-1.9.2.tgz#2af3c269f4abf39dab85e2ad973abd7fc97e9a14"
+  integrity sha512-S04VUGM7B0tVydA2FR5QvoJJ6zywFWAeS4tkpnp7KqcGcOU2hxHd2IHg7Kuwltd3eDTYkJXA4vlaDkwpL9EQNw==
+
 path-browserify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.1.tgz#d98454a9c3753d5790860f16f68867b9e46be1fd"
