@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import type { ComponentProps } from 'react';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
@@ -18,7 +19,7 @@ interface MarkdownRendererProps {
 const extendedSchema: typeof defaultSchema = {
     ...defaultSchema,
     clobberPrefix: SANITIZED_ID_PREFIX,
-    tagNames: [...(defaultSchema.tagNames || []), 'attribution-highlight', 'cite'],
+    tagNames: [...(defaultSchema.tagNames || []), 'attribution-highlight', 'cite', 'answer'],
     attributes: {
         ...defaultSchema.attributes,
         '*': [...(defaultSchema.attributes?.['*'] || []), 'style'],
@@ -30,9 +31,21 @@ const extendedSchema: typeof defaultSchema = {
     },
 };
 
+const DEEP_RESEARCH_COMPONENTS = {
+    cite: DeepResearchCite,
+    // @ts-expect-error - We add answer as a custom element
+    answer: ({ children }: PropsWithChildren) => (
+        <p>
+            {'<answer>'}
+            <p>{children}</p>
+            {'</answer>'}
+        </p>
+    ),
+} as const satisfies ComponentProps<typeof Markdown>['components'];
+
 export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) => {
     return (
-        // @ts-expect-error - We add attribution-highlight as a custom element
+        // @ts-expect-error - We add attribution-highlight and answer as custom elements
         <Box
             component={Markdown}
             remarkPlugins={[remarkGfm]}
@@ -43,7 +56,7 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
                 hr: CustomDivider,
                 a: CustomLink,
                 'attribution-highlight': AttributionHighlight,
-                cite: DeepResearchCite,
+                ...DEEP_RESEARCH_COMPONENTS,
             }}>
             {markdown}
         </Box>
