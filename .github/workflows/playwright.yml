@@ -36,6 +36,7 @@ jobs:
         run: yarn test:e2e --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         env:
           NODE_ENV: test
+          NODE_OPTIONS: "--max-old-space-size=16384"
           E2E_TEST_USER: ${{ vars.E2E_TEST_USER }}
           E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
           AUTH0_DOMAIN: ${{ vars.E2E_AUTH0_DOMAIN }}
