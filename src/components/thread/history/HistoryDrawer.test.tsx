@@ -1,4 +1,3 @@
-import { IDLE_NAVIGATION } from '@remix-run/router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@test-utils';
 
@@ -37,8 +36,9 @@ vi.mock('react-router-dom', () => ({
         state: undefined,
         key: 'thread-foo',
     }),
-    useNavigation: () => IDLE_NAVIGATION,
-    useSearchParams: vi.fn(() => [new URLSearchParams(), vi.fn()]),
+    generatePath: vi.fn((_, { agentId, threadId }) =>
+        agentId ? `/agent/${agentId}/${threadId}` : `/thread/${threadId}`
+    ),
 }));
 
 beforeEach(() => {
@@ -92,6 +92,43 @@ describe('HistoryDrawer', () => {
         expect(screen.queryByText('System message')).not.toBeInTheDocument();
         await waitFor(() => {
             expect(screen.getByText('First existing message')).toBeInTheDocument();
+        });
+    });
+
+    it('should link to a thread/ path if it is a model thread', async () => {
+        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(
+            getFakeUseUserAuthInfo({ isAuthenticated: true })
+        );
+
+        renderWithProvider();
+
+        await waitFor(() => {
+            const linkButton = screen.getByRole('link', {
+                name: 'First existing message',
+            });
+
+            expect(linkButton).toBeInTheDocument();
+            expect(linkButton).toHaveAttribute('href', '/thread/msg_G8D2Q9Y8Q3');
+        });
+    });
+
+    it('should link to a agent/ path if it is an agent thread', async () => {
+        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(
+            getFakeUseUserAuthInfo({ isAuthenticated: true })
+        );
+
+        renderWithProvider();
+
+        await waitFor(() => {
+            const linkButton = screen.getByRole('link', {
+                name: 'Combine the number 1000 and the unit KiB',
+            });
+
+            expect(linkButton).toBeInTheDocument();
+            expect(linkButton).toHaveAttribute(
+                'href',
+                '/agent/deep-research/msg_AGENT_THINKING_TOOLS'
+            );
         });
     });
 });

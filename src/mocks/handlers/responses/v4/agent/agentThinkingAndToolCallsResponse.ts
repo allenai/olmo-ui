@@ -7,6 +7,7 @@ export const agentThinkingAndToolCallsResponse: Thread = {
     messages: [
         {
             id: AGENT_THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+            agentId: 'deep-research',
             content: 'Combine the number 1000 and the unit KiB',
             creator: 'google-oauth2|106113864953374894702',
             role: 'user',
@@ -40,6 +41,7 @@ export const agentThinkingAndToolCallsResponse: Thread = {
         },
         {
             id: 'msg_P7C1R5N8G6',
+            agentId: 'deep-research',
             content: '',
             creator: 'google-oauth2|106113864953374894702',
             role: 'assistant',
@@ -81,6 +83,7 @@ export const agentThinkingAndToolCallsResponse: Thread = {
         },
         {
             id: 'msg_O4T3G5X7H0',
+            agentId: 'deep-research',
             content: '100KiB',
             creator: 'google-oauth2|106113864953374894702',
             role: 'tool_call_result',
@@ -121,6 +124,7 @@ export const agentThinkingAndToolCallsResponse: Thread = {
         },
         {
             id: 'msg_Y1P2K4J6Q8',
+            agentId: 'deep-research',
             content: '100 and KiB combined is 100KiB',
             creator: 'google-oauth2|106113864953374894702',
             role: 'assistant',
