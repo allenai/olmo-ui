@@ -72,7 +72,7 @@ export const VideoTracking = ({ version }: { version: string }) => {
         return (
             <div>
                 {data.objects.map((object, i) => (
-                    <VideoCountObjectComponent key={i} object={object} />
+                    <VideoCountObjectBlinkComponent key={i} object={object} />
                 ))}
             </div>
         );
@@ -81,7 +81,7 @@ export const VideoTracking = ({ version }: { version: string }) => {
         return (
             <div>
                 {data.objects.map((object, i) => (
-                    <VideoDotTrackObjectComponent key={i} object={object} />
+                    <VideoCountObjectComponent key={i} object={object} />
                 ))}
             </div>
         );
@@ -90,7 +90,7 @@ export const VideoTracking = ({ version }: { version: string }) => {
         return (
             <div>
                 {data.objects.map((object, i) => (
-                    <VideoDotTrailsTrackObjectComponent key={i} object={object} />
+                    <VideoDotTrackObjectComponent key={i} object={object} />
                 ))}
             </div>
         );
@@ -102,6 +102,16 @@ export const VideoCountObjectComponent = ({ object }: { object: VideoTrackingObj
         <div>
             {object.framePoints.map((point, i) => (
                 <FramePointComponent key={i} framePoint={point} />
+            ))}
+        </div>
+    );
+};
+
+export const VideoCountObjectBlinkComponent = ({ object }: { object: VideoTrackingObject }) => {
+    return (
+        <div>
+            {object.framePoints.map((point, i) => (
+                <FramePointBlinkComponent key={i} framePoint={point} />
             ))}
         </div>
     );
@@ -244,6 +254,25 @@ export const FramePointComponent = ({ framePoint }: { framePoint: VideoFramePoin
         <>
             {framePoint.points.map((point, i) => (
                 <SVGPoint key={i} point={point} circleRadius={circleRadius * 10} />
+            ))}
+        </>
+    );
+};
+
+export const FramePointBlinkComponent = ({ framePoint }: { framePoint: VideoFramePoints }) => {
+    const frame = useCurrentFrame();
+
+    const pointShowStart = (framePoint.frameTimestamp - 0.05) * FPS;
+    const pointShowEnd = (framePoint.frameTimestamp + 0.05) * FPS;
+
+    if (frame < pointShowStart || frame > pointShowEnd) {
+        return null;
+    }
+
+    return (
+        <>
+            {framePoint.points.map((point, i) => (
+                <SVGPoint key={i} point={point} circleRadius={10} />
             ))}
         </>
     );
