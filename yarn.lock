@@ -4569,6 +4569,11 @@
   dependencies:
     remotion "4.0.372"
 
+"@remotion/paths@^4.0.372":
+  version "4.0.372"
+  resolved "https://registry.yarnpkg.com/@remotion/paths/-/paths-4.0.372.tgz#49be22d68bc4da6c25535a29ddebb9f75cec4ac5"
+  integrity sha512-iw1z2QKAIjJf6pdgLT2rb1lMpk7/feEzSmaRF7i5brk02dx0w2TKK2vUQhbMAjNVRt+TzUm4aBkaQZwSChAXzA==
+
 "@remotion/player@4.0.372":
   version "4.0.372"
   resolved "https://registry.yarnpkg.com/@remotion/player/-/player-4.0.372.tgz#81a53a3a9eeec2b9fb35ea1c580c9f61fe5333ce"

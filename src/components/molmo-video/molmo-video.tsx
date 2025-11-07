@@ -1,6 +1,7 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { varnishTheme } from '@allenai/varnish2/theme';
 import { Player, PlayerRef } from '@remotion/player';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import {
     AbsoluteFill,
     interpolate,
@@ -10,126 +11,252 @@ import {
     useVideoConfig,
 } from 'remotion';
 
-import {
-    Point,
-    videoCountingExample,
-    VideoFramePoints,
-    VideoTrackingObject,
-    VideoTrackingPoints,
-} from './example';
+import { PlayPauseButton } from './controls';
+import { mclarenTrack, Point, VideoFramePoints, VideoTrackingObject } from './example';
+import { PointSelect } from './PointSelect';
 import { useCurrentPlayerFrame } from './use-current-player-frame';
 
-const FPS = 30;
+export const FPS = 30;
 
-export const MyComposition: React.FC<{ fileName: string }> = ({ fileName }) => {
+export const MyComposition = ({ fileName, version }: { fileName: string; version: string }) => {
     return (
         <AbsoluteFill>
             <AbsoluteFill>
                 <AbsoluteFill>
-                    <VideoTracking />
+                    <VideoTracking version={version} />
                 </AbsoluteFill>
 
-                <OffthreadVideo src={staticFile(fileName)} />
+                <OffthreadVideo muted={true} src={staticFile(fileName)} />
             </AbsoluteFill>
         </AbsoluteFill>
     );
 };
 
-export const MolmoVideo: React.FC = () => {
+export const MolmoVideo = ({ version }: { version: string }) => {
     const playerRef = useRef<PlayerRef>(null);
 
     return (
-        <>
-            <Player
-                ref={playerRef}
-                component={MyComposition}
-                inputProps={{ fileName: 'mclaren-track.MP4' }}
-                durationInFrames={10 * FPS}
-                compositionWidth={1460 / 2}
-                compositionHeight={864 / 2}
-                fps={FPS}
-                controls
-            />
+        <div className={css({ display: 'flex', flexDirection: 'column', alignItems: 'start' })}>
+            <PointSelect playerRef={playerRef}>
+                <Player
+                    acknowledgeRemotionLicense
+                    ref={playerRef}
+                    component={MyComposition}
+                    inputProps={{ fileName: 'mclaren-track.MP4', version }}
+                    durationInFrames={10 * FPS}
+                    compositionWidth={1460 / 2}
+                    compositionHeight={864 / 2}
+                    fps={FPS}
+                />
+            </PointSelect>
+            <PlayPauseButton playerRef={playerRef} />
             <TimeDisplay playerRef={playerRef} />
-        </>
+        </div>
     );
 };
 
-export const TimeDisplay: React.FC<{
-    playerRef: React.RefObject<PlayerRef | null>;
-}> = ({ playerRef }) => {
+export const TimeDisplay = ({ playerRef }: { playerRef: React.RefObject<PlayerRef | null> }) => {
     const frame = useCurrentPlayerFrame(playerRef);
 
-    return <div>current frame: {frame}</div>;
-};
-
-export const VideoTracking: React.FC = () => {
-    const data = videoCountingExample;
-
     return (
         <div>
-            {data.objects.map((object) => (
-                <VideoTrackingObjectComponent object={object} />
+            current frame: {frame} time: {frame / FPS}
+        </div>
+    );
+};
+
+export const VideoTracking = ({ version }: { version: string }) => {
+    const data = mclarenTrack;
+
+    if (version === 'one') {
+        return (
+            <div>
+                {data.objects.map((object, i) => (
+                    <VideoCountObjectComponent key={i} object={object} />
+                ))}
+            </div>
+        );
+    }
+    if (version === 'two') {
+        return (
+            <div>
+                {data.objects.map((object, i) => (
+                    <VideoDotTrackObjectComponent key={i} object={object} />
+                ))}
+            </div>
+        );
+    }
+    if (version === 'three') {
+        return (
+            <div>
+                {data.objects.map((object, i) => (
+                    <VideoDotTrailsTrackObjectComponent key={i} object={object} />
+                ))}
+            </div>
+        );
+    }
+};
+
+export const VideoCountObjectComponent = ({ object }: { object: VideoTrackingObject }) => {
+    return (
+        <div>
+            {object.framePoints.map((point, i) => (
+                <FramePointComponent key={i} framePoint={point} />
             ))}
         </div>
     );
 };
 
-export const VideoTrackingObjectComponent: React.FC<{
-    object: VideoTrackingObject;
-}> = ({ object }) => {
-    return (
-        <div>
-            {object.framePoints.map((point) => (
-                <FramePointComponent framePoint={point} />
-            ))}
-        </div>
-    );
-};
+export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTrackingObject }) => {
+    const { height, width } = useVideoConfig();
 
-const preTimestampOffset = 0.05;
+    const { x, y, times } = useMemo(() => {
+        const x = object.framePoints.map((framePoints) => {
+            return framePoints.points[0].x;
+        });
+        const y = object.framePoints.map((framePoints) => {
+            return framePoints.points[0].y;
+        });
+        const times = object.framePoints.map((framePoints) => {
+            return framePoints.frameTimestamp * FPS;
+        });
+        return { x, y, times };
+    }, [object]);
 
-const postTimestampOffset = 0.75;
+    const { sizeTimes, size } = useMemo(() => {
+        // TODO Breaks if translating points closer that .15 seconds together
+        const animation = object.framePoints.flatMap((framePoints) => {
+            const before = (framePoints.frameTimestamp - preTimestampOffset) * FPS;
+            const time = framePoints.frameTimestamp * FPS;
+            const after = (framePoints.frameTimestamp + postTimestampOffset) * FPS;
 
-export const FramePointComponent: React.FC<{
-    framePoint: VideoFramePoints;
-}> = ({ framePoint }) => {
+            return [
+                [before, 0],
+                [time, 1],
+                [after, 0],
+            ];
+        });
+
+        const result = { sizeTimes: animation.map((a) => a[0]), size: animation.map((a) => a[1]) };
+
+        return result;
+    }, [object]);
+
     const frame = useCurrentFrame();
-    const time = frame / FPS;
 
-    const pointShowStart = framePoint.frameTimestamp - preTimestampOffset;
-    const pointShowEnd = framePoint.frameTimestamp + postTimestampOffset;
+    const xAnimated = interpolate(frame, times, x);
+    const yAnimated = interpolate(frame, times, y);
+    const sizeAnimated = interpolate(frame, sizeTimes, size);
 
-    if (time < pointShowStart || time > pointShowEnd) {
+    return (
+        <svg width={width} height={height}>
+            <circle
+                cy={`${yAnimated * 100}%`}
+                cx={`${xAnimated * 100}%`}
+                r={10}
+                stroke="white"
+                strokeWidth="3"
+                fill={sizeAnimated > 0.5 ? varnishTheme.palette.primary.main : 'transparent'}
+            />
+        </svg>
+    );
+};
+
+export const VideoDotTrailsTrackObjectComponent = ({ object }: { object: VideoTrackingObject }) => {
+    const { height, width } = useVideoConfig();
+
+    const { x, y, times } = useMemo(() => {
+        const x = object.framePoints.map((framePoints) => {
+            return framePoints.points[0].x;
+        });
+        const y = object.framePoints.map((framePoints) => {
+            return framePoints.points[0].y;
+        });
+        const times = object.framePoints.map((framePoints) => {
+            return framePoints.frameTimestamp * FPS;
+        });
+        return { x, y, times };
+    }, [object]);
+
+    const { sizeTimes, size } = useMemo(() => {
+        // TODO Breaks if translating points closer that .15 seconds together
+        const animation = object.framePoints.flatMap((framePoints) => {
+            const before = (framePoints.frameTimestamp - preTimestampOffset) * FPS;
+            const time = framePoints.frameTimestamp * FPS;
+            const after = (framePoints.frameTimestamp + postTimestampOffset) * FPS;
+
+            return [
+                [before, 0],
+                [time, 1],
+                [after, 0],
+            ];
+        });
+
+        const result = { sizeTimes: animation.map((a) => a[0]), size: animation.map((a) => a[1]) };
+
+        return result;
+    }, [object]);
+
+    const frame = useCurrentFrame();
+
+    const xAnimated = interpolate(frame, times, x);
+    const yAnimated = interpolate(frame, times, y);
+    const sizeAnimated = interpolate(frame, sizeTimes, size);
+
+    return (
+        <svg width={width} height={height} viewBox="0 0 100 100">
+            <path
+                d="M 0 0 L 10 0 L 100 0"
+                stroke="red"
+                strokeWidth="3"
+                fill="none"
+                pathLength="100"
+                style={{
+                    strokeDasharray: 50,
+                    strokeDashoffset: 100,
+                }}
+            />
+        </svg>
+    );
+};
+
+const preTimestampOffset = 0.15;
+
+const postTimestampOffset = 0.35;
+
+export const FramePointComponent = ({ framePoint }: { framePoint: VideoFramePoints }) => {
+    const frame = useCurrentFrame();
+
+    const pointShowStart = (framePoint.frameTimestamp - preTimestampOffset) * FPS;
+    const pointShowEnd = (framePoint.frameTimestamp + postTimestampOffset) * FPS;
+
+    if (frame < pointShowStart || frame > pointShowEnd) {
         return null;
     }
 
     const circleRadius = interpolate(
-        time,
-        [pointShowStart, framePoint.frameTimestamp, pointShowEnd],
+        frame,
+        [pointShowStart, framePoint.frameTimestamp * FPS, pointShowEnd],
         [0.5, 1, 0]
     );
 
     return (
         <>
-            {framePoint.points.map((point) => (
-                <SVGPoint point={point} circleRadius={circleRadius * 10} />
+            {framePoint.points.map((point, i) => (
+                <SVGPoint key={i} point={point} circleRadius={circleRadius * 10} />
             ))}
         </>
     );
 };
 
-const SVGPoint: React.FC<{
-    point: Point;
-    circleRadius: number;
-}> = ({ point, circleRadius = 10 }) => {
+const SVGPoint = ({ point, circleRadius = 10 }: { point: Point; circleRadius: number }) => {
     const { height, width } = useVideoConfig();
 
     return (
         <svg width={width} height={height}>
             <circle
-                cx={point.x * 100 + '%'}
-                cy={point.y * 100 + '%'}
+                cy={`${point.y * 100}%`}
+                cx={`${point.x * 100}%`}
                 r={circleRadius}
                 stroke="white"
                 strokeWidth="3"
