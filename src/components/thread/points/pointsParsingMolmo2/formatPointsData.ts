@@ -43,18 +43,6 @@ export const extractPointsData = (content: string) => {
     const parseResult = parseAsXML(content);
     if (!parseResult.success) return;
 
-    // const xmlPoints = parseResult.doc.querySelectorAll('points');
-    // if (xmlPoints.length === 0) return;
-
-    // const pointElement = xmlPoints.item(0);
-
-    // const pointsAttributes: PointsAttributes = {
-    //     label: pointElement.getAttribute('label') ?? '',
-    //     alt: pointElement.getAttribute('alt') ?? '',
-    //     coords: pointElement.getAttribute('coords') ?? '',
-    //     tracks: pointElement.getAttribute('tracks') ?? '',
-    // };
-
     return formatPointsData(parseResult.pointsAttributes);
 };
 
