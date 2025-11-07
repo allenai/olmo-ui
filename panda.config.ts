@@ -31,4 +31,10 @@ export default defineConfig({
     theme: {
         extend: {},
     },
+    globalCss: {
+        math: {
+            // add some additional margin for math
+            marginBlock: '0.3em',
+        },
+    },
 });

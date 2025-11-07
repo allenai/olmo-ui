@@ -30,6 +30,7 @@ export const CodeBlock = ({
     const langComputed = language ?? langMatches?.groups?.lang;
     const mathDisplay = langComputed === 'math' && mathMatches?.groups?.mathDisplay;
 
+    // inline = explcitly passed OR (lang = math AND mathDisplay = inline)
     const inlineComputed = inline ?? mathDisplay ? mathDisplay === 'inline' : undefined;
     const spansInsideThisCodeBlock =
         typeof children === 'string'
@@ -47,6 +48,17 @@ export const CodeBlock = ({
             .replaceAll(attributionAllTagsRegex, '')
             .replace(/\n$/, '');
 
+        // TODO: Figure out when to render inline vs block
+        //
+        // we don't have context, and the only difference in rendering
+        // is that ``` creates a pre, and `` doesnt'
+        // could maybe handle rendering the pre instead of code
+        // and (and render code as inline separetely)
+        // TBD
+        if (!langComputed) {
+            return <code>{childrenWithoutAttributionHighlights}</code>;
+        }
+
         return (
             <>
                 <ThemeSyntaxHighlighter
@@ -55,7 +67,7 @@ export const CodeBlock = ({
                     inline={inlineComputed}>
                     {childrenWithoutAttributionHighlights}
                 </ThemeSyntaxHighlighter>
-                {!inline && spansInsideThisCodeBlock.length > 0 && (
+                {!inlineComputed && spansInsideThisCodeBlock.length > 0 && (
                     <Button
                         variant="outlined"
                         sx={(theme) => ({

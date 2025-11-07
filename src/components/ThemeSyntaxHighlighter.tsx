@@ -8,7 +8,7 @@ type ThemeSyntaxHighlighterProps = Omit<CodeBlockProps, 'value'> & {
 };
 
 export const ThemeSyntaxHighlighter = ({
-    language = 'text',
+    language,
     inline,
     children,
     ...rest
@@ -18,7 +18,13 @@ export const ThemeSyntaxHighlighter = ({
         return <MathBlock inline={inline}>{children}</MathBlock>;
     }
     return (
-        <CodeBlock language={language} {...rest} wrapLongLines colorMode={colorMode}>
+        <CodeBlock
+            PreTag={inline ? 'span' : 'div'}
+            language={language}
+            inline={inline}
+            {...rest}
+            wrapLongLines
+            colorMode={colorMode}>
             {children}
         </CodeBlock>
     );
