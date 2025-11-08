@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
@@ -5,13 +7,12 @@ import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { ToolDeclarationDialog } from './ToolDeclrationDialog/ToolDeclarationDialog';
 
-export const ToolsDialog = ({
-    isOpen,
-    onClose: handleClose,
-}: {
+interface ToolsDialogProps {
     isOpen: boolean;
     onClose?: () => void;
-}) => {
+}
+
+export const ToolsDialog = ({ isOpen, onClose: handleClose }: ToolsDialogProps): ReactNode => {
     const {
         threadStarted,
         availableTools,
@@ -23,6 +24,10 @@ export const ToolsDialog = ({
         selectedTools,
     } = useQueryContext();
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+
+    if (!isOpen) {
+        return null;
+    }
 
     return (
         <ToolDeclarationDialog

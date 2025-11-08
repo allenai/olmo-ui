@@ -1,9 +1,11 @@
+import { useState } from 'react';
+
 import {
     ParameterToggle,
     type ParameterToggleProps,
 } from '@/components/thread/parameter/inputs/ParameterToggle';
 import { TOOL_CALLING_INFO } from '@/components/toolCalling/toolCallingConsts';
-import { useToolsDialog } from '@/components/toolCalling/ToolsDialog/useToolsDialog';
+import { ToolsDialog } from '@/components/toolCalling/ToolsDialog/ToolsDialog';
 import { useQueryContext } from '@/contexts/QueryContext';
 
 interface ToolCallingToggleProps {
@@ -22,7 +24,10 @@ export const ToolCallingToggle = ({
     const { threadStarted, canCallTools, isToolCallingEnabled, updateIsToolCallingEnabled } =
         useQueryContext();
 
-    const { ToolsDialog, setToolsDialogOpen } = useToolsDialog();
+    const [isToolsDialogOpen, setToolsDialogOpen] = useState(false);
+    const handleClose = () => {
+        setToolsDialogOpen(false);
+    };
 
     const canCreateToolDefinitions = !componentDisabled && canCallTools && !threadStarted;
     const canEditToolDefinitions = !componentDisabled && isToolCallingEnabled;
@@ -45,7 +50,7 @@ export const ToolCallingToggle = ({
                     updateIsToolCallingEnabled(v);
                 }}
             />
-            <ToolsDialog />
+            <ToolsDialog isOpen={isToolsDialogOpen} onClose={handleClose} />
         </>
     );
 };

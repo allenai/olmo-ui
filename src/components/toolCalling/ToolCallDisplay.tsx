@@ -10,7 +10,7 @@ import { ResponsiveTooltip } from '@/components/thread/ResponsiveTooltip';
 import { useQueryContext } from '@/contexts/QueryContext';
 
 import { TOOL_CALLING_INFO } from './toolCallingConsts';
-import { useToolsDialog } from './ToolsDialog/useToolsDialog';
+import { ToolsDialog } from './ToolsDialog/ToolsDialog';
 
 const TOOL_CALL_DISPLAY_LABEL = 'This model allows tool calling';
 const TOOL_CALL_TOOLTIP_LABEL = 'Tool calling';
@@ -52,7 +52,10 @@ const buttonWrapperWithDivider = css({
 const ToolCallDisplayToggle = () => {
     const { isToolCallingEnabled, updateIsToolCallingEnabled } = useQueryContext();
 
-    const { ToolsDialog, setToolsDialogOpen } = useToolsDialog();
+    const [isToolsDialogOpen, setToolsDialogOpen] = useState(false);
+    const handleClose = () => {
+        setToolsDialogOpen(false);
+    };
 
     const containerRef = useRef<HTMLDivElement>(null);
     const inputLabelId = 'tool-call-display-label';
@@ -131,7 +134,7 @@ const ToolCallDisplayToggle = () => {
                     </div>
                 </div>
             </div>
-            <ToolsDialog />
+            <ToolsDialog isOpen={isToolsDialogOpen} onClose={handleClose} />
         </>
     );
 };
