@@ -28,7 +28,6 @@ export const parseAsXML = (content: string) => {
     }
 
     const xml = result.xml[0];
-    console.log(xml);
     const pointsAttributes = {
         label: xml.root.points['#text'],
         alt: xml.root.points['@alt'],
