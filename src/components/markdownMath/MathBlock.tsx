@@ -12,11 +12,11 @@ export interface MathBlockProps {
 // inspired by: https://github.com/Daiji256/rehype-mathml/blob/88130a9b7731f29833b62d841ca3f0ee53b7c57a/lib/index.ts
 export const MathBlock = ({ inline = false, children }: MathBlockProps) => {
     const WrapperElement = inline ? 'span' : 'div';
-    // this lib is based of katex and has better support, but outputs
-    // MathML -- which is baseline supported now.
-    const mathml = temml.renderToString(children, { displayMode: inline });
-
     try {
+        // this lib is based of katex and has better support, but outputs
+        // MathML -- which is baseline supported now.
+        const mathml = temml.renderToString(children, { displayMode: inline });
+
         // `fromHtmlIsomorphic` is light weight and uses the browser if possible
         const result = fromHtmlIsomorphic(mathml, { fragment: true });
         // hast util (powers react-markdown), that generates a JSX fragment
