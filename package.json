@@ -78,7 +78,6 @@
     "highlight.js": "11.8.0",
     "immer": "^10.0.4",
     "json-edit-react": "^1.28.2",
-    "katex": "^0.16.25",
     "marked": "^5.1.2",
     "marked-highlight": "^2.0.1",
     "mdast-util-math": "^3.0.0",
