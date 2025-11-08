@@ -126,7 +126,8 @@ export function ToolDeclarationDialog({
         setSwitchSelected(!isSwitchSelected);
     };
 
-    const formId = 'function-declaration-form';
+    const uniqueId = useId()
+    const formId = `function-declaration-form-${uniqueId}`;
 
     return (
         <>
