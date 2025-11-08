@@ -15,7 +15,7 @@ export const MathBlock = ({ inline = false, children }: MathBlockProps) => {
     try {
         // this lib is based of katex and has better support, but outputs
         // MathML -- which is baseline supported now.
-        const mathml = temml.renderToString(children, { displayMode: inline });
+        const mathml = temml.renderToString(children, { displayMode: inline, throwOnError: true });
 
         // `fromHtmlIsomorphic` is light weight and uses the browser if possible
         const result = fromHtmlIsomorphic(mathml, { fragment: true });
