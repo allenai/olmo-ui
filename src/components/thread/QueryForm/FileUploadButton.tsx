@@ -1,4 +1,4 @@
-import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
+import { AddCircle } from '@mui/icons-material';
 import { styled } from '@mui/material';
 import { DetailedHTMLProps, ForwardedRef, forwardRef, InputHTMLAttributes, useRef } from 'react';
 import { Focusable } from 'react-aria-components';
@@ -53,7 +53,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
             placement="top">
             <Focusable isDisabled={!isFileUploadDisabled && !allowFilesInFollowups}>
                 <Label ref={labelRef} aria-label="Upload file">
-                    <AddAPhotoOutlinedIcon />
+                    <AddCircle />
                     <Input
                         {...props}
                         disabled={isSendingPrompt || isFileUploadDisabled}

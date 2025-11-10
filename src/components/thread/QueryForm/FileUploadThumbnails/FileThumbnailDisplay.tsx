@@ -1,14 +1,20 @@
+import { Close } from '@mui/icons-material';
 import { Box, Stack, styled } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
 import { Button } from 'react-aria-components';
-
-import CloseIcon from '@/components/assets/close.svg?react';
 
 import { useObjectUrls } from './useObjectUrls';
 
 const ThumbnailContainer = ({ children }: PropsWithChildren): ReactNode => {
     return (
-        <Stack gap={2} direction="row" flexWrap="wrap">
+        <Stack
+            gap={2}
+            direction="row"
+            flexWrap="wrap"
+            sx={{
+                width: '100%',
+                containerType: 'inline-size',
+            }}>
             {children}
         </Stack>
     );
@@ -16,18 +22,21 @@ const ThumbnailContainer = ({ children }: PropsWithChildren): ReactNode => {
 
 const ThumbnailImage = styled('img')({
     objectFit: 'contain',
-    maxWidth: 200,
-    maxHeight: 200,
+    maxWidth: 'clamp(100px, 30cqw, 200px)',
+    maxHeight: 'clamp(100px, 30cqw, 200px)',
 });
 
 const RemoveButton = styled(Button)({
     position: 'absolute',
+    display: 'flex',
     zIndex: 1,
     top: '0.5rem',
     right: '0.5rem',
     padding: 2,
 
-    background: 'transparent',
+    background: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 'var(--radii-full, 9999px)',
+    aspectRatio: '1',
     border: 'none',
     cursor: 'pointer',
 
@@ -37,7 +46,8 @@ const RemoveButton = styled(Button)({
     },
 
     svg: {
-        color: 'var(--color-green-100)',
+        // color: 'var(--color-green-100)',
+        color: 'white',
         height: 22,
         width: 22,
     },
@@ -56,7 +66,7 @@ const Thumbnail = ({ filename, src, onPressRemove }: ThumbnailProps): ReactNode 
             <RemoveButton
                 onPress={onPressRemove}
                 aria-label={`Remove ${filename} from files to upload`}>
-                <CloseIcon />
+                <Close />
             </RemoveButton>
         </Box>
     );
@@ -67,11 +77,14 @@ interface FileThumbnailDisplayProps {
     onRemoveFile: (fileToRemove: File) => void;
 }
 
-export const FileUploadThumbnails = ({ files, onRemoveFile }: FileThumbnailDisplayProps) => {
+export const FileUploadThumbnails = ({
+    files,
+    onRemoveFile,
+}: FileThumbnailDisplayProps): ReactNode => {
     const getObjectUrl = useObjectUrls();
 
-    if (files == null) {
-        return <ThumbnailContainer />;
+    if (files == null || files.length === 0) {
+        return null;
     }
 
     const imageFiles = Array.from(files).filter((file) => file.type.startsWith('image/'));
