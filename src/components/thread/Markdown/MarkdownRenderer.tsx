@@ -8,7 +8,6 @@ import { AttributionHighlight } from '@/components/thread/attribution/Attributio
 import { DeepResearchCite } from '@/components/thread/DeepResearch/DeepResearchMessage';
 
 import { CodeBlock } from '../CodeBlock';
-import { RenderPointsData } from '../points/pointsParsingMolmo2/RenderPointsData';
 import { CustomDivider, CustomLink, CustomParagraph } from './CustomComponents';
 import { SANITIZED_ID_PREFIX } from './MarkdownRenderConstants';
 
@@ -19,7 +18,7 @@ interface MarkdownRendererProps {
 const extendedSchema: typeof defaultSchema = {
     ...defaultSchema,
     clobberPrefix: SANITIZED_ID_PREFIX,
-    tagNames: [...(defaultSchema.tagNames || []), 'attribution-highlight', 'cite', 'points'],
+    tagNames: [...(defaultSchema.tagNames || []), 'attribution-highlight', 'cite'],
     attributes: {
         ...defaultSchema.attributes,
         '*': [...(defaultSchema.attributes?.['*'] || []), 'style'],
@@ -28,7 +27,6 @@ const extendedSchema: typeof defaultSchema = {
         code: [...(defaultSchema.attributes?.code || []), 'className'],
         mark: [...(defaultSchema.attributes?.mark || []), 'span'],
         cite: [...(defaultSchema.attributes?.cite || []), 'id'],
-        points: ['label', 'coords', 'tracks', 'alt'],
     },
 };
 
@@ -46,7 +44,6 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
                 a: CustomLink,
                 'attribution-highlight': AttributionHighlight,
                 cite: DeepResearchCite,
-                points: RenderPointsData,
             }}>
             {markdown}
         </Box>
