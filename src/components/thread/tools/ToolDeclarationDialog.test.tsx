@@ -13,15 +13,15 @@ const availableTools = [
         name: 'Get the number five',
     },
     {
-        mcpServerId: 's2',
+        mcpServerId: 'asta',
         name: 'Get the temperature',
     },
     {
-        mcpServerId: 's2',
+        mcpServerId: 'asta',
         name: 'Get the air pressure',
     },
     {
-        mcpServerId: 's2',
+        mcpServerId: 'asta',
         name: 'Get wind direction',
     },
 ] satisfies SchemaAvailableTool[];

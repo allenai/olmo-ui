@@ -1,3 +1,3 @@
 export const MCP_SERVER_NAME = {
-    s2: 'Asta tools',
+    asta: 'Asta tools',
 } as const;
