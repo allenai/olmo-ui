@@ -12,4 +12,12 @@ describe('Math Markdown rendering', () => {
             expect(expectedMathML?.textContent).toBe('4');
         });
     });
+
+    it('should render original text if invalid', async () => {
+        const { container } = render(<MathBlock>{`\\sqrt{4`}</MathBlock>);
+
+        await waitFor(() => {
+            expect(container).toHaveTextContent('\\sqrt{4');
+        });
+    });
 });
