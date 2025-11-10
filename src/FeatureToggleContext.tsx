@@ -106,7 +106,15 @@ export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
     children,
     featureToggles: initialToggles = defaultFeatureToggles,
 }) => {
-    const featureToggles = useMemo(() => createToggles(initialToggles), [initialToggles]);
+    const featureToggles = useMemo(() => {
+        const toggles = createToggles(initialToggles);
+
+        if (toggles.logToggles) {
+            console.table(toggles);
+        }
+
+        return toggles;
+    }, [initialToggles]);
 
     return (
         <FeatureToggleContext.Provider value={featureToggles}>
