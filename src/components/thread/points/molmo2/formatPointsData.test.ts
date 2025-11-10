@@ -173,4 +173,24 @@ describe('Parse Points', () => {
 
         expect(result).toStrictEqual(expected);
     });
+
+    it('parse will return null when coords do not have the proper value format (imbalanced xy pairs)', () => {
+        const singleImagePointsTag = `<points alt="alt_text" coords="1 1 193 076 2 226 144 99">label_text</points>`;
+
+        const expected = null;
+
+        const result = extractPointsData(singleImagePointsTag);
+
+        expect(result).toStrictEqual(expected);
+    });
+
+    it('parse will return null if both coords and tracks attributes are missing', () => {
+        const singleImagePointsTag = `<points alt="alt_text">label_text</points>`;
+
+        const expected = null;
+
+        const result = extractPointsData(singleImagePointsTag);
+
+        expect(result).toStrictEqual(expected);
+    });
 });
