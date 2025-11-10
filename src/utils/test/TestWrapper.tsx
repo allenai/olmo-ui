@@ -4,7 +4,7 @@ import { getTheme } from '@allenai/varnish2/theme';
 import { CssBaseline, ThemeProvider as MUIThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderOptions } from '@testing-library/react';
-import { ComponentProps, Fragment, PropsWithChildren, ReactNode, Suspense } from 'react';
+import { ComponentProps, PropsWithChildren, ReactNode, Suspense } from 'react';
 import { createMemoryRouter, type RouteObject, RouterProvider } from 'react-router-dom';
 import {
     defaultFeatureToggles,
@@ -70,11 +70,11 @@ export const customRender = (ui: ReactNode, options?: CustomRenderOptions) =>
         ...options,
     });
 
-
 interface RenderWithRouterOptions extends CustomRenderOptions {
     routes?: RouteObject[];
 }
 
+// Adapted from https://webup.org/blog/how-to-avoid-mocking-in-react-router-v6-tests/
 export const renderWithRouter = (
     ui: ReactNode,
     { routes = [], ...renderOptions }: RenderWithRouterOptions = {}
