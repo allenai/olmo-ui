@@ -4,7 +4,7 @@ import { getTheme } from '@allenai/varnish2/theme';
 import { CssBaseline, ThemeProvider as MUIThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderOptions } from '@testing-library/react';
-import { ComponentProps, Fragment, PropsWithChildren, ReactNode, Suspense } from 'react';
+import { ComponentProps, PropsWithChildren, ReactNode, Suspense } from 'react';
 import {
     defaultFeatureToggles,
     FeatureToggleContext,
@@ -61,16 +61,8 @@ const TestWrapper = ({ children, featureToggles = { logToggles: false } }: Wrapp
 interface CustomRenderOptions extends RenderOptions {
     wrapperProps: WrapperProps;
 }
-export const customRender = (ui: ReactNode, options?: CustomRenderOptions) => {
-    const { wrapper: optionsWrapper, ...restOptions } = options ?? {};
-    const Wrapper = optionsWrapper ?? Fragment;
-
-    return render(ui, {
-        wrapper: (props?: WrapperProps) => (
-            <Wrapper>
-                <TestWrapper {...props} {...options?.wrapperProps} />
-            </Wrapper>
-        ),
-        ...restOptions,
+export const customRender = (ui: ReactNode, options?: CustomRenderOptions) =>
+    render(ui, {
+        wrapper: (props?: WrapperProps) => <TestWrapper {...props} {...options?.wrapperProps} />,
+        ...options,
     });
-};
