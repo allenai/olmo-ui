@@ -1,11 +1,10 @@
 /* eslint-disable no-restricted-imports, react-refresh/only-export-components */
 /* this is the one file allowed to import @testing-library/react since it needs to modify it */
-import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
-import { ThemeProvider as MUIThemeProvider } from '@mui/material';
+import { CssBaseline, ThemeProvider as MUIThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderOptions } from '@testing-library/react';
-import { ComponentProps, PropsWithChildren, ReactNode, Suspense } from 'react';
+import { ComponentProps, Fragment, PropsWithChildren, ReactNode, Suspense } from 'react';
 import {
     defaultFeatureToggles,
     FeatureToggleContext,
@@ -48,15 +47,11 @@ const TestWrapper = ({ children, featureToggles = { logToggles: false } }: Wrapp
     return (
         <QueryClientProvider client={queryClient}>
             <FakeFeatureToggleProvider featureToggles={featureToggles}>
+                <CssBaseline />
                 <ThemeProvider theme={theme}>
-                    <VarnishApp theme={theme}>
-                        {/* for some reason VarnishApp isn't properly passing the theme in tests */}
-                        <MUIThemeProvider theme={theme}>
-                            <Suspense fallback={<div data-test-id="suspense" />}>
-                                {children}
-                            </Suspense>
-                        </MUIThemeProvider>
-                    </VarnishApp>
+                    <MUIThemeProvider theme={theme}>
+                        <Suspense fallback={<div data-test-id="suspense" />}>{children}</Suspense>
+                    </MUIThemeProvider>
                 </ThemeProvider>
             </FakeFeatureToggleProvider>
         </QueryClientProvider>
@@ -66,8 +61,16 @@ const TestWrapper = ({ children, featureToggles = { logToggles: false } }: Wrapp
 interface CustomRenderOptions extends RenderOptions {
     wrapperProps: WrapperProps;
 }
-export const customRender = (ui: ReactNode, options?: CustomRenderOptions) =>
-    render(ui, {
-        wrapper: (props?: WrapperProps) => <TestWrapper {...props} {...options?.wrapperProps} />,
-        ...options,
+export const customRender = (ui: ReactNode, options?: CustomRenderOptions) => {
+    const { wrapper: optionsWrapper, ...restOptions } = options ?? {};
+    const Wrapper = optionsWrapper ?? Fragment;
+
+    return render(ui, {
+        wrapper: (props?: WrapperProps) => (
+            <Wrapper>
+                <TestWrapper {...props} {...options?.wrapperProps} />
+            </Wrapper>
+        ),
+        ...restOptions,
     });
+};
