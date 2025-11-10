@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, IconButton, Modal, ModalActions, Switch } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { Key } from 'react-aria-components';
 import { Resolver, useForm } from 'react-hook-form';
 
@@ -126,7 +126,7 @@ export function ToolDeclarationDialog({
         setSwitchSelected(!isSwitchSelected);
     };
 
-    const uniqueId = useId()
+    const uniqueId = useId();
     const formId = `function-declaration-form-${uniqueId}`;
 
     return (
