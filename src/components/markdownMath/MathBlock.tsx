@@ -10,7 +10,7 @@ export interface MathBlockProps {
 export const MathBlock = ({ inline = false, children }: MathBlockProps) => {
     const WrapperElement = inline ? 'span' : 'div';
 
-    const mathParsed = useMath({ math: children, inline })
+    const mathParsed = useMath({ math: children, inline });
 
     // this is the unparsed markdown text.
     return <WrapperElement>{mathParsed}</WrapperElement>;
