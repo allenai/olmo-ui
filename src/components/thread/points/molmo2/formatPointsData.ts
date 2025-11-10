@@ -1,12 +1,13 @@
 import { ParseResult, PartialXMLStreamParser } from 'partial-xml-stream-parser';
 
 import {
+    AllPointsFormats,
     ImagePoints,
     Point,
     PointsAttributes,
     VideoFramePoints,
     VideoTrackingPoints,
-} from './pointsDataTypes';
+} from '../pointsDataTypes';
 
 const IMAGE_OR_FRAME_DELIMITER = '\t';
 const WHITESPACE_DELIMITER = /\s+/;
@@ -38,11 +39,11 @@ export const parseAsXML = (content: string) => {
     return { success: true, pointsAttributes } as const;
 };
 
-export const extractPointsData = (content: string) => {
+export const extractPointsData = (content: string): AllPointsFormats | null => {
     const parseResult = parseAsXML(content);
-    if (!parseResult.success) return;
+    if (!parseResult.success) return null;
 
-    return formatPointsData(parseResult.pointsAttributes);
+    return formatPointsData(parseResult.pointsAttributes) || null;
 };
 
 export const formatPointsData = (pointsAttributes: PointsAttributes) => {
