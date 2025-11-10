@@ -1,14 +1,4 @@
 // --------------------------------------------------
-// Points attributes shape from xml parsing
-// NOTE: tracks and coords are exclusive
-export type PointsAttributes = {
-    label: string;
-    alt?: string;
-    coords?: string;
-    tracks?: string;
-};
-
-// --------------------------------------------------
 // Multi and Single image pointing:
 // coords point format: [imageId,[pointId, x, y]] (\t delimited)
 //

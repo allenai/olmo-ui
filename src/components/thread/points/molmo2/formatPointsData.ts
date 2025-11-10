@@ -1,16 +1,27 @@
 import { ParseResult, PartialXMLStreamParser } from 'partial-xml-stream-parser';
+import * as z from 'zod';
 
 import {
     AllPointsFormats,
     ImagePoints,
     Point,
-    PointsAttributes,
     VideoFramePoints,
     VideoTrackingPoints,
 } from '../pointsDataTypes';
 
 const IMAGE_OR_FRAME_DELIMITER = '\t';
 const WHITESPACE_DELIMITER = /\s+/;
+
+const PointsAttributesSchema = z
+    .object({
+        label: z.string(),
+        alt: z.string().optional(),
+        coords: z.string().optional(),
+        tracks: z.string().optional(),
+    })
+    .refine((data) => data.coords || data.tracks, 'Either coords or tracks should be present.');
+
+type PointsAttributes = z.infer<typeof PointsAttributesSchema>;
 
 export const parseAsXML = (content: string) => {
     const parser = new PartialXMLStreamParser();
@@ -19,31 +30,35 @@ export const parseAsXML = (content: string) => {
     try {
         result = parser.parseStream(`<root>${content}</root>`);
     } catch (e) {
-        console.error('XML parsing error:', (e as Error).message);
-        return { success: false } as const;
+        const message = 'XML parsing error:' + (e as Error).message;
+        throw Error(message);
     }
 
     if (!(result.xml && result.xml.length > 0)) {
-        console.error('XML parsing error: Nothing parsed');
-        return { success: false } as const;
+        const message = 'XML parsing error: Nothing parsed';
+        throw Error(message);
     }
 
     const xml = result.xml[0];
-    const pointsAttributes = {
+    const pointsAttributes = PointsAttributesSchema.parse({
         label: xml.root.points['#text'],
         alt: xml.root.points['@alt'],
         coords: xml.root.points['@coords'],
         tracks: xml.root.points['@tracks'],
-    } as PointsAttributes;
+    });
 
-    return { success: true, pointsAttributes } as const;
+    return pointsAttributes;
 };
 
 export const extractPointsData = (content: string): AllPointsFormats | null => {
-    const parseResult = parseAsXML(content);
-    if (!parseResult.success) return null;
+    try {
+        const parseResult = parseAsXML(content);
 
-    return formatPointsData(parseResult.pointsAttributes) || null;
+        return formatPointsData(parseResult) || null;
+    } catch (e) {
+        console.error((e as Error).message);
+        return null;
+    }
 };
 
 export const formatPointsData = (pointsAttributes: PointsAttributes) => {
@@ -96,7 +111,12 @@ export const formatPointsData = (pointsAttributes: PointsAttributes) => {
     }
 };
 
-const parseCoordsOrTracks = (imagesOrFramesList: string[][]) => {
+interface CoordsOrTracks {
+    imageOrFrameId: string;
+    points: Point[];
+}
+
+const parseCoordsOrTracks = (imagesOrFramesList: string[][]): CoordsOrTracks[] => {
     return imagesOrFramesList.map((imageOrFramePoints) => {
         let imageOrFrameId: string = '';
         if (imageOrFramePoints.length % 3 === 1) {
@@ -107,7 +127,8 @@ const parseCoordsOrTracks = (imagesOrFramesList: string[][]) => {
             // without a counter/imageId is not being sent.
             imageOrFrameId = '1';
         } else {
-            console.log('there is an imbalance');
+            const message = 'Points formatting Error: There is an imbalance of coordinates';
+            throw Error(message);
         }
 
         const formattedPoints: Point[] = [];
