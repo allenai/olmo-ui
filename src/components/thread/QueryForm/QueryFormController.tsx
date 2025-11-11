@@ -159,7 +159,11 @@ export const QueryFormController = ({
         <QueryFormStyledBox>
             <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
                 <Stack gap={1} alignItems="flex-start" width={1} position="relative">
-                    <FileUploadThumbnails files={files} onRemoveFile={handleRemoveFile} />
+                    <FileUploadThumbnails
+                        files={files}
+                        onRemoveFile={handleRemoveFile}
+                        acceptedFileTypes={fileUploadProps.acceptedFileTypes}
+                    />
                     <PromptContainer
                         startAdornment={
                             <FileUploadButton

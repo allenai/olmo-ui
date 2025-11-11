@@ -3,6 +3,7 @@ import { Box, Stack, styled } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
 import { Button } from 'react-aria-components';
 
+import { filesMatchingTypesAllowed } from './filesMatchingTypesAllowed';
 import { useObjectUrls } from './useObjectUrls';
 
 const ThumbnailContainer = ({ children }: PropsWithChildren): ReactNode => {
@@ -55,11 +56,12 @@ const RemoveButton = styled(Button)({
 
 interface ThumbnailProps {
     filename: string;
+    type: string;
     src: string;
     onPressRemove: () => void;
 }
 
-const Thumbnail = ({ filename, src, onPressRemove }: ThumbnailProps): ReactNode => {
+const Thumbnail = ({ filename, type, src, onPressRemove }: ThumbnailProps): ReactNode => {
     return (
         <Box position="relative" zIndex={0}>
             <ThumbnailImage alt={`User file ${filename}`} src={src} title={filename} />
@@ -75,11 +77,13 @@ const Thumbnail = ({ filename, src, onPressRemove }: ThumbnailProps): ReactNode 
 interface FileThumbnailDisplayProps {
     files?: FileList;
     onRemoveFile: (fileToRemove: File) => void;
+    acceptedFileTypes?: string | string[] | Set<string>;
 }
 
 export const FileUploadThumbnails = ({
     files,
     onRemoveFile,
+    acceptedFileTypes = [],
 }: FileThumbnailDisplayProps): ReactNode => {
     const getObjectUrl = useObjectUrls();
 
@@ -87,13 +91,17 @@ export const FileUploadThumbnails = ({
         return null;
     }
 
-    const imageFiles = Array.from(files).filter((file) => file.type.startsWith('image/'));
+    const fileTypesAsArray =
+        typeof acceptedFileTypes === 'string' ? [acceptedFileTypes] : Array.from(acceptedFileTypes);
+
+    const allowedFiles = filesMatchingTypesAllowed(files, fileTypesAsArray);
 
     return (
         <ThumbnailContainer>
-            {imageFiles.map((file, i) => (
+            {allowedFiles.map((file, i) => (
                 <Thumbnail
                     key={i}
+                    type={file.type}
                     filename={file.name}
                     src={getObjectUrl(file)}
                     onPressRemove={() => {
