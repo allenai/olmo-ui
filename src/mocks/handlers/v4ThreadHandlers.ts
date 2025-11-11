@@ -41,6 +41,10 @@ import {
     thinkingAndToolCallsResponse,
 } from './responses/v4/thinkingAndToolCallsResponse';
 import {
+    THREAD_WITH_LATEX_IN_RESPONSE_ID,
+    threadWithLatexInResponse,
+} from './responses/v4/threadWithLatexInResponse';
+import {
     USER_TOOL_CALLS_THREAD_ROOT_ID,
     userToolCallsResponse,
 } from './responses/v4/userToolCallsResponse';
@@ -248,6 +252,7 @@ const v4ThreadResponses = {
     [THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID]: thinkingAndToolCallsResponse,
     [USER_TOOL_CALLS_THREAD_ROOT_ID]: userToolCallsResponse,
     [INTERNAL_TOOL_CALLS_THREAD_ROOT_ID]: internalToolCallsResponse,
+    [THREAD_WITH_LATEX_IN_RESPONSE_ID]: threadWithLatexInResponse,
 };
 
 export interface MessagesResponseV4 {
