@@ -28,10 +28,10 @@ export const parseAsXML = (content: string) => {
     let result: ParseResult | undefined;
 
     try {
-        result = parser.parseStream(`<root>${content}</root>`);
+        result = parser.parseStream(content);
     } catch (e) {
         const message = 'XML parsing error:' + (e as Error).message;
-        throw Error(message);
+        throw Error(message, { cause: e });
     }
 
     if (!(result.xml && result.xml.length > 0)) {
@@ -41,10 +41,10 @@ export const parseAsXML = (content: string) => {
 
     const xml = result.xml[0];
     const pointsAttributes = PointsAttributesSchema.parse({
-        label: xml.root.points['#text'],
-        alt: xml.root.points['@alt'],
-        coords: xml.root.points['@coords'],
-        tracks: xml.root.points['@tracks'],
+        label: xml.points['#text'],
+        alt: xml.points['@alt'],
+        coords: xml.points['@coords'],
+        tracks: xml.points['@tracks'],
     });
 
     return pointsAttributes;

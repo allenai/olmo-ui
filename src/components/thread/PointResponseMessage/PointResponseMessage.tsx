@@ -46,7 +46,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
             ? pointInfos
             : [
                   {
-                      alt: pointInfos.alt ?? '',
+                      alt: pointInfos.alt ?? pointInfos.label,
                       points: pointInfos.imageList[0].points.map(({ x, y }) => ({ x, y })),
                   },
               ];
