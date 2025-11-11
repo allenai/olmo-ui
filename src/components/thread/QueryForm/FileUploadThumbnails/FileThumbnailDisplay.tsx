@@ -23,8 +23,8 @@ const ThumbnailContainer = ({ children }: PropsWithChildren): ReactNode => {
 
 const ThumbnailImage = styled('img')({
     objectFit: 'contain',
-    maxWidth: 'clamp(100px, 30cqw, 200px)',
-    maxHeight: 'clamp(100px, 30cqw, 200px)',
+    width: '100%',
+    height: '100%',
 });
 
 const RemoveButton = styled(Button)({
@@ -56,15 +56,22 @@ const RemoveButton = styled(Button)({
 
 interface ThumbnailProps {
     filename: string;
-    type: string;
     src: string;
     onPressRemove: () => void;
 }
 
-const Thumbnail = ({ filename, type, src, onPressRemove }: ThumbnailProps): ReactNode => {
+const Thumbnail = ({ filename, src, onPressRemove }: ThumbnailProps): ReactNode => {
+    const alt = `User file ${filename}`;
     return (
-        <Box position="relative" zIndex={0}>
-            <ThumbnailImage alt={`User file ${filename}`} src={src} title={filename} />
+        <Box
+            position="relative"
+            zIndex={0}
+            sx={{
+                overflow: 'hidden',
+                maxWidth: 'clamp(100px, 30cqw, 200px)',
+                maxHeight: 'clamp(100px, 30cqw, 200px)',
+            }}>
+            <ThumbnailImage alt={alt} src={src} title={filename} />
             <RemoveButton
                 onPress={onPressRemove}
                 aria-label={`Remove ${filename} from files to upload`}>
@@ -101,7 +108,6 @@ export const FileUploadThumbnails = ({
             {allowedFiles.map((file, i) => (
                 <Thumbnail
                     key={i}
-                    type={file.type}
                     filename={file.name}
                     src={getObjectUrl(file)}
                     onPressRemove={() => {
