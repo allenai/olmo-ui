@@ -52,7 +52,7 @@ export const NavigationDrawer = ({
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const userAuthInfo = useUserAuthInfo();
-    const { isAgentPageEnabled } = useFeatureToggles();
+    const { isAgentPageEnabled, isComparisonPageInternalOnly } = useFeatureToggles();
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
@@ -99,14 +99,17 @@ export const NavigationDrawer = ({
                                 Agents
                             </NavigationLink>
                         ) : null}
-                        <NavigationLink
-                            icon={<ViewColumnIcon />}
-                            selected={curriedDoesMatchPath(links.comparison)}
-                            href={links.comparison}
-                            DisclosureIcon={ScienceIcon}
-                            experimental>
-                            Compare models
-                        </NavigationLink>
+                        {(!isComparisonPageInternalOnly ||
+                            userAuthInfo.hasPermission(USER_PERMISSIONS.READ_INTERNAL_MODELS)) && (
+                            <NavigationLink
+                                icon={<ViewColumnIcon />}
+                                selected={curriedDoesMatchPath(links.comparison)}
+                                href={links.comparison}
+                                DisclosureIcon={ScienceIcon}
+                                experimental>
+                                Compare models
+                            </NavigationLink>
+                        )}
                         <NavigationLink
                             icon={<StickyNote2Outlined />}
                             selected={curriedDoesMatchPath(links.faqs)}

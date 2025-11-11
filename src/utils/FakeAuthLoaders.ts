@@ -1,14 +1,13 @@
-import { User as Auth0User } from '@auth0/auth0-spa-js';
-
+import type { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { User as ApiUser } from '@/api/User';
 
 export const getFakeUseUserAuthInfo =
     ({
         userInfo = {} as ApiUser,
-        userAuthInfo = {} as Partial<Auth0User>,
+        userAuthInfo = {},
         isAuthenticated = false,
         hasPermission = () => true,
-    } = {}) =>
+    }: Partial<ReturnType<typeof useUserAuthInfo>> = {}) =>
     () => {
         return {
             userInfo,

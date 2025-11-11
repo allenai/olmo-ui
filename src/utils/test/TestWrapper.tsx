@@ -5,6 +5,7 @@ import { CssBaseline, ThemeProvider as MUIThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderOptions } from '@testing-library/react';
 import { ComponentProps, PropsWithChildren, ReactNode, Suspense } from 'react';
+import { createMemoryRouter, type RouteObject, RouterProvider } from 'react-router-dom';
 import {
     defaultFeatureToggles,
     FeatureToggleContext,
@@ -13,6 +14,8 @@ import {
 import { ThemeProvider } from 'styled-components';
 
 import { uiRefreshOlmoTheme } from '@/olmoTheme';
+
+import { BubbleError } from './BubbleError';
 
 const FakeFeatureToggleProvider = ({
     children,
@@ -59,10 +62,33 @@ const TestWrapper = ({ children, featureToggles = { logToggles: false } }: Wrapp
 };
 
 interface CustomRenderOptions extends RenderOptions {
-    wrapperProps: WrapperProps;
+    wrapperProps?: WrapperProps;
 }
 export const customRender = (ui: ReactNode, options?: CustomRenderOptions) =>
     render(ui, {
         wrapper: (props?: WrapperProps) => <TestWrapper {...props} {...options?.wrapperProps} />,
         ...options,
     });
+
+interface RenderWithRouterOptions extends CustomRenderOptions {
+    routes?: RouteObject[];
+}
+
+// Adapted from https://webup.org/blog/how-to-avoid-mocking-in-react-router-v6-tests/
+export const renderWithRouter = (
+    ui: ReactNode,
+    { routes = [], ...renderOptions }: RenderWithRouterOptions = {}
+) => {
+    const route = {
+        element: ui,
+        path: '/',
+        errorElement: <BubbleError />,
+    } as const satisfies RouteObject;
+
+    const router = createMemoryRouter([route, ...routes], {
+        initialEntries: [{ pathname: route.path }],
+        initialIndex: 1,
+    });
+
+    return customRender(<RouterProvider router={router} />, renderOptions);
+};
