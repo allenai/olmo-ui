@@ -11,15 +11,14 @@ import {
     useVideoConfig,
 } from 'remotion';
 
-import { mclarenTrack } from './example';
-import { PointSelect } from './PointSelect';
-import { SeekBar } from './time-line';
-
 import {
     PerFrameTrackPoints,
-    VideoTrackingPoints,
     TrackPoint,
+    VideoTrackingPoints,
 } from '@/components/thread/points/pointsDataTypes';
+
+import { PointSelect } from './PointSelect';
+import { SeekBar } from './time-line';
 
 export const FPS = 30;
 
@@ -44,11 +43,15 @@ export const MolmoVideoComposition = ({
     );
 };
 
-export const MolmoVideo = ({ version }: { version: string }) => {
+export const MolmoVideo = ({
+    version,
+    videoTracking,
+}: {
+    version: string;
+    videoTracking: VideoTrackingPoints;
+}) => {
     const playerRef = useRef<PlayerRef>(null);
     const durationInFrames = 10 * FPS;
-
-    const data = mclarenTrack;
 
     return (
         <div>
@@ -58,7 +61,7 @@ export const MolmoVideo = ({ version }: { version: string }) => {
                         acknowledgeRemotionLicense
                         ref={playerRef}
                         component={MolmoVideoComposition}
-                        inputProps={{ fileName: 'mclaren-track.MP4', version, data }}
+                        inputProps={{ fileName: 'mclaren-track.MP4', version, data: videoTracking }}
                         durationInFrames={durationInFrames}
                         compositionWidth={1460 / 2}
                         compositionHeight={864 / 2}
@@ -71,7 +74,7 @@ export const MolmoVideo = ({ version }: { version: string }) => {
                 durationInFrames={durationInFrames}
                 playerRef={playerRef}
                 width={400}
-                data={data}
+                data={videoTracking}
             />
         </div>
     );

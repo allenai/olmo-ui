@@ -2,7 +2,7 @@ import type { PlayerRef } from '@remotion/player';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { interpolate } from 'remotion';
 
-import { VideoTrackingPoints } from './example';
+import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
     const pos = clientX;

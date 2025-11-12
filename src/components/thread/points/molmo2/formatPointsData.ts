@@ -12,14 +12,12 @@ import {
 const IMAGE_OR_FRAME_DELIMITER = '\t';
 const WHITESPACE_DELIMITER = /\s+/;
 
-const PointsAttributesSchema = z
-    .object({
-        label: z.string(),
-        alt: z.string().optional(),
-        coords: z.string().optional(),
-        tracks: z.string().optional(),
-    })
-    .refine((data) => data.coords || data.tracks, 'Either coords or tracks should be present.');
+const PointsAttributesSchema = z.object({
+    label: z.string(),
+    alt: z.string().optional(),
+    coords: z.string(),
+    tag: z.union([z.literal('tracks'), z.literal('points')]),
+});
 
 type PointsAttributes = z.infer<typeof PointsAttributesSchema>;
 
@@ -39,20 +37,30 @@ export const parseAsXML = (content: string) => {
         throw Error(message);
     }
 
-    const xml = result.xml.filter((item) => !!item.points)[0];
+    const xml = result.xml.filter((item) => !!item.points || !!item.tracks)[0];
     if (!xml) {
         const message = 'XML parsing error: No points parsed';
         throw Error(message);
     }
 
-    const pointsAttributes = PointsAttributesSchema.parse({
-        label: xml.points['#text'],
-        alt: xml.points['@alt'],
-        coords: xml.points['@coords'],
-        tracks: xml.points['@tracks'],
-    });
-
-    return pointsAttributes;
+    if (xml.points) {
+        return PointsAttributesSchema.parse({
+            tag: 'points',
+            label: xml.points['#text'],
+            alt: xml.points['@alt'],
+            coords: xml.points['@coords'],
+        });
+    } else if (xml.tracks) {
+        return PointsAttributesSchema.parse({
+            tag: 'tracks',
+            label: xml.tracks['#text'],
+            alt: xml.tracks['@alt'],
+            coords: xml.tracks['@coords'],
+        });
+    } else {
+        const message = 'XML parsing error: Unexpected tag';
+        throw Error(message);
+    }
 };
 
 export const extractPointsData = (content: string): AllPointsFormats | null => {
@@ -67,8 +75,8 @@ export const extractPointsData = (content: string): AllPointsFormats | null => {
 };
 
 export const formatPointsData = (pointsAttributes: PointsAttributes) => {
-    if (pointsAttributes.tracks) {
-        const tracksList = pointsAttributes.tracks
+    if (pointsAttributes.tag === 'tracks') {
+        const tracksList = pointsAttributes.coords
             .split(IMAGE_OR_FRAME_DELIMITER)
             .map((trackItem) => trackItem.split(WHITESPACE_DELIMITER));
         const formattedPoints = parseCoordsOrTracks(tracksList);
@@ -85,7 +93,7 @@ export const formatPointsData = (pointsAttributes: PointsAttributes) => {
             })),
         } satisfies VideoTrackingPoints;
     }
-    if (pointsAttributes.coords) {
+    if (pointsAttributes.tag === 'points') {
         const coordsList = pointsAttributes.coords.split(IMAGE_OR_FRAME_DELIMITER);
         const imagesOrFramesList = coordsList.map((coordItem) =>
             coordItem.split(WHITESPACE_DELIMITER)
