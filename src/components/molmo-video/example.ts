@@ -213,7 +213,7 @@ export const mclaren = [
     },
 ];
 
-export const mclarenTrack = {
+export const mclarenTrack: VideoTrackingPoints = {
     objects: [
         {
             objectId: 'car',

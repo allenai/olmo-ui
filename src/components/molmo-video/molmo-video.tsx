@@ -11,21 +11,33 @@ import {
     useVideoConfig,
 } from 'remotion';
 
-import { PlayPauseButton } from './controls';
-import { mclarenTrack, Point, VideoFramePoints, VideoTrackingObject } from './example';
+import {
+    VideoTrackingPoints,
+    mclarenTrack,
+    Point,
+    VideoFramePoints,
+    VideoTrackingObject,
+} from './example';
 import { PointSelect } from './PointSelect';
-import { useCurrentPlayerFrame } from './use-current-player-frame';
+import { SeekBar } from './time-line';
 
 export const FPS = 30;
 
-export const MyComposition = ({ fileName, version }: { fileName: string; version: string }) => {
+export const MolmoVideoComposition = ({
+    fileName,
+    version,
+    data,
+}: {
+    fileName: string;
+    version: string;
+    data: VideoTrackingPoints;
+}) => {
     return (
         <AbsoluteFill>
             <AbsoluteFill>
                 <AbsoluteFill>
-                    <VideoTracking version={version} />
+                    <VideoTracking data={data} version={version} />
                 </AbsoluteFill>
-
                 <OffthreadVideo muted={true} src={staticFile(fileName)} />
             </AbsoluteFill>
         </AbsoluteFill>
@@ -34,40 +46,44 @@ export const MyComposition = ({ fileName, version }: { fileName: string; version
 
 export const MolmoVideo = ({ version }: { version: string }) => {
     const playerRef = useRef<PlayerRef>(null);
+    const durationInFrames = 10 * FPS;
 
-    return (
-        <div className={css({ display: 'flex', flexDirection: 'column', alignItems: 'start' })}>
-            <PointSelect playerRef={playerRef}>
-                <Player
-                    acknowledgeRemotionLicense
-                    ref={playerRef}
-                    component={MyComposition}
-                    inputProps={{ fileName: 'mclaren-track.MP4', version }}
-                    durationInFrames={10 * FPS}
-                    compositionWidth={1460 / 2}
-                    compositionHeight={864 / 2}
-                    fps={FPS}
-                />
-            </PointSelect>
-            <PlayPauseButton playerRef={playerRef} />
-            <TimeDisplay playerRef={playerRef} />
-        </div>
-    );
-};
-
-export const TimeDisplay = ({ playerRef }: { playerRef: React.RefObject<PlayerRef | null> }) => {
-    const frame = useCurrentPlayerFrame(playerRef);
+    const data = mclarenTrack;
 
     return (
         <div>
-            current frame: {frame} time: {frame / FPS}
+            <div className={css({ display: 'flex', flexDirection: 'column', alignItems: 'start' })}>
+                <PointSelect playerRef={playerRef}>
+                    <Player
+                        acknowledgeRemotionLicense
+                        ref={playerRef}
+                        component={MolmoVideoComposition}
+                        inputProps={{ fileName: 'mclaren-track.MP4', version, data }}
+                        durationInFrames={durationInFrames}
+                        compositionWidth={1460 / 2}
+                        compositionHeight={864 / 2}
+                        fps={FPS}
+                        controls
+                    />
+                </PointSelect>
+            </div>
+            <SeekBar
+                durationInFrames={durationInFrames}
+                playerRef={playerRef}
+                width={400}
+                data={data}
+            />
         </div>
     );
 };
 
-export const VideoTracking = ({ version }: { version: string }) => {
-    const data = mclarenTrack;
-
+export const VideoTracking = ({
+    version,
+    data,
+}: {
+    version: string;
+    data: VideoTrackingPoints;
+}) => {
     if (version === 'one') {
         return (
             <div>
