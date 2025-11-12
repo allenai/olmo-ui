@@ -7,7 +7,7 @@ import {
     DialogTitle,
     Tooltip,
 } from '@mui/material';
-import { ComponentProps } from 'react';
+import { ComponentProps, ReactElement } from 'react';
 
 import { useSmallLayoutOrUp } from '../dolma/shared';
 
@@ -17,9 +17,10 @@ export type ResponsiveTooltipProps = {
     dialogTitle: string;
     dialogContent: string;
     children: JSX.Element;
-    anchorEl?: HTMLElement;
+    anchorEl?: HTMLElement | null;
     tooltipIdSuffix: string;
     placement?: ComponentProps<typeof Tooltip>['placement'];
+    tooltipClassName?: string;
 };
 
 export const ResponsiveTooltip = ({
@@ -31,7 +32,8 @@ export const ResponsiveTooltip = ({
     anchorEl,
     tooltipIdSuffix,
     placement = 'left',
-}: ResponsiveTooltipProps): JSX.Element => {
+    tooltipClassName,
+}: ResponsiveTooltipProps): ReactElement => {
     const handleTooltipClose = () => {
         onTooltipClose();
     };
@@ -80,9 +82,9 @@ export const ResponsiveTooltip = ({
                         paddingBottom: theme.spacing(0.5),
                         borderRadius: theme.spacing(1.5),
                         position: 'relative',
-                        right: theme.spacing(2),
                         background: (theme) => theme.palette.background.drawer.secondary,
                     }),
+                    className: tooltipClassName,
                 },
                 popper: { anchorEl },
             }}

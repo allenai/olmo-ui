@@ -3,12 +3,12 @@ import { ArrowOutwardOutlined, WysiwygOutlined } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 
 import { ImageSpinner } from '@/components/ImageSpinner';
+import { ToolCallDisplay } from '@/components/toolCalling/ToolCallDisplay';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';
 
 import { LegalNotice } from '../LegalNotice/LegalNotice';
 import { ThreadPlaceholderContentWrapper } from './ThreadPlaceholderContentWrapper';
-import { ToolCallDisplay } from './ToolCallDisplay';
 
 export const ThreadPlaceholder = () => {
     const { remoteState, getThreadViewModel } = useQueryContext();

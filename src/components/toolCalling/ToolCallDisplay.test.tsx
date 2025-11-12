@@ -54,7 +54,7 @@ describe('ToolCallDisplay', () => {
         });
 
         await waitFor(() => {
-            expect(screen.getByLabelText('This model allows tool calling.')).toBeVisible();
+            expect(screen.getByLabelText('This model allows tool calling')).toBeVisible();
         });
     });
 
@@ -65,7 +65,7 @@ describe('ToolCallDisplay', () => {
 
         await waitFor(() => {
             expect(
-                screen.queryByLabelText('This model allows tool calling.')
+                screen.queryByLabelText('This model allows tool calling')
             ).not.toBeInTheDocument();
         });
     });
