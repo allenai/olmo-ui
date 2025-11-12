@@ -35,11 +35,16 @@ export const parseAsXML = (content: string) => {
     }
 
     if (!(result.xml && result.xml.length > 0)) {
-        const message = 'XML parsing error: Nothing parsed';
+        const message = 'XML parsing error: No points parsed';
         throw Error(message);
     }
 
-    const xml = result.xml[0];
+    const xml = result.xml.filter((item) => !!item.points)[0];
+    if (!xml) {
+        const message = 'XML parsing error: No points parsed';
+        throw Error(message);
+    }
+
     const pointsAttributes = PointsAttributesSchema.parse({
         label: xml.points['#text'],
         alt: xml.points['@alt'],
