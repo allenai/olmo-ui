@@ -175,8 +175,8 @@ export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTracking
     return (
         <svg width={width} height={height}>
             <circle
-                cy={`${yAnimated * 100}%`}
-                cx={`${xAnimated * 100}%`}
+                cy={`${yAnimated}%`}
+                cx={`${xAnimated}%`}
                 r={10}
                 stroke="white"
                 strokeWidth="3"
@@ -225,9 +225,9 @@ export const VideoDotTrailsTrackObjectComponent = ({ object }: { object: VideoTr
 
     const frame = useCurrentFrame();
 
-    const xAnimated = interpolate(frame, times, x);
-    const yAnimated = interpolate(frame, times, y);
-    const sizeAnimated = interpolate(frame, sizeTimes, size);
+    // const xAnimated = interpolate(frame, times, x);
+    // const yAnimated = interpolate(frame, times, y);
+    // const sizeAnimated = interpolate(frame, sizeTimes, size);
 
     return (
         <svg width={width} height={height} viewBox="0 0 100 100">
@@ -248,7 +248,7 @@ export const VideoDotTrailsTrackObjectComponent = ({ object }: { object: VideoTr
 
 const preTimestampOffset = 0.15;
 
-const postTimestampOffset = 0.35;
+const postTimestampOffset = 0.15;
 
 export const FramePointComponent = ({ framePoint }: { framePoint: PerFrameTrackPoints }) => {
     const frame = useCurrentFrame();
@@ -300,8 +300,8 @@ const SVGPoint = ({ point, circleRadius = 10 }: { point: TrackPoint; circleRadiu
     return (
         <svg width={width} height={height}>
             <circle
-                cy={`${point.y * 100}%`}
-                cx={`${point.x * 100}%`}
+                cy={`${point.y}%`}
+                cx={`${point.x}%`}
                 r={circleRadius}
                 stroke="white"
                 strokeWidth="3"

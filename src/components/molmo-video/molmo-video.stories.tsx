@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { mclarenTrack } from './example';
+import { mclarenTrack, mclarenTwo } from './example';
 import { MolmoVideo } from './molmo-video';
 
 const meta = {
@@ -29,6 +29,6 @@ export const Two: Story = {
 export const Three: Story = {
     args: {
         version: 'three',
-        videoTracking: mclarenTrack,
+        videoTracking: mclarenTwo,
     },
 };
