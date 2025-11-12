@@ -11,15 +11,15 @@ import {
     useVideoConfig,
 } from 'remotion';
 
-import {
-    VideoTrackingPoints,
-    mclarenTrack,
-    Point,
-    VideoFramePoints,
-    VideoTrackingObject,
-} from './example';
+import { mclarenTrack } from './example';
 import { PointSelect } from './PointSelect';
 import { SeekBar } from './time-line';
+
+import {
+    PerFrameTrackPoints,
+    VideoTrackingPoints,
+    TrackPoint,
+} from '@/components/thread/points/pointsDataTypes';
 
 export const FPS = 30;
 
@@ -87,7 +87,7 @@ export const VideoTracking = ({
     if (version === 'one') {
         return (
             <div>
-                {data.objects.map((object, i) => (
+                {data.frameList.map((object, i) => (
                     <VideoCountObjectBlinkComponent key={i} object={object} />
                 ))}
             </div>
@@ -96,7 +96,7 @@ export const VideoTracking = ({
     if (version === 'two') {
         return (
             <div>
-                {data.objects.map((object, i) => (
+                {data.frameList.map((object, i) => (
                     <VideoCountObjectComponent key={i} object={object} />
                 ))}
             </div>
@@ -105,56 +105,51 @@ export const VideoTracking = ({
     if (version === 'three') {
         return (
             <div>
-                {data.objects.map((object, i) => (
-                    <VideoDotTrackObjectComponent key={i} object={object} />
-                ))}
+                <VideoDotTrackObjectComponent object={data} />
             </div>
         );
     }
 };
 
-export const VideoCountObjectComponent = ({ object }: { object: VideoTrackingObject }) => {
+export const VideoCountObjectComponent = ({ object }: { object: PerFrameTrackPoints }) => {
     return (
         <div>
-            {object.framePoints.map((point, i) => (
-                <FramePointComponent key={i} framePoint={point} />
-            ))}
+            <FramePointComponent framePoint={object} />
         </div>
     );
 };
 
-export const VideoCountObjectBlinkComponent = ({ object }: { object: VideoTrackingObject }) => {
+export const VideoCountObjectBlinkComponent = ({ object }: { object: PerFrameTrackPoints }) => {
     return (
         <div>
-            {object.framePoints.map((point, i) => (
-                <FramePointBlinkComponent key={i} framePoint={point} />
-            ))}
+            <FramePointBlinkComponent framePoint={object} />
         </div>
     );
 };
 
-export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTrackingObject }) => {
+export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTrackingPoints }) => {
+    // TODO: Handle multiple tracks...
     const { height, width } = useVideoConfig();
 
     const { x, y, times } = useMemo(() => {
-        const x = object.framePoints.map((framePoints) => {
-            return framePoints.points[0].x;
+        const x = object.frameList.map((frame) => {
+            return frame.tracks[0].x;
         });
-        const y = object.framePoints.map((framePoints) => {
-            return framePoints.points[0].y;
+        const y = object.frameList.map((frame) => {
+            return frame.tracks[0].y;
         });
-        const times = object.framePoints.map((framePoints) => {
-            return framePoints.frameTimestamp * FPS;
+        const times = object.frameList.map((frame) => {
+            return frame.timestamp * FPS;
         });
         return { x, y, times };
     }, [object]);
 
     const { sizeTimes, size } = useMemo(() => {
         // TODO Breaks if translating points closer that .15 seconds together
-        const animation = object.framePoints.flatMap((framePoints) => {
-            const before = (framePoints.frameTimestamp - preTimestampOffset) * FPS;
-            const time = framePoints.frameTimestamp * FPS;
-            const after = (framePoints.frameTimestamp + postTimestampOffset) * FPS;
+        const animation = object.frameList.flatMap((framePoints) => {
+            const before = (framePoints.timestamp - preTimestampOffset) * FPS;
+            const time = framePoints.timestamp * FPS;
+            const after = (framePoints.timestamp + postTimestampOffset) * FPS;
 
             return [
                 [before, 0],
@@ -188,28 +183,30 @@ export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTracking
     );
 };
 
-export const VideoDotTrailsTrackObjectComponent = ({ object }: { object: VideoTrackingObject }) => {
+export const VideoDotTrailsTrackObjectComponent = ({ object }: { object: VideoTrackingPoints }) => {
     const { height, width } = useVideoConfig();
 
+    // TODO: Handle multiple tracks...
+
     const { x, y, times } = useMemo(() => {
-        const x = object.framePoints.map((framePoints) => {
-            return framePoints.points[0].x;
+        const x = object.frameList.map((framePoints) => {
+            return framePoints.tracks[0].x;
         });
-        const y = object.framePoints.map((framePoints) => {
-            return framePoints.points[0].y;
+        const y = object.frameList.map((framePoints) => {
+            return framePoints.tracks[0].y;
         });
-        const times = object.framePoints.map((framePoints) => {
-            return framePoints.frameTimestamp * FPS;
+        const times = object.frameList.map((framePoints) => {
+            return framePoints.timestamp;
         });
         return { x, y, times };
     }, [object]);
 
     const { sizeTimes, size } = useMemo(() => {
         // TODO Breaks if translating points closer that .15 seconds together
-        const animation = object.framePoints.flatMap((framePoints) => {
-            const before = (framePoints.frameTimestamp - preTimestampOffset) * FPS;
-            const time = framePoints.frameTimestamp * FPS;
-            const after = (framePoints.frameTimestamp + postTimestampOffset) * FPS;
+        const animation = object.frameList.flatMap((framePoints) => {
+            const before = (framePoints.timestamp - preTimestampOffset) * FPS;
+            const time = framePoints.timestamp * FPS;
+            const after = (framePoints.timestamp + postTimestampOffset) * FPS;
 
             return [
                 [before, 0],
@@ -250,11 +247,11 @@ const preTimestampOffset = 0.15;
 
 const postTimestampOffset = 0.35;
 
-export const FramePointComponent = ({ framePoint }: { framePoint: VideoFramePoints }) => {
+export const FramePointComponent = ({ framePoint }: { framePoint: PerFrameTrackPoints }) => {
     const frame = useCurrentFrame();
 
-    const pointShowStart = (framePoint.frameTimestamp - preTimestampOffset) * FPS;
-    const pointShowEnd = (framePoint.frameTimestamp + postTimestampOffset) * FPS;
+    const pointShowStart = (framePoint.timestamp - preTimestampOffset) * FPS;
+    const pointShowEnd = (framePoint.timestamp + postTimestampOffset) * FPS;
 
     if (frame < pointShowStart || frame > pointShowEnd) {
         return null;
@@ -262,24 +259,24 @@ export const FramePointComponent = ({ framePoint }: { framePoint: VideoFramePoin
 
     const circleRadius = interpolate(
         frame,
-        [pointShowStart, framePoint.frameTimestamp * FPS, pointShowEnd],
+        [pointShowStart, framePoint.timestamp * FPS, pointShowEnd],
         [0.5, 1, 0]
     );
 
     return (
         <>
-            {framePoint.points.map((point, i) => (
+            {framePoint.tracks.map((point, i) => (
                 <SVGPoint key={i} point={point} circleRadius={circleRadius * 10} />
             ))}
         </>
     );
 };
 
-export const FramePointBlinkComponent = ({ framePoint }: { framePoint: VideoFramePoints }) => {
+export const FramePointBlinkComponent = ({ framePoint }: { framePoint: PerFrameTrackPoints }) => {
     const frame = useCurrentFrame();
 
-    const pointShowStart = (framePoint.frameTimestamp - 0.05) * FPS;
-    const pointShowEnd = (framePoint.frameTimestamp + 0.05) * FPS;
+    const pointShowStart = (framePoint.timestamp - 0.05) * FPS;
+    const pointShowEnd = (framePoint.timestamp + 0.05) * FPS;
 
     if (frame < pointShowStart || frame > pointShowEnd) {
         return null;
@@ -287,14 +284,14 @@ export const FramePointBlinkComponent = ({ framePoint }: { framePoint: VideoFram
 
     return (
         <>
-            {framePoint.points.map((point, i) => (
+            {framePoint.tracks.map((point, i) => (
                 <SVGPoint key={i} point={point} circleRadius={10} />
             ))}
         </>
     );
 };
 
-const SVGPoint = ({ point, circleRadius = 10 }: { point: Point; circleRadius: number }) => {
+const SVGPoint = ({ point, circleRadius = 10 }: { point: TrackPoint; circleRadius: number }) => {
     const { height, width } = useVideoConfig();
 
     return (

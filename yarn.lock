@@ -13521,6 +13521,11 @@ tapable@^2.2.0:
   resolved "https://registry.npmjs.org/tapable/-/tapable-2.2.1.tgz"
   integrity sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==
 
+temml@^0.12.1:
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/temml/-/temml-0.12.1.tgz#df4b19792c323567a114f5464d70b7e8b3143f7a"
+  integrity sha512-7rKps3v+yZ/1aWp2VQkuOgJKiwLgaL5hLR3q8gAglMCqUbofR98frEjHfutW+xncIRzGskucsdTD6aucJ557jg==
+
 terser-webpack-plugin@^5.3.10:
   version "5.3.14"
   resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-5.3.14.tgz#9031d48e57ab27567f02ace85c7d690db66c3e06"

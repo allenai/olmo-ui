@@ -47,13 +47,13 @@ export type VideoFramePoints = {
     frameList: PerFramePoints[];
 };
 
-type TrackPoint = {
+export type TrackPoint = {
     trackId: string;
     x: number;
     y: number;
 };
 
-type PerFrameTrackPoints = {
+export type PerFrameTrackPoints = {
     timestamp: number;
     tracks: TrackPoint[];
 };
