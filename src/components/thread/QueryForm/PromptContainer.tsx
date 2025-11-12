@@ -1,6 +1,12 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Box } from '@mui/material';
 import type { PropsWithChildren, ReactNode } from 'react';
+
+const promptContainerClassName = css({
+    width: '[100%]',
+    display: 'flex',
+    alignItems: 'end',
+    columnGap: '1',
+});
 
 const startAdornmentClassName = css({
     display: 'flex',
@@ -23,16 +29,10 @@ export const PromptContainer = ({
     children,
 }: PromptContainerProps): ReactNode => {
     return (
-        <Box
-            sx={(theme) => ({
-                width: 1,
-                display: 'flex',
-                alignItems: 'end',
-                columnGap: theme.spacing(1),
-            })}>
+        <div className={promptContainerClassName}>
             <div className={startAdornmentClassName}>{startAdornment}</div>
             {children}
             <div className={endAdornmentClassName}>{endAdornment}</div>
-        </Box>
+        </div>
     );
 };
