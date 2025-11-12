@@ -20,14 +20,17 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
+
     const { data: lastImagesInThread } = useThread(threadId, (thread) => {
         return thread.messages
             .filter((message) => message.role === Role.User && message.fileUrls?.length)
             .at(-1)?.fileUrls;
     });
+
     if (!message) {
         return null; // this shouldn't happen
     }
+
     const { content } = message;
 
     if (lastImagesInThread == null) {

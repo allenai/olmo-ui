@@ -1,0 +1,1 @@
+export { PointPictureModal } from './PointPictureModal';

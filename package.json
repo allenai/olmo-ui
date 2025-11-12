@@ -18,6 +18,7 @@
     "prepare": "panda",
     "start": "run-p -r watch:css \"build:dev --port 3000 --host\"",
     "dev": "run-p -r watch:css \"build:dev --port 8080\"",
+    "dev-with-mocks": "run-p -r watch:css \"build:dev --port 8080 --mode test\"",
     "storybook": "run-p -r  watch:css storybook-start-dev",
     "storybook-start-dev": "storybook dev -p 6006",
     "test": "vitest run",

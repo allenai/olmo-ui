@@ -6,7 +6,7 @@ import { Point, PointInfo } from '../points/molmo1/extractPointData';
 import { PointCircle } from './PointCircle';
 import { usePointColors } from './usePointColors';
 
-interface PointPictureProps {
+export interface PointPictureProps {
     imageLink: string;
     pointInfos: PointInfo[];
     caption?: React.ReactNode;
