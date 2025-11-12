@@ -2,6 +2,9 @@ import { Auth0Client as Auth0ClientClass, createAuth0Client, User } from '@auth0
 
 // adapted from https://github.com/brophdawg11/react-router-auth0-example/blob/91ad7ba916d8a3ecc348c037e1e534b4d87360cd/src/auth.ts
 
+const SCOPES = ['openid', 'profile', 'email', 'read:internal-models', 'write:model-config'];
+const JOINED_SCOPE = SCOPES.join(' ');
+
 class Auth0Client {
     #auth0Client: Auth0ClientClass | undefined;
 
@@ -18,6 +21,7 @@ class Auth0Client {
                 domain: VITE_AUTH0_DOMAIN,
                 clientId: VITE_AUTH0_CLIENT_ID,
                 authorizationParams: {
+                    scope: JOINED_SCOPE,
                     // This isn't noted in the docs but it's needed if you want to use the token on the API end
                     audience: process.env.VITE_AUTH0_OLMO_API_AUDIENCE,
                 },
@@ -66,7 +70,7 @@ class Auth0Client {
 
         await client.loginWithRedirect({
             authorizationParams: {
-                scope: 'openid profile email read:internal-models write:model-config',
+                scope: JOINED_SCOPE,
                 redirect_uri:
                     window.location.origin +
                     '/login-result?' +
