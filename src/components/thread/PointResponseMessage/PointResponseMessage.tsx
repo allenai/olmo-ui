@@ -102,7 +102,13 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     } else if (pointInfos?.type === 'frame-points' || pointInfos?.type === 'track-points') {
         // TODO: this space reserved for video points components
         if (pointInfos.type == 'track-points') {
-            return <MolmoVideo version="three" videoTracking={pointInfos} />;
+            return (
+                <MolmoVideo
+                    version="three"
+                    videoTracking={pointInfos}
+                    videoUrl={lastImagesInThread[0]}
+                />
+            );
         }
         return null;
     }

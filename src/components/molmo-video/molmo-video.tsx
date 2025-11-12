@@ -15,11 +15,11 @@ import { VideoCountObjectComponent } from './video-visuals/two';
 export const FPS = 30;
 
 export const MolmoVideoComposition = ({
-    fileName,
+    videoUrl,
     version,
     data,
 }: {
-    fileName: string;
+    videoUrl: string;
     version: string;
     data: VideoTrackingPoints;
 }) => {
@@ -29,7 +29,7 @@ export const MolmoVideoComposition = ({
                 <AbsoluteFill>
                     <VideoTracking data={data} version={version} />
                 </AbsoluteFill>
-                <Video muted={true} src={staticFile(fileName)} />
+                <Video muted={true} src={videoUrl} />
             </AbsoluteFill>
         </AbsoluteFill>
     );
@@ -42,9 +42,11 @@ const postTimestampOffset = 0.15;
 export const MolmoVideo = ({
     version,
     videoTracking,
+    videoUrl,
 }: {
     version: string;
     videoTracking: VideoTrackingPoints;
+    videoUrl: string;
 }) => {
     const playerRef = useRef<PlayerRef>(null);
     const durationInFrames = 10 * FPS;
@@ -57,7 +59,7 @@ export const MolmoVideo = ({
                         acknowledgeRemotionLicense
                         ref={playerRef}
                         component={MolmoVideoComposition}
-                        inputProps={{ fileName: 'mclaren-track.MP4', version, data: videoTracking }}
+                        inputProps={{ videoUrl, version, data: videoTracking }}
                         durationInFrames={durationInFrames}
                         compositionWidth={1460 / 2}
                         compositionHeight={864 / 2}
