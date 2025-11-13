@@ -49,7 +49,7 @@ export const MolmoVideo = ({
     const playerRef = useRef<PlayerRef>(null);
 
     const fps = 30;
-    const durationInFrames = 10 * fps;
+    const durationInFrames = 12 * fps;
 
     return (
         <div>
@@ -155,12 +155,18 @@ export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTracking
     const yAnimated = interpolate(frame, times, y);
     const sizeAnimated = interpolate(frame, sizeTimes, size);
 
+    if (frame < times[0] || frame > times[times.length - 1]) {
+        return null;
+    }
+
     return (
         <svg width={width} height={height}>
             <circle
                 cy={`${yAnimated}%`}
                 cx={`${xAnimated}%`}
                 r={10}
+                stroke={'white'}
+                strokeWidth={2}
                 fill={sizeAnimated > 0.5 ? varnishTheme.palette.primary.main : 'transparent'}
             />
         </svg>

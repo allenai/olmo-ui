@@ -8,7 +8,8 @@ import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes'
 const useKeyboardControls = (
     playerRef: React.RefObject<PlayerRef | null>,
     data: VideoTrackingPoints,
-    fps: number
+    fps: number,
+    durationInFrames: number
 ) => {
     const timesOfInterest = useMemo(() => {
         return [
@@ -16,6 +17,7 @@ const useKeyboardControls = (
             ...data.frameList.map((frame) => {
                 return frame.timestamp;
             }),
+            durationInFrames / fps,
         ];
     }, [data]);
 
@@ -29,15 +31,15 @@ const useKeyboardControls = (
 
             const lastIndex = timesOfInterest.findIndex((v) => v >= time);
 
-            const backTime =
-                time == timesOfInterest[lastIndex]
-                    ? timesOfInterest[lastIndex - 1]
-                    : timesOfInterest[lastIndex];
             let outTime = 0;
+
             if (direction === 'back') {
+                const backTime = timesOfInterest[lastIndex - 1];
                 if (backTime) outTime = backTime;
             } else {
-                outTime = timesOfInterest[lastIndex + 1];
+                const move = time === timesOfInterest[lastIndex] ? lastIndex + 1 : lastIndex;
+                const nextIndex = Math.min(move, timesOfInterest.length - 1);
+                outTime = timesOfInterest[nextIndex];
             }
             playerRef.current.seekTo(outTime * fps);
         },
@@ -113,7 +115,7 @@ export const SeekBar: React.FC<{
     const [playing, setPlaying] = useState(false);
     const [frame, setFrame] = useState(0);
 
-    useKeyboardControls(playerRef, data, fps);
+    useKeyboardControls(playerRef, data, fps, durationInFrames);
 
     useEffect(() => {
         const { current } = playerRef;
@@ -356,5 +358,5 @@ const knob = css({
     position: 'absolute',
     cursor: 'grab',
     top: '1',
-    backgroundColor: 'pink.100',
+    backgroundColor: 'dark-teal.100',
 });
