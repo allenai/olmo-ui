@@ -1,8 +1,74 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import type { PlayerRef } from '@remotion/player';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { interpolate } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+
+import { FPS } from './molmo-video';
+
+const useKeyboardControls = (
+    playerRef: React.RefObject<PlayerRef | null>,
+    data: VideoTrackingPoints
+) => {
+    const timesOfInterest = useMemo(() => {
+        return data.frameList.map((frame) => {
+            return frame.timestamp;
+        });
+    }, [data]);
+
+    const jumpBasedOnTime = useCallback(
+        (time: number, direction: 'forward' | 'back') => {
+            if (!playerRef.current) {
+                return;
+            }
+            const backIndex = Math.max(
+                timesOfInterest.findIndex((v) => timesOfInterest[v] > time),
+                0
+            );
+
+            let outTime = 0;
+            if (direction === 'back') {
+                outTime = timesOfInterest[backIndex];
+            } else {
+                outTime = timesOfInterest[backIndex + 1];
+            }
+            playerRef.current.seekTo(outTime * FPS);
+        },
+        [playerRef.current]
+    );
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!playerRef.current) {
+                return;
+            }
+
+            const player = playerRef.current;
+
+            // Arrow keys
+            if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+
+                player.pause();
+                jumpBasedOnTime(playerRef.current.getCurrentFrame(), 'back');
+                return;
+            }
+
+            if (e.code === 'ArrowRight') {
+                e.preventDefault();
+
+                player.pause();
+                jumpBasedOnTime(playerRef.current.getCurrentFrame(), 'forward');
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [playerRef, jumpBasedOnTime]);
+};
 
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
     const pos = clientX;
@@ -15,29 +81,8 @@ const getFrameFromX = (clientX: number, durationInFrames: number, width: number)
     return frame;
 };
 
-const BAR_HEIGHT = 5;
-const KNOB_SIZE = 12;
-const VERTICAL_PADDING = 4;
-
-const containerStyle: React.CSSProperties = {
-    userSelect: 'none',
-    WebkitUserSelect: 'none',
-    paddingTop: VERTICAL_PADDING,
-    paddingBottom: VERTICAL_PADDING,
-    boxSizing: 'border-box',
-    cursor: 'pointer',
-    position: 'relative',
-    touchAction: 'none',
-    flex: 1,
-};
-
-const barBackground: React.CSSProperties = {
-    height: BAR_HEIGHT,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    width: '100%',
-    borderRadius: BAR_HEIGHT / 2,
-};
-
+const BAR_HEIGHT = 25;
+const KNOB_WIDTH = 8;
 const findBodyInWhichDivIsLocated = (div: HTMLElement) => {
     let current = div;
 
@@ -53,13 +98,14 @@ export const SeekBar: React.FC<{
     inFrame?: number | null;
     outFrame?: number | null;
     playerRef: React.RefObject<PlayerRef | null>;
-
     data: VideoTrackingPoints;
     width: number;
-}> = ({ durationInFrames, width, inFrame, outFrame, playerRef }) => {
+}> = ({ data, durationInFrames, width, inFrame, outFrame, playerRef }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [playing, setPlaying] = useState(false);
     const [frame, setFrame] = useState(0);
+
+    useKeyboardControls(playerRef, data);
 
     useEffect(() => {
         const { current } = playerRef;
@@ -188,55 +234,113 @@ export const SeekBar: React.FC<{
         };
     }, [dragging.dragging, onPointerMove, onPointerUp]);
 
-    const knobStyle: React.CSSProperties = useMemo(() => {
-        return {
-            height: KNOB_SIZE,
-            width: KNOB_SIZE,
-            borderRadius: KNOB_SIZE / 2,
-            position: 'absolute',
-            top: VERTICAL_PADDING - KNOB_SIZE / 2 + 5 / 2,
-            backgroundColor: '#000',
-            left: Math.max(0, (frame / Math.max(1, durationInFrames - 1)) * width - KNOB_SIZE / 2),
-            boxShadow: '0 0 2px black',
-            transition: 'opacity 0.1s ease',
-        };
-    }, [durationInFrames, frame, width]);
-
-    const fillStyle: React.CSSProperties = useMemo(() => {
-        return {
-            height: BAR_HEIGHT,
-            backgroundColor: '#000',
-            width: ((frame - (inFrame ?? 0)) / (durationInFrames - 1)) * 100 + '%',
-            marginLeft: ((inFrame ?? 0) / (durationInFrames - 1)) * 100 + '%',
-            borderRadius: BAR_HEIGHT / 2,
-        };
-    }, [durationInFrames, frame, inFrame]);
-
-    const active: React.CSSProperties = useMemo(() => {
-        return {
-            height: BAR_HEIGHT,
-            backgroundColor: '#000',
-            opacity: 0.6,
-            width:
-                (((outFrame ?? durationInFrames - 1) - (inFrame ?? 0)) / (durationInFrames - 1)) *
-                    100 +
-                '%',
-            marginLeft: ((inFrame ?? 0) / (durationInFrames - 1)) * 100 + '%',
-            borderRadius: BAR_HEIGHT / 2,
-            position: 'absolute',
-        };
-    }, [durationInFrames, inFrame, outFrame]);
-
     return (
         <div
+            className={containerStyle}
             ref={containerRef}
             onPointerDown={onPointerDown}
-            style={{ ...containerStyle, width: width + 'px' }}>
-            <div style={barBackground}>
-                <div style={active} />
-                <div style={fillStyle} />
+            style={{ width: width + 'px' }}>
+            <div className={barBackground}>
+                <div
+                    style={{
+                        width: ((frame - (inFrame ?? 0)) / (durationInFrames - 1)) * 100 + '%',
+                        marginLeft: ((inFrame ?? 0) / (durationInFrames - 1)) * 100 + '%',
+                    }}
+                    className={barFill}
+                />
             </div>
-            <div style={knobStyle} />
+            <TrackingDotsTimeLine width={width} durationInFrames={durationInFrames} data={data} />
+            <div
+                id="knob"
+                className={knob}
+                style={{
+                    left: Math.max(
+                        0,
+                        (frame / Math.max(1, durationInFrames - 1)) * width - KNOB_WIDTH / 2
+                    ),
+                }}
+            />
         </div>
     );
 };
+
+const TRACKING_DOT_SIZE = 10;
+const TrackingDotsTimeLine = ({
+    data,
+    durationInFrames,
+    width,
+}: {
+    data: VideoTrackingPoints;
+    durationInFrames: number;
+    width: number;
+}) => {
+    const dots = useMemo(() => {
+        return data.frameList.map((frame) => {
+            return frame.timestamp / (durationInFrames / FPS);
+        });
+    }, [data]);
+
+    return (
+        <div
+            className={css({
+                position: 'absolute',
+                width: `[${width}px]`,
+                top: '[15px]',
+            })}>
+            {dots.map((dot, index) => {
+                return (
+                    <div
+                        key={index}
+                        className={css({
+                            position: 'absolute',
+                            width: `[${TRACKING_DOT_SIZE}px]`,
+                            height: `[${TRACKING_DOT_SIZE}px]`,
+                            borderRadius: 'full',
+                            backgroundColor: 'pink.100',
+                        })}
+                        style={{ left: dot * width - TRACKING_DOT_SIZE / 2 + 'px' }}
+                    />
+                );
+            })}
+        </div>
+    );
+};
+
+const containerStyle = css({
+    userSelect: 'none',
+    WebkitUserSelect: 'none',
+    paddingTop: '2',
+    paddingBottom: '2',
+    boxSizing: 'border-box',
+    cursor: 'pointer',
+    position: 'relative',
+    touchAction: 'none',
+    flex: '1',
+});
+
+const BORDER_WIDTH = 2;
+
+const barBackground = css({
+    height: `[${BAR_HEIGHT}px]`,
+    width: 'auto',
+    borderRadius: 'sm',
+    backgroundColor: 'white',
+    borderWidth: '2',
+    borderColor: 'pink.30',
+});
+
+const barFill = css({
+    height: `[${BAR_HEIGHT - 4}px]`,
+    backgroundColor: 'pink.10',
+    borderRadius: 'sm',
+});
+
+const knob = css({
+    height: `[${BAR_HEIGHT + 10}px]`,
+    width: `[${KNOB_WIDTH}px]`,
+    borderRadius: 'sm',
+    position: 'absolute',
+    cursor: 'grab',
+    top: '1',
+    backgroundColor: 'pink.100',
+});

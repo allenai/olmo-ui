@@ -3,7 +3,7 @@ import { varnishTheme } from '@allenai/varnish2/theme';
 import { Video } from '@remotion/media';
 import { Player, PlayerRef } from '@remotion/player';
 import { useMemo, useRef } from 'react';
-import { AbsoluteFill, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
@@ -65,6 +65,8 @@ export const MolmoVideo = ({
                         compositionHeight={864 / 2}
                         fps={FPS}
                         controls
+                        moveToBeginningWhenEnded={false}
+                        spaceKeyToPlayOrPause
                     />
                 </PointSelect>
             </div>
@@ -160,8 +162,6 @@ export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTracking
                 cy={`${yAnimated}%`}
                 cx={`${xAnimated}%`}
                 r={10}
-                stroke="white"
-                strokeWidth="3"
                 fill={sizeAnimated > 0.5 ? varnishTheme.palette.primary.main : 'transparent'}
             />
         </svg>
