@@ -12,26 +12,33 @@ const useKeyboardControls = (
     data: VideoTrackingPoints
 ) => {
     const timesOfInterest = useMemo(() => {
-        return data.frameList.map((frame) => {
-            return frame.timestamp;
-        });
+        return [
+            0,
+            ...data.frameList.map((frame) => {
+                return frame.timestamp;
+            }),
+        ];
     }, [data]);
 
     const jumpBasedOnTime = useCallback(
-        (time: number, direction: 'forward' | 'back') => {
+        (frame: number, direction: 'forward' | 'back') => {
             if (!playerRef.current) {
                 return;
             }
-            const backIndex = Math.max(
-                timesOfInterest.findIndex((v) => timesOfInterest[v] > time),
-                0
-            );
 
+            const time = frame / FPS;
+
+            const lastIndex = timesOfInterest.findIndex((v) => v >= time);
+
+            const backTime =
+                time == timesOfInterest[lastIndex]
+                    ? timesOfInterest[lastIndex - 1]
+                    : timesOfInterest[lastIndex];
             let outTime = 0;
             if (direction === 'back') {
-                outTime = timesOfInterest[backIndex];
+                if (backTime) outTime = backTime;
             } else {
-                outTime = timesOfInterest[backIndex + 1];
+                outTime = timesOfInterest[lastIndex + 1];
             }
             playerRef.current.seekTo(outTime * FPS);
         },
@@ -49,7 +56,6 @@ const useKeyboardControls = (
             // Arrow keys
             if (e.code === 'ArrowLeft') {
                 e.preventDefault();
-
                 player.pause();
                 jumpBasedOnTime(playerRef.current.getCurrentFrame(), 'back');
                 return;
@@ -57,7 +63,6 @@ const useKeyboardControls = (
 
             if (e.code === 'ArrowRight') {
                 e.preventDefault();
-
                 player.pause();
                 jumpBasedOnTime(playerRef.current.getCurrentFrame(), 'forward');
             }
