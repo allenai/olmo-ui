@@ -161,7 +161,7 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
                     />
                 </MessageComponent>
                 <ImageList>
-                    {(fileUrls || []).map((url, idx) => (
+                    {[].map((url, idx) => (
                         <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT }}>
                             <img src={url} alt={'Uploaded'} loading="lazy" />
                         </ImageListItem>

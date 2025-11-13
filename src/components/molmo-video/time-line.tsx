@@ -5,83 +5,10 @@ import { interpolate } from 'remotion';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 
+import { Button } from '@allenai/varnish-ui';
+
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
-
-const useKeyboardControls = (
-    playerRef: React.RefObject<PlayerRef | null>,
-    data: VideoTrackingPoints,
-    fps: number,
-    durationInFrames: number
-) => {
-    const timesOfInterest = useMemo(() => {
-        return [
-            0,
-            ...data.frameList.map((frame) => {
-                return frame.timestamp;
-            }),
-            durationInFrames / fps,
-        ];
-    }, [data]);
-
-    const jumpBasedOnTime = useCallback(
-        (frame: number, direction: 'forward' | 'back') => {
-            if (!playerRef.current) {
-                return;
-            }
-
-            const time = frame / fps;
-
-            const lastIndex = timesOfInterest.findIndex((v) => v >= time);
-
-            let outTime = 0;
-
-            if (direction === 'back') {
-                const backTime = timesOfInterest[lastIndex - 1];
-                if (backTime) outTime = backTime;
-            } else {
-                const move = time === timesOfInterest[lastIndex] ? lastIndex + 1 : lastIndex;
-                const nextIndex = Math.min(move, timesOfInterest.length - 1);
-                outTime = timesOfInterest[nextIndex];
-            }
-            playerRef.current.seekTo(outTime * fps);
-        },
-        [playerRef.current, fps]
-    );
-
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (!playerRef.current) {
-                return;
-            }
-
-            const player = playerRef.current;
-
-            if (e.code === 'Space') {
-                player.isPlaying() ? player.pause() : player.play();
-                return;
-            }
-
-            if (e.code === 'ArrowLeft') {
-                e.preventDefault();
-                player.pause();
-                jumpBasedOnTime(playerRef.current.getCurrentFrame(), 'back');
-                return;
-            }
-
-            if (e.code === 'ArrowRight') {
-                e.preventDefault();
-                player.pause();
-                jumpBasedOnTime(playerRef.current.getCurrentFrame(), 'forward');
-                return;
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [playerRef, jumpBasedOnTime]);
-};
+import { useKeyboardControls } from './KeyboardControls';
 
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
     const pos = clientX;
@@ -95,7 +22,9 @@ const getFrameFromX = (clientX: number, durationInFrames: number, width: number)
 };
 
 const BAR_HEIGHT = 25;
-const KNOB_WIDTH = 8;
+const KNOB_WIDTH = 10;
+
+const LEFT_OFF_SET = 10;
 const findBodyInWhichDivIsLocated = (div: HTMLElement) => {
     let current = div;
 
@@ -260,9 +189,9 @@ export const SeekBar: React.FC<{
 
     return (
         <div className={timelineWrapper}>
-            <button className={playPauseButton} onClick={handlePlayPause}>
+            <Button className={playPauseButton} onClick={handlePlayPause}>
                 {playing ? <PauseIcon /> : <PlayArrowIcon />}
-            </button>
+            </Button>
             <div
                 className={containerStyle}
                 ref={containerRef}
@@ -271,27 +200,31 @@ export const SeekBar: React.FC<{
                 <div className={barBackground}>
                     <div
                         style={{
-                            width: (frame / (durationInFrames - 1)) * 100 + '%',
+                            width: (frame / (durationInFrames - 1)) * width + LEFT_OFF_SET + 'px',
                         }}
                         className={barFill}
                     />
+
+                    <TrackingDotsTimeLine
+                        fps={fps}
+                        width={width}
+                        durationInFrames={durationInFrames}
+                        data={data}
+                    />
+                    <div
+                        id="knob"
+                        className={knob}
+                        style={{
+                            left:
+                                LEFT_OFF_SET +
+                                Math.max(
+                                    0,
+                                    (frame / Math.max(1, durationInFrames - 1)) * width -
+                                        KNOB_WIDTH / 2
+                                ),
+                        }}
+                    />
                 </div>
-                <TrackingDotsTimeLine
-                    fps={fps}
-                    width={width}
-                    durationInFrames={durationInFrames}
-                    data={data}
-                />
-                <div
-                    id="knob"
-                    className={knob}
-                    style={{
-                        left: Math.max(
-                            0,
-                            (frame / Math.max(1, durationInFrames - 1)) * width - KNOB_WIDTH / 2
-                        ),
-                    }}
-                />
             </div>
         </div>
     );
@@ -333,7 +266,7 @@ const TrackingDotsTimeLine = ({
                             borderRadius: 'full',
                             backgroundColor: 'pink.100',
                         })}
-                        style={{ left: dot * width - TRACKING_DOT_SIZE / 2 + 'px' }}
+                        style={{ left: dot * width - TRACKING_DOT_SIZE / 2 + LEFT_OFF_SET + 'px' }}
                     />
                 );
             })}
@@ -352,8 +285,6 @@ const containerStyle = css({
     touchAction: 'none',
     flex: '1',
 });
-
-const BORDER_WIDTH = 2;
 
 const barBackground = css({
     height: `[${BAR_HEIGHT}px]`,

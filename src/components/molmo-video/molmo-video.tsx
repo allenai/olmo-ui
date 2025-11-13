@@ -27,7 +27,7 @@ export const MolmoVideoComposition = ({
                 <AbsoluteFill>
                     <VideoTracking data={data} version={version} />
                 </AbsoluteFill>
-                <Video muted={true} src={videoUrl} />
+                <Video className={css({ borderRadius: 'sm' })} muted={true} src={videoUrl} />
             </AbsoluteFill>
         </AbsoluteFill>
     );
