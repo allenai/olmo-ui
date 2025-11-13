@@ -1,3 +1,4 @@
+import { DevTool } from '@hookform/devtools';
 import { Stack, Typography } from '@mui/material';
 import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
 import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
@@ -237,6 +238,9 @@ export const QueryFormController = ({
                             You cannot add a prompt because you are not the thread creator. Please
                             submit your prompt in a new thread.
                         </Typography>
+                    )}
+                    {process.env.NODE_ENV === 'development' && (
+                        <DevTool control={formContext.control} />
                     )}
                 </Stack>
             </FormContainer>
