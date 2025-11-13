@@ -1,16 +1,15 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import type { PlayerRef } from '@remotion/player';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { interpolate } from 'remotion';
+import { interpolate, useVideoConfig } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
-
-import { FPS } from './molmo-video';
 
 const useKeyboardControls = (
     playerRef: React.RefObject<PlayerRef | null>,
     data: VideoTrackingPoints
 ) => {
+    const { fps } = useVideoConfig();
     const timesOfInterest = useMemo(() => {
         return [
             0,
@@ -26,7 +25,7 @@ const useKeyboardControls = (
                 return;
             }
 
-            const time = frame / FPS;
+            const time = frame / fps;
 
             const lastIndex = timesOfInterest.findIndex((v) => v >= time);
 
@@ -40,9 +39,9 @@ const useKeyboardControls = (
             } else {
                 outTime = timesOfInterest[lastIndex + 1];
             }
-            playerRef.current.seekTo(outTime * FPS);
+            playerRef.current.seekTo(outTime * fps);
         },
-        [playerRef.current]
+        [playerRef.current, fps]
     );
 
     useEffect(() => {
@@ -53,7 +52,11 @@ const useKeyboardControls = (
 
             const player = playerRef.current;
 
-            // Arrow keys
+            if (e.code === 'Space') {
+                player.isPlaying() ? player.pause() : player.play();
+                return;
+            }
+
             if (e.code === 'ArrowLeft') {
                 e.preventDefault();
                 player.pause();
@@ -65,6 +68,7 @@ const useKeyboardControls = (
                 e.preventDefault();
                 player.pause();
                 jumpBasedOnTime(playerRef.current.getCurrentFrame(), 'forward');
+                return;
             }
         };
 
@@ -99,13 +103,11 @@ const findBodyInWhichDivIsLocated = (div: HTMLElement) => {
 };
 
 export const SeekBar: React.FC<{
-    durationInFrames: number;
-    inFrame?: number | null;
-    outFrame?: number | null;
     playerRef: React.RefObject<PlayerRef | null>;
     data: VideoTrackingPoints;
     width: number;
-}> = ({ data, durationInFrames, width, inFrame, outFrame, playerRef }) => {
+}> = ({ data, width, playerRef }) => {
+    const { fps, durationInFrames } = useVideoConfig();
     const containerRef = useRef<HTMLDivElement>(null);
     const [playing, setPlaying] = useState(false);
     const [frame, setFrame] = useState(0);
@@ -254,7 +256,12 @@ export const SeekBar: React.FC<{
                     className={barFill}
                 />
             </div>
-            <TrackingDotsTimeLine width={width} durationInFrames={durationInFrames} data={data} />
+            <TrackingDotsTimeLine
+                fps={fps}
+                width={width}
+                durationInFrames={durationInFrames}
+                data={data}
+            />
             <div
                 id="knob"
                 className={knob}
@@ -278,10 +285,11 @@ const TrackingDotsTimeLine = ({
     data: VideoTrackingPoints;
     durationInFrames: number;
     width: number;
+    fps: number;
 }) => {
     const dots = useMemo(() => {
         return data.frameList.map((frame) => {
-            return frame.timestamp / (durationInFrames / FPS);
+            return frame.timestamp / (durationInFrames / fps);
         });
     }, [data]);
 

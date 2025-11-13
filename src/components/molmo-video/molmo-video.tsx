@@ -64,9 +64,7 @@ export const MolmoVideo = ({
                         compositionWidth={1460 / 2}
                         compositionHeight={864 / 2}
                         fps={FPS}
-                        controls
                         moveToBeginningWhenEnded={false}
-                        spaceKeyToPlayOrPause
                     />
                 </PointSelect>
             </div>
