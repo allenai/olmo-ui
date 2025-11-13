@@ -15,8 +15,8 @@ export const SVGPoint = ({
     return (
         <svg width={width} height={height}>
             <circle
-                cy={`${point.y * 100}%`}
-                cx={`${point.x * 100}%`}
+                cy={`${point.y}%`}
+                cx={`${point.x}%`}
                 r={circleRadius}
                 stroke="white"
                 strokeWidth="3"

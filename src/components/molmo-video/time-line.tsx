@@ -2,6 +2,8 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import type { PlayerRef } from '@remotion/player';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { interpolate } from 'remotion';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
@@ -110,7 +112,8 @@ export const SeekBar: React.FC<{
     width: number;
     fps: number;
     durationInFrames: number;
-}> = ({ data, width, playerRef, fps, durationInFrames }) => {
+}> = ({ data, width: inputWidth, playerRef, fps, durationInFrames }) => {
+    const width = inputWidth - 50;
     const containerRef = useRef<HTMLDivElement>(null);
     const [playing, setPlaying] = useState(false);
     const [frame, setFrame] = useState(0);
@@ -244,36 +247,52 @@ export const SeekBar: React.FC<{
         };
     }, [dragging.dragging, onPointerMove, onPointerUp]);
 
+    const handlePlayPause = useCallback(() => {
+        if (!playerRef.current) {
+            return;
+        }
+        if (playing) {
+            playerRef.current.pause();
+        } else {
+            playerRef.current.play();
+        }
+    }, [playerRef, playing]);
+
     return (
-        <div
-            className={containerStyle}
-            ref={containerRef}
-            onPointerDown={onPointerDown}
-            style={{ width: width + 'px' }}>
-            <div className={barBackground}>
+        <div className={timelineWrapper}>
+            <button className={playPauseButton} onClick={handlePlayPause}>
+                {playing ? <PauseIcon /> : <PlayArrowIcon />}
+            </button>
+            <div
+                className={containerStyle}
+                ref={containerRef}
+                onPointerDown={onPointerDown}
+                style={{ width: width + 'px' }}>
+                <div className={barBackground}>
+                    <div
+                        style={{
+                            width: (frame / (durationInFrames - 1)) * 100 + '%',
+                        }}
+                        className={barFill}
+                    />
+                </div>
+                <TrackingDotsTimeLine
+                    fps={fps}
+                    width={width}
+                    durationInFrames={durationInFrames}
+                    data={data}
+                />
                 <div
+                    id="knob"
+                    className={knob}
                     style={{
-                        width: (frame / (durationInFrames - 1)) * 100 + '%',
+                        left: Math.max(
+                            0,
+                            (frame / Math.max(1, durationInFrames - 1)) * width - KNOB_WIDTH / 2
+                        ),
                     }}
-                    className={barFill}
                 />
             </div>
-            <TrackingDotsTimeLine
-                fps={fps}
-                width={width}
-                durationInFrames={durationInFrames}
-                data={data}
-            />
-            <div
-                id="knob"
-                className={knob}
-                style={{
-                    left: Math.max(
-                        0,
-                        (frame / Math.max(1, durationInFrames - 1)) * width - KNOB_WIDTH / 2
-                    ),
-                }}
-            />
         </div>
     );
 };
@@ -359,4 +378,26 @@ const knob = css({
     cursor: 'grab',
     top: '1',
     backgroundColor: 'dark-teal.100',
+});
+
+const timelineWrapper = css({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '2',
+});
+
+const playPauseButton = css({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '1',
+    backgroundColor: 'white',
+    border: '2px solid',
+    borderColor: 'pink.30',
+    borderRadius: 'full',
+    cursor: 'pointer',
+    transition: '[all 0.2s]',
+    _hover: {
+        backgroundColor: 'pink.10',
+    },
 });

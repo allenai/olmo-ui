@@ -48,7 +48,7 @@ export const MolmoVideo = ({
 }) => {
     const playerRef = useRef<PlayerRef>(null);
 
-    const fps = 30;
+    const fps = 24;
     const durationInFrames = 12 * fps;
 
     return (
@@ -71,7 +71,7 @@ export const MolmoVideo = ({
             <SeekBar
                 fps={fps}
                 playerRef={playerRef}
-                width={400}
+                width={1460 / 2}
                 data={videoTracking}
                 durationInFrames={durationInFrames}
             />
