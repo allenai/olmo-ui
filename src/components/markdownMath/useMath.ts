@@ -13,7 +13,7 @@ export const useMath = ({ math, inline = false }: UseMathParams): ReactNode => {
     try {
         // this lib is based of katex and has better support, but outputs
         // MathML -- which is baseline supported now.
-        const mathml = temml.renderToString(math, { displayMode: inline, throwOnError: true });
+        const mathml = temml.renderToString(math, { displayMode: !inline, throwOnError: true });
         // `fromHtmlIsomorphic` is light weight and uses the browser if possible
         const result = fromHtmlIsomorphic(mathml, { fragment: true });
         // hast util (powers react-markdown), that generates a JSX fragment
