@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { Box } from '@mui/material';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
@@ -11,6 +12,14 @@ import { DeepResearchCite } from '@/components/thread/DeepResearch/DeepResearchM
 import { CodeBlock } from '../CodeBlock';
 import { CustomDivider, CustomLink, CustomParagraph } from './CustomComponents';
 import { SANITIZED_ID_PREFIX } from './MarkdownRenderConstants';
+
+const markdownStyles = css({
+    '& ul, & ol': {
+        margin: '[revert]',
+        padding: '[revert]',
+        listStyle: '[revert]',
+    },
+});
 
 interface MarkdownRendererProps {
     children: string;
@@ -39,6 +48,7 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
         // @ts-expect-error - We add attribution-highlight as a custom element
         <Box
             component={Markdown}
+            className={markdownStyles}
             remarkPlugins={[remarkGfm, customRemarkMath]}
             rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{
