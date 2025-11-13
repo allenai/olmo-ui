@@ -1,8 +1,7 @@
-import { useCurrentFrame } from 'remotion';
+import { useCurrentFrame, useVideoConfig } from 'remotion';
 
 import { PerFrameTrackPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { FPS } from '../molmo-video';
 import { SVGPoint } from './point';
 export const VideoCountObjectBlinkComponent = ({ object }: { object: PerFrameTrackPoints }) => {
     return (
@@ -14,9 +13,10 @@ export const VideoCountObjectBlinkComponent = ({ object }: { object: PerFrameTra
 
 export const FramePointBlinkComponent = ({ framePoint }: { framePoint: PerFrameTrackPoints }) => {
     const frame = useCurrentFrame();
+    const { fps } = useVideoConfig();
 
-    const pointShowStart = (framePoint.timestamp - 0.05) * FPS;
-    const pointShowEnd = (framePoint.timestamp + 0.05) * FPS;
+    const pointShowStart = (framePoint.timestamp - 0.05) * fps;
+    const pointShowEnd = (framePoint.timestamp + 0.05) * fps;
 
     if (frame < pointShowStart || frame > pointShowEnd) {
         return null;

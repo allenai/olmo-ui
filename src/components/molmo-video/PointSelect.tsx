@@ -3,13 +3,13 @@ import { ReactNode, useState } from 'react';
 
 import { PerFrameTrackPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { FPS } from './molmo-video';
 import { useCurrentPlayerFrame } from './use-current-player-frame';
 
 export const PointSelect: React.FC<{
     playerRef: React.RefObject<PlayerRef | null>;
     children: ReactNode;
-}> = ({ playerRef, children }) => {
+    fps: number;
+}> = ({ playerRef, children, fps }) => {
     const frame = useCurrentPlayerFrame(playerRef);
     const [points, setPoints] = useState<PerFrameTrackPoints[]>([]);
 
@@ -22,7 +22,7 @@ export const PointSelect: React.FC<{
         const y = (event.clientY - rect.top) / rect.height;
 
         // Create VideoFramePoints based on the current frame
-        const timestamp = frame / FPS;
+        const timestamp = frame / fps;
         const newFramePoint: PerFrameTrackPoints = {
             timestamp,
             tracks: [

@@ -3,14 +3,12 @@ import { useCurrentFrame, useVideoConfig } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { FPS } from '../molmo-video';
-
 const preTimestampOffset = 0.15;
 
 const postTimestampOffset = 0.15;
 
 export const VideoDotTrailsTrackObjectComponent = ({ object }: { object: VideoTrackingPoints }) => {
-    const { height, width } = useVideoConfig();
+    const { height, width, fps } = useVideoConfig();
 
     // TODO: Handle multiple tracks...
 
@@ -30,9 +28,9 @@ export const VideoDotTrailsTrackObjectComponent = ({ object }: { object: VideoTr
     const { sizeTimes, size } = useMemo(() => {
         // TODO Breaks if translating points closer that .15 seconds together
         const animation = object.frameList.flatMap((framePoints) => {
-            const before = (framePoints.timestamp - preTimestampOffset) * FPS;
-            const time = framePoints.timestamp * FPS;
-            const after = (framePoints.timestamp + postTimestampOffset) * FPS;
+            const before = (framePoints.timestamp - preTimestampOffset) * fps;
+            const time = framePoints.timestamp * fps;
+            const after = (framePoints.timestamp + postTimestampOffset) * fps;
 
             return [
                 [before, 0],

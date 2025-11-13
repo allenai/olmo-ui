@@ -12,8 +12,6 @@ import { SeekBar } from './time-line';
 import { VideoCountObjectBlinkComponent } from './video-visuals/one';
 import { VideoCountObjectComponent } from './video-visuals/two';
 
-export const FPS = 30;
-
 export const MolmoVideoComposition = ({
     videoUrl,
     version,
@@ -49,12 +47,14 @@ export const MolmoVideo = ({
     videoUrl: string;
 }) => {
     const playerRef = useRef<PlayerRef>(null);
-    const durationInFrames = 10 * FPS;
+
+    const fps = 30;
+    const durationInFrames = 10 * fps;
 
     return (
         <div>
             <div className={css({ display: 'flex', flexDirection: 'column', alignItems: 'start' })}>
-                <PointSelect playerRef={playerRef}>
+                <PointSelect playerRef={playerRef} fps={fps}>
                     <Player
                         acknowledgeRemotionLicense
                         ref={playerRef}
@@ -63,16 +63,17 @@ export const MolmoVideo = ({
                         durationInFrames={durationInFrames}
                         compositionWidth={1460 / 2}
                         compositionHeight={864 / 2}
-                        fps={FPS}
+                        fps={fps}
                         moveToBeginningWhenEnded={false}
                     />
                 </PointSelect>
             </div>
             <SeekBar
-                durationInFrames={durationInFrames}
+                fps={fps}
                 playerRef={playerRef}
                 width={400}
                 data={videoTracking}
+                durationInFrames={durationInFrames}
             />
         </div>
     );
@@ -114,7 +115,7 @@ export const VideoTracking = ({
 
 export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTrackingPoints }) => {
     // TODO: Handle multiple tracks...
-    const { height, width } = useVideoConfig();
+    const { height, width, fps } = useVideoConfig();
 
     const { x, y, times } = useMemo(() => {
         const x = object.frameList.map((frame) => {
@@ -124,7 +125,7 @@ export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTracking
             return frame.tracks[0].y;
         });
         const times = object.frameList.map((frame) => {
-            return frame.timestamp * FPS;
+            return frame.timestamp * fps;
         });
         return { x, y, times };
     }, [object]);
@@ -132,9 +133,9 @@ export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTracking
     const { sizeTimes, size } = useMemo(() => {
         // TODO Breaks if translating points closer that .15 seconds together
         const animation = object.frameList.flatMap((framePoints) => {
-            const before = (framePoints.timestamp - preTimestampOffset) * FPS;
-            const time = framePoints.timestamp * FPS;
-            const after = (framePoints.timestamp + postTimestampOffset) * FPS;
+            const before = (framePoints.timestamp - preTimestampOffset) * fps;
+            const time = framePoints.timestamp * fps;
+            const after = (framePoints.timestamp + postTimestampOffset) * fps;
 
             return [
                 [before, 0],

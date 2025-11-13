@@ -1,15 +1,15 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import type { PlayerRef } from '@remotion/player';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { interpolate, useVideoConfig } from 'remotion';
+import { interpolate } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 const useKeyboardControls = (
     playerRef: React.RefObject<PlayerRef | null>,
-    data: VideoTrackingPoints
+    data: VideoTrackingPoints,
+    fps: number
 ) => {
-    const { fps } = useVideoConfig();
     const timesOfInterest = useMemo(() => {
         return [
             0,
@@ -106,13 +106,14 @@ export const SeekBar: React.FC<{
     playerRef: React.RefObject<PlayerRef | null>;
     data: VideoTrackingPoints;
     width: number;
-}> = ({ data, width, playerRef }) => {
-    const { fps, durationInFrames } = useVideoConfig();
+    fps: number;
+    durationInFrames: number;
+}> = ({ data, width, playerRef, fps, durationInFrames }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [playing, setPlaying] = useState(false);
     const [frame, setFrame] = useState(0);
 
-    useKeyboardControls(playerRef, data);
+    useKeyboardControls(playerRef, data, fps);
 
     useEffect(() => {
         const { current } = playerRef;
@@ -250,8 +251,7 @@ export const SeekBar: React.FC<{
             <div className={barBackground}>
                 <div
                     style={{
-                        width: ((frame - (inFrame ?? 0)) / (durationInFrames - 1)) * 100 + '%',
-                        marginLeft: ((inFrame ?? 0) / (durationInFrames - 1)) * 100 + '%',
+                        width: (frame / (durationInFrames - 1)) * 100 + '%',
                     }}
                     className={barFill}
                 />
@@ -281,6 +281,7 @@ const TrackingDotsTimeLine = ({
     data,
     durationInFrames,
     width,
+    fps,
 }: {
     data: VideoTrackingPoints;
     durationInFrames: number;
