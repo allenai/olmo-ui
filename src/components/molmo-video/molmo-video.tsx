@@ -2,7 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { varnishTheme } from '@allenai/varnish2/theme';
 import { Video } from '@remotion/media';
 import { Player, PlayerRef } from '@remotion/player';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
@@ -37,6 +37,37 @@ const preTimestampOffset = 0.15;
 
 const postTimestampOffset = 0.15;
 
+/**
+ * Custom hook to calculate video duration in frames
+ * @param videoUrl - URL of the video
+ * @param fps - Frames per second
+ * @returns Duration in frames, or null if not yet loaded
+ */
+const useVideoDuration = (videoUrl: string, fps: number): number => {
+    const [durationInFrames, setDurationInFrames] = useState<number>(1);
+
+    useEffect(() => {
+        const videoElement = document.createElement('video');
+        videoElement.src = videoUrl;
+
+        const handleLoadedMetadata = () => {
+            const durationInSeconds = videoElement.duration;
+            const frames = Math.round(durationInSeconds * fps);
+            console.log(frames);
+            setDurationInFrames(frames);
+        };
+
+        videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+        return () => {
+            videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
+            videoElement.src = '';
+        };
+    }, [videoUrl, fps]);
+
+    return durationInFrames;
+};
+
 export const MolmoVideo = ({
     version,
     videoTracking,
@@ -49,7 +80,7 @@ export const MolmoVideo = ({
     const playerRef = useRef<PlayerRef>(null);
 
     const fps = 24;
-    const durationInFrames = 12 * fps;
+    const durationInFrames = useVideoDuration(videoUrl, fps);
 
     const width = 1460 / 2;
     const height = 864 / 2;
@@ -117,9 +148,6 @@ export const VideoTracking = ({
 };
 
 export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTrackingPoints }) => {
-    // TODO: Handle multiple tracks...
-    const { height, width, fps } = useVideoConfig();
-
     const objectIds = useMemo(() => {
         const ids: Record<string, boolean> = {};
         object.frameList.forEach((frame) => {
@@ -131,7 +159,7 @@ export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTracking
     return (
         <div className={css({ position: 'relative' })}>
             {objectIds.map((id) => (
-                <div className={css({ position: 'absolute', top: '0', left: '0' })}>
+                <div key={id} className={css({ position: 'absolute', top: '0', left: '0' })}>
                     <VideoSingleDotTrack key={id} trackId={id} object={object} />
                 </div>
             ))}
@@ -159,7 +187,7 @@ export const VideoSingleDotTrack = ({
             return frame.timestamp * fps;
         });
         return { x, y, times };
-    }, [object]);
+    }, [object, fps, trackId]);
 
     const { sizeTimes, size } = useMemo(() => {
         // TODO Breaks if translating points closer that .15 seconds together
@@ -178,7 +206,7 @@ export const VideoSingleDotTrack = ({
         const result = { sizeTimes: animation.map((a) => a[0]), size: animation.map((a) => a[1]) };
 
         return result;
-    }, [object]);
+    }, [object, fps]);
 
     const frame = useCurrentFrame();
 

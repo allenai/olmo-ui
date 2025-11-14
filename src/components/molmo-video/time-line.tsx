@@ -140,7 +140,7 @@ export const SeekBar: React.FC<{
             const _frame = getFrameFromX(e.clientX - posLeft, durationInFrames, width);
             playerRef.current.seekTo(_frame);
         },
-        [dragging.dragging, durationInFrames, playerRef]
+        [dragging.dragging, durationInFrames, playerRef, width]
     );
 
     const onPointerUp = useCallback(() => {
@@ -196,13 +196,12 @@ export const SeekBar: React.FC<{
             <div
                 className={containerStyle}
                 style={{
-                    width: width + TIMELINE_PADDING + 'px',
+                    width: `${width + TIMELINE_PADDING}px`,
                     paddingLeft: TIMELINE_PADDING / 2,
                 }}>
                 <div
                     style={{
-                        width:
-                            (frame / (durationInFrames - 1)) * width + TIMELINE_PADDING / 2 + 'px',
+                        width: `${(frame / (durationInFrames - 1)) * width + TIMELINE_PADDING / 2}px`,
                         marginLeft: TIMELINE_PADDING / -2,
                         position: 'absolute',
                     }}
@@ -245,7 +244,7 @@ const TrackingDotsTimeLine = ({
         return data.frameList.map((frame) => {
             return frame.timestamp / (durationInFrames / fps);
         });
-    }, [data]);
+    }, [data, durationInFrames, fps]);
 
     return (
         <>
@@ -261,7 +260,7 @@ const TrackingDotsTimeLine = ({
                             backgroundColor: 'pink.100',
                             top: '2',
                         })}
-                        style={{ left: dot * width - TRACKING_DOT_SIZE / 2 + 'px' }}
+                        style={{ left: `${dot * width - TRACKING_DOT_SIZE / 2}px` }}
                     />
                 );
             })}
