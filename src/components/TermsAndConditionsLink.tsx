@@ -11,7 +11,7 @@ export const TermAndConditionsLink = ({
 }: TermsAndConditionsLinkProps & PropsWithChildren) => {
     return (
         <Link
-            target="__blank"
+            target="_blank"
             rel="noreferrer"
             href={link}
             color="inherit"
