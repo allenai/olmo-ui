@@ -1,12 +1,6 @@
-import { css, cx } from '@allenai/varnish-panda-runtime/css';
-import {
-    Button,
-    Checkbox,
-    Modal,
-    ModalActions,
-    ModalContent,
-    ModalHeading,
-} from '@allenai/varnish-ui';
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { Button, Checkbox } from '@allenai/varnish-ui';
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -14,6 +8,7 @@ import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { TermAndConditionsLink } from './TermsAndConditionsLink';
+import { FadeOverflowContent } from './widgets/FadeOverflowContent';
 
 type FormValues = {
     termsAccepted: boolean;
@@ -69,77 +64,126 @@ export const TermsAndDataCollectionModal = ({
     const formId = 'terms-and-conditions-form';
 
     return (
-        <Modal
-            className={modalClass}
-            isOpen={isOpen}
-            isDismissable={false}
-            isKeyboardDismissDisabled={true}>
+        <Dialog
+            open={isOpen}
+            PaperProps={{
+                sx: {
+                    display: 'flex',
+                    background: 'transparent',
+                    maxWidth: '970px',
+                    minWidth: '300px',
+                    overflow: 'hidden',
+                    backgroundImage: 'none',
+                    padding: {
+                        xs: 1.5,
+                        md: 4,
+                    },
+                    margin: 0,
+                    maxHeight: '100%',
+                },
+            }}>
             <div className={containerClass}>
                 <img
                     className={imgClass}
                     src="/getting-started-section-1.png"
                     alt="Terms and Conditions"
                 />
-                <div>
-                    <ModalHeading className={cx(modalHeaderClass)} closeButton={false}>
+                <div className={modalContainer}>
+                    <DialogTitle
+                        sx={(theme) => ({
+                            backgroundColor: 'transparent',
+                            display: 'grid',
+                            gridTemplateRows: 'auto 1fr',
+                            gap: 2,
+                            fontSize: {
+                                // eslint-disable-next-line @typescript-eslint/no-deprecated
+                                xs: theme.font.size['2xl'],
+                                // eslint-disable-next-line @typescript-eslint/no-deprecated
+                                md: theme.font.size['4xl'],
+                            },
+                            lineHeight: '[1.2em]',
+                            padding: {
+                                xs: 2,
+                                md: 0,
+                            },
+                            paddingBlockEnd: 1,
+                        })}>
+                        <img
+                            src="/playground-logo.svg"
+                            alt="Return to the Playground home page"
+                            fetchPriority="high"
+                            className={playgroundLogoClassName}
+                        />
                         Terms of Use & Publication Consent
-                    </ModalHeading>
-                    <ModalContent className={modalContentClass}>
-                        <p>
-                            By using Playground, you agree to Ai2&apos;s{' '}
-                            <TermAndConditionsLink link={links.terms}>
-                                Terms of Use
-                            </TermAndConditionsLink>{' '}
-                            and{' '}
-                            <TermAndConditionsLink link={links.responsibleUseGuidelines}>
-                                Responsible Use Guidelines
-                            </TermAndConditionsLink>{' '}
-                            and have read Ai2&apos;s{' '}
-                            <TermAndConditionsLink link={links.privacyPolicy}>
-                                Privacy Policy
-                            </TermAndConditionsLink>
-                            . By accepting these terms, you agree{' '}
-                            <strong>
-                                not to submit any personal, sensitive, proprietary, or confidential
-                                information to Playground,
-                            </strong>
-                            and agree that Ai2 may use your interactions for AI training and
-                            scientific research.
-                        </p>
-                        <p>
-                            To accelerate scientific discovery, Ai2 may publish your{' '}
-                            <strong>de-identified</strong> Playground interactions in a public
-                            research dataset as part of its commitment to open science if you
-                            consent by checking the box below.
-                        </p>
-                        <form id={formId} onSubmit={formContext.handleSubmit(handleSubmit)}>
-                            <Controller
-                                name="dataCollectionAccepted"
-                                control={formContext.control}
-                                render={({ field: { onChange, value } }) => (
-                                    <Checkbox
-                                        className={checkboxClass}
-                                        color="default"
-                                        size="large"
-                                        isSelected={Boolean(value)}
-                                        onChange={onChange}>
-                                        <p>
-                                            <strong>Help improve open science!</strong> I consent to
-                                            the inclusion of my <strong>de-identified</strong>{' '}
-                                            interactions with Playground in a public research
-                                            dataset.
-                                        </p>
-                                    </Checkbox>
-                                )}
-                            />
-                        </form>
-                        <p>
-                            If you do not wish to agree to these terms, exit this page. You can
-                            still use Playground if you choose not to participate in the public
-                            research dataset.
-                        </p>
-                    </ModalContent>
-                    <ModalActions className={modalActionsClass}>
+                    </DialogTitle>
+                    <FadeOverflowContent>
+                        <DialogContent
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 2,
+                                paddingInline: {
+                                    xs: 2,
+                                    md: 0,
+                                },
+                            }}>
+                            <p>
+                                By using Playground, you agree to Ai2&apos;s{' '}
+                                <TermAndConditionsLink link={links.terms}>
+                                    Terms of Use
+                                </TermAndConditionsLink>{' '}
+                                and{' '}
+                                <TermAndConditionsLink link={links.responsibleUseGuidelines}>
+                                    Responsible Use Guidelines
+                                </TermAndConditionsLink>{' '}
+                                and have read Ai2&apos;s{' '}
+                                <TermAndConditionsLink link={links.privacyPolicy}>
+                                    Privacy Policy
+                                </TermAndConditionsLink>
+                                . By accepting these terms, you agree{' '}
+                                <strong>
+                                    not to submit any personal, sensitive, proprietary, or
+                                    confidential information to Playground,
+                                </strong>
+                                and agree that Ai2 may use your interactions for AI training and
+                                scientific research.
+                            </p>
+                            <p>
+                                To accelerate scientific discovery, Ai2 may publish your{' '}
+                                <strong>de-identified</strong> Playground interactions in a public
+                                research dataset as part of its commitment to open science if you
+                                consent by checking the box below.
+                            </p>
+                            <form id={formId} onSubmit={formContext.handleSubmit(handleSubmit)}>
+                                <Controller
+                                    name="dataCollectionAccepted"
+                                    control={formContext.control}
+                                    render={({ field: { onChange, value } }) => (
+                                        <Checkbox
+                                            className={checkboxClass}
+                                            color="default"
+                                            size="large"
+                                            isSelected={Boolean(value)}
+                                            onChange={onChange}>
+                                            <p>
+                                                <strong>Help improve open science!</strong> I
+                                                consent to the inclusion of my{' '}
+                                                <strong>de-identified</strong> interactions with
+                                                Playground in a public research dataset.
+                                            </p>
+                                        </Checkbox>
+                                    )}
+                                />
+                            </form>
+                            <p>
+                                If you do not wish to agree to these terms, exit this page. You can
+                                still use Playground if you choose not to participate in the public
+                                research dataset.
+                            </p>
+                        </DialogContent>
+                    </FadeOverflowContent>
+
+                    <DialogActions className={modalActionsClass}>
                         {initialTermsAndConditionsValue && (
                             <Button variant="outlined" onClick={handleClose}>
                                 Cancel
@@ -154,55 +198,62 @@ export const TermsAndDataCollectionModal = ({
                             onClick={formContext.handleSubmit(handleSubmit)}>
                             Accept terms & use Playground
                         </Button>
-                    </ModalActions>
+                    </DialogActions>
                 </div>
             </div>
-        </Modal>
+        </Dialog>
     );
 };
 
 const containerClass = css({
-    display: 'flex',
-    fontSize: '[1rem]',
-    lineHeight: '[1.5em]',
+    backgroundColor: 'background',
+    overflow: 'hidden',
+    height: '[100%]',
+    display: 'grid',
+    gridTemplateColumns: {
+        base: '1fr',
+        md: '380px 1fr',
+    },
+    padding: {
+        // base=0 padding on content for mobile
+        md: '8',
+    },
 });
 const imgClass = css({
-    display: 'none',
     width: '[380px]',
-    marginRight: '[36px]',
-    maxHeight: '[100%]',
-    md: {
-        display: 'block',
+    paddingRight: '[36px]',
+    height: '[100%]',
+    display: {
+        base: 'none',
+        md: 'block',
     },
 });
-const modalClass = css({
-    borderRadius: 'lg',
-    maxWidth: '[970px]',
-    minWidth: '[300px]',
-    overflow: 'auto',
-    padding: '4',
-    paddingInline: '0',
-    margin: '2',
-    sm: {
-        padding: '8',
-        margin: '8',
+
+const playgroundLogoClassName = css({
+    height: '[50px]',
+    display: {
+        base: 'block',
+        md: 'none',
     },
 });
-const modalHeaderClass = css({
-    fontSize: '4xl',
-    lineHeight: '[1.2em]',
-    paddingInline: '0',
-});
-const modalContentClass = css({
+
+const modalContainer = css({
     display: 'flex',
     flexDirection: 'column',
-    gap: '4',
-    paddingInline: '0',
+    maxHeight: '[100%]',
+    overflow: 'hidden',
+    gap: '2',
+    fontSize: '[1rem]',
+    lineHeight: '[1.5em]',
+    '--background-color': '{colors.background}',
 });
+
 const modalActionsClass = css({
     justifyContent: 'flex-start',
-    padding: '0',
-    paddingTop: '4',
+    padding: '4',
+    md: {
+        paddingInlineStart: '0',
+    },
 });
 const checkboxClass = css({
     alignItems: 'flex-start',
