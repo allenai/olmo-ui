@@ -1,5 +1,5 @@
 /**
- * A context-aware toggle button for showing or hiding OLMoTrace results for a given message.
+ * A context-aware toggle button for showing or hiding OlmoTrace results for a given message.
  * Integrates with the thread view, feature toggles, analytics, and a one-time hints system to
  * conditionally render a `FeatureToggleButton` that opens or closes attribution data.
  *
@@ -97,7 +97,7 @@ export const OlmoTraceButton = ({
         }
     };
 
-    const showHideText = isMessageSelected ? 'Hide OLMoTrace' : 'Show OLMoTrace';
+    const showHideText = isMessageSelected ? 'Hide OlmoTrace' : 'Show OlmoTrace';
     const showHint = isHintVisible && isLastButton;
 
     return (
@@ -105,8 +105,8 @@ export const OlmoTraceButton = ({
             selected={isMessageSelected}
             onChange={handleChange}
             onTrack={handleTrack}
-            labelOn="Hide OLMoTrace"
-            labelOff="Show OLMoTrace"
+            labelOn="Hide OlmoTrace"
+            labelOff="Show OlmoTrace"
             iconOn={<Article />}
             iconOff={<ArticleOutlined />}
             hint={<OlmotraceHint onClose={onCloseHint} />}
@@ -130,7 +130,7 @@ export const OlmoTraceButton = ({
 
 /**
  * A small wrapper component that renders a {@link DismissibleHint} with
- * pre-defined OLMoTrace hint text.
+ * pre-defined OlmoTrace hint text.
  *
  * @example
  * <OlmotraceHint onClose={() => setShowHint(false)} />

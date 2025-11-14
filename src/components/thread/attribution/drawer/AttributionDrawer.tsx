@@ -40,7 +40,7 @@ export const MobileAttributionDrawer = () => {
                                 variant="h5"
                                 margin={0}
                                 color={(theme) => theme.palette.text.primary}>
-                                OLMoTrace
+                                OlmoTrace
                             </Typography>
                         </ListSubheader>
                         <IconButton

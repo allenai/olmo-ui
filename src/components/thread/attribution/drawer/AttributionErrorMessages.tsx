@@ -30,8 +30,8 @@ const ErrorMessageWrapper = ({ children }: PropsWithChildren) => {
 export const UnavailableMessage = () => {
     return (
         <ErrorMessageWrapper>
-            This message used a model that doesn&apos;t have OLMoTrace supported. View OLMoTrace for
-            another message or prompt a model that does have OLMoTrace supported.
+            This message used a model that doesn&apos;t have OlmoTrace supported. View OlmoTrace for
+            another message or prompt a model that does have OlmoTrace supported.
         </ErrorMessageWrapper>
     );
 };
@@ -39,7 +39,7 @@ export const UnavailableMessage = () => {
 export const BlockedMessage = () => {
     return (
         <ErrorMessageWrapper>
-            OLMoTrace is blocked for this message due to legal compliance. Please try another
+            OlmoTrace is blocked for this message due to legal compliance. Please try another
             message.
         </ErrorMessageWrapper>
     );
@@ -48,7 +48,7 @@ export const BlockedMessage = () => {
 export const OverloadedMessage = () => {
     return (
         <ErrorMessageWrapper>
-            OLMoTrace is currently overloaded. Please try again later.
+            OlmoTrace is currently overloaded. Please try again later.
         </ErrorMessageWrapper>
     );
 };

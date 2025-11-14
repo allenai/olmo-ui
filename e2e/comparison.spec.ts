@@ -30,7 +30,7 @@ test.describe('Comparison Page', () => {
         ).toHaveCount(1);
     });
 
-    test('OLMoTrace button should not be visible on comparison page', async ({ page }) => {
+    test('OlmoTrace button should not be visible on comparison page', async ({ page }) => {
         await page.goto('/comparison');
 
         // Select models and send a message
@@ -45,17 +45,17 @@ test.describe('Comparison Page', () => {
 
         await page
             .getByRole('textbox', { name: /^Message*/ })
-            .fill('Test message for OLMoTrace check');
+            .fill('Test message for OlmoTrace check');
         await page.getByRole('button', { name: 'Submit prompt' }).click();
 
         // Wait for responses to complete
         await expect(page.locator('[data-is-streaming="true"]')).not.toBeVisible();
 
-        // OLMoTrace buttons should not be present
-        await expect(page.getByRole('button', { name: 'Show OLMoTrace' })).not.toBeVisible();
-        await expect(page.getByRole('button', { name: 'Hide OLMoTrace' })).not.toBeVisible();
+        // OlmoTrace buttons should not be present
+        await expect(page.getByRole('button', { name: 'Show OlmoTrace' })).not.toBeVisible();
+        await expect(page.getByRole('button', { name: 'Hide OlmoTrace' })).not.toBeVisible();
 
-        // OLMoTrace documents button should be disabled
-        await expect(page.getByRole('button', { name: 'OLMoTrace documents' })).toBeDisabled();
+        // OlmoTrace documents button should be disabled
+        await expect(page.getByRole('button', { name: 'OlmoTrace documents' })).toBeDisabled();
     });
 });
