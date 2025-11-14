@@ -24,7 +24,8 @@ const getFrameFromX = (clientX: number, durationInFrames: number, width: number)
 const BAR_HEIGHT = 25;
 const KNOB_WIDTH = 10;
 
-const LEFT_OFF_SET = 10;
+const TIMELINE_PADDING = 20;
+
 const findBodyInWhichDivIsLocated = (div: HTMLElement) => {
     let current = div;
 
@@ -196,15 +197,21 @@ export const SeekBar: React.FC<{
                 className={containerStyle}
                 ref={containerRef}
                 onPointerDown={onPointerDown}
-                style={{ width: width + 'px' }}>
-                <div className={barBackground}>
-                    <div
-                        style={{
-                            width: (frame / (durationInFrames - 1)) * width + LEFT_OFF_SET + 'px',
-                        }}
-                        className={barFill}
-                    />
+                style={{
+                    width: width + TIMELINE_PADDING + 'px',
+                    paddingLeft: TIMELINE_PADDING / 2,
+                }}>
+                <div
+                    style={{
+                        width:
+                            (frame / (durationInFrames - 1)) * width + TIMELINE_PADDING / 2 + 'px',
+                        marginLeft: TIMELINE_PADDING / -2,
+                        position: 'absolute',
+                    }}
+                    className={barFill}
+                />
 
+                <div className={barBackground}>
                     <TrackingDotsTimeLine
                         fps={fps}
                         width={width}
@@ -215,13 +222,7 @@ export const SeekBar: React.FC<{
                         id="knob"
                         className={knob}
                         style={{
-                            left:
-                                LEFT_OFF_SET +
-                                Math.max(
-                                    0,
-                                    (frame / Math.max(1, durationInFrames - 1)) * width -
-                                        KNOB_WIDTH / 2
-                                ),
+                            left: (frame / durationInFrames) * width - KNOB_WIDTH / 2,
                         }}
                     />
                 </div>
@@ -249,12 +250,7 @@ const TrackingDotsTimeLine = ({
     }, [data]);
 
     return (
-        <div
-            className={css({
-                position: 'absolute',
-                width: `[${width}px]`,
-                top: '[15px]',
-            })}>
+        <>
             {dots.map((dot, index) => {
                 return (
                     <div
@@ -265,38 +261,38 @@ const TrackingDotsTimeLine = ({
                             height: `[${TRACKING_DOT_SIZE}px]`,
                             borderRadius: 'full',
                             backgroundColor: 'pink.100',
+                            top: '2',
                         })}
-                        style={{ left: dot * width - TRACKING_DOT_SIZE / 2 + LEFT_OFF_SET + 'px' }}
+                        style={{ left: dot * width - TRACKING_DOT_SIZE / 2 + 'px' }}
                     />
                 );
             })}
-        </div>
+        </>
     );
 };
 
 const containerStyle = css({
     userSelect: 'none',
     WebkitUserSelect: 'none',
-    paddingTop: '2',
-    paddingBottom: '2',
     boxSizing: 'border-box',
     cursor: 'pointer',
     position: 'relative',
     touchAction: 'none',
+    backgroundColor: 'white',
+    borderRadius: 'sm',
+    borderWidth: '2',
+    borderColor: 'pink.30',
     flex: '1',
 });
 
 const barBackground = css({
     height: `[${BAR_HEIGHT}px]`,
     width: 'auto',
-    borderRadius: 'sm',
-    backgroundColor: 'white',
-    borderWidth: '2',
-    borderColor: 'pink.30',
+    position: 'relative',
 });
 
 const barFill = css({
-    height: `[${BAR_HEIGHT - 4}px]`,
+    height: `[${BAR_HEIGHT}px]`,
     backgroundColor: 'pink.10',
     borderRadius: 'sm',
 });
@@ -307,7 +303,7 @@ const knob = css({
     borderRadius: 'sm',
     position: 'absolute',
     cursor: 'grab',
-    top: '1',
+    top: '[-4px]',
     backgroundColor: 'dark-teal.100',
 });
 
