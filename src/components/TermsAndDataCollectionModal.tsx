@@ -72,7 +72,7 @@ export const TermsAndDataCollectionModal = ({
     return (
         <ModalBase
             className={modalClass}
-            overlayClassName={css({ padding: '3' })} // this is in lieu of margin on the modal
+            overlayClassName={css({ padding: { base: '3', md: '8' } })} // this is in lieu of margin on the modal
             isOpen={isOpen}
             isDismissable={false}
             isKeyboardDismissDisabled={true}>
