@@ -2,7 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { varnishTheme } from '@allenai/varnish2/theme';
 import { Video } from '@remotion/media';
 import { Player, PlayerRef } from '@remotion/player';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
@@ -12,21 +12,19 @@ import { SeekBar } from './time-line';
 import { VideoCountObjectBlinkComponent } from './video-visuals/one';
 import { VideoCountObjectComponent } from './video-visuals/two';
 
-export const MolmoVideoComposition = ({
+import { VideoDotTrackObjectComponent } from './video-visuals/three';
+
+export const MolmoVideoWrapper = ({
     videoUrl,
-    version,
-    data,
+    children,
 }: {
     videoUrl: string;
-    version: string;
-    data: VideoTrackingPoints;
+    children: ReactNode;
 }) => {
     return (
         <AbsoluteFill>
             <AbsoluteFill>
-                <AbsoluteFill>
-                    <VideoTracking data={data} version={version} />
-                </AbsoluteFill>
+                <AbsoluteFill>{children}</AbsoluteFill>
                 <Video className={css({ borderRadius: 'sm' })} muted={true} src={videoUrl} />
             </AbsoluteFill>
         </AbsoluteFill>
@@ -53,7 +51,6 @@ const useVideoDuration = (videoUrl: string, fps: number): number => {
         const handleLoadedMetadata = () => {
             const durationInSeconds = videoElement.duration;
             const frames = Math.round(durationInSeconds * fps);
-            console.log(frames);
             setDurationInFrames(frames);
         };
 
@@ -92,7 +89,7 @@ export const MolmoVideo = ({
                     <Player
                         acknowledgeRemotionLicense
                         ref={playerRef}
-                        component={MolmoVideoComposition}
+                        component={VideoTracking}
                         inputProps={{ videoUrl, version, data: videoTracking }}
                         durationInFrames={durationInFrames}
                         compositionWidth={width}
@@ -116,118 +113,35 @@ export const MolmoVideo = ({
 export const VideoTracking = ({
     version,
     data,
+    videoUrl,
 }: {
     version: string;
+    videoUrl: string;
     data: VideoTrackingPoints;
 }) => {
     if (version === 'one') {
         return (
-            <div>
+            <MolmoVideoWrapper videoUrl={videoUrl}>
                 {data.frameList.map((object, i) => (
                     <VideoCountObjectBlinkComponent key={i} object={object} />
                 ))}
-            </div>
+            </MolmoVideoWrapper>
         );
     }
     if (version === 'two') {
         return (
-            <div>
+            <MolmoVideoWrapper videoUrl={videoUrl}>
                 {data.frameList.map((object, i) => (
                     <VideoCountObjectComponent key={i} object={object} />
                 ))}
-            </div>
+            </MolmoVideoWrapper>
         );
     }
     if (version === 'three') {
         return (
-            <div>
+            <MolmoVideoWrapper videoUrl={videoUrl}>
                 <VideoDotTrackObjectComponent object={data} />
-            </div>
+            </MolmoVideoWrapper>
         );
     }
-};
-
-export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTrackingPoints }) => {
-    const objectIds = useMemo(() => {
-        const ids: Record<string, boolean> = {};
-        object.frameList.forEach((frame) => {
-            frame.tracks.forEach((t) => (ids[t.trackId] = true));
-        });
-        return Object.keys(ids);
-    }, [object]);
-
-    return (
-        <div className={css({ position: 'relative' })}>
-            {objectIds.map((id) => (
-                <div key={id} className={css({ position: 'absolute', top: '0', left: '0' })}>
-                    <VideoSingleDotTrack key={id} trackId={id} object={object} />
-                </div>
-            ))}
-        </div>
-    );
-};
-
-export const VideoSingleDotTrack = ({
-    trackId,
-    object,
-}: {
-    trackId: string;
-    object: VideoTrackingPoints;
-}) => {
-    const { height, width, fps } = useVideoConfig();
-
-    const { x, y, times } = useMemo(() => {
-        const x = object.frameList.map((frame) => {
-            return frame.tracks.find((t) => t.trackId === trackId)?.x || 0;
-        });
-        const y = object.frameList.map((frame) => {
-            return frame.tracks.find((t) => t.trackId === trackId)?.y || 0;
-        });
-        const times = object.frameList.map((frame) => {
-            return frame.timestamp * fps;
-        });
-        return { x, y, times };
-    }, [object, fps, trackId]);
-
-    const { sizeTimes, size } = useMemo(() => {
-        // TODO Breaks if translating points closer that .15 seconds together
-        const animation = object.frameList.flatMap((framePoints) => {
-            const before = (framePoints.timestamp - preTimestampOffset) * fps;
-            const time = framePoints.timestamp * fps;
-            const after = (framePoints.timestamp + postTimestampOffset) * fps;
-
-            return [
-                [before, 0],
-                [time, 1],
-                [after, 0],
-            ];
-        });
-
-        const result = { sizeTimes: animation.map((a) => a[0]), size: animation.map((a) => a[1]) };
-
-        return result;
-    }, [object, fps]);
-
-    const frame = useCurrentFrame();
-
-    const xAnimated = interpolate(frame, times, x);
-    const yAnimated = interpolate(frame, times, y);
-    const sizeAnimated = interpolate(frame, sizeTimes, size);
-
-    if (frame < times[0] || frame > times[times.length - 1]) {
-        return null;
-    }
-
-    return (
-        <svg width={width} height={height}>
-            <circle
-                cy={`${yAnimated}%`}
-                cx={`${xAnimated}%`}
-                r={10}
-                stroke={'white'}
-                strokeWidth={2}
-                fill={sizeAnimated > 0.5 ? varnishTheme.palette.primary.main : 'transparent'}
-            />
-        </svg>
-    );
 };
