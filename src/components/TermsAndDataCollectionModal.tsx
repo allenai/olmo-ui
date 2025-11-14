@@ -1,12 +1,6 @@
-import { css, cx } from '@allenai/varnish-panda-runtime/css';
-import {
-    Button,
-    Checkbox,
-    ModalActions,
-    ModalBase,
-    ModalContent,
-    ModalHeading,
-} from '@allenai/varnish-ui';
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { Button, Checkbox } from '@allenai/varnish-ui';
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -70,12 +64,24 @@ export const TermsAndDataCollectionModal = ({
     const formId = 'terms-and-conditions-form';
 
     return (
-        <ModalBase
-            className={modalClass}
-            overlayClassName={css({ padding: { base: '3', md: '8' } })} // this is in lieu of margin on the modal
-            isOpen={isOpen}
-            isDismissable={false}
-            isKeyboardDismissDisabled={true}>
+        <Dialog
+            open={isOpen}
+            PaperProps={{
+                sx: {
+                    display: 'flex',
+                    background: 'transparent',
+                    maxWidth: '970px',
+                    minWidth: '300px',
+                    overflow: 'hidden',
+                    backgroundImage: 'none',
+                    padding: {
+                        xs: 1.5,
+                        md: 4,
+                    },
+                    margin: 0,
+                    maxHeight: '100%',
+                },
+            }}>
             <div className={containerClass}>
                 <img
                     className={imgClass}
@@ -83,7 +89,25 @@ export const TermsAndDataCollectionModal = ({
                     alt="Terms and Conditions"
                 />
                 <div className={modalContainer}>
-                    <ModalHeading className={cx(modalHeaderClass)} closeButton={false}>
+                    <DialogTitle
+                        sx={(theme) => ({
+                            backgroundColor: 'transparent',
+                            display: 'grid',
+                            gridTemplateRows: 'auto 1fr',
+                            gap: 2,
+                            fontSize: {
+                                // eslint-disable-next-line @typescript-eslint/no-deprecated
+                                xs: theme.font.size['2xl'],
+                                // eslint-disable-next-line @typescript-eslint/no-deprecated
+                                md: theme.font.size['4xl'],
+                            },
+                            lineHeight: '[1.2em]',
+                            padding: {
+                                xs: 2,
+                                md: 0,
+                            },
+                            paddingBlockEnd: 1,
+                        })}>
                         <img
                             src="/playground-logo.svg"
                             alt="Return to the Playground home page"
@@ -91,9 +115,18 @@ export const TermsAndDataCollectionModal = ({
                             className={playgroundLogoClassName}
                         />
                         Terms of Use & Publication Consent
-                    </ModalHeading>
+                    </DialogTitle>
                     <FadeOverflowContent>
-                        <ModalContent className={modalContentClass}>
+                        <DialogContent
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 2,
+                                paddingInline: {
+                                    xs: 2,
+                                    md: 0,
+                                },
+                            }}>
                             <p>
                                 By using Playground, you agree to Ai2&apos;s{' '}
                                 <TermAndConditionsLink link={links.terms}>
@@ -147,10 +180,10 @@ export const TermsAndDataCollectionModal = ({
                                 still use Playground if you choose not to participate in the public
                                 research dataset.
                             </p>
-                        </ModalContent>
+                        </DialogContent>
                     </FadeOverflowContent>
 
-                    <ModalActions className={modalActionsClass}>
+                    <DialogActions className={modalActionsClass}>
                         {initialTermsAndConditionsValue && (
                             <Button variant="outlined" onClick={handleClose}>
                                 Cancel
@@ -165,23 +198,16 @@ export const TermsAndDataCollectionModal = ({
                             onClick={formContext.handleSubmit(handleSubmit)}>
                             Accept terms & use Playground
                         </Button>
-                    </ModalActions>
+                    </DialogActions>
                 </div>
             </div>
-        </ModalBase>
+        </Dialog>
     );
 };
 
-const modalClass = css({
-    borderRadius: 'lg',
-    maxWidth: '[970px]',
-    minWidth: '[300px]',
-    // the modal margin math is not good, disable auto
-    // we have padding on the overlay to compensate
-    '--modal-margin': '0px',
-});
-
 const containerClass = css({
+    backgroundColor: 'background',
+    overflow: 'hidden',
     height: '[100%]',
     display: 'grid',
     gridTemplateColumns: {
@@ -222,30 +248,6 @@ const modalContainer = css({
     '--background-color': '{colors.background}',
 });
 
-const modalHeaderClass = css({
-    display: 'grid',
-    gridTemplateRows: 'auto 1fr',
-    gap: '2',
-    fontSize: {
-        base: '2xl',
-        md: '4xl',
-    },
-    lineHeight: '[1.2em]',
-    padding: {
-        base: '4',
-        md: '0',
-    },
-    paddingBlockEnd: '2',
-});
-const modalContentClass = css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4',
-    paddingInline: {
-        base: '4',
-        md: '0',
-    },
-});
 const modalActionsClass = css({
     justifyContent: 'flex-start',
     padding: '4',
