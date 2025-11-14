@@ -84,6 +84,12 @@ export const TermsAndDataCollectionModal = ({
                 />
                 <div className={modalContainer}>
                     <ModalHeading className={cx(modalHeaderClass)} closeButton={false}>
+                        <img
+                            src="/playground-logo.svg"
+                            alt="Return to the Playground home page"
+                            fetchPriority="high"
+                            className={playgroundLogoClassName}
+                        />
                         Terms of Use & Publication Consent
                     </ModalHeading>
                     <FadeOverflowContent>
@@ -197,6 +203,14 @@ const imgClass = css({
     },
 });
 
+const playgroundLogoClassName = css({
+    height: '[50px]',
+    display: {
+        base: 'block',
+        md: 'none',
+    },
+});
+
 const modalContainer = css({
     display: 'flex',
     flexDirection: 'column',
@@ -209,6 +223,9 @@ const modalContainer = css({
 });
 
 const modalHeaderClass = css({
+    display: 'grid',
+    gridTemplateRows: 'auto 1fr',
+    gap: '2',
     fontSize: {
         base: '2xl',
         md: '4xl',
@@ -225,10 +242,6 @@ const modalContentClass = css({
     flexDirection: 'column',
     gap: '4',
     paddingInline: {
-        base: '4',
-        md: '0',
-    },
-    paddingBlockStart: {
         base: '4',
         md: '0',
     },
