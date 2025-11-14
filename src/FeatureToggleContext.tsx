@@ -1,12 +1,4 @@
-import {
-    createContext,
-    FC,
-    PropsWithChildren,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import { createContext, FC, PropsWithChildren, useContext, useMemo } from 'react';
 
 export enum FeatureToggle {
     logToggles = 'logToggles',
@@ -19,6 +11,7 @@ export enum FeatureToggle {
     isModelConfigEnabled = 'isModelConfigEnabled',
     isOLMoASREnabled = 'isOLMoASREnabled',
     isAgentPageEnabled = 'isAgentPageEnabled',
+    isComparisonPageInternalOnly = 'isComparisonPageInternalOnly',
 }
 
 export type FeatureToggles = Record<FeatureToggle, boolean>;
@@ -34,6 +27,7 @@ export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.isModelConfigEnabled]: false,
     [FeatureToggle.isOLMoASREnabled]: false,
     [FeatureToggle.isAgentPageEnabled]: false,
+    [FeatureToggle.isComparisonPageInternalOnly]: false,
 };
 
 const localStorageKey = 'feature-toggles';
@@ -95,6 +89,7 @@ function createToggles(initialToggles = defaultFeatureToggles) {
         isModelConfigEnabled: process.env.VITE_IS_MODEL_CONFIG_ENABLED,
         isOLMoASREnabled: process.env.VITE_IS_OLMO_ASR_ENABLED,
         isAgentPageEnabled: process.env.VITE_IS_AGENT_PAGE_ENABLED,
+        isComparisonPageInternalOnly: process.env.VITE_IS_COMPARISON_PAGE_INTERNAL_ONLY,
     });
 
     const toggles = {
@@ -111,28 +106,15 @@ export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
     children,
     featureToggles: initialToggles = defaultFeatureToggles,
 }) => {
-    const [featureToggles, setFeatureToggles] = useState(initialToggles);
-
-    const hasTogglesInitializationRun = useRef(false);
-
-    useEffect(() => {
-        if (hasTogglesInitializationRun.current) {
-            return;
-        }
-
+    const featureToggles = useMemo(() => {
         const toggles = createToggles(initialToggles);
-
-        // save back to local storage
-        localStorage.setItem(localStorageKey, JSON.stringify(toggles));
-
-        setFeatureToggles(toggles);
 
         if (toggles.logToggles) {
             console.table(toggles);
         }
 
-        hasTogglesInitializationRun.current = true;
-    }, [initialToggles, hasTogglesInitializationRun]);
+        return toggles;
+    }, [initialToggles]);
 
     return (
         <FeatureToggleContext.Provider value={featureToggles}>
