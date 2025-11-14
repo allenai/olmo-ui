@@ -120,12 +120,40 @@ export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTracking
     // TODO: Handle multiple tracks...
     const { height, width, fps } = useVideoConfig();
 
+    const objectIds = useMemo(() => {
+        const ids: Record<string, boolean> = {};
+        object.frameList.forEach((frame) => {
+            frame.tracks.forEach((t) => (ids[t.trackId] = true));
+        });
+        return Object.keys(ids);
+    }, [object]);
+
+    return (
+        <div className={css({ position: 'relative' })}>
+            {objectIds.map((id) => (
+                <div className={css({ position: 'absolute', top: '0', left: '0' })}>
+                    <VideoSingleDotTrack key={id} trackId={id} object={object} />
+                </div>
+            ))}
+        </div>
+    );
+};
+
+export const VideoSingleDotTrack = ({
+    trackId,
+    object,
+}: {
+    trackId: string;
+    object: VideoTrackingPoints;
+}) => {
+    const { height, width, fps } = useVideoConfig();
+
     const { x, y, times } = useMemo(() => {
         const x = object.frameList.map((frame) => {
-            return frame.tracks[0].x;
+            return frame.tracks.find((t) => t.trackId === trackId)?.x || 0;
         });
         const y = object.frameList.map((frame) => {
-            return frame.tracks[0].y;
+            return frame.tracks.find((t) => t.trackId === trackId)?.y || 0;
         });
         const times = object.frameList.map((frame) => {
             return frame.timestamp * fps;
