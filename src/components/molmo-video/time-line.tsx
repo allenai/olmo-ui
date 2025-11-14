@@ -1,13 +1,13 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
+import { Button } from '@allenai/varnish-ui';
+import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import type { PlayerRef } from '@remotion/player';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { interpolate } from 'remotion';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
-
-import { Button } from '@allenai/varnish-ui';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+
 import { useKeyboardControls } from './KeyboardControls';
 
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
@@ -43,7 +43,7 @@ export const SeekBar: React.FC<{
     fps: number;
     durationInFrames: number;
 }> = ({ data, width: inputWidth, playerRef, fps, durationInFrames }) => {
-    const width = inputWidth - 50;
+    const width = inputWidth - 100;
     const containerRef = useRef<HTMLDivElement>(null);
     const [playing, setPlaying] = useState(false);
     const [frame, setFrame] = useState(0);
@@ -195,8 +195,6 @@ export const SeekBar: React.FC<{
             </Button>
             <div
                 className={containerStyle}
-                ref={containerRef}
-                onPointerDown={onPointerDown}
                 style={{
                     width: width + TIMELINE_PADDING + 'px',
                     paddingLeft: TIMELINE_PADDING / 2,
@@ -211,7 +209,7 @@ export const SeekBar: React.FC<{
                     className={barFill}
                 />
 
-                <div className={barBackground}>
+                <div ref={containerRef} onPointerDown={onPointerDown} className={barBackground}>
                     <TrackingDotsTimeLine
                         fps={fps}
                         width={width}

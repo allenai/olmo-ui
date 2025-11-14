@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { mclarenTrack, mclarenTwo } from './example';
+import { mclarenTwo } from './example';
 import { MolmoVideo } from './molmo-video';
 
 const VIDEO_URL =

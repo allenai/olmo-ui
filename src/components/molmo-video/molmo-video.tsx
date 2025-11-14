@@ -51,6 +51,9 @@ export const MolmoVideo = ({
     const fps = 24;
     const durationInFrames = 12 * fps;
 
+    const width = 1460 / 2;
+    const height = 864 / 2;
+
     return (
         <div>
             <div className={css({ display: 'flex', flexDirection: 'column', alignItems: 'start' })}>
@@ -61,8 +64,8 @@ export const MolmoVideo = ({
                         component={MolmoVideoComposition}
                         inputProps={{ videoUrl, version, data: videoTracking }}
                         durationInFrames={durationInFrames}
-                        compositionWidth={1460 / 2}
-                        compositionHeight={864 / 2}
+                        compositionWidth={width}
+                        compositionHeight={height}
                         fps={fps}
                         moveToBeginningWhenEnded={false}
                     />
@@ -71,7 +74,7 @@ export const MolmoVideo = ({
             <SeekBar
                 fps={fps}
                 playerRef={playerRef}
-                width={1460 / 2}
+                width={width}
                 data={videoTracking}
                 durationInFrames={durationInFrames}
             />
