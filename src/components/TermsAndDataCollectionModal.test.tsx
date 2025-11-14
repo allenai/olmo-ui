@@ -1,3 +1,5 @@
+// @vitest-environment happy-dom
+// jsdom doesn't support IntersectionObserver
 import { render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 
