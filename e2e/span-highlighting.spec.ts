@@ -2,7 +2,7 @@ import { expect, test } from './playwright-utils';
 
 test('span highlighting', async ({ page }) => {
     await page.goto('/thread/highlightstresstest');
-    await page.getByRole('button', { name: 'Show OLMoTrace' }).click();
+    await page.getByRole('button', { name: 'Show OlmoTrace' }).click();
     await expect
         .soft(
             page.getByRole('heading', { name: 'H1 with # inside the span', level: 1 }).filter({

@@ -140,7 +140,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         return (
             <Card>
                 <CardContent>
-                    To see OLMoTrace for a model response, click the &ldquo;Show OLMoTrace&rdquo;
+                    To see OlmoTrace for a model response, click the &ldquo;Show OlmoTrace&rdquo;
                     button below it.
                 </CardContent>
             </Card>

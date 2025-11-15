@@ -19,7 +19,7 @@ const FakeThreadViewProvider = ({ children }: { children: React.ReactNode }) => 
 );
 
 describe('OlmoTraceButton', () => {
-    it('shows "Hide OLMoTrace" when the message is selected', () => {
+    it('shows "Hide OlmoTrace" when the message is selected', () => {
         const messageId = 'message-1';
 
         let searchParams = new URLSearchParams();
@@ -55,10 +55,10 @@ describe('OlmoTraceButton', () => {
             }
         );
 
-        expect(screen.getByRole('button', { name: 'Hide OLMoTrace' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Hide OlmoTrace' })).toBeInTheDocument();
     });
 
-    it('shows "Show OLMoTrace" when the message is not selected', () => {
+    it('shows "Show OlmoTrace" when the message is not selected', () => {
         const messageId = 'message-1';
 
         let searchParams = new URLSearchParams({ [PARAM_SELECTED_MESSAGE]: messageId });
@@ -90,6 +90,6 @@ describe('OlmoTraceButton', () => {
             }
         );
 
-        expect(screen.getByRole('button', { name: 'Show OLMoTrace' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Show OlmoTrace' })).toBeInTheDocument();
     });
 });

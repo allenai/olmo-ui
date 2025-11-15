@@ -21,7 +21,7 @@ export const CorpusLinkIconButton = () => {
         <IconButtonWithTooltip
             desktopPlacement="left"
             onClick={isOnComparisonPage ? () => {} : toggleParametersDrawer}
-            label="OLMoTrace documents"
+            label="OlmoTrace documents"
             isActive={isActive}
             disabled={isOnComparisonPage}>
             <ArticleOutlined />

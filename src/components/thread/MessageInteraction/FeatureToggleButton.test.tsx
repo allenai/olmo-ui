@@ -16,13 +16,13 @@ describe('FeatureToggleButton (desktop)', () => {
     });
 
     it('shows labelOn when selected=true', () => {
-        const labelOn = 'Hide OLMoTrace';
+        const labelOn = 'Hide OlmoTrace';
         render(
             <FeatureToggleButton
                 selected
                 onChange={() => {}}
                 labelOn={labelOn}
-                labelOff="Show OLMoTrace"
+                labelOff="Show OlmoTrace"
             />
         );
 
@@ -30,12 +30,12 @@ describe('FeatureToggleButton (desktop)', () => {
     });
 
     it('shows labelOff when selected=false', () => {
-        const labelOff = 'Show OLMoTrace';
+        const labelOff = 'Show OlmoTrace';
         render(
             <FeatureToggleButton
                 selected={false}
                 onChange={() => {}}
-                labelOn="Hide OLMoTrace"
+                labelOn="Hide OlmoTrace"
                 labelOff={labelOff}
             />
         );
@@ -86,12 +86,12 @@ describe('FeatureToggleButton (mobile)', () => {
     });
 
     it('uses aria-label from string labelOff when selected=false', () => {
-        const labelOff = 'Show OLMoTrace';
+        const labelOff = 'Show OlmoTrace';
         render(
             <FeatureToggleButton
                 selected={false}
                 onChange={() => {}}
-                labelOn="Hide OLMoTrace"
+                labelOn="Hide OlmoTrace"
                 labelOff={labelOff}
             />
         );
