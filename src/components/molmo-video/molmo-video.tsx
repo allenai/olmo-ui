@@ -1,9 +1,8 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { varnishTheme } from '@allenai/varnish2/theme';
 import { Video } from '@remotion/media';
 import { Player, PlayerRef } from '@remotion/player';
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+import { ReactNode, useEffect, useRef, useState } from 'react';
+import { AbsoluteFill } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
@@ -30,10 +29,6 @@ export const MolmoVideoWrapper = ({
         </AbsoluteFill>
     );
 };
-
-const preTimestampOffset = 0.15;
-
-const postTimestampOffset = 0.15;
 
 /**
  * Custom hook to calculate video duration in frames
@@ -90,7 +85,12 @@ export const MolmoVideo = ({
                         acknowledgeRemotionLicense
                         ref={playerRef}
                         component={VideoTracking}
-                        inputProps={{ videoUrl, version, data: videoTracking }}
+                        inputProps={{
+                            videoUrl,
+                            version,
+                            data: videoTracking,
+                            showInterpolation: false,
+                        }}
                         durationInFrames={durationInFrames}
                         compositionWidth={width}
                         compositionHeight={height}
@@ -114,10 +114,13 @@ export const VideoTracking = ({
     version,
     data,
     videoUrl,
+
+    showInterpolation,
 }: {
     version: string;
     videoUrl: string;
     data: VideoTrackingPoints;
+    showInterpolation: boolean;
 }) => {
     if (version === 'one') {
         return (
@@ -140,7 +143,7 @@ export const VideoTracking = ({
     if (version === 'three') {
         return (
             <MolmoVideoWrapper videoUrl={videoUrl}>
-                <VideoDotTrackObjectComponent object={data} />
+                <VideoDotTrackObjectComponent object={data} showInterpolation={showInterpolation} />
             </MolmoVideoWrapper>
         );
     }

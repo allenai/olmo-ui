@@ -1,11 +1,17 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { varnishTheme } from '@allenai/varnish2/theme';
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+import { useMemo } from 'react';
+import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTrackingPoints }) => {
+export const VideoDotTrackObjectComponent = ({
+    object,
+    showInterpolation,
+}: {
+    object: VideoTrackingPoints;
+    showInterpolation: boolean;
+}) => {
     const objectIds = useMemo(() => {
         const ids: Record<string, boolean> = {};
         object.frameList.forEach((frame) => {
@@ -18,19 +24,29 @@ export const VideoDotTrackObjectComponent = ({ object }: { object: VideoTracking
         <div className={css({ position: 'relative' })}>
             {objectIds.map((id) => (
                 <div key={id} className={css({ position: 'absolute', top: '0', left: '0' })}>
-                    <VideoSingleDotTrack key={id} trackId={id} object={object} />
+                    <VideoSingleDotTrack
+                        showInterpolation={showInterpolation}
+                        key={id}
+                        trackId={id}
+                        object={object}
+                    />
                 </div>
             ))}
         </div>
     );
 };
 
+const preTimestampOffset = 0.15;
+const postTimestampOffset = 0.15;
+
 const VideoSingleDotTrack = ({
     trackId,
     object,
+    showInterpolation,
 }: {
     trackId: string;
     object: VideoTrackingPoints;
+    showInterpolation: boolean;
 }) => {
     const { height, width, fps } = useVideoConfig();
 
@@ -68,6 +84,11 @@ const VideoSingleDotTrack = ({
 
     const frame = useCurrentFrame();
 
+    if (times.length < 2) {
+        // If the clip is less than .5 seconds long there will only be one time, which causes an error in interpolate
+        return null;
+    }
+
     const xAnimated = interpolate(frame, times, x);
     const yAnimated = interpolate(frame, times, y);
     const sizeAnimated = interpolate(frame, sizeTimes, size);
@@ -82,7 +103,7 @@ const VideoSingleDotTrack = ({
                 cy={`${yAnimated}%`}
                 cx={`${xAnimated}%`}
                 r={10}
-                stroke={'white'}
+                stroke={showInterpolation ? 'white' : 'transparent'}
                 strokeWidth={2}
                 fill={sizeAnimated > 0.5 ? varnishTheme.palette.primary.main : 'transparent'}
             />
