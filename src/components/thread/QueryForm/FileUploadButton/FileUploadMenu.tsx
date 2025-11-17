@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Key, Menu, MenuItem, Popover } from 'react-aria-components';
 
-import { MediaTypes } from './fileUploadMediaConsts';
+import type { MediaTypeConfig, MediaTypeKey } from './fileUploadMediaConsts';
 
 const menuItem = css({
     paddingBlock: '1',
@@ -23,7 +23,7 @@ const menu = css({
 });
 
 interface FileUploadMenuProps {
-    mediaTypes: [string, (typeof MediaTypes)[keyof typeof MediaTypes]][];
+    mediaTypes: [MediaTypeKey, MediaTypeConfig][];
     onAction: (key: Key) => void;
 }
 
@@ -33,7 +33,7 @@ export const FileUploadMenu = ({ mediaTypes, onAction }: FileUploadMenuProps) =>
             <Menu className={menu} items={mediaTypes} onAction={onAction}>
                 {([mediaType, mediaTypeConfig]) => (
                     <MenuItem className={menuItem} id={mediaType}>
-                        {mediaTypeConfig.label}
+                        Upload {mediaTypeConfig.label}s
                     </MenuItem>
                 )}
             </Menu>

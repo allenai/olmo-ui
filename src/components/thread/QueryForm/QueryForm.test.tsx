@@ -281,10 +281,10 @@ describe('QueryForm', () => {
 
         // Wait for the file upload button to appear (model must accept files)
         await waitFor(() => {
-            expect(screen.getByLabelText('Upload file')).toBeInTheDocument();
+            expect(screen.getByLabelText('Upload file(s)')).toBeInTheDocument();
         });
 
-        const fileInput = screen.getByLabelText('Upload file');
+        const fileInput = screen.getByTestId('file-upload-input');
 
         await act(async () => {
             await user.upload(fileInput, new File(['foo'], 'test.png', { type: 'image/png' }));

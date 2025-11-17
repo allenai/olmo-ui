@@ -3,7 +3,6 @@ import {
     ForwardedRef,
     forwardRef,
     InputHTMLAttributes,
-    useId,
     useImperativeHandle,
     useRef,
 } from 'react';
@@ -46,7 +45,6 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
 ) {
     const labelRef = useRef<HTMLLabelElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const labelId = useId();
     const { isMultiModalEnabled } = useFeatureToggles();
 
     // Assign the value of ref to the inputRef, to be able to use them both.
@@ -87,7 +85,8 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     const fileUploadButton = (
         <FileUploadTriggerButton
             ref={labelRef}
-            onPress={mediaTypes.length === 1 ? handleSingleTypeClick : undefined}>
+            onPress={mediaTypes.length === 1 ? handleSingleTypeClick : undefined}
+            isDisabled={isSendingPrompt || isFileUploadDisabled}>
             <FileUploadInput
                 {...props}
                 acceptedFileTypesString={acceptedFileTypesString}

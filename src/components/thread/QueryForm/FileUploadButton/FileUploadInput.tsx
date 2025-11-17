@@ -30,7 +30,7 @@ export const FileUploadInput = forwardRef<HTMLInputElement, FileUploadInputProps
                 multiple={acceptsMultiple}
                 type="file"
                 ref={ref}
-                data-testid="file-upload-btn"
+                data-testid="file-upload-input"
                 aria-hidden={true}
             />
         );

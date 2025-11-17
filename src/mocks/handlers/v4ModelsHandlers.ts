@@ -73,6 +73,25 @@ const fakeModelsResponse = [
         max_tokens_default: 1024,
         max_tokens_upper: 4096,
     },
+    {
+        description: 'Molmo 2',
+        id: 'molmo2',
+        model_type: 'chat',
+        host: 'inferd',
+        name: 'Molmo 2',
+        is_deprecated: false,
+        accepts_files: true,
+        accepted_file_types: ['image/*', 'video/*'],
+        is_visible: true,
+        prompt_type: 'multi_modal',
+        internal: false,
+        infini_gram_index: 'olmoe-0125-1b-7b',
+        ...defaultInferenceConstraintsSnake,
+        temperature_default: 0,
+        max_tokens_default: 1024,
+        max_tokens_upper: 4096,
+        max_files_per_message: 10,
+    },
 ] satisfies SchemaModelResponse;
 
 const v4ModelsHandler = typedHttp.get('/v4/models/', ({ response }) => {

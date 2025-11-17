@@ -12,7 +12,10 @@ test('model switching warning', async ({ page }) => {
     await expect(LinkLocator).toHaveAttribute('href', 'https://allenai.org');
 
     await modelSelectLocator.click();
-    await page.getByRole('option', { name: 'Molmo' }).dispatchEvent('click');
+    await page
+        .getByRole('option', { name: /^Molmo\s/ })
+        .first()
+        .dispatchEvent('click');
 
     await expect(page.getByText('Change model and start a new thread?')).not.toBeAttached();
     await expect(LinkLocator).not.toBeVisible();
@@ -21,7 +24,10 @@ test('model switching warning', async ({ page }) => {
     await expect(modelSelectLocator).toContainText('Olmo-peteish-dpo-preview');
 
     await modelSelectLocator.click();
-    await page.getByRole('option', { name: 'Molmo' }).dispatchEvent('click');
+    await page
+        .getByRole('option', { name: /^Molmo\s/ })
+        .first()
+        .dispatchEvent('click');
 
     await expect(page.getByText('Change model and start a new thread?')).toBeVisible();
     await page.getByRole('button', { name: 'Cancel' }).click();
@@ -29,7 +35,10 @@ test('model switching warning', async ({ page }) => {
     await expect(modelSelectLocator).toContainText('Olmo-peteish-dpo-preview');
 
     await modelSelectLocator.click();
-    await page.getByRole('option', { name: 'Molmo' }).dispatchEvent('click');
+    await page
+        .getByRole('option', { name: /^Molmo\s/ })
+        .first()
+        .dispatchEvent('click');
 
     await expect(page.getByText('Change model and start a new thread?')).toBeVisible();
     await page.getByRole('button', { name: 'Change model' }).click();

@@ -33,15 +33,16 @@ const StyledLabel = styled('label')(({ theme }) => ({
 }));
 
 interface FileUploadTriggerButtonProps {
+    isDisabled?: boolean;
     onPress?: () => void;
     children: ReactNode;
 }
 
 export const FileUploadTriggerButton = forwardRef<HTMLLabelElement, FileUploadTriggerButtonProps>(
-    ({ onPress, children }, ref) => {
+    function FileUploadTriggerButton({ isDisabled, onPress, children }, ref) {
         return (
-            <StyledLabel ref={ref} aria-label="Upload files">
-                <Button data-testid="file-upload-btn" onPress={onPress}>
+            <StyledLabel ref={ref} aria-label="Upload file(s)">
+                <Button data-testid="file-upload-btn" onPress={onPress} isDisabled={isDisabled}>
                     <AddPhotoAlternateOutlined />
                 </Button>
                 {children}
@@ -49,5 +50,3 @@ export const FileUploadTriggerButton = forwardRef<HTMLLabelElement, FileUploadTr
         );
     }
 );
-
-FileUploadTriggerButton.displayName = 'FileUploadTriggerButton';

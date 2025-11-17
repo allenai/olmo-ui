@@ -1,4 +1,5 @@
 import { MediaTypes } from './FileUploadButton/fileUploadMediaConsts';
+import { typeMatchesAllowedTypes } from './FileUploadThumbnails/typeMatchesAllowedTypes';
 
 interface ValidateFilesOptions {
     acceptedFileTypes: string | string[] | Set<string>;
@@ -13,41 +14,37 @@ export const validateFiles = (
         return true; // No files is valid
     }
 
-    const acceptedFileTypesArray =
-        typeof options.acceptedFileTypes === 'string'
-            ? [options.acceptedFileTypes]
-            : Array.from(options.acceptedFileTypes);
-
-    // Group files by media type
     const filesByMediaType = new Map<string, File[]>();
 
     for (const file of fileList) {
-        // Determine which media type this file belongs to
         for (const [mediaType, mediaConfig] of Object.entries(MediaTypes)) {
-            if (acceptedFileTypesArray.some((acceptedType) => acceptedType.startsWith(mediaType))) {
-                if (file.type.startsWith(`${mediaType}/`)) {
-                    if (!filesByMediaType.has(mediaType)) {
-                        filesByMediaType.set(mediaType, []);
+            const isMediaTypeAccepted = typeMatchesAllowedTypes(
+                mediaConfig.accept,
+                options.acceptedFileTypes
+            );
+
+            if (isMediaTypeAccepted) {
+                if (typeMatchesAllowedTypes(file.type, mediaConfig.accept)) {
+                    const existingFiles = filesByMediaType.get(mediaType);
+                    if (existingFiles) {
+                        existingFiles.push(file);
+                    } else {
+                        filesByMediaType.set(mediaType, [file]);
                     }
-                    filesByMediaType.get(mediaType)!.push(file);
                     break;
                 }
             }
         }
     }
 
-    // Validate each media type against its limits
     for (const [mediaType, files] of filesByMediaType) {
         const mediaConfig = MediaTypes[mediaType as keyof typeof MediaTypes];
-        if (!mediaConfig) continue;
 
         // Determine the max files allowed for this media type
-        // Priority: MediaTypes.maxFiles > maxFilesPerMessage
         const maxFiles = mediaConfig.maxFiles ?? options.maxFilesPerMessage;
 
         if (maxFiles !== undefined && files.length > maxFiles) {
-            const label = mediaType === 'video' ? 'video' : `${mediaType}s`;
-            return `Maximum ${maxFiles} ${label} allowed`;
+            return `Maximum ${maxFiles} ${mediaConfig.label}s allowed`;
         }
     }
 
