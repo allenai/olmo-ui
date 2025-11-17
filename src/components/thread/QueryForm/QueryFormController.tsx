@@ -1,7 +1,7 @@
 import { DevTool } from '@hookform/devtools';
 import { Stack, Typography } from '@mui/material';
 import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
-import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
+import { Controller, FormContainer, SubmitHandler, useForm, useWatch } from 'react-hook-form-mui';
 import { useNavigation } from 'react-router-dom';
 
 import {
@@ -119,7 +119,7 @@ export const QueryFormController = ({
         }
     }, [formContext, areFilesAllowed, promptTemplate?.fileUrls]);
 
-    const files = formContext.watch('files');
+    const files = useWatch({ control: formContext.control, name: 'files' });
 
     const handleRemoveFile = (fileToRemove: File) => {
         if (files == null) {
@@ -135,7 +135,11 @@ export const QueryFormController = ({
             }
         }
 
-        formContext.setValue('files', dataTransfer.files);
+        formContext.setValue('files', dataTransfer.files, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+        });
     };
 
     const handleKeyDown = async (event: KeyboardEvent<HTMLElement>) => {
