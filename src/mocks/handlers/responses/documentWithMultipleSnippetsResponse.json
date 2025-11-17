@@ -17,7 +17,7 @@
           "labels": [],
           "logprobs": [],
           "model_host": "modal",
-          "model_id": "OLMo-2-1124-13B-Instruct",
+          "model_id": "Olmo-2-1124-13B-Instruct",
           "model_type": "chat",
           "opts": {
             "logprobs": null,
@@ -49,7 +49,7 @@
       "labels": [],
       "logprobs": null,
       "model_host": "modal",
-      "model_id": "OLMo-2-1124-13B-Instruct",
+      "model_id": "Olmo-2-1124-13B-Instruct",
       "model_type": null,
       "opts": {
         "logprobs": null,
@@ -69,7 +69,7 @@
     }
   ],
   "completion": null,
-  "content": "You are OLMo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for AI.",
+  "content": "You are Olmo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for AI.",
   "created": "2025-01-14T21:34:54.362269+00:00",
   "creator": "google-oauth2|106113864953374894702",
   "deleted": null,
@@ -81,7 +81,7 @@
   "labels": [],
   "logprobs": null,
   "model_host": "modal",
-  "model_id": "OLMo-2-1124-13B-Instruct",
+  "model_id": "Olmo-2-1124-13B-Instruct",
   "model_type": null,
   "opts": {
     "logprobs": null,
@@ -96,6 +96,6 @@
   "private": false,
   "role": "system",
   "root": "msg_multiplesnippets",
-  "snippet": "You are OLMo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for\u2026",
+  "snippet": "You are Olmo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for\u2026",
   "template": null
 }

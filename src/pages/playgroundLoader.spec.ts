@@ -8,10 +8,10 @@ describe('root playground loader', () => {
             new QueryClient({ defaultOptions: { queries: { retry: false } } })
         )({
             params: { id: undefined },
-            request: new Request(new URL('http://localhost:8080/?model=OLMo-peteish-dpo-preview')),
+            request: new Request(new URL('http://localhost:8080/?model=Olmo-peteish-dpo-preview')),
         })) as PlaygroundLoaderData;
 
-        expect(result.modelId).toEqual('OLMo-peteish-dpo-preview');
+        expect(result.modelId).toEqual('Olmo-peteish-dpo-preview');
     });
 
     it("should only set a model if the id param isn't set", async () => {

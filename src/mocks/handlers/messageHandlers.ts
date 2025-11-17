@@ -86,7 +86,7 @@ const fakeSecondThreadResponse = {
     content: 'Second existing message',
     snippet: 'Second existing message',
     creator: 'murphy@allenai.org',
-    model_id: 'OLMo-peteish-dpo-preview',
+    model_id: 'Olmo-peteish-dpo-preview',
     model_host: 'modal',
     role: Role.User,
     opts: {
@@ -103,7 +103,7 @@ const fakeSecondThreadResponse = {
             content: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
             snippet: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
             creator: 'murphy@allenai.org',
-            model_id: 'OLMo-peteish-dpo-preview',
+            model_id: 'Olmo-peteish-dpo-preview',
             model_host: 'modal',
             role: Role.LLM,
             opts: {
@@ -142,7 +142,7 @@ const highlightStressTestResponse = {
         top_p: 1,
     },
     root: highlightStressTestMessageId,
-    model_id: 'OLMo-peteish-dpo-preview',
+    model_id: 'Olmo-peteish-dpo-preview',
     created: '2024-08-20T22:34:03.342086+00:00',
     children: [
         {
@@ -160,7 +160,7 @@ const highlightStressTestResponse = {
             root: highlightStressTestMessageId,
             created: '2024-08-20T22:34:03.342086+00:00',
             parent: highlightStressTestMessageId,
-            model_id: 'OLMo-peteish-dpo-preview',
+            model_id: 'Olmo-peteish-dpo-preview',
             logprobs: [],
             completion: 'cpl_R5T5K6B4D9',
             final: true,

@@ -5,7 +5,7 @@ const response: Thread = {
         {
             completion: null,
             content:
-                'You are OLMo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for AI.',
+                'You are Olmo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for AI.',
             created: '2025-01-14T21:34:54.362269+00:00',
             creator: 'google-oauth2|106113864953374894702',
             deleted: null,
@@ -16,7 +16,7 @@ const response: Thread = {
             id: 'msg_multiplesnippets',
             labels: [],
             modelHost: 'modal',
-            modelId: 'OLMo-2-1124-13B-Instruct',
+            modelId: 'Olmo-2-1124-13B-Instruct',
             modelType: null,
             opts: {
                 logprobs: null,
@@ -32,7 +32,7 @@ const response: Thread = {
             role: 'system',
             root: 'msg_multiplesnippets',
             snippet:
-                'You are OLMo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for\u2026',
+                'You are Olmo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for\u2026',
             template: null,
             isLimitReached: false,
             isOlderThan30Days: false,
@@ -50,7 +50,7 @@ const response: Thread = {
             id: 'msg_U2M4B8Y9V5',
             labels: [],
             modelHost: 'modal',
-            modelId: 'OLMo-2-1124-13B-Instruct',
+            modelId: 'Olmo-2-1124-13B-Instruct',
             modelType: null,
             opts: {
                 logprobs: null,
@@ -84,7 +84,7 @@ const response: Thread = {
             id: 'msg_M8G6T0P3H8',
             labels: [],
             modelHost: 'modal',
-            modelId: 'OLMo-2-1124-13B-Instruct',
+            modelId: 'Olmo-2-1124-13B-Instruct',
             modelType: 'chat',
             opts: {
                 logprobs: null,

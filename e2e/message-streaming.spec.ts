@@ -17,7 +17,7 @@ test('should stop thread from streaming', async ({ page }) => {
 
     // Check for stop message
     await expect(
-        page.getByText('You stopped OLMo from generating answers to your query')
+        page.getByText('You stopped Olmo from generating answers to your query')
     ).toBeVisible();
 
     // Streaming indicator should disapear when stopped

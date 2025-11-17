@@ -3,7 +3,7 @@ import { Role } from '@/api/Role';
 import { Chunk } from '@/contexts/stream-types';
 
 // tulu2
-// OLMo-peteish-dpo-preview
+// Olmo-peteish-dpo-preview
 
 export const newMessageId = 'msg_A8E5H1X2O4';
 export const LOREM_IPSUM_MESSAGE_ID = 'msg_V6Y0U4H4O9';
@@ -35,7 +35,7 @@ export const fakeNewThreadMessages: Array<Thread | MessageChunk | Chunk> = [
                 isLimitReached: false,
                 isOlderThan30Days: false,
                 modelHost: 'modal',
-                modelId: 'OLMo-peteish-dpo-preview',
+                modelId: 'Olmo-peteish-dpo-preview',
             },
             {
                 id: LOREM_IPSUM_MESSAGE_ID,
@@ -59,7 +59,7 @@ export const fakeNewThreadMessages: Array<Thread | MessageChunk | Chunk> = [
                 isLimitReached: false,
                 isOlderThan30Days: false,
                 modelHost: 'modal',
-                modelId: 'OLMo-peteish-dpo-preview',
+                modelId: 'Olmo-peteish-dpo-preview',
             },
         ],
     },
@@ -114,7 +114,7 @@ export const fakeNewThreadMessages: Array<Thread | MessageChunk | Chunk> = [
                 isLimitReached: false,
                 isOlderThan30Days: false,
                 modelHost: 'modal',
-                modelId: 'OLMo-peteish-dpo-preview',
+                modelId: 'Olmo-peteish-dpo-preview',
             },
             {
                 id: LOREM_IPSUM_MESSAGE_ID,
@@ -142,7 +142,7 @@ export const fakeNewThreadMessages: Array<Thread | MessageChunk | Chunk> = [
                 isLimitReached: false,
                 isOlderThan30Days: false,
                 modelHost: 'modal',
-                modelId: 'OLMo-peteish-dpo-preview',
+                modelId: 'Olmo-peteish-dpo-preview',
             },
         ],
     },

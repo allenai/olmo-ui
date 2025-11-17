@@ -131,7 +131,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                             controllerProps={{ rules: { required: true } }}>
                             <SelectListBoxSection>
                                 <SelectListBoxItem text="No family" id="no_family" />
-                                <SelectListBoxItem text="OLMo" id="olmo" />
+                                <SelectListBoxItem text="Olmo" id="olmo" />
                                 <SelectListBoxItem text="Tülu" id="tulu" />
                             </SelectListBoxSection>
                         </ControlledSelect>

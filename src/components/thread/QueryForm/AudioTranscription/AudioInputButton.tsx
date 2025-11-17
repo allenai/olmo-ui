@@ -31,7 +31,7 @@ export const AudioInputButton = ({
     onTranscriptionComplete,
     onComplete,
 }: AudioInputButtonProps) => {
-    const { isOLMoASREnabled } = useFeatureToggles();
+    const { isOlmoASREnabled } = useFeatureToggles();
     const { isTranscribing, addSnackMessage, isProcessingAudio, setIsProcessingAudio } =
         useAppContext();
     const { startRecording, stopRecording } = useAudioRecording();
@@ -40,7 +40,7 @@ export const AudioInputButton = ({
         stopRecording('userCancel');
     };
 
-    if (!isOLMoASREnabled) {
+    if (!isOlmoASREnabled) {
         return null;
     }
 

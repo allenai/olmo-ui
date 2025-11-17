@@ -9,15 +9,15 @@ test('model selection', async ({ page }) => {
     await expect(modelSelectLocator).toContainText('Tulu2.5');
 
     await page.goto('/thread/msg_A8E5H1X2O3');
-    await expect(modelSelectLocator).toContainText('OLMo-peteish-dpo-preview');
+    await expect(modelSelectLocator).toContainText('Olmo-peteish-dpo-preview');
 
     await page.getByRole('button', { name: 'Thread history', exact: true }).click();
     await page.getByRole('link', { name: 'First existing message' }).click();
 
     await expect(modelSelectLocator).toContainText('Tulu2.5');
 
-    await page.goto('/?model=OLMo-peteish-dpo-preview');
-    await expect(modelSelectLocator).toContainText('OLMo-peteish-dpo-preview');
+    await page.goto('/?model=Olmo-peteish-dpo-preview');
+    await expect(modelSelectLocator).toContainText('Olmo-peteish-dpo-preview');
 });
 
 test('model selection searchParam', async ({ page }) => {
@@ -27,10 +27,10 @@ test('model selection searchParam', async ({ page }) => {
     await expect(modelSelect).toHaveText('Tulu2.5');
 
     await modelSelect.click();
-    await page.getByRole('option', { name: 'OLMo-peteish-dpo-preview' }).click();
+    await page.getByRole('option', { name: 'Olmo-peteish-dpo-preview' }).click();
 
     await expect(page).toHaveURL(
-        (url) => url.searchParams.get(PARAM_SELECTED_MODEL) === 'OLMo-peteish-dpo-preview'
+        (url) => url.searchParams.get(PARAM_SELECTED_MODEL) === 'Olmo-peteish-dpo-preview'
     );
 });
 
@@ -52,12 +52,12 @@ test('multiple thread model selection searchParam', async ({ page }) => {
     );
 
     await model1Select.click();
-    await page.getByRole('option', { name: 'OLMo-peteish-dpo-preview' }).click();
+    await page.getByRole('option', { name: 'Olmo-peteish-dpo-preview' }).click();
 
-    // now we changed the first to be OLMo-peteish-...
+    // now we changed the first to be Olmo-peteish-...
     await expect(page).toHaveURL(
         (url) =>
-            url.searchParams.get('model-1') === 'OLMo-peteish-dpo-preview' &&
+            url.searchParams.get('model-1') === 'Olmo-peteish-dpo-preview' &&
             url.searchParams.get('model-2') === 'tulu2'
     );
 });
@@ -67,12 +67,12 @@ test('presists model searchParam on new thread', async ({ page }) => {
 
     const modelSelect = page.getByRole('combobox', { name: 'Model' });
     await modelSelect.click();
-    await page.getByRole('option', { name: 'OLMo-peteish-dpo-preview' }).click();
+    await page.getByRole('option', { name: 'Olmo-peteish-dpo-preview' }).click();
 
     await page.getByRole('link', { name: 'New chat' }).click();
 
     // should still have the url parameter
     await expect(page).toHaveURL(
-        (url) => url.searchParams.get(PARAM_SELECTED_MODEL) === 'OLMo-peteish-dpo-preview'
+        (url) => url.searchParams.get(PARAM_SELECTED_MODEL) === 'Olmo-peteish-dpo-preview'
     );
 });

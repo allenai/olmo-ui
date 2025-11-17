@@ -6,9 +6,9 @@ import { links } from '@/Links';
 export const OlmoeLegalNotice = (): ReactNode => {
     return (
         <>
-            Run OLMoE locally and privately on your iOS device!{' '}
+            Run OlmoE locally and privately on your iOS device!{' '}
             <TermAndConditionsLink link={links.olmoeAppStoreDownload}>
-                Download Ai2 OLMoE on the App Store
+                Download Ai2 OlmoE on the App Store
             </TermAndConditionsLink>{' '}
             to try it out.{' '}
         </>

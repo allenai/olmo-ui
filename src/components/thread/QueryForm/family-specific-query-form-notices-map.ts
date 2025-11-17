@@ -1,7 +1,7 @@
 import { ComponentType } from 'react';
 
-import { OLMoFamilyFormNotice } from './OLMoFamilyFormNotice';
+import { OlmoFamilyFormNotice } from './OlmoFamilyFormNotice';
 
 export const familySpecificQueryFormNoticesMap: Partial<Record<string, ComponentType>> = {
-    olmo: OLMoFamilyFormNotice,
+    olmo: OlmoFamilyFormNotice,
 };

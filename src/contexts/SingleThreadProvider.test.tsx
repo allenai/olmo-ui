@@ -275,14 +275,14 @@ describe('SingleThreadProvider', () => {
             // Change model
             act(() => {
                 const mockEvent: SelectChangeEvent = {
-                    target: { value: 'OLMo-peteish-dpo-preview' },
+                    target: { value: 'Olmo-peteish-dpo-preview' },
                 } as SelectChangeEvent;
                 result.current.onModelChange(mockEvent);
             });
 
             // Should now show the new model
             await waitFor(() => {
-                expect(result.current.placeholderText).toBe('Message OLMo-peteish-dpo-preview');
+                expect(result.current.placeholderText).toBe('Message Olmo-peteish-dpo-preview');
             });
         });
 

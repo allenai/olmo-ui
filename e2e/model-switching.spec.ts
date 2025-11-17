@@ -18,7 +18,7 @@ test('model switching warning', async ({ page }) => {
     await expect(LinkLocator).not.toBeVisible();
 
     await page.goto('/thread/msg_A8E5H1X2O3');
-    await expect(modelSelectLocator).toContainText('OLMo-peteish-dpo-preview');
+    await expect(modelSelectLocator).toContainText('Olmo-peteish-dpo-preview');
 
     await modelSelectLocator.click();
     await page.getByRole('option', { name: 'Molmo' }).dispatchEvent('click');
@@ -26,7 +26,7 @@ test('model switching warning', async ({ page }) => {
     await expect(page.getByText('Change model and start a new thread?')).toBeVisible();
     await page.getByRole('button', { name: 'Cancel' }).click();
     await expect(page.getByText('Change model and start a new thread?')).not.toBeAttached();
-    await expect(modelSelectLocator).toContainText('OLMo-peteish-dpo-preview');
+    await expect(modelSelectLocator).toContainText('Olmo-peteish-dpo-preview');
 
     await modelSelectLocator.click();
     await page.getByRole('option', { name: 'Molmo' }).dispatchEvent('click');

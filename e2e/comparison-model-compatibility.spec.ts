@@ -12,7 +12,7 @@ test('comparison model switching warning after responses', async ({ page }) => {
     await page.getByRole('option', { name: 'Tulu2.5' }).click();
 
     await model2Select.click();
-    await page.getByRole('option', { name: 'OLMo-peteish-dpo-preview' }).click();
+    await page.getByRole('option', { name: 'Olmo-peteish-dpo-preview' }).click();
 
     // Submit a query and wait for responses
     await page.getByRole('textbox', { name: /^Message*/ }).fill('What is AI?');

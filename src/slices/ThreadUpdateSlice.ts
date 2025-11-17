@@ -7,7 +7,7 @@ export const ABORT_ERROR_MESSAGE: SnackMessage = {
     type: SnackMessageType.Alert,
     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
     title: 'Response was aborted',
-    message: `You stopped OLMo from generating answers to your query`,
+    message: `You stopped Olmo from generating answers to your query`,
     severity: AlertMessageSeverity.Warning,
 } as const;
 
