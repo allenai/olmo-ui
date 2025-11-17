@@ -1,3 +1,4 @@
+import { AutoAwesome } from '@mui/icons-material';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import {
@@ -54,9 +55,15 @@ const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
 
 interface ModelSelectMenuItemProps extends MenuItemProps {
     model: Model;
+    isNewModel?: boolean;
 }
 
-export const ModelSelectMenuItem = ({ model, value, ...rest }: ModelSelectMenuItemProps) => {
+export const ModelSelectMenuItem = ({
+    model,
+    value,
+    isNewModel = false,
+    ...rest
+}: ModelSelectMenuItemProps) => {
     const MenuItemIcon = model.prompt_type === 'multi_modal' ? ImageOutlinedIcon : ChatOutlinedIcon;
 
     return (
@@ -69,6 +76,7 @@ export const ModelSelectMenuItem = ({ model, value, ...rest }: ModelSelectMenuIt
                 {model.accepts_files ? 'Multimodal' : 'Text-only'}
                 {model.internal && ' (Internal)'}
                 <ul>
+                    {isNewModel && <ModelSelectFeatureIndicator Icon={AutoAwesome} feature="New" />}
                     {model.can_think && (
                         <ModelSelectFeatureIndicator Icon={ThinkingSvg} feature="Thinking" />
                     )}

@@ -15,6 +15,8 @@ import type { Model } from '@/api/playgroundApi/additionalTypes';
 
 import { ModelSelectMenuItem } from './ModelSelectMenuItem';
 
+const NEW_MODELS_LIST: string[] = ['olmo-3-tool-use-modal-vllm', 'molmo2-4b-joint-sft-v5'];
+
 export interface ModelSelectProps extends Pick<SelectProps<string>, 'defaultOpen'> {
     models: readonly Model[];
     selectedModelId?: string;
@@ -86,7 +88,12 @@ export const ModelSelect = ({
                     {models.map((model) => (
                         // Value MUST be passed in here to make it work with MUI
                         // https://github.com/mui/material-ui/issues/31006#issuecomment-1035549630
-                        <ModelSelectMenuItem key={model.id} model={model} value={model.id} />
+                        <ModelSelectMenuItem
+                            key={model.id}
+                            model={model}
+                            value={model.id}
+                            isNewModel={NEW_MODELS_LIST.includes(model.id)}
+                        />
                     ))}
                 </Select>
             </FormControl>
