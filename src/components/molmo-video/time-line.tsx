@@ -206,6 +206,7 @@ export const SeekBar: React.FC<{
                         className={knob}
                         style={{
                             left: `calc(${(frame / durationInFrames) * 100}% - ${KNOB_WIDTH / 2}px)`,
+                            cursor: dragging.dragging ? 'grabbing' : 'grab',
                         }}
                     />
                 </div>
@@ -285,7 +286,7 @@ const knob = css({
     position: 'absolute',
     cursor: 'grab',
     top: '[-4px]',
-    backgroundColor: 'dark-teal.100',
+    backgroundColor: 'teal.100',
 });
 
 const timelineWrapper = css({
@@ -299,13 +300,14 @@ const playPauseButton = css({
     alignItems: 'center',
     justifyContent: 'center',
     padding: '1',
-    backgroundColor: 'white',
+    backgroundColor: 'accent.primary',
     border: '2px solid',
-    borderColor: 'pink.30',
+    borderColor: 'elements.primary.stroke',
+    color: 'white',
     borderRadius: 'full',
     cursor: 'pointer',
     transition: '[all 0.2s]',
     _hover: {
-        backgroundColor: 'pink.10',
+        backgroundColor: 'elements.primary.hovered.fill',
     },
 });
