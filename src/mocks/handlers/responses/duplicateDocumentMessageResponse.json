@@ -11,7 +11,7 @@
       "finish_reason": null,
       "harmful": null,
       "id": "msg_duplicatedocuments2",
-      "model_id": "OLMo-peteish-dpo-preview",
+      "model_id": "Olmo-peteish-dpo-preview",
       "labels": [],
       "logprobs": [],
       "model_type": "chat",

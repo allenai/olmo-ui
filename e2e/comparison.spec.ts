@@ -12,7 +12,7 @@ test.describe('Comparison Page', () => {
         await page.getByRole('option', { name: 'Tulu2.5' }).click();
 
         await model2Select.click();
-        await page.getByRole('option', { name: 'OLMo-peteish-dpo-preview' }).click();
+        await page.getByRole('option', { name: 'Olmo-peteish-dpo-preview' }).click();
 
         // Send a prompt
         await page.getByRole('textbox', { name: /^Message*/ }).fill('compare');
@@ -41,7 +41,7 @@ test.describe('Comparison Page', () => {
         await page.getByRole('option', { name: 'Tulu2.5' }).click();
 
         await model2Select.click();
-        await page.getByRole('option', { name: 'OLMo-peteish-dpo-preview' }).click();
+        await page.getByRole('option', { name: 'Olmo-peteish-dpo-preview' }).click();
 
         await page
             .getByRole('textbox', { name: /^Message*/ })

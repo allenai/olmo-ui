@@ -35,7 +35,7 @@ test('should show form field errors for inappropriate content in comparison mode
     await page.getByRole('option', { name: 'Tulu2.5' }).click();
 
     await model2Select.click();
-    await page.getByRole('option', { name: 'OLMo-peteish-dpo-preview' }).click();
+    await page.getByRole('option', { name: 'Olmo-peteish-dpo-preview' }).click();
 
     // Submit message that triggers inappropriate content error
     await page.getByRole('textbox', { name: /^Message*/ }).fill('test-inappropriate');

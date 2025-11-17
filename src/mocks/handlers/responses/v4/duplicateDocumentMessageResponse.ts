@@ -33,7 +33,7 @@ const response: Thread = {
             isLimitReached: false,
             isOlderThan30Days: false,
             modelHost: 'modal',
-            modelId: 'OLMo-peteish-dpo-preview',
+            modelId: 'Olmo-peteish-dpo-preview',
         },
         {
             completion: 'cpl_B8J1F2R4O4',
@@ -46,7 +46,7 @@ const response: Thread = {
             finishReason: null,
             harmful: null,
             id: 'msg_duplicatedocuments2',
-            modelId: 'OLMo-peteish-dpo-preview',
+            modelId: 'Olmo-peteish-dpo-preview',
             labels: [],
             modelType: 'chat',
             opts: {

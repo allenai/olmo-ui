@@ -39,7 +39,7 @@ export const links = {
     promptTemplates: '/prompt-templates',
     olmoeMixAnnouncement:
         'https://blog.allenai.org/olmoe-an-open-small-and-state-of-the-art-mixture-of-experts-model-c258432d0514',
-    olmoeMixDownload: 'https://huggingface.co/datasets/allenai/OLMoE-mix-0924',
+    olmoeMixDownload: 'https://huggingface.co/datasets/allenai/OlmoE-mix-0924',
     olmoeAppStoreDownload: 'https://apps.apple.com/app/id6738533815',
     odc: 'https://blog.allenai.org/making-a-switch-dolma-moves-to-odc-by-8f0e73852f44',
     documentation: 'https://docs.allenai.org',

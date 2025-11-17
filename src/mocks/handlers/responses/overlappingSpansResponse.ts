@@ -19,7 +19,7 @@ export const overlappingSpansResponse = {
                     labels: [],
                     logprobs: [],
                     model_host: 'modal',
-                    model_id: 'OLMo-2-1124-13B-Instruct',
+                    model_id: 'Olmo-2-1124-13B-Instruct',
                     model_type: 'chat',
                     opts: {
                         logprobs: null,
@@ -54,7 +54,7 @@ export const overlappingSpansResponse = {
             labels: [],
             logprobs: null,
             model_host: 'modal',
-            model_id: 'OLMo-2-1124-13B-Instruct',
+            model_id: 'Olmo-2-1124-13B-Instruct',
             model_type: null,
             opts: {
                 logprobs: null,
@@ -76,7 +76,7 @@ export const overlappingSpansResponse = {
     ],
     completion: null,
     content:
-        'You are OLMo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for AI.',
+        'You are Olmo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for AI.',
     created: '2025-03-26T20:16:52.993256+00:00',
     creator: 'google-oauth2|106113864953374894702',
     deleted: null,
@@ -89,7 +89,7 @@ export const overlappingSpansResponse = {
     labels: [],
     logprobs: null,
     model_host: 'modal',
-    model_id: 'OLMo-2-1124-13B-Instruct',
+    model_id: 'Olmo-2-1124-13B-Instruct',
     model_type: null,
     opts: {
         logprobs: null,
@@ -105,6 +105,6 @@ export const overlappingSpansResponse = {
     role: 'system',
     root: 'msg_A9X3J1S1H2',
     snippet:
-        'You are OLMo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for\u2026',
+        'You are Olmo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for\u2026',
     template: null,
 };

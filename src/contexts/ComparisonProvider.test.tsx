@@ -74,14 +74,14 @@ describe('ComparisonProvider', () => {
         it('should use family_name when available and fall back to name when family_name is not available', async () => {
             const initialState = {
                 'view-1': { modelId: 'tulu2' }, // Has family_name: 'Tülu'
-                'view-2': { modelId: 'OLMo-peteish-dpo-preview' }, // No family_name, uses name: 'OLMo-peteish-dpo-preview'
+                'view-2': { modelId: 'Olmo-peteish-dpo-preview' }, // No family_name, uses name: 'Olmo-peteish-dpo-preview'
             };
 
             const { getByTestId } = renderWithProvider(PlaceholderTestComponent, initialState);
 
             await waitFor(() => {
                 expect(getByTestId('placeholder')).toHaveTextContent(
-                    'Message Tülu and OLMo-peteish-dpo-preview'
+                    'Message Tülu and Olmo-peteish-dpo-preview'
                 );
             });
         });
@@ -90,14 +90,14 @@ describe('ComparisonProvider', () => {
             const initialState = {
                 'view-1': { modelId: 'tulu2' }, // family_name: 'Tülu'
                 'view-2': { modelId: 'molmo' }, // family_name: 'Molmo'
-                'view-3': { modelId: 'OLMo-peteish-dpo-preview' }, // name: 'OLMo-peteish-dpo-preview'
+                'view-3': { modelId: 'Olmo-peteish-dpo-preview' }, // name: 'Olmo-peteish-dpo-preview'
             };
 
             const { getByTestId } = renderWithProvider(PlaceholderTestComponent, initialState);
 
             await waitFor(() => {
                 expect(getByTestId('placeholder')).toHaveTextContent(
-                    'Message Tülu and Molmo and OLMo-peteish-dpo-preview'
+                    'Message Tülu and Molmo and Olmo-peteish-dpo-preview'
                 );
             });
         });

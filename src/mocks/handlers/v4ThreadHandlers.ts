@@ -133,7 +133,7 @@ const fakeSecondThreadResponse = {
             content: 'Second existing message',
             snippet: 'Second existing message',
             creator: 'murphy@allenai.org',
-            modelId: 'OLMo-peteish-dpo-preview',
+            modelId: 'Olmo-peteish-dpo-preview',
             modelHost: 'modal',
             role: Role.User,
             opts: {
@@ -152,7 +152,7 @@ const fakeSecondThreadResponse = {
             content: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
             snippet: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
             creator: 'murphy@allenai.org',
-            modelId: 'OLMo-peteish-dpo-preview',
+            modelId: 'Olmo-peteish-dpo-preview',
             modelHost: 'modal',
             role: Role.LLM,
             opts: {
@@ -193,7 +193,7 @@ const highlightStressTestResponse = {
                 topP: 1,
             },
             root: highlightStressTestMessageId,
-            modelId: 'OLMo-peteish-dpo-preview',
+            modelId: 'Olmo-peteish-dpo-preview',
             created: '2024-08-20T22:34:03.342086+00:00',
             isLimitReached: false,
             isOlderThan30Days: false,
@@ -214,7 +214,7 @@ const highlightStressTestResponse = {
             root: highlightStressTestMessageId,
             created: '2024-08-20T22:34:03.342086+00:00',
             parent: highlightStressTestMessageId,
-            modelId: 'OLMo-peteish-dpo-preview',
+            modelId: 'Olmo-peteish-dpo-preview',
             // logprobs: [],
             completion: 'cpl_R5T5K6B4D9',
             final: true,
@@ -312,7 +312,7 @@ export const v4ThreadHandlers = [
             const modelId = formData.get('model');
             if (modelId === 'tulu2') {
                 response = fakeCompareNewThreadMessages;
-            } else if (modelId === 'OLMo-peteish-dpo-preview') {
+            } else if (modelId === 'Olmo-peteish-dpo-preview') {
                 response = fakeNewThreadMessages;
             }
         } else if (content === 'thinkingAndToolCalls') {

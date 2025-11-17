@@ -7,7 +7,7 @@ export const threadWithLatexInResponse: Thread = {
     messages: [
         {
             content:
-                'You are OLMo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for AI.',
+                'You are Olmo 2 Instruct, a helpful, open-source AI Assistant built by the Allen Institute for AI.',
             created: '2025-10-26T20:16:52.993256+00:00',
             creator: 'google-oauth2|106113864953374894702',
             deleted: null,
@@ -19,7 +19,7 @@ export const threadWithLatexInResponse: Thread = {
             id: THREAD_WITH_LATEX_IN_RESPONSE_ID,
             labels: [],
             modelHost: 'modal',
-            modelId: 'OLMo-2-1124-13B-Instruct',
+            modelId: 'Olmo-2-1124-13B-Instruct',
             modelType: null,
             opts: {
                 logprobs: null,
@@ -53,7 +53,7 @@ export const threadWithLatexInResponse: Thread = {
             id: THREAD_WITH_LATEX_IN_RESPONSE_ID + '2',
             labels: [],
             modelHost: 'modal',
-            modelId: 'OLMo-2-1124-13B-Instruct',
+            modelId: 'Olmo-2-1124-13B-Instruct',
             modelType: null,
             opts: {
                 logprobs: null,
@@ -111,7 +111,7 @@ This is the extent of the support as of right now
             id: THREAD_WITH_LATEX_IN_RESPONSE_ID + '3',
             labels: [],
             modelHost: 'modal',
-            modelId: 'OLMo-2-1124-13B-Instruct',
+            modelId: 'Olmo-2-1124-13B-Instruct',
             modelType: 'chat',
             opts: {
                 logprobs: null,
