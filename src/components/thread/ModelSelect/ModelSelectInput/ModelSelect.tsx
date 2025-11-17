@@ -15,7 +15,7 @@ import type { Model } from '@/api/playgroundApi/additionalTypes';
 
 import { ModelSelectMenuItem } from './ModelSelectMenuItem';
 
-const NEW_MODELS_LIST: string[] = ['olmo-3-tool-use-modal-vllm', 'molmo2-4b-joint-sft-v5'];
+const NEW_MODELS_LIST: string[] = ['olmo-3', 'molmo2'];
 
 export interface ModelSelectProps extends Pick<SelectProps<string>, 'defaultOpen'> {
     models: readonly Model[];
@@ -92,7 +92,9 @@ export const ModelSelect = ({
                             key={model.id}
                             model={model}
                             value={model.id}
-                            isNewModel={NEW_MODELS_LIST.includes(model.id)}
+                            isNewModel={NEW_MODELS_LIST.some((prefix) =>
+                                model.id.startsWith(prefix)
+                            )}
                         />
                     ))}
                 </Select>
