@@ -9,6 +9,7 @@ import { interpolate } from 'remotion';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { useKeyboardControls } from './KeyboardControls';
+import { useElementSize } from './useElementSize';
 
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
     const pos = clientX;
@@ -23,20 +24,18 @@ const getFrameFromX = (clientX: number, durationInFrames: number, width: number)
 
 const BAR_HEIGHT = 25;
 const KNOB_WIDTH = 10;
-
 const TIMELINE_PADDING = 20;
 
 export const SeekBar: React.FC<{
     playerRef: React.RefObject<PlayerRef | null>;
     data: VideoTrackingPoints;
-    width: number;
     fps: number;
     durationInFrames: number;
-}> = ({ data, width: inputWidth, playerRef, fps, durationInFrames }) => {
-    const width = inputWidth;
+}> = ({ data, playerRef, fps, durationInFrames }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [playing, setPlaying] = useState(false);
     const [frame, setFrame] = useState(0);
+    const { width } = useElementSize(containerRef);
 
     useKeyboardControls(playerRef, data, fps, durationInFrames);
 
