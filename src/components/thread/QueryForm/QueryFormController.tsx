@@ -16,13 +16,14 @@ import { fetchFilesByUrls } from '@/utils/fetchFilesByUrl';
 
 import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { Waveform } from './AudioTranscription/Waveform';
-import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton';
+import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton/FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { handleFormSubmitException } from './handleFormSubmitException';
 import { PromptContainer } from './PromptContainer';
 import { PromptInput } from './PromptInput';
 import { QueryFormStyledBox } from './QueryFormStyledBox';
 import { SubmitPauseAdornment } from './SubmitPauseAdornment';
+import { validateFiles } from './validateFiles';
 
 export interface QueryFormValues {
     content: string;
@@ -68,6 +69,7 @@ export const QueryFormController = ({
     const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
 
     const formContext = useForm<QueryFormValues>({
+        mode: 'onChange',
         defaultValues: {
             content: '',
             private: false,
@@ -121,6 +123,14 @@ export const QueryFormController = ({
 
     const files = useWatch({ control: formContext.control, name: 'files' });
 
+    // Validation function for file uploads
+    const validateFilesWithOptions = (fileList: FileList | undefined): string | true => {
+        return validateFiles(fileList, {
+            acceptedFileTypes: fileUploadProps.acceptedFileTypes,
+            maxFilesPerMessage: fileUploadProps.maxFilesPerMessage,
+        });
+    };
+
     const handleRemoveFile = (fileToRemove: File) => {
         if (files == null) {
             // Something weird has happened, maybe we reset the form or the user cleared it
@@ -172,7 +182,9 @@ export const QueryFormController = ({
                     <PromptContainer
                         startAdornment={
                             <FileUploadButton
-                                {...formContext.register('files')}
+                                {...formContext.register('files', {
+                                    validate: validateFilesWithOptions,
+                                })}
                                 {...fileUploadProps}
                             />
                         }
@@ -232,6 +244,11 @@ export const QueryFormController = ({
                             )}
                         />
                     </PromptContainer>
+                    {!!formContext.formState.errors.files?.message && (
+                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
+                            {formContext.formState.errors.files.message}
+                        </Typography>
+                    )}
                     {isLimitReached && (
                         <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
                             You have reached maximum thread length. Please start a new thread.
