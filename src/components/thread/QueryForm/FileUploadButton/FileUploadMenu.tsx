@@ -23,7 +23,7 @@ const menu = css({
 });
 
 interface FileUploadMenuProps {
-    mediaTypes: [MediaTypeKey, MediaTypeConfig][];
+    mediaTypes: [string, MediaTypeConfig][];
     onAction: (key: Key) => void;
 }
 
