@@ -59,7 +59,7 @@ export const faqs: FAQCategory[] = [
         questions: [
             {
                 question: 'Which models are served in the Playground?',
-                answer: '[OLMo 2](https://allenai.org/olmo) is a family of fully-open language models, developed start-to-finish with open and accessible training data, open-source training code, reproducible training recipes, transparent evaluations, intermediate checkpoints, and more. The Playground is serving the OLMo 2 13B Instruct version of OLMo.\n\n[Tülu 3](https://allenai.org/tulu) is a top-performing instruction model family with fully open fine-tuning data, code, and recipes to serve as a guidebook for modern post-training. Tülu 3 is a fine-tuned version of Llama 3 that was trained on a mix of publicly available, synthetic, and human datasets. The Playground is serving both 70B and 8B versions of Tülu 3.',
+                answer: '[Olmo 2](https://allenai.org/olmo) is a family of fully-open language models, developed start-to-finish with open and accessible training data, open-source training code, reproducible training recipes, transparent evaluations, intermediate checkpoints, and more. The Playground is serving the Olmo 2 13B Instruct version of Olmo.\n\n[Tülu 3](https://allenai.org/tulu) is a top-performing instruction model family with fully open fine-tuning data, code, and recipes to serve as a guidebook for modern post-training. Tülu 3 is a fine-tuned version of Llama 3 that was trained on a mix of publicly available, synthetic, and human datasets. The Playground is serving both 70B and 8B versions of Tülu 3.',
             },
             {
                 question: 'How accurate and reliable is generated content on the Playground?',
@@ -77,7 +77,7 @@ export const faqs: FAQCategory[] = [
         questions: [
             {
                 question: 'What data does Ai2 collect about me?',
-                answer: 'We collect data necessary to improve your experience and the performance of OLMo as described in our general [Terms and Conditions of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/). This includes interaction data with the model, such as queries and responses.\n\nData from anonymous users of the Playground is regularly deleted.\n\nPlease do not include PII (personally identifiable information) or any other sensitive information in model prompts or elsewhere in the Playground.',
+                answer: 'We collect data necessary to improve your experience and the performance of Olmo as described in our general [Terms and Conditions of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/). This includes interaction data with the model, such as queries and responses.\n\nData from anonymous users of the Playground is regularly deleted.\n\nPlease do not include PII (personally identifiable information) or any other sensitive information in model prompts or elsewhere in the Playground.',
             },
             {
                 question: 'How is my data used to improve the Playground’s performance?',
@@ -129,7 +129,7 @@ export const faqs: FAQCategory[] = [
         questions: [
             {
                 question: 'How does speech-to-text (STT) on the Playground work?',
-                answer: 'The Ai2 Playground uses OLMoASR for speech-to-text functionality. OLMoASR is our open-source automatic speech recognition model trained from scratch on a curated, large-scale dataset to deliver low-latency, high-accuracy transcription.',
+                answer: 'The Ai2 Playground uses OlmoASR for speech-to-text functionality. OlmoASR is our open-source automatic speech recognition model trained from scratch on a curated, large-scale dataset to deliver low-latency, high-accuracy transcription.',
             },
             {
                 question: 'How do I start an STT recording on the Playground?',
@@ -140,7 +140,7 @@ export const faqs: FAQCategory[] = [
                 answer: 'When you’re finished speaking, click the check mark icon ![check mark icon](/icons/check-icon.svg) to see your fully transcribed query. Press the ![close](/icons/close-icon.svg) icon to cancel audio capture.',
             },
             {
-                question: 'What are the limitations of OLMoASR?',
+                question: 'What are the limitations of OlmoASR?',
                 answer: 'The Playground’s transcription feature has some limitations. It may not work equally well for all languages, accents, and dialects, and it may not recognize microphones on certain devices. Recordings are limited to 25 seconds in length.\n\nIf you’re encountering problems, please ensure that your web browser and operating system is up to date.',
             },
         ],
@@ -175,7 +175,7 @@ export const corpusLinkFaqs: FAQCategory[] = [
             {
                 question:
                     'Where do the documents come from? In which training stage is each document used?',
-                answer: 'For each document retrieved, OlmoTrace shows its source (the dataset it comes from) and its usage in training. For example, our flagship model, [OLMo 2 32B Instruct](https://huggingface.co/allenai/OLMo-2-0325-32B-Instruct), was trained in 3 stages:\n&emsp;&emsp;1. Pre-training: the dataset is [olmo-mix-1124](https://huggingface.co/datasets/allenai/olmo-mix-1124). It contains mostly data from the web (the DCLM corpus), as well as other sources like wiki and arxiv.\n&emsp;&emsp;2. Mid-training: the dataset is [dolmino-mix-1124](https://huggingface.co/datasets/allenai/dolmino-mix-1124). It contains high-quality text data and a mixture of math-heavy data. Some documents in this dataset already appeared in the pretraining dataset, and we excluded them so as to reduce duplicates.\n&emsp;&emsp;3. Post-training: it has 3 sub-stages: \n&emsp;&emsp;&emsp;&emsp;a. Supervised fine-tuning (SFT): the dataset is [tulu-3-sft-olmo-2-mixture-0225](https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture-0225)\n&emsp;&emsp;&emsp;&emsp;b. Preference learning (DPO): the dataset is [olmo-2-0325-32b-preference-mix](https://huggingface.co/datasets/allenai/olmo-2-0325-32b-preference-mix)\n&emsp;&emsp;&emsp;&emsp;c. RL with verifiable rewards (RLVR): the dataset is [RLVR-GSM-MATH-IF-Mixed-Constraints](https://huggingface.co/datasets/allenai/RLVR-GSM-MATH-IF-Mixed-Constraints)\n\n We consider the union of all the above datasets as “training data” of the OLMo 2 32B Instruct model, and when matching model outputs with the training text we consider all these datasets.',
+                answer: 'For each document retrieved, OlmoTrace shows its source (the dataset it comes from) and its usage in training. For example, our flagship model, [Olmo 2 32B Instruct](https://huggingface.co/allenai/Olmo-2-0325-32B-Instruct), was trained in 3 stages:\n&emsp;&emsp;1. Pre-training: the dataset is [olmo-mix-1124](https://huggingface.co/datasets/allenai/olmo-mix-1124). It contains mostly data from the web (the DCLM corpus), as well as other sources like wiki and arxiv.\n&emsp;&emsp;2. Mid-training: the dataset is [dolmino-mix-1124](https://huggingface.co/datasets/allenai/dolmino-mix-1124). It contains high-quality text data and a mixture of math-heavy data. Some documents in this dataset already appeared in the pretraining dataset, and we excluded them so as to reduce duplicates.\n&emsp;&emsp;3. Post-training: it has 3 sub-stages: \n&emsp;&emsp;&emsp;&emsp;a. Supervised fine-tuning (SFT): the dataset is [tulu-3-sft-olmo-2-mixture-0225](https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture-0225)\n&emsp;&emsp;&emsp;&emsp;b. Preference learning (DPO): the dataset is [olmo-2-0325-32b-preference-mix](https://huggingface.co/datasets/allenai/olmo-2-0325-32b-preference-mix)\n&emsp;&emsp;&emsp;&emsp;c. RL with verifiable rewards (RLVR): the dataset is [RLVR-GSM-MATH-IF-Mixed-Constraints](https://huggingface.co/datasets/allenai/RLVR-GSM-MATH-IF-Mixed-Constraints)\n\n We consider the union of all the above datasets as “training data” of the Olmo 2 32B Instruct model, and when matching model outputs with the training text we consider all these datasets.',
             },
         ],
     },

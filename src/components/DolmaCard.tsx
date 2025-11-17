@@ -18,7 +18,7 @@ export const DolmaCard = () => {
                             color: theme.palette.text.reversed,
                             marginBottom: theme.spacing(2),
                         })}>
-                        OLMoE-Mix is proven, trusted, and fully open.
+                        OlmoE-Mix is proven, trusted, and fully open.
                     </Typography>
                     <Typography
                         variant="subtitle1"
@@ -28,7 +28,7 @@ export const DolmaCard = () => {
                             href={links.olmoeMixAnnouncement}
                             target="_blank"
                             sx={{ color: (theme) => theme.palette.secondary.light }}>
-                            OLMoE-Mix
+                            OlmoE-Mix
                         </Link>{' '}
                         is a dataset of 4.07 trillion tokens from a diverse mix of web content,
                         academic publications, code, math, and encyclopedic materials. It is openly
@@ -40,7 +40,7 @@ export const DolmaCard = () => {
                 <DolmaInformationCard
                     linkText="Learn more"
                     linkUrl="#"
-                    title="How was OLMoE-Mix Created?"
+                    title="How was OlmoE-Mix Created?"
                     buttonText="Read the blog"
                     buttonUrl={links.olmoeMixAnnouncement}
                 />
@@ -48,7 +48,7 @@ export const DolmaCard = () => {
                     linkText="Research"
                     linkUrl="#"
                     title="Access the Dataset on Hugging Face"
-                    buttonText="Download OLMoE-Mix"
+                    buttonText="Download OlmoE-Mix"
                     buttonUrl={links.olmoeMixDownload}
                 />
             </Stack>
