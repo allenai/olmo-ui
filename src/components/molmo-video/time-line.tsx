@@ -183,19 +183,18 @@ export const SeekBar: React.FC<{
             <div
                 className={timeLineStyle}
                 style={{
-                    width: `${width + TIMELINE_PADDING}px`,
                     paddingInline: TIMELINE_PADDING / 2,
                 }}>
-                <div
-                    style={{
-                        width: `${(frame / (durationInFrames - 1)) * width + TIMELINE_PADDING / 2}px`,
-                        marginLeft: TIMELINE_PADDING / -2,
-                        position: 'absolute',
-                    }}
-                    className={barFill}
-                />
-
                 <div ref={containerRef} onPointerDown={onPointerDown} className={innerTimeline}>
+                    <div
+                        style={{
+                            width: `calc(${(frame / durationInFrames) * 100}% + ${TIMELINE_PADDING / 2}px)`,
+                            position: 'absolute',
+                            marginLeft: (-1 * TIMELINE_PADDING) / 2,
+                            left: 0,
+                        }}
+                        className={barFill}
+                    />
                     <TrackingDotsTimeLine
                         fps={fps}
                         durationInFrames={durationInFrames}
@@ -275,7 +274,7 @@ const innerTimeline = css({
 
 const barFill = css({
     height: `[${BAR_HEIGHT}px]`,
-    backgroundColor: 'pink.10',
+    backgroundColor: 'pink.20',
     borderRadius: 'sm',
 });
 
@@ -292,6 +291,7 @@ const knob = css({
 const timelineWrapper = css({
     display: 'flex',
     alignItems: 'center',
+    paddingTop: '3',
     gap: '2',
 });
 

@@ -5,8 +5,19 @@ import { useEffect, useState } from 'react';
  * @param fps - Frames per second
  * @returns Duration in frames, or null if not yet loaded
  */
-export const useVideoDuration = (videoUrl: string, fps: number): number => {
-    const [durationInFrames, setDurationInFrames] = useState<number>(1);
+
+type VideoMetaData = {
+    durationInFrames: number;
+    width: number;
+    height: number;
+};
+
+export const useVideoMetaData = (videoUrl: string, fps: number): VideoMetaData => {
+    const [durationInFrames, setDurationInFrames] = useState<VideoMetaData>({
+        durationInFrames: 1,
+        width: 1,
+        height: 1,
+    });
 
     useEffect(() => {
         const videoElement = document.createElement('video');
@@ -15,7 +26,11 @@ export const useVideoDuration = (videoUrl: string, fps: number): number => {
         const handleLoadedMetadata = () => {
             const durationInSeconds = videoElement.duration;
             const frames = Math.round(durationInSeconds * fps);
-            setDurationInFrames(frames);
+            setDurationInFrames({
+                durationInFrames: frames,
+                width: videoElement.videoWidth,
+                height: videoElement.videoHeight,
+            });
         };
 
         videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);

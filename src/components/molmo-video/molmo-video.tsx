@@ -8,7 +8,7 @@ import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes'
 
 import { PointSelect } from './PointSelect';
 import { SeekBar } from './time-line';
-import { useVideoDuration } from './useVideoDuration';
+import { useVideoMetaData } from './useVideoDuration';
 import { VideoCountObjectBlinkComponent } from './video-visuals/one';
 import { VideoDotTrackObjectComponent } from './video-visuals/three';
 import { VideoCountObjectComponent } from './video-visuals/two';
@@ -41,41 +41,39 @@ export const MolmoVideo = ({
     const playerRef = useRef<PlayerRef>(null);
 
     const fps = 24;
-    const durationInFrames = useVideoDuration(videoUrl, fps);
-
-    const width = 1460 / 2;
-    const height = 864 / 2;
+    const { durationInFrames, width, height } = useVideoMetaData(videoUrl, fps);
 
     // todo set aspect based on video.
     // scale to fit area...
     // pull size to calculate scrub size...
+    //
+    const scaleRatio = width / 700;
 
     return (
         <div>
             <div className={css({ display: 'flex', flexDirection: 'column', alignItems: 'start' })}>
-                <PointSelect playerRef={playerRef} fps={fps}>
-                    <Player
-                        acknowledgeRemotionLicense
-                        ref={playerRef}
-                        component={VideoTracking}
-                        inputProps={{
-                            videoUrl,
-                            version,
-                            data: videoTracking,
-                            showInterpolation: false,
-                        }}
-                        durationInFrames={durationInFrames + 1}
-                        compositionWidth={width}
-                        compositionHeight={height}
-                        fps={fps}
-                        moveToBeginningWhenEnded={false}
-                    />
-                </PointSelect>
+                <Player
+                    acknowledgeRemotionLicense
+                    ref={playerRef}
+                    component={VideoTracking}
+                    inputProps={{
+                        videoUrl,
+                        version,
+                        data: videoTracking,
+                        showInterpolation: false,
+                    }}
+                    durationInFrames={durationInFrames + 1}
+                    compositionWidth={width}
+                    compositionHeight={height}
+                    fps={fps}
+                    style={{ width: '100%', flex: '1' }}
+                    moveToBeginningWhenEnded={false}
+                />
             </div>
             <SeekBar
                 fps={fps}
                 playerRef={playerRef}
-                width={width}
+                width={700}
                 data={videoTracking}
                 durationInFrames={durationInFrames}
             />
