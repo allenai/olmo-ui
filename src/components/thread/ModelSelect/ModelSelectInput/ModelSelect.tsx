@@ -92,8 +92,8 @@ export const ModelSelect = ({
                             key={model.id}
                             model={model}
                             value={model.id}
-                            isNewModel={NEW_MODELS_LIST.some((prefix) =>
-                                model.id.startsWith(prefix)
+                            isNewModel={NEW_MODELS_LIST.some((substring) =>
+                                model.id.includes(substring)
                             )}
                         />
                     ))}
