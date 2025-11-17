@@ -6,35 +6,16 @@ import { AbsoluteFill } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { PointSelect } from './PointSelect';
-import { SeekBar } from './time-line';
+import { SeekBar } from './SeekBar';
 import { useVideoMetaData } from './useVideoDuration';
-import { VideoCountObjectBlinkComponent } from './video-visuals/one';
-import { VideoDotTrackObjectComponent } from './video-visuals/three';
-import { VideoCountObjectComponent } from './video-visuals/two';
-export const MolmoVideoWrapper = ({
-    videoUrl,
-    children,
-}: {
-    videoUrl: string;
-    children: ReactNode;
-}) => {
-    return (
-        <AbsoluteFill>
-            <AbsoluteFill>
-                <AbsoluteFill>{children}</AbsoluteFill>
-                <Video className={css({ borderRadius: 'sm' })} muted={true} src={videoUrl} />
-            </AbsoluteFill>
-        </AbsoluteFill>
-    );
-};
+import { VideoDotTrackObjectComponent } from './video-visuals/Tracking';
 
 export const MolmoVideo = ({
     version,
     videoTracking,
     videoUrl,
 }: {
-    version: string;
+    version: 'tracking';
     videoTracking: VideoTrackingPoints;
     videoUrl: string;
 }) => {
@@ -42,12 +23,6 @@ export const MolmoVideo = ({
 
     const fps = 24;
     const { durationInFrames, width, height } = useVideoMetaData(videoUrl, fps);
-
-    // todo set aspect based on video.
-    // scale to fit area...
-    // pull size to calculate scrub size...
-    //
-    const scaleRatio = width / 700;
 
     return (
         <div>
@@ -73,11 +48,27 @@ export const MolmoVideo = ({
             <SeekBar
                 fps={fps}
                 playerRef={playerRef}
-                width={700}
                 data={videoTracking}
                 durationInFrames={durationInFrames}
             />
         </div>
+    );
+};
+
+export const MolmoVideoWrapper = ({
+    videoUrl,
+    children,
+}: {
+    videoUrl: string;
+    children: ReactNode;
+}) => {
+    return (
+        <AbsoluteFill>
+            <AbsoluteFill>
+                <AbsoluteFill>{children}</AbsoluteFill>
+                <Video className={css({ borderRadius: 'sm' })} muted={true} src={videoUrl} />
+            </AbsoluteFill>
+        </AbsoluteFill>
     );
 };
 
@@ -88,30 +79,12 @@ export const VideoTracking = ({
 
     showInterpolation,
 }: {
-    version: string;
+    version: 'tracking' | 'pointing';
     videoUrl: string;
     data: VideoTrackingPoints;
     showInterpolation: boolean;
 }) => {
-    if (version === 'one') {
-        return (
-            <MolmoVideoWrapper videoUrl={videoUrl}>
-                {data.frameList.map((object, i) => (
-                    <VideoCountObjectBlinkComponent key={i} object={object} />
-                ))}
-            </MolmoVideoWrapper>
-        );
-    }
-    if (version === 'two') {
-        return (
-            <MolmoVideoWrapper videoUrl={videoUrl}>
-                {data.frameList.map((object, i) => (
-                    <VideoCountObjectComponent key={i} object={object} />
-                ))}
-            </MolmoVideoWrapper>
-        );
-    }
-    if (version === 'three') {
+    if (version === 'tracking') {
         return (
             <MolmoVideoWrapper videoUrl={videoUrl}>
                 <VideoDotTrackObjectComponent object={data} showInterpolation={showInterpolation} />

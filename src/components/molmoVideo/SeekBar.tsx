@@ -8,8 +8,8 @@ import { interpolate } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { useKeyboardControls } from './KeyboardControls';
 import { useElementSize } from './useElementSize';
+import { useKeyboardControls } from './UseKeyboardControls';
 
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
     const pos = clientX;
