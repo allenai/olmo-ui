@@ -13,7 +13,7 @@ import { useKeyboardControls } from './KeyboardControls';
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
     const pos = clientX;
     const frame = Math.round(
-        interpolate(pos, [0, width], [0, Math.max(durationInFrames - 1, 0)], {
+        interpolate(pos, [0, width], [0, Math.max(durationInFrames, 0)], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
         })
@@ -26,16 +26,6 @@ const KNOB_WIDTH = 10;
 
 const TIMELINE_PADDING = 20;
 
-const findBodyInWhichDivIsLocated = (div: HTMLElement) => {
-    let current = div;
-
-    while (current.parentElement) {
-        current = current.parentElement;
-    }
-
-    return current;
-};
-
 export const SeekBar: React.FC<{
     playerRef: React.RefObject<PlayerRef | null>;
     data: VideoTrackingPoints;
@@ -43,7 +33,7 @@ export const SeekBar: React.FC<{
     fps: number;
     durationInFrames: number;
 }> = ({ data, width: inputWidth, playerRef, fps, durationInFrames }) => {
-    const width = inputWidth - 100;
+    const width = inputWidth;
     const containerRef = useRef<HTMLDivElement>(null);
     const [playing, setPlaying] = useState(false);
     const [frame, setFrame] = useState(0);
@@ -166,14 +156,11 @@ export const SeekBar: React.FC<{
         if (!dragging.dragging) {
             return;
         }
-
-        const body = findBodyInWhichDivIsLocated(containerRef.current as HTMLElement);
-
-        body.addEventListener('pointermove', onPointerMove);
-        body.addEventListener('pointerup', onPointerUp);
+        window.addEventListener('pointermove', onPointerMove);
+        window.addEventListener('pointerup', onPointerUp);
         return () => {
-            body.removeEventListener('pointermove', onPointerMove);
-            body.removeEventListener('pointerup', onPointerUp);
+            window.removeEventListener('pointermove', onPointerMove);
+            window.removeEventListener('pointerup', onPointerUp);
         };
     }, [dragging.dragging, onPointerMove, onPointerUp]);
 
@@ -194,10 +181,10 @@ export const SeekBar: React.FC<{
                 {playing ? <PauseIcon /> : <PlayArrowIcon />}
             </Button>
             <div
-                className={containerStyle}
+                className={timeLineStyle}
                 style={{
                     width: `${width + TIMELINE_PADDING}px`,
-                    paddingLeft: TIMELINE_PADDING / 2,
+                    paddingInline: TIMELINE_PADDING / 2,
                 }}>
                 <div
                     style={{
@@ -208,10 +195,9 @@ export const SeekBar: React.FC<{
                     className={barFill}
                 />
 
-                <div ref={containerRef} onPointerDown={onPointerDown} className={barBackground}>
+                <div ref={containerRef} onPointerDown={onPointerDown} className={innerTimeline}>
                     <TrackingDotsTimeLine
                         fps={fps}
-                        width={width}
                         durationInFrames={durationInFrames}
                         data={data}
                     />
@@ -219,7 +205,7 @@ export const SeekBar: React.FC<{
                         id="knob"
                         className={knob}
                         style={{
-                            left: (frame / durationInFrames) * width - KNOB_WIDTH / 2,
+                            left: `calc(${(frame / durationInFrames) * 100}% - ${KNOB_WIDTH / 2}px)`,
                         }}
                     />
                 </div>
@@ -232,23 +218,21 @@ const TRACKING_DOT_SIZE = 10;
 const TrackingDotsTimeLine = ({
     data,
     durationInFrames,
-    width,
     fps,
 }: {
     data: VideoTrackingPoints;
     durationInFrames: number;
-    width: number;
     fps: number;
 }) => {
     const dots = useMemo(() => {
         return data.frameList.map((frame) => {
-            return frame.timestamp / (durationInFrames / fps);
+            return (frame.timestamp / (durationInFrames / fps)) * 100;
         });
     }, [data, durationInFrames, fps]);
 
     return (
         <>
-            {dots.map((dot, index) => {
+            {dots.map((leftOffset, index) => {
                 return (
                     <div
                         key={index}
@@ -260,7 +244,7 @@ const TrackingDotsTimeLine = ({
                             backgroundColor: 'pink.100',
                             top: '2',
                         })}
-                        style={{ left: `${dot * width - TRACKING_DOT_SIZE / 2}px` }}
+                        style={{ left: `calc(${leftOffset}% - ${TRACKING_DOT_SIZE / 2}px)` }}
                     />
                 );
             })}
@@ -268,7 +252,7 @@ const TrackingDotsTimeLine = ({
     );
 };
 
-const containerStyle = css({
+const timeLineStyle = css({
     userSelect: 'none',
     WebkitUserSelect: 'none',
     boxSizing: 'border-box',
@@ -282,7 +266,7 @@ const containerStyle = css({
     flex: '1',
 });
 
-const barBackground = css({
+const innerTimeline = css({
     height: `[${BAR_HEIGHT}px]`,
     width: 'auto',
     position: 'relative',

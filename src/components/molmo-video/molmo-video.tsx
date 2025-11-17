@@ -1,18 +1,17 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Video } from '@remotion/media';
 import { Player, PlayerRef } from '@remotion/player';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useRef } from 'react';
 import { AbsoluteFill } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { PointSelect } from './PointSelect';
 import { SeekBar } from './time-line';
+import { useVideoDuration } from './useVideoDuration';
 import { VideoCountObjectBlinkComponent } from './video-visuals/one';
-import { VideoCountObjectComponent } from './video-visuals/two';
-
 import { VideoDotTrackObjectComponent } from './video-visuals/three';
-
+import { VideoCountObjectComponent } from './video-visuals/two';
 export const MolmoVideoWrapper = ({
     videoUrl,
     children,
@@ -28,36 +27,6 @@ export const MolmoVideoWrapper = ({
             </AbsoluteFill>
         </AbsoluteFill>
     );
-};
-
-/**
- * Custom hook to calculate video duration in frames
- * @param videoUrl - URL of the video
- * @param fps - Frames per second
- * @returns Duration in frames, or null if not yet loaded
- */
-const useVideoDuration = (videoUrl: string, fps: number): number => {
-    const [durationInFrames, setDurationInFrames] = useState<number>(1);
-
-    useEffect(() => {
-        const videoElement = document.createElement('video');
-        videoElement.src = videoUrl;
-
-        const handleLoadedMetadata = () => {
-            const durationInSeconds = videoElement.duration;
-            const frames = Math.round(durationInSeconds * fps);
-            setDurationInFrames(frames);
-        };
-
-        videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
-
-        return () => {
-            videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
-            videoElement.src = '';
-        };
-    }, [videoUrl, fps]);
-
-    return durationInFrames;
 };
 
 export const MolmoVideo = ({
@@ -76,6 +45,10 @@ export const MolmoVideo = ({
 
     const width = 1460 / 2;
     const height = 864 / 2;
+
+    // todo set aspect based on video.
+    // scale to fit area...
+    // pull size to calculate scrub size...
 
     return (
         <div>

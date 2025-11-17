@@ -52,6 +52,7 @@ export const useKeyboardControls = (
     );
 
     useEffect(() => {
+        // TODO might need to handle focus for multiple controls on screen
         const handleKeyDown = (e: KeyboardEvent) => {
             if (!playerRef.current) {
                 return;
