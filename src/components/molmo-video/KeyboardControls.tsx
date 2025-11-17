@@ -23,8 +23,9 @@ export const useKeyboardControls = (
         if (times[times.length - 1] !== durationInFrames / fps) {
             times.push(durationInFrames / fps);
         }
+
         return times;
-    }, [data]);
+    }, [data, durationInFrames, fps]);
 
     const jumpBasedOnTime = useCallback(
         (frame: number, direction: 'forward' | 'back') => {
@@ -48,7 +49,7 @@ export const useKeyboardControls = (
             }
             playerRef.current.seekTo(outTime * fps);
         },
-        [playerRef.current, fps]
+        [playerRef, fps, timesOfInterest]
     );
 
     useEffect(() => {
@@ -76,7 +77,6 @@ export const useKeyboardControls = (
                 e.preventDefault();
                 player.pause();
                 jumpBasedOnTime(playerRef.current.getCurrentFrame(), 'forward');
-                return;
             }
         };
 

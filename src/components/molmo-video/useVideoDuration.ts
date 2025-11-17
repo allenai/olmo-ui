@@ -14,8 +14,6 @@ export const useVideoDuration = (videoUrl: string, fps: number): number => {
 
         const handleLoadedMetadata = () => {
             const durationInSeconds = videoElement.duration;
-            console.log(videoElement.videoWidth);
-            console.log(videoElement.videoWidth);
             const frames = Math.round(durationInSeconds * fps);
             setDurationInFrames(frames);
         };

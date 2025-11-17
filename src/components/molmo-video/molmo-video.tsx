@@ -64,7 +64,7 @@ export const MolmoVideo = ({
                             data: videoTracking,
                             showInterpolation: false,
                         }}
-                        durationInFrames={durationInFrames}
+                        durationInFrames={durationInFrames + 1}
                         compositionWidth={width}
                         compositionHeight={height}
                         fps={fps}
