@@ -2,19 +2,20 @@ import { styled, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { ReactNode } from 'react';
 
-import { PointInfo } from '../points/molmo1/extractPointData';
 import { PointCircle } from './PointCircle';
+import { PointsSets } from './PointPicture';
 import { usePointColors } from './usePointColors';
 
-export const PointPictureCaption = ({ pointInfos }: { pointInfos: PointInfo[] }): ReactNode => {
+export const PointPictureCaption = ({ pointsSets }: { pointsSets: PointsSets[] }): ReactNode => {
     const pointColors = usePointColors();
     return (
         <Stack gap={1} useFlexGap component="figcaption" sx={{ marginBlockStart: 1 }}>
-            {pointInfos.map((pointInfo, i) => (
+            {pointsSets.map((set, index) => (
                 <PointLabel
-                    key={i}
-                    text={pointInfo.alt}
-                    pointColor={pointColors[i % pointColors.length]}
+                    key={index}
+                    text={set.alt || set.label}
+                    pointColor={pointColors[index % pointColors.length]}
+                    count={set.points.length}
                 />
             ))}
         </Stack>
@@ -27,8 +28,9 @@ const PointLabelSvg = styled('svg')({});
 interface PointLabelProps {
     pointColor: string;
     text: string;
+    count: number;
 }
-const PointLabel = ({ pointColor, text }: PointLabelProps): ReactNode => (
+const PointLabel = ({ pointColor, text, count }: PointLabelProps): ReactNode => (
     <Stack gap="0.5ch" useFlexGap direction="row" alignItems="center">
         <PointLabelSvg
             viewBox="0 0 20 20"
@@ -38,6 +40,8 @@ const PointLabel = ({ pointColor, text }: PointLabelProps): ReactNode => (
             sx={{ color: pointColor }}>
             <PointCircle xPercent={50} yPercent={50} />
         </PointLabelSvg>
-        <Typography>{text}</Typography>
+        <Typography>
+            {text} ({count})
+        </Typography>
     </Stack>
 );

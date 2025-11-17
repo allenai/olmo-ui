@@ -15,8 +15,8 @@ const WHITESPACE_DELIMITER = /\s+/;
 const PointsAttributesSchema = z.object({
     label: z.string(),
     alt: z.string().optional(),
-    coords: z.string(),
-    tag: z.union([z.literal('tracks'), z.literal('points')]),
+    coords: z.string().optional(),
+    type: z.enum(['points-tag', 'tracks-tag']),
 });
 
 type PointsAttributes = z.infer<typeof PointsAttributesSchema>;
@@ -37,37 +37,48 @@ export const parseAsXML = (content: string) => {
         throw Error(message);
     }
 
-    const xml = result.xml.filter((item) => !!item.points || !!item.tracks)[0];
-    if (!xml) {
+    const xmlTags: PointsAttributes[] = [];
+
+    result.xml.forEach((item) => {
+        if (item?.tracks?.['@coords']) {
+            // tracks tag
+            xmlTags.push(
+                PointsAttributesSchema.parse({
+                    label: item.tracks['#text'],
+                    alt: item.tracks['@alt'],
+                    coords: item.track['@coords'],
+                    type: 'tracks-tag',
+                })
+            );
+        }
+        if (item?.points?.['@coords']) {
+            // points tag
+            xmlTags.push(
+                PointsAttributesSchema.parse({
+                    label: item.points['#text'],
+                    alt: item.points['@alt'],
+                    coords: item.points['@coords'],
+                    type: 'points-tag',
+                })
+            );
+        }
+    });
+
+    if (!xmlTags.length) {
         const message = 'XML parsing error: No points parsed';
         throw Error(message);
     }
 
-    if (xml.points) {
-        return PointsAttributesSchema.parse({
-            tag: 'points',
-            label: xml.points['#text'],
-            alt: xml.points['@alt'],
-            coords: xml.points['@coords'],
-        });
-    } else if (xml.tracks) {
-        return PointsAttributesSchema.parse({
-            tag: 'tracks',
-            label: xml.tracks['#text'],
-            alt: xml.tracks['@alt'],
-            coords: xml.tracks['@coords'],
-        });
-    } else {
-        const message = 'XML parsing error: Unexpected tag';
-        throw Error(message);
-    }
+    return xmlTags;
 };
 
-export const extractPointsData = (content: string): AllPointsFormats | null => {
+export const extractPointsData = (content: string): AllPointsFormats[] | null => {
     try {
         const parseResult = parseAsXML(content);
 
-        return formatPointsData(parseResult) || null;
+        return parseResult
+            .map((res) => formatPointsData(res))
+            .filter((i) => typeof i !== 'undefined');
     } catch (e) {
         console.error((e as Error).message);
         return null;
@@ -75,7 +86,7 @@ export const extractPointsData = (content: string): AllPointsFormats | null => {
 };
 
 export const formatPointsData = (pointsAttributes: PointsAttributes) => {
-    if (pointsAttributes.tag === 'tracks') {
+    if (pointsAttributes.coords && pointsAttributes.type === 'tracks-tag') {
         const tracksList = pointsAttributes.coords
             .split(IMAGE_OR_FRAME_DELIMITER)
             .map((trackItem) => trackItem.split(WHITESPACE_DELIMITER));
@@ -93,7 +104,8 @@ export const formatPointsData = (pointsAttributes: PointsAttributes) => {
             })),
         } satisfies VideoTrackingPoints;
     }
-    if (pointsAttributes.tag === 'points') {
+
+    if (pointsAttributes.coords && pointsAttributes.type === 'points-tag') {
         const coordsList = pointsAttributes.coords.split(IMAGE_OR_FRAME_DELIMITER);
         const imagesOrFramesList = coordsList.map((coordItem) =>
             coordItem.split(WHITESPACE_DELIMITER)

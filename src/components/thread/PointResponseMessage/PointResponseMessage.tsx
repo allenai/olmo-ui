@@ -10,11 +10,11 @@ import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 import { type MessageProps, StandardMessage } from '../ChatMessage/ChatMessage';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { extractPointData as extractMolmo1PointData } from '../points/molmo1/extractPointData';
-import { pointRegex as regexMolmo1 } from '../points/molmo1/pointRegex';
 import { extractPointsData as extractMolmo2PointsData } from '../points/molmo2/formatPointsData';
-import { pointsRegex as regexMolmo2 } from '../points/molmo2/pointsRegex';
+import { ImagePoints } from '../points/pointsDataTypes';
+import { pointsRegex } from '../points/pointsRegex';
 import { MAX_THREAD_IMAGE_HEIGHT } from '../ThreadDisplay/threadDisplayConsts';
-import { PointPicture } from './PointPicture';
+import { PointPicture, PointsSets } from './PointPicture';
 import { PointPictureCaption } from './PointPictureCaption';
 import { PointPictureModal } from './PointPictureModal';
 
@@ -22,7 +22,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
-    const { data: lastFilesInThread } = useThread(threadId, (thread) => {
+    const { data: currentFilesInThread } = useThread(threadId, (thread) => {
         return thread.messages
             .filter((message) => message.role === Role.User && message.fileUrls?.length)
             .at(-1)?.fileUrls;
@@ -30,56 +30,101 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     if (!message) {
         return null; // this shouldn't happen
     }
-    const { content } = message;
-
-    if (lastFilesInThread == null) {
+    if (!currentFilesInThread?.length) {
         return <StandardMessage messageId={messageId} />;
     }
 
-    const pointInfos = extractMolmo1PointData(content) ?? extractMolmo2PointsData(content);
+    const { content } = message;
+    const pointsSets = extractMolmo1PointData(content) ?? extractMolmo2PointsData(content);
+    console.log('points sets', pointsSets);
 
-    const markdownContent = pointInfos
-        ? Array.isArray(pointInfos)
-            ? content.replaceAll(regexMolmo1, '**$<text>**')
-            : content.replaceAll(regexMolmo2, '**$<text>**')
-        : content;
+    const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
 
     const handleClose = () => {
         setIsModalOpen(false);
     };
 
-    if (Array.isArray(pointInfos) || pointInfos?.type === 'image-points') {
-        // TODO: Currently only supports single image. Refactor to support multi image.
-        const points = Array.isArray(pointInfos)
-            ? pointInfos
-            : [
-                  {
-                      alt: pointInfos.alt ?? pointInfos.label,
-                      points: pointInfos.imageList[0].points.map(({ x, y }) => ({ x, y })),
-                  },
-              ];
+    // NOTE: this assumes all points from a response will be a homogenious type
+    if (pointsSets?.[0].type === 'image-points') {
+        return (
+            <PointPictureList
+                imagePointsSets={pointsSets.filter((set) => set.type === 'image-points')}
+                fileUrls={currentFilesInThread}
+                content={content}
+            />
+        );
+    } else if (pointsSets?.[0].type === 'track-points') {
+        // TODO: this space reserved for video points components
+        const pointInfos = pointsSets.filter((set) => set.type === 'track-points')[0];
+        const videoUrl = currentFilesInThread[0];
 
         return (
-            <>
-                <Box component="figure" sx={{ margin: 0, marginBlockEnd: 2 }}>
-                    <Box
-                        onClick={() => {
-                            setIsModalOpen(true);
-                        }}
-                        sx={{
-                            display: 'grid',
-                            gridTemplate: 'auto / auto',
-                            gridTemplateAreas: '"combined"',
-                            width: 'fit-content',
-                            height: 'fit-content',
-                            maxWidth: '100%',
-                            '&:hover': {
-                                cursor: 'pointer',
-                            },
-                        }}>
+            <Stack gap={2}>
+                <MolmoTrackingVideo videoTrackingPoints={pointInfos} videoUrl={videoUrl} />
+                <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
+            </Stack>
+        );
+    } else if (pointsSets?.[0].type === 'frame-points') {
+        const pointInfos = pointsSets.filter((set) => set.type === 'frame-points')[0];
+        const videoUrl = currentFilesInThread[0];
+
+        return (
+            <Stack gap={2}>
+                <MolmoCountingVideo videoUrl={videoUrl} videoPoints={pointInfos} />
+                <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
+            </Stack>
+        );
+    }
+
+    return <StandardMessage messageId={messageId} />;
+};
+
+const PointPictureList = ({
+    imagePointsSets,
+    fileUrls,
+    content,
+}: {
+    imagePointsSets: ImagePoints[];
+    fileUrls: readonly string[];
+    content: string;
+}) => {
+    const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
+    const pointsSetsByFileUrl = fileUrls.reduce<Map<string, PointsSets[]>>((acc, url, index) => {
+        imagePointsSets.forEach(({ label, alt, imageList }) => {
+            const pointsPerImageId = imageList.find(
+                ({ imageId }) => imageId === `${index + 1}`
+            )?.points;
+
+            const prev = acc.get(url) || [];
+
+            if (pointsPerImageId) {
+                acc.set(url, [
+                    ...prev,
+                    {
+                        label,
+                        alt,
+                        url,
+                        points: pointsPerImageId,
+                    },
+                ]);
+            }
+        });
+
+        return acc;
+    }, new Map());
+
+    console.log(markdownContent);
+    console.log(pointsSetsByFileUrl);
+
+    return (
+        <>
+            <Box display="flex" gap={1.5}>
+                {fileUrls.map((url) => {
+                    return (
                         <PointPicture
-                            imageLink={lastFilesInThread[0]}
-                            pointInfos={points}
+                            key={url}
+                            imageLink={url}
+                            pointsSets={pointsSetsByFileUrl.get(url) || []}
                             sx={{
                                 gridArea: 'combined',
                                 maxHeight: MAX_THREAD_IMAGE_HEIGHT,
@@ -88,41 +133,10 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                                 maxWidth: '100%',
                             }}
                         />
-                    </Box>
-                    <PointPictureModal open={isModalOpen} closeModal={handleClose}>
-                        <PointPicture
-                            imageLink={lastFilesInThread[0]}
-                            pointInfos={points}
-                            caption={<PointPictureCaption pointInfos={points} />}
-                            sx={{ gridArea: 'combined' }}
-                        />
-                    </PointPictureModal>
-                    <PointPictureCaption pointInfos={points} />
-                </Box>
-                <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
-            </>
-        );
-    } else if (pointInfos?.type) {
-        const videoUrl = lastFilesInThread[0];
-
-        if (pointInfos.type === 'track-points') {
-            return (
-                <Stack gap={2}>
-                    <MolmoTrackingVideo videoTrackingPoints={pointInfos} videoUrl={videoUrl} />
-                    <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
-                </Stack>
-            );
-        }
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (pointInfos.type === 'frame-points') {
-            return (
-                <Stack gap={2}>
-                    <MolmoCountingVideo videoUrl={videoUrl} videoPoints={pointInfos} />
-                    <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
-                </Stack>
-            );
-        }
-    }
-
-    return <StandardMessage messageId={messageId} />;
+                    );
+                })}
+            </Box>
+            <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
+        </>
+    );
 };
