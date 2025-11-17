@@ -4,7 +4,6 @@ import { ReactNode } from 'react';
 
 import { Point } from '../points/pointsDataTypes';
 import { PointCircle } from './PointCircle';
-import { PointPictureCaption } from './PointPictureCaption';
 import { usePointColors } from './usePointColors';
 
 export interface PointsSets {
@@ -55,7 +54,6 @@ export const PointPicture = ({
                 })}
                 {caption}
             </Box>
-            <PointPictureCaption pointsSets={pointsSets} />
         </Box>
     );
 };

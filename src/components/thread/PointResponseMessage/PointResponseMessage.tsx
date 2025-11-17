@@ -15,7 +15,7 @@ import { ImagePoints } from '../points/pointsDataTypes';
 import { pointsRegex } from '../points/pointsRegex';
 import { MAX_THREAD_IMAGE_HEIGHT } from '../ThreadDisplay/threadDisplayConsts';
 import { PointPicture, PointsSets } from './PointPicture';
-import { PointPictureCaption } from './PointPictureCaption';
+import { PointPictureCaption, PointPictureListCaption } from './PointPictureCaption';
 import { PointPictureModal } from './PointPictureModal';
 
 export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => {
@@ -113,18 +113,16 @@ const PointPictureList = ({
         return acc;
     }, new Map());
 
-    console.log(markdownContent);
-    console.log(pointsSetsByFileUrl);
-
     return (
-        <>
+        <Stack spacing={1}>
             <Box display="flex" gap={1.5}>
                 {fileUrls.map((url) => {
+                    const pointsSets = pointsSetsByFileUrl.get(url) || [];
                     return (
                         <PointPicture
                             key={url}
                             imageLink={url}
-                            pointsSets={pointsSetsByFileUrl.get(url) || []}
+                            pointsSets={pointsSets}
                             sx={{
                                 gridArea: 'combined',
                                 maxHeight: MAX_THREAD_IMAGE_HEIGHT,
@@ -132,11 +130,13 @@ const PointPictureList = ({
                                 height: 'auto',
                                 maxWidth: '100%',
                             }}
+                            // caption={<PointPictureCaption pointsSets={pointsSets} />}
                         />
                     );
                 })}
             </Box>
+            <PointPictureListCaption pointsSets={imagePointsSets} />
             <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
-        </>
+        </Stack>
     );
 };
