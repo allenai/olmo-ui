@@ -19,7 +19,7 @@ interface FileUploadInputProps
 
 export const FileUploadInput = forwardRef<HTMLInputElement, FileUploadInputProps>(
     function FileUploadInput(
-        { acceptedFileTypesString, isDisabled, acceptsMultiple, labelId, ...props },
+        { acceptedFileTypesString, isDisabled, acceptsMultiple, ...props },
         ref
     ) {
         return (
