@@ -9,6 +9,8 @@ import { SeekBar } from './timeline/SeekBar';
 import { VideoTracking } from './tracking/Tracking';
 import { useVideoMetaData } from './useVideoMetaData';
 
+const FPS = 24;
+
 export function MolmoTrackingVideo({
     videoTrackingPoints,
     videoUrl,
@@ -20,8 +22,7 @@ export function MolmoTrackingVideo({
 
     const [showInterpolation, setShowInterpolation] = useState(true);
 
-    const fps = 24;
-    const { durationInFrames, width, height } = useVideoMetaData(videoUrl, fps);
+    const { durationInFrames, width, height } = useVideoMetaData(videoUrl, FPS);
 
     return (
         <div>
@@ -38,13 +39,13 @@ export function MolmoTrackingVideo({
                     durationInFrames={durationInFrames + 1}
                     compositionWidth={width}
                     compositionHeight={height}
-                    fps={fps}
+                    fps={FPS}
                     style={{ width: '100%', flex: '1' }}
                     moveToBeginningWhenEnded={false}
                 />
             </div>
             <SeekBar
-                fps={fps}
+                fps={FPS}
                 playerRef={playerRef}
                 data={videoTrackingPoints}
                 durationInFrames={durationInFrames}
