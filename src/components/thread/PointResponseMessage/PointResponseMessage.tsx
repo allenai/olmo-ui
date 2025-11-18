@@ -104,7 +104,6 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
         if (pointInfos.type === 'track-points') {
             return (
                 <MolmoTrackingVideo
-                    version="tracking"
                     videoTrackingPoints={pointInfos}
                     videoUrl={lastImagesInThread[0]}
                 />

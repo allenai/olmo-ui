@@ -63,7 +63,7 @@ export function MolmoTrackingVideo({
     );
 }
 
-export const VideoTracking = ({
+const VideoTracking = ({
     videoTrackingPoints,
     videoUrl,
     showInterpolation,

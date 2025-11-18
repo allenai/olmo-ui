@@ -3,7 +3,27 @@ import { varnishTheme } from '@allenai/varnish2/theme';
 import { useMemo } from 'react';
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 
+import { VideoOverlayHelper } from '../VideoOverlayHelper';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+
+export const VideoTracking = ({
+    videoTrackingPoints,
+    videoUrl,
+    showInterpolation,
+}: {
+    videoUrl: string;
+    videoTrackingPoints: VideoTrackingPoints;
+    showInterpolation: boolean;
+}) => {
+    return (
+        <VideoOverlayHelper videoUrl={videoUrl}>
+            <VideoDotTrackObjectComponent
+                videoTrackingPoints={videoTrackingPoints}
+                showInterpolation={showInterpolation}
+            />
+        </VideoOverlayHelper>
+    );
+};
 
 export const VideoDotTrackObjectComponent = ({
     videoTrackingPoints,
@@ -36,8 +56,8 @@ export const VideoDotTrackObjectComponent = ({
     );
 };
 
-const preTimestampOffset = 0.15;
-const postTimestampOffset = 0.15;
+const PRE_TIMESTAMP_OFFSET = 0.15; // How long before the frame does the dot appear.
+const POST_TIMESTAMP_OFFSET = 0.15; // How long after the frame does the dot linger.
 
 const VideoSingleDotTrack = ({
     trackId,
@@ -64,16 +84,15 @@ const VideoSingleDotTrack = ({
     }, [videoTrackingPoints, fps, trackId]);
 
     const { sizeTimes, size } = useMemo(() => {
-        // TODO Breaks if translating points closer that .15 seconds together
         const animation = videoTrackingPoints.frameList.flatMap((framePoints) => {
-            const before = (framePoints.timestamp - preTimestampOffset) * fps;
-            const time = framePoints.timestamp * fps;
-            const after = (framePoints.timestamp + postTimestampOffset) * fps;
+            const before = (framePoints.timestamp - PRE_TIMESTAMP_OFFSET) * fps;
+            const after = (framePoints.timestamp + POST_TIMESTAMP_OFFSET) * fps;
 
             return [
                 [before, 0],
-                [time, 1],
-                [after, 0],
+                [before + 1, 1],
+                [after, 1],
+                [after + 1, 1],
             ];
         });
 
@@ -85,7 +104,7 @@ const VideoSingleDotTrack = ({
     const frame = useCurrentFrame();
 
     if (times.length < 2) {
-        // If the clip is less than .5 seconds long there will only be one time, which causes an error in interpolate
+        // If the clip is less than tracking interval there will only be one timestamp, which causes an error in interpolate
         return null;
     }
 
@@ -105,7 +124,7 @@ const VideoSingleDotTrack = ({
                 r={'1.5%'}
                 stroke={showInterpolation ? 'white' : 'transparent'}
                 strokeWidth={2}
-                fill={sizeAnimated > 0.5 ? varnishTheme.palette.primary.main : 'transparent'}
+                fill={sizeAnimated === 1 ? varnishTheme.palette.primary.main : 'transparent'}
             />
         </svg>
     );
