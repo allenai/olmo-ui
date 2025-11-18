@@ -2,7 +2,9 @@ import * as z from 'zod';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { SchemaAvailableTool, SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
-import { MCP_SERVER_NAME } from '@/components/toolCalling/mcpServerName';
+import { MCP_SERVER_INFO } from '@/components/toolCalling/mcpServerInfo';
+
+import { ToolGroupInfo } from './ToolGroupSection';
 
 export const allToolsInGroupSelected = (selectedTools: string[], tools: string[]): boolean => {
     return new Set(tools).isSubsetOf(new Set(selectedTools));
@@ -19,18 +21,16 @@ export const addToolsToSelected = (selectedTools: string[], toolsToAdd: string[]
     return Array.from(new Set([...selectedTools, ...toolsToAdd]));
 };
 
-export const isMcpServer = (mcpId: string): mcpId is keyof typeof MCP_SERVER_NAME =>
-    Boolean(mcpId in MCP_SERVER_NAME);
+export const isMcpServer = (mcpId: string): mcpId is keyof typeof MCP_SERVER_INFO =>
+    Boolean(mcpId in MCP_SERVER_INFO);
 
-export const toolGroupNameFromTool = (tool: SchemaAvailableTool) => {
-    const mcpServerId = tool.mcpServerId;
-    if (mcpServerId) {
-        if (isMcpServer(mcpServerId)) {
-            return MCP_SERVER_NAME[mcpServerId];
-        }
-        return 'Unknown';
+export const toolGroupInfoById = (serverId: string): ToolGroupInfo => {
+    if (isMcpServer(serverId)) {
+        return MCP_SERVER_INFO[serverId];
     }
-    return 'Internal';
+    return {
+        name: serverId,
+    };
 };
 
 type GroupedToolList = Record<string, SchemaAvailableTool[]>;
@@ -39,9 +39,9 @@ export const groupTools = (tools: Model['available_tools'] = []): GroupedToolLis
     const groupedTools: GroupedToolList = {};
     if (tools) {
         for (const tool of tools) {
-            const toolGroupName = toolGroupNameFromTool(tool);
-            groupedTools[toolGroupName] ??= [];
-            groupedTools[toolGroupName].push(tool);
+            const serverId = tool.mcpServerId ?? 'internal';
+            groupedTools[serverId] ??= [];
+            groupedTools[serverId].push(tool);
         }
     }
     return groupedTools;
