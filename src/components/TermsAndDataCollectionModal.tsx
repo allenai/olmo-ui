@@ -6,6 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
+import type { UpdateUserTermsAndDataCollectionPayload } from '@/slices/UserSlice';
 
 import { TermAndConditionsLink } from './TermsAndConditionsLink';
 import { FadeOverflowContent } from './widgets/FadeOverflowContent';
@@ -44,10 +45,10 @@ export const TermsAndDataCollectionModal = ({
             hasAcceptedTermsAndConditions:
                 formValues.termsAccepted !== initialTermsAndConditionsValue ? true : undefined,
             hasAcceptedDataCollection:
-                !formValues.dataCollectionAccepted !== initialDataCollectionValue
+                formValues.dataCollectionAccepted !== initialDataCollectionValue
                     ? formValues.dataCollectionAccepted
                     : undefined,
-        };
+        } satisfies UpdateUserTermsAndDataCollectionPayload;
 
         await updateTermsAndOrConsent(payload);
         onClose?.();

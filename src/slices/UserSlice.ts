@@ -9,7 +9,7 @@ import { User, UserClient, WhoamiApiUrl } from '../api/User';
 import { RemoteState } from '../contexts/util';
 import { errorToAlert } from './SnackMessageSlice';
 
-interface UpdateUserTermsAndDataCollectionPayload {
+export interface UpdateUserTermsAndDataCollectionPayload {
     hasAcceptedTermsAndConditions?: boolean;
     hasAcceptedDataCollection?: boolean;
 }
