@@ -1,35 +1,61 @@
 import { sva } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
-import { PropsWithChildren, useContext, useId } from 'react';
-import { DisclosureStateContext } from 'react-aria-components';
+import { CircularProgress } from '@mui/material';
+import { type PropsWithChildren } from 'react';
 
-import DotsLoadingIndicator from '@/components/assets/dots-loading-indicator.svg?react';
 import {
     CollapsibleWidgetBase,
     type CollapsibleWidgetBaseProps,
 } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetBase';
 import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
-import { CollapsibleWidgetFooterBase } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetFooter';
 import { CollapsibleWidgetHeading } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetHeading';
 import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
-import { CollapsibleWidgetTrigger } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetTrigger';
-import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
 
 import { ThinkingIcon } from '../svg/Thinking';
-import { FadeOverflowContent } from './FadeOverflowContent';
+import { CollapseButton } from './CollapsibleWidget/CollapseButton';
+import { ExpandArrowContextAware } from './CollapsibleWidget/ExpandArrow';
 
 const thinkingWidgetRecipe = sva({
-    slots: ['container', 'footer', 'thinkingInProgressIndicator'],
+    slots: [
+        'container',
+        'heading',
+        'trigger',
+        'thinkingInProgressIndicator',
+        'panel',
+        'content',
+        'collapse',
+    ],
     base: {
-        container: {},
-        footer: {
-            display: 'grid',
-            gridTemplateColumns: '1fr auto',
-            justifyItems: 'left',
+        container: {
+            '--background-color': '{colors.background}',
+            '--spinner-color': '{colors.icon}',
+            backgroundColor: 'var(--background-color)',
+            boxShadow: 'none',
         },
-        thinkingInProgressIndicator: {
-            width: '[2rem]',
-            height: '[1lh]',
+        heading: {
+            alignSelf: 'start',
+            backgroundColor: 'transparent',
+        },
+        trigger: {
+            fontWeight: 'medium',
+            justifyContent: 'start',
+            paddingBlock: '0',
+            paddingInline: '0',
+        },
+        content: {
+            marginBlockStart: '4',
+            paddingBlock: '0',
+            paddingInlineStart: '3',
+            borderLeft: '1px solid',
+            borderLeftColor: 'elements.default.stroke',
+        },
+        collapse: {
+            fontWeight: 'medium',
+            display: 'flex',
+            gap: '2',
+            marginBlockStart: '2',
+            alignSelf: 'start',
+            cursor: 'pointer',
         },
     },
 });
@@ -49,52 +75,40 @@ const ThinkingWidget = ({
     ...rest
 }: ThinkingWidgetProps) => {
     const thinkingWidgetClassNames = thinkingWidgetRecipe();
-    const footerId = useId();
 
     return (
         <CollapsibleWidgetBase
+            variant="transparent"
+            contrast="off"
             className={cx(thinkingWidgetClassNames.container, className)}
             data-widget-type="thinking"
             {...rest}>
             <CollapsibleWidgetHeading
+                className={thinkingWidgetClassNames.heading}
+                triggerClassName={thinkingWidgetClassNames.trigger}
                 startAdornment={<ThinkingIcon size="small" />}
+                aria-label={isThinkingInProgress ? 'Thinking' : 'Not thinking'}
                 endAdornment={
                     isThinkingInProgress ? (
-                        <DotsLoadingIndicator
-                            className={thinkingWidgetClassNames.thinkingInProgressIndicator}
-                        />
-                    ) : undefined
-                }
-                triggerAriaDescribedBy={footerId}>
-                {isThinkingInProgress ? 'Thinking' : 'Thoughts'}
+                        <CircularProgress size="1em" sx={{ color: 'var(--spinner-color)' }} />
+                    ) : (
+                        <ExpandArrowContextAware />
+                    )
+                }>
+                <span>{isThinkingInProgress ? 'Thinking' : 'Thoughts'}</span>
             </CollapsibleWidgetHeading>
-            <CollapsibleWidgetPanel>
-                <FadeOverflowContent className={contentClassName} shouldStickToBottom>
-                    <CollapsibleWidgetContent contrast="off">{children}</CollapsibleWidgetContent>
-                </FadeOverflowContent>
+            <CollapsibleWidgetPanel className={thinkingWidgetClassNames.panel}>
+                <CollapsibleWidgetContent
+                    className={thinkingWidgetClassNames.content}
+                    contrast="off">
+                    {children}
+                </CollapsibleWidgetContent>
+                <CollapseButton className={thinkingWidgetClassNames.collapse}>
+                    Collapse
+                    <ExpandArrowContextAware />
+                </CollapseButton>
             </CollapsibleWidgetPanel>
-            <CollapsibleWidgetFooterBase bordered>
-                <CollapsibleWidgetTrigger>
-                    <FooterContent id={footerId} />
-                    <ExpandArrowButton />
-                </CollapsibleWidgetTrigger>
-            </CollapsibleWidgetFooterBase>
         </CollapsibleWidgetBase>
-    );
-};
-
-interface FooterContentProps {
-    id: string;
-}
-
-const FooterContent = ({ id }: FooterContentProps) => {
-    const disclosureState = useContext(DisclosureStateContext);
-    const isExpanded = disclosureState?.isExpanded ?? false;
-
-    return (
-        <span id={id}>
-            {isExpanded ? 'Collapse to hide model thoughts' : 'Expand to view model thoughts'}
-        </span>
     );
 };
 

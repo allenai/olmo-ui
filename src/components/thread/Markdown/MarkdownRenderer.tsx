@@ -10,7 +10,7 @@ import { AttributionHighlight } from '@/components/thread/attribution/Attributio
 import { DeepResearchCite } from '@/components/thread/DeepResearch/DeepResearchMessage';
 
 import { CodeBlock } from '../CodeBlock';
-import { CustomDivider, CustomLink, CustomParagraph } from './CustomComponents';
+import { CustomDivider, CustomLink, CustomParagraph, CustomPre } from './CustomComponents';
 import { SANITIZED_ID_PREFIX } from './MarkdownRenderConstants';
 
 const markdownStyles = css({
@@ -52,6 +52,7 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
             remarkPlugins={[remarkGfm, customRemarkMath]}
             rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{
+                pre: CustomPre,
                 code: CodeBlock,
                 p: CustomParagraph,
                 hr: CustomDivider,

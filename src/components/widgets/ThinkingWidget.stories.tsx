@@ -34,6 +34,12 @@ export const Default: Story = {
     args: {},
 };
 
+export const Collapsed: Story = {
+    args: {
+        defaultExpanded: false,
+    },
+};
+
 export const ThinkingConstrainedHeight: Story = {
     args: {
         style: { maxHeight: '300px' },
