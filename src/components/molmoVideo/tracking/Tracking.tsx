@@ -102,7 +102,7 @@ const VideoSingleDotTrack = ({
             <circle
                 cy={`${yAnimated}%`}
                 cx={`${xAnimated}%`}
-                r={10}
+                r={'1.5%'}
                 stroke={showInterpolation ? 'white' : 'transparent'}
                 strokeWidth={2}
                 fill={sizeAnimated > 0.5 ? varnishTheme.palette.primary.main : 'transparent'}
