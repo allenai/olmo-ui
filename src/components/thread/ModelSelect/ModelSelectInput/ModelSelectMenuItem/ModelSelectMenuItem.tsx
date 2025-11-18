@@ -71,7 +71,14 @@ export const ModelSelectMenuItem = ({
         // https://github.com/mui/material-ui/issues/31006#issuecomment-1035549630
         <CustomMenuItem value={value} {...rest}>
             <MenuItemIcon sx={{ gridArea: 'icon', alignSelf: 'start' }} />
-            <Typography sx={{ gridArea: 'title', lineHeight: 1 }}>{model.name}</Typography>
+            <Typography
+                sx={{
+                    gridArea: 'title',
+                    lineHeight: 1,
+                    fontWeight: isNewModel ? 'bold' : undefined,
+                }}>
+                {model.name}
+            </Typography>
             <Typography sx={{ opacity: 0.55, gridArea: 'features' }} component="div">
                 {model.accepts_files ? 'Multimodal' : 'Text-only'}
                 {model.internal && ' (Internal)'}
