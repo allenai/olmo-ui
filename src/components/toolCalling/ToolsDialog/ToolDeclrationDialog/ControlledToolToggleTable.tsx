@@ -5,7 +5,7 @@ import { type UseControllerProps } from 'react-hook-form';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 
 import { DataFields } from './ToolDeclarationDialog';
-import { groupTools } from './toolDeclarationUtils';
+import { groupTools, toolGroupInfoById } from './toolDeclarationUtils';
 import { ToolGroupSection } from './ToolGroupSection';
 
 interface ControlledToggleTableProps {
@@ -28,10 +28,12 @@ export const ControlledToolToggleTable = ({
 
     return (
         <div className={toolGroupWrapperClassName}>
-            {Object.entries(groupedTools).map(([toolGroupName, tools]) => (
+            {Object.entries(groupedTools).map(([groupKey, tools]) => (
                 <ToolGroupSection
-                    key={toolGroupName}
-                    toolGroupName={toolGroupName}
+                    key={groupKey}
+                    groupInfo={
+                        groupKey === 'internal' ? { name: 'Internal' } : toolGroupInfoById(groupKey)
+                    }
                     groupTools={tools}
                     isDisabled={isDisabled}
                     control={control}
