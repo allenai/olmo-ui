@@ -160,13 +160,15 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
                         hasPoints={hasPoints(content)}
                     />
                 </MessageComponent>
-                <ImageList>
-                    {(fileUrls || []).map((url, idx) => (
-                        <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT }}>
-                            <img src={url} alt={'Uploaded'} loading="lazy" />
-                        </ImageListItem>
-                    ))}
-                </ImageList>
+                {fileUrls ? (
+                    <ImageList>
+                        {fileUrls.map((url, idx) => (
+                            <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT }}>
+                                <img src={url} alt={'Uploaded'} loading="lazy" />
+                            </ImageListItem>
+                        ))}
+                    </ImageList>
+                ) : null}
                 <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
                 <InlineAlertMessage messageId={messageId} />
 
