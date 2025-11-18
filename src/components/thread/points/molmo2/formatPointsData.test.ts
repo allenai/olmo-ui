@@ -129,7 +129,7 @@ describe('Parse Points', () => {
 
     it('parse video tracking points into VideoTrackingPoints', () => {
         const singleImagePointsTag = `
-          <points alt="alt_text" tracks="0.0 1 193 076 2 226 144\t30.0 1 411 150 2 422 061">label_text</points>`;
+          <tracks alt="alt_text" coords="0.0 1 193 076 2 226 144\t30.0 1 411 150 2 422 061">label_text</tracks>`;
 
         const expected: VideoTrackingPoints = {
             label: 'label_text',
