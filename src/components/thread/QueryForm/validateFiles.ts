@@ -1,18 +1,27 @@
+import { Validate, type ValidateResult } from 'react-hook-form-mui';
+
 import { MediaTypes } from './FileUploadButton/fileUploadMediaConsts';
-import { typeMatchesAllowedTypes } from './FileUploadThumbnails/typeMatchesAllowedTypes';
+import {
+    fileTypesToArray,
+    typeMatchesAllowedTypes,
+} from './FileUploadThumbnails/typeMatchesAllowedTypes';
+import { QueryFormValues } from './QueryFormController';
 
 interface ValidateFilesOptions {
     acceptedFileTypes: string | string[] | Set<string>;
     maxFilesPerMessage?: number;
+    canMixFileTypes: boolean;
 }
 
 export const validateFiles = (
     fileList: FileList | undefined,
     options: ValidateFilesOptions
-): string | true => {
+): ValidateResult => {
     if (!fileList || fileList.length === 0) {
         return true; // No files is valid
     }
+
+    const acceptedFileTypes = fileTypesToArray(options.acceptedFileTypes);
 
     const filesByMediaType = new Map<string, File[]>();
 
@@ -20,7 +29,7 @@ export const validateFiles = (
         for (const [mediaType, mediaConfig] of Object.entries(MediaTypes)) {
             const isMediaTypeAccepted = typeMatchesAllowedTypes(
                 mediaConfig.accept,
-                options.acceptedFileTypes
+                acceptedFileTypes
             );
 
             if (isMediaTypeAccepted) {
@@ -37,16 +46,27 @@ export const validateFiles = (
         }
     }
 
+    // error if not allowed to mix different types
+    if (filesByMediaType.size > 1 && !options.canMixFileTypes) {
+        return `Errors only one of "${acceptedFileTypes.join(', ')}" allowed in a single message.`;
+    }
+
     for (const [mediaType, files] of filesByMediaType) {
         const mediaConfig = MediaTypes[mediaType as keyof typeof MediaTypes];
 
-        // Determine the max files allowed for this media type
         const maxFiles = mediaConfig.maxFiles ?? options.maxFilesPerMessage;
 
         if (maxFiles !== undefined && files.length > maxFiles) {
-            return `Maximum ${maxFiles} ${mediaConfig.label}s allowed`;
+            const label = `${mediaConfig.label}${maxFiles > 1 ? 's' : ''}`;
+            return `Maximum ${maxFiles} ${label} allowed.`;
         }
     }
 
     return true;
+};
+
+export const createValidateFunction = (
+    options: ValidateFilesOptions
+): Validate<FileList | undefined, QueryFormValues> => {
+    return (files: FileList | undefined) => validateFiles(files, options);
 };

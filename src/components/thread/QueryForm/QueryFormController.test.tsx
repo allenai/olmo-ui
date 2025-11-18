@@ -143,7 +143,7 @@ describe('QueryFormController - File Upload Validation', () => {
 
             // Should show error
             await waitFor(() => {
-                expect(screen.getByText('Maximum 10 images allowed')).toBeInTheDocument();
+                expect(screen.getByText('Maximum 10 images allowed.')).toBeInTheDocument();
             });
         });
 
@@ -160,7 +160,7 @@ describe('QueryFormController - File Upload Validation', () => {
 
             // Should show error
             await waitFor(() => {
-                expect(screen.getByText('Maximum 1 video allowed')).toBeInTheDocument();
+                expect(screen.getByText('Maximum 1 video allowed.')).toBeInTheDocument();
             });
         });
 
@@ -176,7 +176,7 @@ describe('QueryFormController - File Upload Validation', () => {
 
             // Should show error initially
             await waitFor(() => {
-                expect(screen.getByText('Maximum 10 images allowed')).toBeInTheDocument();
+                expect(screen.getByText('Maximum 10 images allowed.')).toBeInTheDocument();
             });
 
             // Remove one file by clicking the remove button on the first thumbnail
@@ -185,7 +185,7 @@ describe('QueryFormController - File Upload Validation', () => {
 
             // Error should disappear after removing a file
             await waitFor(() => {
-                expect(screen.queryByText('Maximum 10 images allowed')).not.toBeInTheDocument();
+                expect(screen.queryByText('Maximum 10 images allowed.')).not.toBeInTheDocument();
             });
         });
     });

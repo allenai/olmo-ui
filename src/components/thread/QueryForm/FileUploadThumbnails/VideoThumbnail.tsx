@@ -22,8 +22,8 @@ const placeholderContainer = css({
 
 export const VideoThumbnail = ({ videoUrl, alt, title }: VideoThumbnailProps): ReactNode => {
     const videoThumbnailSrc = useVideoThumbnail({ videoUrl, offsetPercent: 0.5 });
-    // return different image while pendings
-    return !videoThumbnailSrc ? (
+
+    return videoThumbnailSrc ? (
         <ThumbnailImage src={videoThumbnailSrc} alt={alt} title={title} />
     ) : (
         <div className={placeholderContainer}>

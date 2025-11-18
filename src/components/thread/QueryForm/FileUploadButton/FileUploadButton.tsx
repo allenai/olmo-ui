@@ -43,7 +43,6 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     }: FileUploadButtonProps,
     ref: ForwardedRef<HTMLInputElement>
 ) {
-    const labelRef = useRef<HTMLLabelElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const { isMultiModalEnabled } = useFeatureToggles();
 
@@ -77,20 +76,27 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
         }
     };
 
-    const tooltipContent =
-        !allowFilesInFollowups && !acceptsMultiple
-            ? 'This model only supports one image on initial message. Start a new chat to submit a new file.'
-            : undefined;
+    const isButtonDisabled = isFileUploadDisabled && !allowFilesInFollowups;
+    const isInputDisabled = isSendingPrompt || isFileUploadDisabled;
+
+    let tooltipContent: string | undefined;
+
+    if (isButtonDisabled && !acceptsMultiple) {
+        tooltipContent =
+            'This model only supports one image on initial message. Start a new chat to submit a new file.';
+    } else if (isButtonDisabled && acceptsMultiple) {
+        tooltipContent =
+            'This model only supports files on initial message. Start a new chat to submit new files.';
+    }
 
     const fileUploadButton = (
         <FileUploadTriggerButton
-            ref={labelRef}
-            onPress={mediaTypes.length === 1 ? handleSingleTypeClick : undefined}
-            isDisabled={isSendingPrompt || isFileUploadDisabled}>
+            isDisabled={isInputDisabled}
+            onPress={mediaTypes.length === 1 ? handleSingleTypeClick : undefined}>
             <FileUploadInput
                 {...props}
                 acceptedFileTypesString={acceptedFileTypesString}
-                isDisabled={isSendingPrompt || isFileUploadDisabled}
+                isDisabled={isInputDisabled}
                 acceptsMultiple={acceptsMultiple}
                 ref={inputRef}
             />
@@ -100,9 +106,9 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     // Single file type is only the button
     if (mediaTypes.length === 1) {
         return (
-            <StyledTooltip content={tooltipContent} placement="top">
-                <Focusable isDisabled={!isFileUploadDisabled && !allowFilesInFollowups}>
-                    {fileUploadButton}
+            <StyledTooltip isDisabled={!tooltipContent} content={tooltipContent} placement="top">
+                <Focusable isDisabled={!isButtonDisabled}>
+                    <span>{fileUploadButton}</span>
                 </Focusable>
             </StyledTooltip>
         );
@@ -110,12 +116,14 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
 
     // Multiple files types has a menu
     return (
-        <StyledTooltip content={tooltipContent} placement="top">
-            <Focusable isDisabled={!isFileUploadDisabled && !allowFilesInFollowups}>
-                <MenuTrigger>
-                    {fileUploadButton}
-                    <FileUploadMenu mediaTypes={mediaTypes} onAction={handleMenuAction} />
-                </MenuTrigger>
+        <StyledTooltip isDisabled={!tooltipContent} content={tooltipContent} placement="top">
+            <Focusable isDisabled={!isButtonDisabled}>
+                <span>
+                    <MenuTrigger>
+                        {fileUploadButton}
+                        <FileUploadMenu mediaTypes={mediaTypes} onAction={handleMenuAction} />
+                    </MenuTrigger>
+                </span>
             </Focusable>
         </StyledTooltip>
     );

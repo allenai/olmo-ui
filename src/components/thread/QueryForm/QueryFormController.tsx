@@ -1,7 +1,15 @@
 import { DevTool } from '@hookform/devtools';
 import { Stack, Typography } from '@mui/material';
 import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
-import { Controller, FormContainer, SubmitHandler, useForm, useWatch } from 'react-hook-form-mui';
+import {
+    Controller,
+    FormContainer,
+    SubmitHandler,
+    useForm,
+    useWatch,
+    Validate,
+    ValidateResult,
+} from 'react-hook-form-mui';
 import { useNavigation } from 'react-router-dom';
 
 import {
@@ -124,10 +132,13 @@ export const QueryFormController = ({
     const files = useWatch({ control: formContext.control, name: 'files' });
 
     // Validation function for file uploads
-    const validateFilesWithOptions = (fileList: FileList | undefined): string | true => {
+    const validateFilesWithOptions: Validate<FileList | undefined, QueryFormValues> = (
+        fileList: FileList | undefined
+    ): ValidateResult => {
         return validateFiles(fileList, {
             acceptedFileTypes: fileUploadProps.acceptedFileTypes,
             maxFilesPerMessage: fileUploadProps.maxFilesPerMessage,
+            canMixFileTypes: false, // shouldn't be static
         });
     };
 

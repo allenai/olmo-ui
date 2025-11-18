@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Key, Menu, MenuItem, Popover } from 'react-aria-components';
 
-import type { MediaTypeConfig, MediaTypeKey } from './fileUploadMediaConsts';
+import type { MediaTypeConfig } from './fileUploadMediaConsts';
 
 const menuItem = css({
     paddingBlock: '1',
