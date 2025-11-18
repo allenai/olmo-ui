@@ -5,10 +5,7 @@ export const QueryFormStyledBox = ({ children }: PropsWithChildren): ReactNode =
     return (
         <Box width={1} paddingInline={2}>
             <Box
-                // data-text-value={value}
                 sx={(theme) => ({
-                    //
-
                     borderRadius: theme.spacing(3.5),
                     paddingBlock: 1,
                     paddingInline: 2,

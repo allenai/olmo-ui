@@ -17,8 +17,9 @@ export const validateFiles = (
     fileList: FileList | undefined,
     options: ValidateFilesOptions
 ): ValidateResult => {
+    // this is currently validated on the API
     if (!fileList || fileList.length === 0) {
-        return true; // No files is valid
+        return true;
     }
 
     const acceptedFileTypes = fileTypesToArray(options.acceptedFileTypes);

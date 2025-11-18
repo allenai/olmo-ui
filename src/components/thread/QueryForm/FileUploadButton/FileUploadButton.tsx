@@ -25,6 +25,8 @@ export interface FileuploadPropsBase {
     acceptsMultiple: boolean;
     allowFilesInFollowups: boolean;
     maxFilesPerMessage?: number;
+    // not currently used:
+    requiredFileOption?: string; // this should be the union: SchemaMultiModalModel['require_file_to_prompt'] =/
 }
 
 export type FileUploadButtonProps = FileuploadPropsBase &
