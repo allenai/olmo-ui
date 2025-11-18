@@ -1,25 +1,25 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Video } from '@remotion/media';
+import { Checkbox } from '@allenai/varnish-ui';
 import { Player, PlayerRef } from '@remotion/player';
-import { ReactNode, useRef } from 'react';
-import { AbsoluteFill } from 'remotion';
+import { useRef, useState } from 'react';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { SeekBar } from './timeLine/SeekBar';
 import { VideoDotTrackObjectComponent } from './tracking/Tracking';
 import { useVideoMetaData } from './useVideoMetaData';
+import { VideoOverlayHelper } from './VideoOverlayHelper';
 
-export const MolmoVideo = ({
-    version,
+export function MolmoTrackingVideo({
     videoTrackingPoints,
     videoUrl,
 }: {
-    version: 'tracking';
     videoTrackingPoints: VideoTrackingPoints;
     videoUrl: string;
-}) => {
+}) {
     const playerRef = useRef<PlayerRef>(null);
+
+    const [showInterpolation, setShowInterpolation] = useState(true);
 
     const fps = 24;
     const { durationInFrames, width, height } = useVideoMetaData(videoUrl, fps);
@@ -33,9 +33,8 @@ export const MolmoVideo = ({
                     component={VideoTracking}
                     inputProps={{
                         videoUrl,
-                        version,
                         videoTrackingPoints,
-                        showInterpolation: false,
+                        showInterpolation,
                     }}
                     durationInFrames={durationInFrames + 1}
                     compositionWidth={width}
@@ -51,46 +50,34 @@ export const MolmoVideo = ({
                 data={videoTrackingPoints}
                 durationInFrames={durationInFrames}
             />
+            <Checkbox
+                isSelected={showInterpolation}
+                onChange={(isChecked) => {
+                    setShowInterpolation(isChecked);
+                }}
+                aria-label={`Toggle Interpolation between tracking points`}
+                className={css({ paddingTop: '1' })}>
+                <span>Show Interpolation</span>
+            </Checkbox>
         </div>
     );
-};
-
-export const MolmoVideoWrapper = ({
-    videoUrl,
-    children,
-}: {
-    videoUrl: string;
-    children: ReactNode;
-}) => {
-    return (
-        <AbsoluteFill>
-            <AbsoluteFill>
-                <AbsoluteFill>{children}</AbsoluteFill>
-                <Video className={css({ borderRadius: 'sm' })} muted={true} src={videoUrl} />
-            </AbsoluteFill>
-        </AbsoluteFill>
-    );
-};
+}
 
 export const VideoTracking = ({
-    version,
     videoTrackingPoints,
     videoUrl,
     showInterpolation,
 }: {
-    version: 'tracking' | 'pointing';
     videoUrl: string;
     videoTrackingPoints: VideoTrackingPoints;
     showInterpolation: boolean;
 }) => {
-    if (version === 'tracking') {
-        return (
-            <MolmoVideoWrapper videoUrl={videoUrl}>
-                <VideoDotTrackObjectComponent
-                    videoTrackingPoints={videoTrackingPoints}
-                    showInterpolation={showInterpolation}
-                />
-            </MolmoVideoWrapper>
-        );
-    }
+    return (
+        <VideoOverlayHelper videoUrl={videoUrl}>
+            <VideoDotTrackObjectComponent
+                videoTrackingPoints={videoTrackingPoints}
+                showInterpolation={showInterpolation}
+            />
+        </VideoOverlayHelper>
+    );
 };
