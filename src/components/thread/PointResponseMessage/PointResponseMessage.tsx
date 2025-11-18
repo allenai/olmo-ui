@@ -3,7 +3,7 @@ import { ReactNode, useState } from 'react';
 
 import { useMessage, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
-import { MolmoVideo } from '@/components/molmoVideo/MolmoVideo';
+import { MolmoVideo } from '@/components/video/MolmoVideo';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 import { type MessageProps, StandardMessage } from '../ChatMessage/ChatMessage';
@@ -105,7 +105,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
             return (
                 <MolmoVideo
                     version="tracking"
-                    videoTracking={pointInfos}
+                    videoTrackingPoints={pointInfos}
                     videoUrl={lastImagesInThread[0]}
                 />
             );

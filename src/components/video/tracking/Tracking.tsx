@@ -6,19 +6,19 @@ import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 export const VideoDotTrackObjectComponent = ({
-    object,
+    videoTrackingPoints,
     showInterpolation,
 }: {
-    object: VideoTrackingPoints;
+    videoTrackingPoints: VideoTrackingPoints;
     showInterpolation: boolean;
 }) => {
     const objectIds = useMemo(() => {
         const ids: Record<string, boolean> = {};
-        object.frameList.forEach((frame) => {
+        videoTrackingPoints.frameList.forEach((frame) => {
             frame.tracks.forEach((t) => (ids[t.trackId] = true));
         });
         return Object.keys(ids);
-    }, [object]);
+    }, [videoTrackingPoints]);
 
     return (
         <div className={css({ position: 'relative' })}>
@@ -28,7 +28,7 @@ export const VideoDotTrackObjectComponent = ({
                         showInterpolation={showInterpolation}
                         key={id}
                         trackId={id}
-                        object={object}
+                        videoTrackingPoints={videoTrackingPoints}
                     />
                 </div>
             ))}
@@ -41,31 +41,31 @@ const postTimestampOffset = 0.15;
 
 const VideoSingleDotTrack = ({
     trackId,
-    object,
+    videoTrackingPoints,
     showInterpolation,
 }: {
     trackId: string;
-    object: VideoTrackingPoints;
+    videoTrackingPoints: VideoTrackingPoints;
     showInterpolation: boolean;
 }) => {
     const { height, width, fps } = useVideoConfig();
 
     const { x, y, times } = useMemo(() => {
-        const x = object.frameList.map((frame) => {
+        const x = videoTrackingPoints.frameList.map((frame) => {
             return frame.tracks.find((t) => t.trackId === trackId)?.x || 0;
         });
-        const y = object.frameList.map((frame) => {
+        const y = videoTrackingPoints.frameList.map((frame) => {
             return frame.tracks.find((t) => t.trackId === trackId)?.y || 0;
         });
-        const times = object.frameList.map((frame) => {
+        const times = videoTrackingPoints.frameList.map((frame) => {
             return frame.timestamp * fps;
         });
         return { x, y, times };
-    }, [object, fps, trackId]);
+    }, [videoTrackingPoints, fps, trackId]);
 
     const { sizeTimes, size } = useMemo(() => {
         // TODO Breaks if translating points closer that .15 seconds together
-        const animation = object.frameList.flatMap((framePoints) => {
+        const animation = videoTrackingPoints.frameList.flatMap((framePoints) => {
             const before = (framePoints.timestamp - preTimestampOffset) * fps;
             const time = framePoints.timestamp * fps;
             const after = (framePoints.timestamp + postTimestampOffset) * fps;
@@ -80,7 +80,7 @@ const VideoSingleDotTrack = ({
         const result = { sizeTimes: animation.map((a) => a[0]), size: animation.map((a) => a[1]) };
 
         return result;
-    }, [object, fps]);
+    }, [videoTrackingPoints, fps]);
 
     const frame = useCurrentFrame();
 

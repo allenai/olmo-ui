@@ -8,15 +8,15 @@ import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes'
 
 import { SeekBar } from './timeLine/SeekBar';
 import { VideoDotTrackObjectComponent } from './tracking/Tracking';
-import { useVideoMetaData } from './useVideoDuration';
+import { useVideoMetaData } from './useVideoMetaData';
 
 export const MolmoVideo = ({
     version,
-    videoTracking,
+    videoTrackingPoints,
     videoUrl,
 }: {
     version: 'tracking';
-    videoTracking: VideoTrackingPoints;
+    videoTrackingPoints: VideoTrackingPoints;
     videoUrl: string;
 }) => {
     const playerRef = useRef<PlayerRef>(null);
@@ -34,7 +34,7 @@ export const MolmoVideo = ({
                     inputProps={{
                         videoUrl,
                         version,
-                        data: videoTracking,
+                        videoTrackingPoints,
                         showInterpolation: false,
                     }}
                     durationInFrames={durationInFrames + 1}
@@ -48,7 +48,7 @@ export const MolmoVideo = ({
             <SeekBar
                 fps={fps}
                 playerRef={playerRef}
-                data={videoTracking}
+                data={videoTrackingPoints}
                 durationInFrames={durationInFrames}
             />
         </div>
@@ -74,20 +74,22 @@ export const MolmoVideoWrapper = ({
 
 export const VideoTracking = ({
     version,
-    data,
+    videoTrackingPoints,
     videoUrl,
-
     showInterpolation,
 }: {
     version: 'tracking' | 'pointing';
     videoUrl: string;
-    data: VideoTrackingPoints;
+    videoTrackingPoints: VideoTrackingPoints;
     showInterpolation: boolean;
 }) => {
     if (version === 'tracking') {
         return (
             <MolmoVideoWrapper videoUrl={videoUrl}>
-                <VideoDotTrackObjectComponent object={data} showInterpolation={showInterpolation} />
+                <VideoDotTrackObjectComponent
+                    videoTrackingPoints={videoTrackingPoints}
+                    showInterpolation={showInterpolation}
+                />
             </MolmoVideoWrapper>
         );
     }

@@ -1,10 +1,4 @@
 import { useEffect, useState } from 'react';
-/**
- * Custom hook to calculate video duration in frames
- * @param videoUrl - URL of the video
- * @param fps - Frames per second
- * @returns Duration in frames, or null if not yet loaded
- */
 
 type VideoMetaData = {
     durationInFrames: number;

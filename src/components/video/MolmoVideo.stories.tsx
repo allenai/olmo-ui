@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 export const Tracking: Story = {
     args: {
         version: 'tracking',
-        videoTracking: mclarenVideoTrackingData,
+        videoTrackingPoints: mclarenVideoTrackingData,
         videoUrl: VIDEO_URL,
     },
 };
