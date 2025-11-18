@@ -1,9 +1,9 @@
 import type { PlayerRef } from '@remotion/player';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-export const useKeyboardControls = (
+export const useOnKeyDownControls = (
     playerRef: React.RefObject<PlayerRef | null>,
     data: VideoTrackingPoints,
     fps: number,
@@ -52,19 +52,22 @@ export const useKeyboardControls = (
         [playerRef, fps, timesOfInterest]
     );
 
-    useEffect(() => {
-        // TODO might need to handle focus for multiple controls on screen
-        const handleKeyDown = (e: KeyboardEvent) => {
+    const onKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLDivElement>, disableSpace: boolean = false) => {
             if (!playerRef.current) {
                 return;
             }
 
             const player = playerRef.current;
 
-            // if (e.code === 'Space') {
-            //     player.isPlaying() ? player.pause() : player.play();
-            //     return;
-            // }
+            if (e.code === 'Space' && !disableSpace) {
+                if (player.isPlaying()) {
+                    player.pause();
+                } else {
+                    player.play();
+                }
+                return;
+            }
 
             if (e.code === 'ArrowLeft') {
                 e.preventDefault();
@@ -78,11 +81,8 @@ export const useKeyboardControls = (
                 player.pause();
                 jumpBasedOnTime(playerRef.current.getCurrentFrame(), 'forward');
             }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [playerRef, jumpBasedOnTime]);
+        },
+        [playerRef, jumpBasedOnTime]
+    );
+    return onKeyDown;
 };

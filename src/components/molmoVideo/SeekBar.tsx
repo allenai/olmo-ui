@@ -9,7 +9,7 @@ import { interpolate } from 'remotion';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { useElementSize } from './useElementSize';
-import { useKeyboardControls } from './UseKeyboardControls';
+import { useOnKeyDownControls } from './UseKeyboardControls';
 
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
     const pos = clientX;
@@ -37,7 +37,7 @@ export const SeekBar: React.FC<{
     const [frame, setFrame] = useState(0);
     const { width } = useElementSize(containerRef);
 
-    useKeyboardControls(playerRef, data, fps, durationInFrames);
+    const onKeyDownControls = useOnKeyDownControls(playerRef, data, fps, durationInFrames);
 
     useEffect(() => {
         const { current } = playerRef;
@@ -176,11 +176,23 @@ export const SeekBar: React.FC<{
 
     return (
         <div className={timelineWrapper}>
-            <Button className={playPauseButton} onClick={handlePlayPause}>
+            <Button
+                className={playPauseButton}
+                onClick={handlePlayPause}
+                onKeyDown={(e) => {
+                    onKeyDownControls(e, true);
+                }}>
                 {playing ? <PauseIcon /> : <PlayArrowIcon />}
             </Button>
             <div
+                role="slider"
+                aria-label="Video progress"
+                aria-valuemin={0}
+                aria-valuemax={durationInFrames / fps}
+                aria-valuenow={frame / fps}
+                tabIndex={0}
                 className={timeLineStyle}
+                onKeyDown={onKeyDownControls}
                 style={{
                     paddingInline: TIMELINE_PADDING / 2,
                 }}>
