@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { SeekBar } from './timeline/SeekBar';
+import { SeekBar } from './seekBar/SeekBar';
 import { VideoTracking } from './tracking/Tracking';
 import { useVideoMetaData } from './useVideoMetaData';
 
