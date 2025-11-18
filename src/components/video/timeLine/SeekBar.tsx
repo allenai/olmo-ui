@@ -8,7 +8,7 @@ import { interpolate } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { TrackingDotsTimeLine } from './TrackingDotsTimeLine';
+import { TrackingDotsTimeline } from './TrackingDotsTimeLine';
 import { useElementSize } from './useElementSize';
 import { useOnKeyDownControls } from './useOnKeyDownControls';
 
@@ -193,7 +193,7 @@ export const SeekBar: React.FC<{
                 aria-valuemax={durationInFrames / fps}
                 aria-valuenow={frame / fps}
                 tabIndex={0}
-                className={timeLineStyle}
+                className={timelineStyle}
                 onKeyDown={onKeyDownControls}
                 style={{
                     paddingInline: TIMELINE_PADDING / 2,
@@ -208,7 +208,7 @@ export const SeekBar: React.FC<{
                         }}
                         className={barFill}
                     />
-                    <TrackingDotsTimeLine
+                    <TrackingDotsTimeline
                         fps={fps}
                         durationInFrames={durationInFrames}
                         data={data}
@@ -227,7 +227,7 @@ export const SeekBar: React.FC<{
     );
 };
 
-const timeLineStyle = css({
+const timelineStyle = css({
     userSelect: 'none',
     WebkitUserSelect: 'none',
     boxSizing: 'border-box',

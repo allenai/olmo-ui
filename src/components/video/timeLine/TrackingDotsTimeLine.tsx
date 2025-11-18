@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 const TRACKING_DOT_SIZE = 10;
-export const TrackingDotsTimeLine = ({
+export const TrackingDotsTimeline = ({
     data,
     durationInFrames,
     fps,
