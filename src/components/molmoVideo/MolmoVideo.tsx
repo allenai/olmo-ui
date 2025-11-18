@@ -6,9 +6,9 @@ import { AbsoluteFill } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { SeekBar } from './SeekBar';
+import { SeekBar } from './timeLine/SeekBar';
+import { VideoDotTrackObjectComponent } from './tracking/Tracking';
 import { useVideoMetaData } from './useVideoDuration';
-import { VideoDotTrackObjectComponent } from './video-visuals/Tracking';
 
 export const MolmoVideo = ({
     version,

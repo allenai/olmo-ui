@@ -9,7 +9,7 @@ import { interpolate } from 'remotion';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { useElementSize } from './useElementSize';
-import { useOnKeyDownControls } from './UseKeyboardControls';
+import { useOnKeyDownControls } from './useOnKeyDownControls';
 
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
     const pos = clientX;
