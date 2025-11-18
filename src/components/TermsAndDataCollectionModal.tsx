@@ -114,7 +114,7 @@ export const TermsAndDataCollectionModal = ({
                             fetchPriority="high"
                             className={playgroundLogoClassName}
                         />
-                        Terms of Use & Publication Consent
+                        Terms of Use & Data Consent
                     </DialogTitle>
                     <FadeOverflowContent>
                         <DialogContent
@@ -126,33 +126,44 @@ export const TermsAndDataCollectionModal = ({
                                     xs: 2,
                                     md: 0,
                                 },
+                                // The combo of this start padding + the title margin made it look like there was too much space between them
+                                paddingBlockStart: 0,
                             }}>
                             <p>
-                                By using Playground, you agree to Ai2&apos;s{' '}
-                                <TermAndConditionsLink link={links.terms}>
-                                    Terms of Use
-                                </TermAndConditionsLink>{' '}
-                                and{' '}
-                                <TermAndConditionsLink link={links.responsibleUseGuidelines}>
-                                    Responsible Use Guidelines
-                                </TermAndConditionsLink>{' '}
-                                and have read Ai2&apos;s{' '}
-                                <TermAndConditionsLink link={links.privacyPolicy}>
-                                    Privacy Policy
-                                </TermAndConditionsLink>
-                                . By accepting these terms, you agree{' '}
-                                <strong>
-                                    not to submit any personal, sensitive, proprietary, or
-                                    confidential information to Playground,
-                                </strong>
-                                and agree that Ai2 may use your interactions for AI training and
-                                scientific research.
+                                By using Playground, you agree:
+                                <ul className={termsAndConditionsListClass}>
+                                    <li>
+                                        to Ai2&apos;s full{' '}
+                                        <TermAndConditionsLink link={links.terms}>
+                                            Terms of Use
+                                        </TermAndConditionsLink>{' '}
+                                        and{' '}
+                                        <TermAndConditionsLink
+                                            link={links.responsibleUseGuidelines}>
+                                            Responsible Use Guidelines
+                                        </TermAndConditionsLink>{' '}
+                                        and acknowledge Ai2&apos;s{' '}
+                                        <TermAndConditionsLink link={links.privacyPolicy}>
+                                            Privacy Policy
+                                        </TermAndConditionsLink>
+                                    </li>
+                                    <li>
+                                        not to{' '}
+                                        <strong>
+                                            submit any personal, sensitive, proprietary, or
+                                            confidential information
+                                        </strong>
+                                    </li>
+                                    <li>
+                                        Ai2 may use your conversations to train or evaluate AI
+                                        systems.
+                                    </li>
+                                </ul>
                             </p>
                             <p>
-                                To accelerate scientific discovery, Ai2 may publish your{' '}
-                                <strong>de-identified</strong> Playground interactions in a public
-                                research dataset as part of its commitment to open science if you
-                                consent by checking the box below.
+                                <u>Optional Consent</u>: If you choose, you may also contribute your
+                                Playground conversations to a public dataset curated by Ai2 for
+                                scientific research.
                             </p>
                             <form id={formId} onSubmit={formContext.handleSubmit(handleSubmit)}>
                                 <Controller
@@ -166,20 +177,14 @@ export const TermsAndDataCollectionModal = ({
                                             isSelected={Boolean(value)}
                                             onChange={onChange}>
                                             <p>
-                                                <strong>Help improve open science!</strong> I
-                                                consent to the inclusion of my{' '}
-                                                <strong>de-identified</strong> interactions with
-                                                Playground in a public research dataset.
+                                                Yes, I consent to including my conversations in a{' '}
+                                                <strong>de-identified</strong> public research
+                                                dataset.
                                             </p>
                                         </Checkbox>
                                     )}
                                 />
                             </form>
-                            <p>
-                                If you do not wish to agree to these terms, exit this page. You can
-                                still use Playground if you choose not to participate in the public
-                                research dataset.
-                            </p>
                         </DialogContent>
                     </FadeOverflowContent>
 
@@ -264,4 +269,9 @@ const checkboxClass = css({
 });
 const noWrapClass = css({
     whiteSpace: 'nowrap',
+});
+
+const termsAndConditionsListClass = css({
+    padding: '[revert]',
+    listStyle: '[revert]',
 });
