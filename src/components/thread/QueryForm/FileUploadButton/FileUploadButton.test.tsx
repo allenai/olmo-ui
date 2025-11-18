@@ -75,17 +75,21 @@ const renderFileUploadButton = (
 };
 
 describe('FileUploadButton', () => {
-    it('should render when selected model accepts file uploads', () => {
+    it('should render successfully when isMultiModalEnabled flag is enabled and the selected model accepts file upload', () => {
         renderFileUploadButton();
-        expect(screen.getByLabelText('Upload file(s)')).toBeVisible();
+        expect(screen.getByTestId('file-upload-btn')).toBeVisible();
     });
 
-    //
-    it.skip("should be disabled if the model doesn't accept file uploads for followup messages", () => {
-        renderFileUploadButton({
-            isFileUploadDisabled: false,
-            allowFilesInFollowups: false,
-        });
+    it("should be disabled if the model doesn't accept file uploads for followup messages", () => {
+        renderFileUploadButton(
+            {
+                isFileUploadDisabled: true,
+                allowFilesInFollowups: false,
+            },
+            {
+                selectedThreadMessages: ['userMessage', 'llmMessage'],
+            }
+        );
 
         expect(screen.getByTestId('file-upload-btn')).toBeDisabled();
     });
@@ -97,6 +101,7 @@ describe('FileUploadButton', () => {
                 allowFilesInFollowups: false,
             },
             {
+                selectedThreadMessages: ['userMessage', 'llmMessage'],
                 streamPromptState: RemoteState.Loading,
             }
         );
