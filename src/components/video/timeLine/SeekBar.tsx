@@ -27,6 +27,7 @@ const BAR_HEIGHT = 25;
 const KNOB_WIDTH = 10;
 const TIMELINE_PADDING = 20;
 
+// Adapted from https://www.remotion.dev/docs/player/custom-controls#seek-bar
 export const SeekBar: React.FC<{
     playerRef: React.RefObject<PlayerRef | null>;
     data: VideoTrackingPoints;
@@ -34,9 +35,21 @@ export const SeekBar: React.FC<{
     durationInFrames: number;
 }> = ({ data, playerRef, fps, durationInFrames }) => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const { width } = useElementSize(containerRef); // We need to track element size for dragging the time scrub to work correctly.
+
     const [playing, setPlaying] = useState(false);
     const [frame, setFrame] = useState(0);
-    const { width } = useElementSize(containerRef); // We need to drag element size for dragging time scrub to work correctly.
+    const [dragging, setDragging] = useState<
+        | {
+              dragging: false;
+          }
+        | {
+              dragging: true;
+              wasPlaying: boolean;
+          }
+    >({
+        dragging: false,
+    });
 
     const onKeyDownControls = useOnKeyDownControls(playerRef, data, fps, durationInFrames);
 
@@ -79,18 +92,6 @@ export const SeekBar: React.FC<{
             current.removeEventListener('pause', onPause);
         };
     }, [playerRef]);
-
-    const [dragging, setDragging] = useState<
-        | {
-              dragging: false;
-          }
-        | {
-              dragging: true;
-              wasPlaying: boolean;
-          }
-    >({
-        dragging: false,
-    });
 
     const onPointerDown = useCallback(
         (e: React.PointerEvent<HTMLDivElement>) => {
