@@ -1,6 +1,9 @@
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-export const mclarenVideoTrackingData: VideoTrackingPoints = {
+export const MCLAREN_VIDEO =
+    'https://storage.googleapis.com/ai2-playground-molmo/msg_I2K7I2H8B5/msg_I2K7I2H8B5-0.MP4#t=0,10';
+
+export const MCLAREN_VIDEO_TRACKING_DATA: VideoTrackingPoints = {
     label: 'track this car',
     type: 'track-points',
     frameList: [

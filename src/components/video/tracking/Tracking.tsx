@@ -3,8 +3,9 @@ import { varnishTheme } from '@allenai/varnish2/theme';
 import { useMemo } from 'react';
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 
-import { VideoOverlayHelper } from '../VideoOverlayHelper';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+
+import { VideoOverlayHelper } from '../VideoOverlayHelper';
 
 export const VideoTracking = ({
     videoTrackingPoints,
@@ -110,7 +111,7 @@ const VideoSingleDotTrack = ({
 
     const xAnimated = interpolate(frame, times, x);
     const yAnimated = interpolate(frame, times, y);
-    const sizeAnimated = interpolate(frame, sizeTimes, size);
+    const showPoint = interpolate(frame, sizeTimes, size);
 
     if (frame < times[0] || frame > times[times.length - 1]) {
         return null;
@@ -123,8 +124,8 @@ const VideoSingleDotTrack = ({
                 cx={`${xAnimated}%`}
                 r={'1.5%'}
                 stroke={showInterpolation ? 'white' : 'transparent'}
-                strokeWidth={2}
-                fill={sizeAnimated === 1 ? varnishTheme.palette.primary.main : 'transparent'}
+                strokeWidth={'0.3%'}
+                fill={showPoint === 1 ? varnishTheme.palette.primary.main : 'transparent'}
             />
         </svg>
     );

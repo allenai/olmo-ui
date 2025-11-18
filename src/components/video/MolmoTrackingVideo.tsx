@@ -6,9 +6,8 @@ import { useRef, useState } from 'react';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { SeekBar } from './timeLine/SeekBar';
-import { VideoDotTrackObjectComponent } from './tracking/Tracking';
+import { VideoTracking } from './tracking/Tracking';
 import { useVideoMetaData } from './useVideoMetaData';
-import { VideoOverlayHelper } from './VideoOverlayHelper';
 
 export function MolmoTrackingVideo({
     videoTrackingPoints,
@@ -57,27 +56,8 @@ export function MolmoTrackingVideo({
                 }}
                 aria-label={`Toggle Interpolation between tracking points`}
                 className={css({ paddingTop: '1' })}>
-                <span>Show Interpolation</span>
+                <span>Interpolation</span>
             </Checkbox>
         </div>
     );
 }
-
-const VideoTracking = ({
-    videoTrackingPoints,
-    videoUrl,
-    showInterpolation,
-}: {
-    videoUrl: string;
-    videoTrackingPoints: VideoTrackingPoints;
-    showInterpolation: boolean;
-}) => {
-    return (
-        <VideoOverlayHelper videoUrl={videoUrl}>
-            <VideoDotTrackObjectComponent
-                videoTrackingPoints={videoTrackingPoints}
-                showInterpolation={showInterpolation}
-            />
-        </VideoOverlayHelper>
-    );
-};

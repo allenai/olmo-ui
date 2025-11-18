@@ -3,11 +3,12 @@ import { Button } from '@allenai/varnish-ui';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import type { PlayerRef } from '@remotion/player';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { interpolate } from 'remotion';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
+import { TrackingDotsTimeLine } from './TrackingDotsTimeLine';
 import { useElementSize } from './useElementSize';
 import { useOnKeyDownControls } from './useOnKeyDownControls';
 
@@ -35,7 +36,7 @@ export const SeekBar: React.FC<{
     const containerRef = useRef<HTMLDivElement>(null);
     const [playing, setPlaying] = useState(false);
     const [frame, setFrame] = useState(0);
-    const { width } = useElementSize(containerRef);
+    const { width } = useElementSize(containerRef); // We need to drag element size for dragging time scrub to work correctly.
 
     const onKeyDownControls = useOnKeyDownControls(playerRef, data, fps, durationInFrames);
 
@@ -225,44 +226,6 @@ export const SeekBar: React.FC<{
     );
 };
 
-const TRACKING_DOT_SIZE = 10;
-const TrackingDotsTimeLine = ({
-    data,
-    durationInFrames,
-    fps,
-}: {
-    data: VideoTrackingPoints;
-    durationInFrames: number;
-    fps: number;
-}) => {
-    const dots = useMemo(() => {
-        return data.frameList.map((frame) => {
-            return (frame.timestamp / (durationInFrames / fps)) * 100;
-        });
-    }, [data, durationInFrames, fps]);
-
-    return (
-        <>
-            {dots.map((leftOffset, index) => {
-                return (
-                    <div
-                        key={index}
-                        className={css({
-                            position: 'absolute',
-                            width: `[${TRACKING_DOT_SIZE}px]`,
-                            height: `[${TRACKING_DOT_SIZE}px]`,
-                            borderRadius: 'full',
-                            backgroundColor: 'pink.100',
-                            top: '2',
-                        })}
-                        style={{ left: `calc(${leftOffset}% - ${TRACKING_DOT_SIZE / 2}px)` }}
-                    />
-                );
-            })}
-        </>
-    );
-};
-
 const timeLineStyle = css({
     userSelect: 'none',
     WebkitUserSelect: 'none',
@@ -312,7 +275,8 @@ const playPauseButton = css({
     justifyContent: 'center',
     padding: '1',
     backgroundColor: 'accent.primary',
-    border: '2px solid',
+    borderStyle: 'solid',
+    borderWidth: '2',
     borderColor: 'elements.primary.stroke',
     color: 'white',
     borderRadius: 'full',

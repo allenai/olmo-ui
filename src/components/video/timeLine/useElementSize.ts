@@ -15,7 +15,6 @@ export function useElementSize(elementRef: React.RefObject<Element>) {
 
         resizeObserver.observe(element);
 
-        // Cleanup
         return () => {
             resizeObserver.disconnect();
         };
