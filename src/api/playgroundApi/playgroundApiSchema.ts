@@ -544,10 +544,13 @@ export type components = {
             | 'olmoe-0125-1b-7b'
             | 'olmo-2-0325-32b'
             | 'olmo-2-1124-13b'
+            | 'olmo-3-0625-32b-think'
+            | 'olmo-3-0625-7b-instruct'
+            | 'olmo-3-0625-7b-think'
             | 'pileval-llama'
-            | 'tulu-3-8b'
+            | 'tulu-3-405b'
             | 'tulu-3-70b'
-            | 'tulu-3-405b';
+            | 'tulu-3-8b';
         /** AvailableTool */
         readonly AvailableTool: {
             /**
@@ -2385,10 +2388,13 @@ export const availableInfiniGramIndexIdValues: ReadonlyArray<
     'olmoe-0125-1b-7b',
     'olmo-2-0325-32b',
     'olmo-2-1124-13b',
+    'olmo-3-0625-32b-think',
+    'olmo-3-0625-7b-instruct',
+    'olmo-3-0625-7b-think',
     'pileval-llama',
-    'tulu-3-8b',
-    'tulu-3-70b',
     'tulu-3-405b',
+    'tulu-3-70b',
+    'tulu-3-8b',
 ];
 export const createMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
     components['schemas']['CreateMultiModalModelConfigRequest']['promptType']
