@@ -26,7 +26,13 @@ export function MolmoTrackingVideo({
 
     return (
         <div>
-            <div className={css({ display: 'flex', flexDirection: 'column', alignItems: 'start' })}>
+            <div
+                className={css({
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'start',
+                    maxHeight: '[60vh]',
+                })}>
                 <Player
                     acknowledgeRemotionLicense
                     ref={playerRef}
