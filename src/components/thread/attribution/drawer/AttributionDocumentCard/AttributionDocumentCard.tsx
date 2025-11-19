@@ -67,15 +67,17 @@ const AttributionDocumentCardBase = ({
                 },
             })}>
             <CardContent component={Stack} direction="column" gap={1}>
-                <div>
-                    <Typography variant="body2" fontWeight={600} component="span">
-                        {document.usage} document from:
-                        <br />
-                    </Typography>
-                    <Typography variant="body2" component="span">
-                        <PrettifySource document={document} />
-                    </Typography>
-                </div>
+                {document.usage != null && (
+                    <div>
+                        <Typography variant="body2" fontWeight={600} component="span">
+                            {document.usage} document from:
+                            <br />
+                        </Typography>
+                        <Typography variant="body2" component="span">
+                            <PrettifySource document={document} />
+                        </Typography>
+                    </div>
+                )}
                 <Typography variant="body1" component="span">
                     {snippets}
                 </Typography>

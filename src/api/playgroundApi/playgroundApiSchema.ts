@@ -28,12 +28,14 @@ export type paths = {
                 };
             };
             readonly responses: {
-                /** @description Empty Response */
+                /** @description A AttributionResponse */
                 readonly 200: {
                     headers: {
                         readonly [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        readonly 'application/json': components['schemas']['AttributionResponse'];
+                    };
                 };
             };
         };
@@ -520,6 +522,26 @@ export type components = {
              */
             readonly template?: string | null;
         };
+        /** AttributionDocumentSnippet */
+        readonly AttributionDocumentSnippet: {
+            /** Corresponding Span Text */
+            readonly corresponding_span_text: string;
+            /** Text */
+            readonly text: string;
+        } & {
+            readonly [key: string]: unknown;
+        };
+        /** AttributionResponse */
+        readonly AttributionResponse: {
+            /** Documents */
+            readonly documents: readonly components['schemas']['ResponseAttributionDocument'][];
+            /** Index */
+            readonly index: string;
+            /** Spans */
+            readonly spans: readonly components['schemas']['ResponseAttributionSpan'][];
+        } & {
+            readonly [key: string]: unknown;
+        };
         /** AuthenticatedClient */
         readonly AuthenticatedClient: {
             /** Client */
@@ -545,6 +567,7 @@ export type components = {
             | 'olmo-2-0325-32b'
             | 'olmo-2-1124-13b'
             | 'olmo-3-0625-32b-think'
+            | 'olmo-3-0625-32b-instruct'
             | 'olmo-3-0625-7b-instruct'
             | 'olmo-3-0625-7b-think'
             | 'pileval-llama'
@@ -1800,6 +1823,57 @@ export type components = {
             /** Orderedmodels */
             readonly orderedModels: readonly components['schemas']['ModelOrder'][];
         };
+        /** ResponseAttributionDocument */
+        readonly ResponseAttributionDocument: {
+            /** Corresponding Span Texts */
+            readonly corresponding_span_texts: readonly string[];
+            /** Corresponding Spans */
+            readonly corresponding_spans: readonly number[];
+            /** Display Name */
+            readonly display_name: string | null;
+            /** Index */
+            readonly index: string;
+            /** Relevance Score */
+            readonly relevance_score: number;
+            /**
+             * Secondary Name
+             * @default null
+             */
+            readonly secondary_name?: string | null;
+            /** Snippets */
+            readonly snippets: readonly components['schemas']['AttributionDocumentSnippet'][];
+            /** Source */
+            readonly source: string | null;
+            /** Source Url */
+            readonly source_url: string | null;
+            /** Text Long */
+            readonly text_long: string;
+            /**
+             * Title
+             * @default null
+             */
+            readonly title?: string | null;
+            /**
+             * Url
+             * @default null
+             */
+            readonly url?: string | null;
+            /** Usage */
+            readonly usage: string | null;
+        } & {
+            readonly [key: string]: unknown;
+        };
+        /** ResponseAttributionSpan */
+        readonly ResponseAttributionSpan: {
+            /** Documents */
+            readonly documents?: readonly number[];
+            /** Start Index */
+            readonly start_index: number;
+            /** Text */
+            readonly text: string;
+        } & {
+            readonly [key: string]: unknown;
+        };
         /** ResponseModel */
         readonly ResponseModel:
             | components['schemas']['TextOnlyResponseModel']
@@ -2320,6 +2394,8 @@ export type components = {
 };
 export type SchemaAdminModelResponse = components['schemas']['AdminModelResponse'];
 export type SchemaAgentChatRequest = components['schemas']['AgentChatRequest'];
+export type SchemaAttributionDocumentSnippet = components['schemas']['AttributionDocumentSnippet'];
+export type SchemaAttributionResponse = components['schemas']['AttributionResponse'];
 export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
 export type SchemaAvailableInfiniGramIndexId = components['schemas']['AvailableInfiniGramIndexId'];
 export type SchemaAvailableTool = components['schemas']['AvailableTool'];
@@ -2357,6 +2433,9 @@ export type SchemaPromptTemplateResponse = components['schemas']['PromptTemplate
 export type SchemaPromptTemplateResponseList = components['schemas']['PromptTemplateResponseList'];
 export type SchemaRating = components['schemas']['Rating'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
+export type SchemaResponseAttributionDocument =
+    components['schemas']['ResponseAttributionDocument'];
+export type SchemaResponseAttributionSpan = components['schemas']['ResponseAttributionSpan'];
 export type SchemaResponseModel = components['schemas']['ResponseModel'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaRootCreateModelConfigRequest =
@@ -2389,6 +2468,7 @@ export const availableInfiniGramIndexIdValues: ReadonlyArray<
     'olmo-2-0325-32b',
     'olmo-2-1124-13b',
     'olmo-3-0625-32b-think',
+    'olmo-3-0625-32b-instruct',
     'olmo-3-0625-7b-instruct',
     'olmo-3-0625-7b-think',
     'pileval-llama',
