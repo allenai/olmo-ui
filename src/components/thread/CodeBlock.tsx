@@ -56,7 +56,7 @@ export const CodeBlock = ({
         // and (and render code as inline separetely)
         // TBD
         if (!langComputed) {
-            return <code>{childrenWithoutAttributionHighlights}</code>;
+            return <code className={className}>{childrenWithoutAttributionHighlights}</code>;
         }
 
         return (

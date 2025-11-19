@@ -43,6 +43,10 @@ const cleanWrap = css({
     backgroundColor: 'background.opacity-10.reversed',
 });
 
+const messageMargin = css({
+    marginBottom: '4',
+});
+
 export interface MessageProps {
     messageId: MessageId;
 }
@@ -87,7 +91,11 @@ export const InlineAlertMessage = ({ messageId }: MessageProps): ReactNode => {
 export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
     const contentWithMarks = useSpanHighlighting(messageId);
 
-    return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
+    if (contentWithMarks === '') {
+        return null;
+    }
+
+    return <MarkdownRenderer className={messageMargin}>{contentWithMarks}</MarkdownRenderer>;
 };
 
 interface MessageContentProps {
@@ -160,13 +168,15 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
                         hasPoints={hasPoints(content)}
                     />
                 </MessageComponent>
-                <ImageList>
-                    {(fileUrls || []).map((url, idx) => (
-                        <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT }}>
-                            <img src={url} alt={'Uploaded'} loading="lazy" />
-                        </ImageListItem>
-                    ))}
-                </ImageList>
+                {fileUrls ? (
+                    <ImageList>
+                        {fileUrls.map((url, idx) => (
+                            <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT }}>
+                                <img src={url} alt={'Uploaded'} loading="lazy" />
+                            </ImageListItem>
+                        ))}
+                    </ImageList>
+                ) : null}
                 <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
                 <InlineAlertMessage messageId={messageId} />
 

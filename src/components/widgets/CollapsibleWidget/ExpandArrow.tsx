@@ -28,20 +28,24 @@ const ExpandArrow = ({ className, expanded = false }: ExpandArrowProps) => (
     <KeyboardArrowDown className={cx(expandArrowRecipe({ expanded }), className)} />
 );
 
+const ExpandArrowContextAware = ({ className, expanded }: ExpandArrowProps) => {
+    const disclosureState = useContext(DisclosureStateContext);
+    const isExpanded = disclosureState?.isExpanded ?? false;
+
+    return <ExpandArrow className={className} expanded={expanded ?? isExpanded} />;
+};
+
 interface ExpandArrowButtonProps extends ExpandArrowProps {
     iconClassName?: string;
 }
 
 const ExpandArrowButton = ({ className, iconClassName, expanded }: ExpandArrowButtonProps) => {
-    const disclosureState = useContext(DisclosureStateContext);
-    const isExpanded = disclosureState?.isExpanded ?? false;
-
     return (
         <IconButton tabIndex={-1} component="span" size="small" className={className}>
-            <ExpandArrow className={iconClassName} expanded={expanded ?? isExpanded} />
+            <ExpandArrowContextAware className={iconClassName} expanded={expanded} />
         </IconButton>
     );
 };
 
-export { ExpandArrow, ExpandArrowButton };
+export { ExpandArrow, ExpandArrowButton, ExpandArrowContextAware };
 export type { ExpandArrowProps };

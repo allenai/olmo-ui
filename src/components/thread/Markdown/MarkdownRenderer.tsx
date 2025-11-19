@@ -1,4 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
+import { cx } from '@allenai/varnish-ui';
 import { Box } from '@mui/material';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
@@ -10,7 +11,7 @@ import { AttributionHighlight } from '@/components/thread/attribution/Attributio
 import { DeepResearchCite } from '@/components/thread/DeepResearch/DeepResearchMessage';
 
 import { CodeBlock } from '../CodeBlock';
-import { CustomDivider, CustomLink, CustomParagraph } from './CustomComponents';
+import { CustomDivider, CustomLink, CustomParagraph, CustomPre } from './CustomComponents';
 import { SANITIZED_ID_PREFIX } from './MarkdownRenderConstants';
 
 const markdownStyles = css({
@@ -22,6 +23,7 @@ const markdownStyles = css({
 });
 
 interface MarkdownRendererProps {
+    className?: string;
     children: string;
 }
 
@@ -43,15 +45,16 @@ const extendedSchema: SanitizeOptions = {
     },
 };
 
-export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) => {
+export const MarkdownRenderer = ({ className, children: markdown }: MarkdownRendererProps) => {
     return (
         // @ts-expect-error - We add attribution-highlight as a custom element
         <Box
             component={Markdown}
-            className={markdownStyles}
+            className={cx(markdownStyles, className)}
             remarkPlugins={[remarkGfm, customRemarkMath]}
             rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{
+                pre: CustomPre,
                 code: CodeBlock,
                 p: CustomParagraph,
                 hr: CustomDivider,

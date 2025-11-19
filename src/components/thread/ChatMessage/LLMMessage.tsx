@@ -1,5 +1,5 @@
 import { SxProps, Typography } from '@mui/material';
-import { MouseEvent } from 'react';
+import { MouseEvent, ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
@@ -24,7 +24,7 @@ const streamingMessageIndicatorStyle = {
     },
 } satisfies SxProps;
 
-export const LLMMessage = ({ messageId, children }: MessageProps): JSX.Element => {
+export const LLMMessage = ({ messageId, children }: MessageProps): ReactNode => {
     const { streamingMessageId } = useThreadView();
     const { remoteState } = useQueryContext();
     const shouldShowStreamingIndicator =
@@ -42,11 +42,14 @@ export const LLMMessage = ({ messageId, children }: MessageProps): JSX.Element =
         }
     };
 
+    if (children == null || children === '') {
+        return null;
+    }
+
     return (
         <Typography
             component="div"
             onClick={handleClick}
-            paddingBlockEnd={2}
             sx={[sharedMessageStyle, streamingMessageIndicatorStyle]}
             data-is-streaming={shouldShowStreamingIndicator}>
             {children}

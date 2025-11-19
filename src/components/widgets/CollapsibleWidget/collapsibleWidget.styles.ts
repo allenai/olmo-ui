@@ -13,7 +13,6 @@ const collapsibleWidgetRecipe = sva({
             display: 'flex',
             flexDirection: 'column',
             minHeight: '[0]',
-            backgroundColor: 'elements.overlay.background',
             color: 'text',
             borderRadius: 'sm',
             overflow: 'hidden',
@@ -23,7 +22,6 @@ const collapsibleWidgetRecipe = sva({
         },
         heading: {
             display: 'flex',
-            backgroundColor: 'elements.overlay.header',
         },
         panel: {
             display: 'flex',
@@ -74,6 +72,17 @@ const collapsibleWidgetRecipe = sva({
         },
     },
     variants: {
+        variant: {
+            default: {
+                container: {
+                    backgroundColor: 'elements.overlay.background',
+                },
+                heading: {
+                    backgroundColor: 'elements.overlay.header',
+                },
+            },
+            transparent: {},
+        },
         contrast: {
             off: {
                 panelContent: {}, // no backgroundColor
@@ -96,6 +105,7 @@ const collapsibleWidgetRecipe = sva({
         },
     },
     defaultVariants: {
+        variant: 'default',
         contrast: 'medium',
     },
 });

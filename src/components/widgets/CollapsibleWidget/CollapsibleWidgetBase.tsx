@@ -1,4 +1,4 @@
-import { cx } from '@allenai/varnish-panda-runtime/css';
+import { cx } from '@allenai/varnish-ui';
 import {
     Disclosure as AriaDisclosure,
     type DisclosureProps as AriaDisclosureProps,

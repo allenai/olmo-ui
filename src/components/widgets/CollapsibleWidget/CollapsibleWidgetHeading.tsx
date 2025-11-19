@@ -1,4 +1,5 @@
-import { css, cx } from '@allenai/varnish-panda-runtime/css';
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { cx } from '@allenai/varnish-ui';
 import { type HTMLAttributes, type PropsWithChildren, type ReactNode, useContext } from 'react';
 import {
     DisclosureStateContext,
@@ -85,6 +86,13 @@ const CollapsibleWidgetHeading = ({
 
     const triggerAriaLabel = createTriggerAriaLabel(isExpanded, ariaLabel);
 
+    const title =
+        typeof children === 'string' ? (
+            <CollapsibleWidgetTitle>{children}</CollapsibleWidgetTitle>
+        ) : (
+            children
+        );
+
     return (
         <CollapsibleWidgetHeadingBase className={className} aria-label={ariaLabel} {...rest}>
             <CollapsibleWidgetTrigger
@@ -92,7 +100,7 @@ const CollapsibleWidgetHeading = ({
                 aria-label={triggerAriaLabel}
                 aria-describedby={triggerAriaDescribedBy}>
                 {startAdornment}
-                <CollapsibleWidgetTitle>{children}</CollapsibleWidgetTitle>
+                {title}
                 {endAdornment}
             </CollapsibleWidgetTrigger>
         </CollapsibleWidgetHeadingBase>
