@@ -123,7 +123,7 @@ const VideoSingleDotTrack = ({
                 cy={`${yAnimated}%`}
                 cx={`${xAnimated}%`}
                 r={'1.5%'}
-                stroke={showInterpolation ? 'white' : 'transparent'}
+                stroke={showInterpolation || showPoint === 1 ? 'white' : 'transparent'}
                 strokeWidth={'0.3%'}
                 fill={showPoint === 1 ? varnishTheme.palette.primary.main : 'transparent'}
             />
