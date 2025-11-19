@@ -21,7 +21,7 @@ describe('TermsAndDataCollectionModal', () => {
     it('opens without cancel button and checkbox is unchecked when user is new', () => {
         render(<TermsAndDataCollectionModal {...brandNewUser} />);
 
-        const modalHeading = screen.getByText('Terms of Use & Publication Consent');
+        const modalHeading = screen.getByText('Terms of Use & Data Consent');
         const closeButtons = screen.queryByRole('button', { name: 'Cancel' });
         const checkbox = screen.getByRole('checkbox');
 
@@ -33,7 +33,7 @@ describe('TermsAndDataCollectionModal', () => {
     it('has cancel button when reopened after opting in to terms and data collection', () => {
         render(<TermsAndDataCollectionModal {...dataCollectionWasOptedInProps} />);
 
-        const modalHeading = screen.getByText('Terms of Use & Publication Consent');
+        const modalHeading = screen.getByText('Terms of Use & Data Consent');
         const closeButton = screen.getByRole('button', { name: 'Cancel' });
 
         expect(modalHeading).toBeVisible();
@@ -43,7 +43,7 @@ describe('TermsAndDataCollectionModal', () => {
     it('has cancel button when reopened after opting in to terms and out of data collection', () => {
         render(<TermsAndDataCollectionModal {...dataCollectionWasOptedOutProps} />);
 
-        const modalHeading = screen.getByText('Terms of Use & Publication Consent');
+        const modalHeading = screen.getByText('Terms of Use & Data Consent');
         const closeButton = screen.getByRole('button', { name: 'Cancel' });
 
         expect(modalHeading).toBeVisible();
@@ -54,7 +54,7 @@ describe('TermsAndDataCollectionModal', () => {
         const user = userEvent.setup();
         render(<TermsAndDataCollectionModal {...dataCollectionWasOptedInProps} />);
 
-        const modalHeading = screen.getByText('Terms of Use & Publication Consent');
+        const modalHeading = screen.getByText('Terms of Use & Data Consent');
         const closeButton = screen.getByRole('button', { name: 'Cancel' });
 
         expect(modalHeading).toBeVisible();
