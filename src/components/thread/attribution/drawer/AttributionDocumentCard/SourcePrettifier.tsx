@@ -10,20 +10,25 @@ interface PrettySourceProps {
 export const PrettifySource = ({ document }: PrettySourceProps): ReactNode => {
     return (
         <>
-            <Link
-                href={document.source_url}
-                target="_blank"
-                fontWeight={600}
-                color="primary"
-                underline="always"
-                sx={{
-                    '[data-selected-document=true] &': {
-                        color: 'inherit',
-                        textDecorationColor: 'currentColor',
-                    },
-                }}>
-                {document.display_name}
-            </Link>
+            {document.source_url != null ? (
+                <Link
+                    href={document.source_url}
+                    target="_blank"
+                    fontWeight={600}
+                    color="primary"
+                    underline="always"
+                    sx={{
+                        '[data-selected-document=true] &': {
+                            color: 'inherit',
+                            textDecorationColor: 'currentColor',
+                        },
+                    }}>
+                    {document.display_name}
+                </Link>
+            ) : (
+                <Typography fontWeight={600}>{document.display_name}</Typography>
+            )}
+
             {document.secondary_name != null && (
                 <Typography
                     variant="body2"
