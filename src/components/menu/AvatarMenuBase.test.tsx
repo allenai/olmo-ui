@@ -68,7 +68,7 @@ describe('AvatarMenuBase', () => {
         render(<AvatarMenuBase>{(content) => <div>{content}</div>}</AvatarMenuBase>);
 
         await user.click(screen.getByText('Data Collection'));
-        const modalHeading = await screen.findByText('Terms of Use & Publication Consent');
+        const modalHeading = await screen.findByText('Terms of Use & Data Consent');
         expect(modalHeading).toBeVisible();
 
         const closeButton = screen.getByRole('button', { name: 'Cancel' });
