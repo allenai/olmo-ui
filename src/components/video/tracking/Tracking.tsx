@@ -111,7 +111,7 @@ const VideoSingleDotTrack = ({
 
     const xAnimated = interpolate(frame, times, x);
     const yAnimated = interpolate(frame, times, y);
-    const showPoint = interpolate(frame, sizeTimes, size);
+    const shouldShowPoint = interpolate(frame, sizeTimes, size);
 
     if (frame < times[0] || frame > times[times.length - 1]) {
         return null;
@@ -123,9 +123,9 @@ const VideoSingleDotTrack = ({
                 cy={`${yAnimated}%`}
                 cx={`${xAnimated}%`}
                 r={'1.5%'}
-                stroke={showInterpolation || showPoint === 1 ? 'white' : 'transparent'}
+                stroke={showInterpolation || shouldShowPoint === 1 ? 'white' : 'transparent'}
                 strokeWidth={'0.3%'}
-                fill={showPoint === 1 ? varnishTheme.palette.primary.main : 'transparent'}
+                fill={shouldShowPoint === 1 ? varnishTheme.palette.primary.main : 'transparent'}
             />
         </svg>
     );
