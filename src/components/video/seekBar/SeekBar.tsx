@@ -206,9 +206,9 @@ export const SeekBar: React.FC<{
                     <div
                         id="knob"
                         className={knob}
+                        data-dragging={dragging.dragging}
                         style={{
                             left: `calc(${(frame / durationInFrames) * 100}% - var(--knob-width) / 2)`,
-                            cursor: dragging.dragging ? 'grabbing' : 'grab',
                         }}
                     />
                 </div>
@@ -256,6 +256,9 @@ const knob = css({
     cursor: 'grab',
     top: '[-5px]',
     backgroundColor: 'teal.100',
+    '&[data-dragging=true]': {
+        cursor: 'grabbing',
+    },
 });
 
 const timelineWrapper = css({
