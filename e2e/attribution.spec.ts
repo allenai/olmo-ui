@@ -8,9 +8,9 @@ test('should filter displayed documents when a span is selected', async ({ page 
     await page.getByRole('button', { name: 'Show OlmoTrace' }).click();
 
     await page.getByRole('button', { name: 'OlmoTrace documents' }).click();
-    await expect(page.getByTestId('olmotrace-drawer').getByText('document from:')).toHaveCount(2);
+    await expect(page.getByTestId('olmotrace-drawer').getByText('View Document')).toHaveCount(2);
     await page.getByRole('button', { name: 'OkayOkayOkayOkayOkayOkayOkayOkay' }).click();
-    await expect(page.getByTestId('olmotrace-drawer').getByText('document from:')).toHaveCount(1);
+    await expect(page.getByTestId('olmotrace-drawer').getByText('View Document')).toHaveCount(1);
 });
 
 test('should show highlights when message is selected', async ({ page }) => {

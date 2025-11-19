@@ -1,35 +1,17 @@
 import { ClientBase } from './ClientBase';
-export interface AttributionDocumentSnippet {
-    text: string;
-    corresponding_span_text: string;
-}
+import type {
+    SchemaAttributionDocumentSnippet,
+    SchemaResponseAttributionDocument,
+    SchemaResponseAttributionSpan,
+    SchemaTopLevelAttributionSpan,
+} from './playgroundApi/playgroundApiSchema';
 
-export interface Document {
-    text: string;
-    text_long: string;
-    snippets: AttributionDocumentSnippet[];
-    corresponding_spans: number[];
-    corresponding_span_texts: string[];
-    index: string;
-    url?: string;
-    source: string;
-    usage: string;
-    display_name: string;
-    source_url: string;
-    secondary_name?: string;
-    title?: string;
-    relevance_score: number;
-}
+export type AttributionDocumentSnippet = SchemaAttributionDocumentSnippet;
 
-export interface AttributionSpan {
-    text: string;
-    documents: number[];
-    start_index: number;
-}
+export type Document = SchemaResponseAttributionDocument;
 
-export interface TopLevelAttributionSpan extends AttributionSpan {
-    nested_spans: AttributionSpan[];
-}
+export type AttributionSpan = SchemaResponseAttributionSpan;
+export type TopLevelAttributionSpan = SchemaTopLevelAttributionSpan;
 
 interface AttributionResponse {
     documents: Document[];

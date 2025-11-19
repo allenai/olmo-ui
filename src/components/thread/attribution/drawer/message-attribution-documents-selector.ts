@@ -24,7 +24,7 @@ export const messageAttributionDocumentsSelector = (
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap#for_adding_and_removing_items_during_a_map
         const documents = selectedSpans
             .flatMap((span) =>
-                span?.documents.flatMap((documentIndex) => {
+                span?.documents?.flatMap((documentIndex) => {
                     const document = attributions?.documents[documentIndex];
 
                     return document != null ? [document] : [];

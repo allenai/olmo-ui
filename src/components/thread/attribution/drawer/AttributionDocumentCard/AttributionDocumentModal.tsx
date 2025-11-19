@@ -30,17 +30,19 @@ export const AttributionDocumentModal = ({
     return (
         <StandardModal open={open} onClose={handleClose} data-testid="attribution-document-modal">
             <StandardDialogTitle>
-                <Box
-                    sx={{
-                        paddingInlineEnd: 6,
-                    }}>
-                    <Typography variant="h4" fontWeight={600} component="span">
-                        {document.usage} document from:&nbsp;
-                    </Typography>
-                    <Typography variant="h4" component="span">
-                        <PrettifySource document={document} />
-                    </Typography>
-                </Box>
+                {document.usage != null && (
+                    <Box
+                        sx={{
+                            paddingInlineEnd: 6,
+                        }}>
+                        <Typography variant="h4" fontWeight={600} component="span">
+                            {document.usage} document from:&nbsp;
+                        </Typography>
+                        <Typography variant="h4" component="span">
+                            <PrettifySource document={document} />
+                        </Typography>
+                    </Box>
+                )}
                 {!!document.url && (
                     <Typography variant="body1" component="span" pt={1}>
                         <Typography component="span">URL:&nbsp;</Typography>

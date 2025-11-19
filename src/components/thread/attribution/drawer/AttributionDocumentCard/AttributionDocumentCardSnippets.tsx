@@ -5,7 +5,7 @@ import type { AttributionDocumentSnippet } from '@/api/AttributionClient';
 import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
 
 interface AttributionDocumentCardSnippetsProps {
-    snippets: AttributionDocumentSnippet[];
+    snippets: readonly AttributionDocumentSnippet[];
 }
 export const AttributionDocumentCardSnippets = ({
     snippets,
