@@ -1,4 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
+import { cx } from '@allenai/varnish-ui';
 import { Box } from '@mui/material';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
@@ -22,6 +23,7 @@ const markdownStyles = css({
 });
 
 interface MarkdownRendererProps {
+    className?: string;
     children: string;
 }
 
@@ -43,12 +45,12 @@ const extendedSchema: SanitizeOptions = {
     },
 };
 
-export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) => {
+export const MarkdownRenderer = ({ className, children: markdown }: MarkdownRendererProps) => {
     return (
         // @ts-expect-error - We add attribution-highlight as a custom element
         <Box
             component={Markdown}
-            className={markdownStyles}
+            className={cx(markdownStyles, className)}
             remarkPlugins={[remarkGfm, customRemarkMath]}
             rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{

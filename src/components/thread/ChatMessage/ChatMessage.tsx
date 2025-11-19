@@ -43,6 +43,10 @@ const cleanWrap = css({
     backgroundColor: 'background.opacity-10.reversed',
 });
 
+const messageMargin = css({
+    marginBottom: '4',
+});
+
 export interface MessageProps {
     messageId: MessageId;
 }
@@ -87,7 +91,11 @@ export const InlineAlertMessage = ({ messageId }: MessageProps): ReactNode => {
 export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
     const contentWithMarks = useSpanHighlighting(messageId);
 
-    return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
+    if (contentWithMarks === '') {
+        return null;
+    }
+
+    return <MarkdownRenderer className={messageMargin}>{contentWithMarks}</MarkdownRenderer>;
 };
 
 interface MessageContentProps {
