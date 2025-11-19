@@ -93,7 +93,7 @@ export const ModelSelect = ({
                             model={model}
                             value={model.id}
                             isNewModel={NEW_MODELS_LIST.some((substring) =>
-                                model.id.includes(substring)
+                                model.id.toLowerCase().includes(substring.toLowerCase())
                             )}
                         />
                     ))}
