@@ -44,14 +44,12 @@ export const VideoDotTrackObjectComponent = ({
     return (
         <div className={css({ position: 'relative' })}>
             {objectIds.map((id) => (
-                <div key={id} className={css({ position: 'absolute', top: '0', left: '0' })}>
-                    <VideoSingleDotTrack
-                        showInterpolation={showInterpolation}
-                        key={id}
-                        trackId={id}
-                        videoTrackingPoints={videoTrackingPoints}
-                    />
-                </div>
+                <VideoSingleDotTrack
+                    showInterpolation={showInterpolation}
+                    key={id}
+                    trackId={id}
+                    videoTrackingPoints={videoTrackingPoints}
+                />
             ))}
         </div>
     );
@@ -118,7 +116,10 @@ const VideoSingleDotTrack = ({
     }
 
     return (
-        <svg width={width} height={height}>
+        <svg
+            className={css({ position: 'absolute', top: '0', left: '0' })}
+            width={width}
+            height={height}>
             <circle
                 cy={`${yAnimated}%`}
                 cx={`${xAnimated}%`}
