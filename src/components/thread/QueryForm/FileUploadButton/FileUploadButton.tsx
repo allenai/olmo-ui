@@ -78,27 +78,24 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
         }
     };
 
-    const isButtonDisabled = isFileUploadDisabled && !allowFilesInFollowups;
-    const isInputDisabled = isSendingPrompt || isFileUploadDisabled;
-
     let tooltipContent: string | undefined;
 
-    if (isButtonDisabled && !acceptsMultiple) {
+    if (isFileUploadDisabled && !acceptsMultiple) {
         tooltipContent =
             'This model only supports one image on initial message. Start a new chat to submit a new file.';
-    } else if (isButtonDisabled && acceptsMultiple) {
+    } else if (isFileUploadDisabled && acceptsMultiple) {
         tooltipContent =
             'This model only supports files on initial message. Start a new chat to submit new files.';
     }
 
     const fileUploadButton = (
         <FileUploadTriggerButton
-            isDisabled={isInputDisabled}
+            isDisabled={isFileUploadDisabled || isSendingPrompt}
             onPress={mediaTypes.length === 1 ? handleSingleTypeClick : undefined}>
             <FileUploadInput
                 {...props}
                 acceptedFileTypesString={acceptedFileTypesString}
-                isDisabled={isInputDisabled}
+                isDisabled={isFileUploadDisabled || isSendingPrompt}
                 acceptsMultiple={acceptsMultiple}
                 ref={inputRef}
             />
@@ -109,7 +106,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     if (mediaTypes.length === 1) {
         return (
             <StyledTooltip isDisabled={!tooltipContent} content={tooltipContent} placement="top">
-                <Focusable isDisabled={!isButtonDisabled}>
+                <Focusable>
                     <span>{fileUploadButton}</span>
                 </Focusable>
             </StyledTooltip>
@@ -119,7 +116,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     // Multiple files types has a menu
     return (
         <StyledTooltip isDisabled={!tooltipContent} content={tooltipContent} placement="top">
-            <Focusable isDisabled={!isButtonDisabled}>
+            <Focusable>
                 <span>
                     <MenuTrigger>
                         {fileUploadButton}
