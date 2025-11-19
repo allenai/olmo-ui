@@ -5,9 +5,9 @@ import { useRef, useState } from 'react';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { SeekBar } from './seekBar/SeekBar';
-import { VideoTracking } from './tracking/Tracking';
-import { useVideoMetaData } from './useVideoMetaData';
+import { SeekBar } from '../seekBar/SeekBar';
+import { useVideoMetaData } from '../useVideoMetaData';
+import { VideoTracking } from './Tracking';
 
 const FPS = 24;
 

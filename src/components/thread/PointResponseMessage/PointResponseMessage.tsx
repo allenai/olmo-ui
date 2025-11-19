@@ -3,7 +3,7 @@ import { ReactNode, useState } from 'react';
 
 import { useMessage, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
-import { MolmoTrackingVideo } from '@/components/video/MolmoTrackingVideo';
+import { MolmoTrackingVideo } from '@/components/video/tracking/MolmoTrackingVideo';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 import { type MessageProps, StandardMessage } from '../ChatMessage/ChatMessage';
