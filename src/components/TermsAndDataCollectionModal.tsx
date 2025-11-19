@@ -75,11 +75,11 @@ export const TermsAndDataCollectionModal = ({
                     minWidth: '300px',
                     overflow: 'hidden',
                     backgroundImage: 'none',
-                    padding: {
-                        xs: 1.5,
+                    margin: {
+                        xs: 1,
                         md: 4,
                     },
-                    margin: 0,
+                    padding: 0,
                     maxHeight: '100%',
                 },
             }}>
@@ -162,9 +162,9 @@ export const TermsAndDataCollectionModal = ({
                                 </ul>
                             </p>
                             <p>
-                                <u>Optional Consent</u>: If you choose, you may also contribute your
-                                Playground conversations to a public dataset curated by Ai2 for
-                                scientific research.
+                                <strong>Optional Consent</strong>: If you choose, you may also
+                                contribute your Playground conversations to a public dataset curated
+                                by Ai2 for scientific research.
                             </p>
                             <form id={formId} onSubmit={formContext.handleSubmit(handleSubmit)}>
                                 <Controller
