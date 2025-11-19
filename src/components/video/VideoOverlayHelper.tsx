@@ -12,10 +12,8 @@ export const VideoOverlayHelper = ({
 }) => {
     return (
         <AbsoluteFill>
-            <AbsoluteFill>
-                <AbsoluteFill>{children}</AbsoluteFill>
-                <Video className={css({ borderRadius: 'sm' })} muted={true} src={videoUrl} />
-            </AbsoluteFill>
+            <AbsoluteFill>{children}</AbsoluteFill>
+            <Video className={css({ borderRadius: 'sm' })} muted={true} src={videoUrl} />
         </AbsoluteFill>
     );
 };
