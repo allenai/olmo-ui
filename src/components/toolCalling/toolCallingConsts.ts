@@ -1,2 +1,2 @@
 export const TOOL_CALLING_INFO =
-    'If enabled, this allows you to define functions that the model can call. Use the edit or view button to create or modify the function definitions.';
+    'When enabled, the model can use tools that you select or define. Click the link to manage the available tools.';
