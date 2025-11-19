@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-const TRACKING_DOT_SIZE = 10;
 export const TrackingDotsTimeline = ({
     data,
     durationInFrames,
@@ -26,14 +25,15 @@ export const TrackingDotsTimeline = ({
                     <div
                         key={index}
                         className={css({
+                            '--tracking_dot_size': '10px',
                             position: 'absolute',
-                            width: `[${TRACKING_DOT_SIZE}px]`,
-                            height: `[${TRACKING_DOT_SIZE}px]`,
+                            width: 'var(--tracking_dot_size)',
+                            height: 'var(--tracking_dot_size)',
                             borderRadius: 'full',
                             backgroundColor: 'pink.100',
                             top: '2',
                         })}
-                        style={{ left: `calc(${leftOffset}% - ${TRACKING_DOT_SIZE / 2}px)` }}
+                        style={{ left: `calc(${leftOffset}% - var(--tracking_dot_size)/2)` }}
                     />
                 );
             })}

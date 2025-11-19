@@ -23,10 +23,6 @@ const getFrameFromX = (clientX: number, durationInFrames: number, width: number)
     return frame;
 };
 
-const BAR_HEIGHT = 25;
-const KNOB_WIDTH = 10;
-const TIMELINE_PADDING = 20;
-
 // Adapted from https://www.remotion.dev/docs/player/custom-controls#seek-bar
 export const SeekBar: React.FC<{
     playerRef: React.RefObject<PlayerRef | null>;
@@ -194,17 +190,11 @@ export const SeekBar: React.FC<{
                 aria-valuenow={frame / fps}
                 tabIndex={0}
                 className={timelineStyle}
-                onKeyDown={onKeyDownControls}
-                style={{
-                    paddingInline: TIMELINE_PADDING / 2,
-                }}>
+                onKeyDown={onKeyDownControls}>
                 <div ref={containerRef} onPointerDown={onPointerDown} className={innerTimeline}>
                     <div
                         style={{
-                            width: `calc(${(frame / durationInFrames) * 100}% + ${TIMELINE_PADDING / 2}px)`,
-                            position: 'absolute',
-                            marginLeft: (-1 * TIMELINE_PADDING) / 2,
-                            left: 0,
+                            width: `calc(${(frame / durationInFrames) * 100}% + var(--timeline-padding) )`,
                         }}
                         className={barFill}
                     />
@@ -217,7 +207,7 @@ export const SeekBar: React.FC<{
                         id="knob"
                         className={knob}
                         style={{
-                            left: `calc(${(frame / durationInFrames) * 100}% - ${KNOB_WIDTH / 2}px)`,
+                            left: `calc(${(frame / durationInFrames) * 100}% - var(--knob-width) / 2)`,
                             cursor: dragging.dragging ? 'grabbing' : 'grab',
                         }}
                     />
@@ -228,6 +218,7 @@ export const SeekBar: React.FC<{
 };
 
 const timelineStyle = css({
+    paddingInline: 'var(--timeline-padding)',
     userSelect: 'none',
     WebkitUserSelect: 'none',
     boxSizing: 'border-box',
@@ -242,24 +233,28 @@ const timelineStyle = css({
 });
 
 const innerTimeline = css({
-    height: `[${BAR_HEIGHT}px]`,
+    height: 'var(--bar-height)',
     width: 'auto',
     position: 'relative',
 });
 
 const barFill = css({
-    height: `[${BAR_HEIGHT}px]`,
+    height: 'var(--bar-height)',
     backgroundColor: 'pink.20',
     borderRadius: 'sm',
+    position: 'absolute',
+    marginLeft: `[calc( -1 * var(--timeline-padding) )]`,
+    left: '0',
 });
 
 const knob = css({
-    height: `[${BAR_HEIGHT + 10}px]`,
-    width: `[${KNOB_WIDTH}px]`,
+    '--knob-width': '10px',
+    height: '[calc(var(--bar-height) + 10px)]',
+    width: 'var(--knob-width)',
     borderRadius: 'sm',
     position: 'absolute',
     cursor: 'grab',
-    top: '[-4px]',
+    top: '[-5px]',
     backgroundColor: 'teal.100',
 });
 
@@ -268,6 +263,8 @@ const timelineWrapper = css({
     alignItems: 'center',
     paddingTop: '3',
     gap: '2',
+    '--bar-height': '25px',
+    '--timeline-padding': '10px',
 });
 
 const playPauseButton = css({
