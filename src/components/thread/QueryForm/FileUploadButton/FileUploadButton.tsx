@@ -6,15 +6,15 @@ import {
     useImperativeHandle,
     useRef,
 } from 'react';
-import { Focusable, Key, MenuTrigger } from 'react-aria-components';
+import { FileTrigger, Focusable } from 'react-aria-components';
 
 import { StyledTooltip } from '@/components/StyledTooltip';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
-import { FileUploadInput } from './FileUploadInput';
-import { MediaTypes } from './fileUploadMediaConsts';
+import { AddMediaButton } from './AddMediaButton';
+import { fileTypesToArray, mediaTypeMatches } from './fileTypeHelpers';
+import { type MediaType, mediaTypeList } from './fileUploadMediaConsts';
 import { FileUploadMenu } from './FileUploadMenu';
-import { FileUploadTriggerButton } from './FileUploadTriggerButton';
 import { useFileInputTrigger } from './useFileInputTrigger';
 
 export interface FileuploadPropsBase {
@@ -30,7 +30,10 @@ export interface FileuploadPropsBase {
 }
 
 export type FileUploadButtonProps = FileuploadPropsBase &
-    Omit<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, 'type'>;
+    Omit<
+        DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
+        'type' | 'onSelect'
+    >;
 
 export const FileUploadButton = forwardRef(function FileUploadButton(
     {
@@ -41,42 +44,30 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
         acceptsMultiple,
         allowFilesInFollowups,
         maxFilesPerMessage,
-        ...props
-    }: FileUploadButtonProps,
+        onSelect,
+        // ...props
+    }: FileUploadButtonProps & { onSelect?: (files: FileList | undefined) => void },
     ref: ForwardedRef<HTMLInputElement>
 ) {
     const inputRef = useRef<HTMLInputElement>(null);
-    const { isMultiModalEnabled } = useFeatureToggles();
 
-    // Assign the value of ref to the inputRef, to be able to use them both.
     useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
     const { triggerFileInput } = useFileInputTrigger({ inputRef, maxFilesPerMessage });
 
-    const supportFileUpload = isMultiModalEnabled && acceptsFileUpload;
+    const { isMultiModalEnabled } = useFeatureToggles();
 
-    const acceptedFileTypesArray =
-        typeof acceptedFileTypes === 'string' ? [acceptedFileTypes] : Array.from(acceptedFileTypes);
-    const acceptedFileTypesString = acceptedFileTypesArray.join(',');
+    const supportFileUpload = isMultiModalEnabled && acceptsFileUpload;
 
     if (!supportFileUpload) {
         return null;
     }
 
-    const mediaTypes = Object.entries(MediaTypes).filter(([mediaType]) =>
-        acceptedFileTypesArray.some((acceptedType) => acceptedType.startsWith(mediaType))
+    const fileTypes = fileTypesToArray(acceptedFileTypes);
+
+    const mediaTypes = mediaTypeList.filter((mediaType) =>
+        fileTypes.some((acceptedType) => mediaTypeMatches(acceptedType, mediaType.accept))
     );
-
-    const handleMenuAction = (mediaType: Key) => {
-        triggerFileInput(mediaType);
-    };
-
-    const handleSingleTypeClick = () => {
-        if (mediaTypes.length === 1) {
-            const [mediaType] = mediaTypes[0];
-            triggerFileInput(mediaType);
-        }
-    };
 
     let tooltipContent: string | undefined;
 
@@ -88,42 +79,48 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
             'This model only supports files on initial message. Start a new chat to submit new files.';
     }
 
-    const fileUploadButton = (
-        <FileUploadTriggerButton
-            isDisabled={isFileUploadDisabled || isSendingPrompt}
-            onPress={mediaTypes.length === 1 ? handleSingleTypeClick : undefined}>
-            <FileUploadInput
-                {...props}
-                acceptedFileTypesString={acceptedFileTypesString}
-                isDisabled={isFileUploadDisabled || isSendingPrompt}
-                acceptsMultiple={acceptsMultiple}
-                ref={inputRef}
-            />
-        </FileUploadTriggerButton>
-    );
-
-    // Single file type is only the button
-    if (mediaTypes.length === 1) {
-        return (
-            <StyledTooltip isDisabled={!tooltipContent} content={tooltipContent} placement="top">
-                <Focusable>
-                    <span>{fileUploadButton}</span>
-                </Focusable>
-            </StyledTooltip>
-        );
-    }
-
-    // Multiple files types has a menu
     return (
         <StyledTooltip isDisabled={!tooltipContent} content={tooltipContent} placement="top">
             <Focusable>
                 <span>
-                    <MenuTrigger>
-                        {fileUploadButton}
-                        <FileUploadMenu mediaTypes={mediaTypes} onAction={handleMenuAction} />
-                    </MenuTrigger>
+                    <FileTrigger
+                        ref={inputRef}
+                        allowsMultiple={acceptsMultiple}
+                        acceptedFileTypes={fileTypes}
+                        onSelect={(files) => {
+                            onSelect?.(files ?? undefined);
+                        }}
+                        defaultCamera="environment">
+                        <AddMediaComponent
+                            isDisabled={isFileUploadDisabled || isSendingPrompt}
+                            mediaTypes={mediaTypes}
+                            triggerFileInput={triggerFileInput}
+                        />
+                    </FileTrigger>
                 </span>
             </Focusable>
         </StyledTooltip>
     );
 });
+
+const AddMediaComponent = ({
+    mediaTypes,
+    isDisabled,
+    triggerFileInput,
+}: {
+    triggerFileInput: (mediaType: string | number) => void;
+    isDisabled?: boolean;
+    mediaTypes: MediaType[];
+}) => {
+    if (mediaTypes.length > 1) {
+        return (
+            <FileUploadMenu
+                isDisabled={isDisabled}
+                mediaTypes={mediaTypes}
+                triggerFileInput={triggerFileInput}
+            />
+        );
+    }
+
+    return <AddMediaButton isDisabled={isDisabled} />;
+};

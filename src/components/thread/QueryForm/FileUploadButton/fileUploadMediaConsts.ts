@@ -1,19 +1,20 @@
-export const MediaTypes = {
-    image: {
+export type MediaType = {
+    id: string;
+    accept: string;
+    label: string;
+    maxFiles?: number;
+};
+
+export const mediaTypeList: MediaType[] = [
+    {
+        id: 'image',
         accept: 'image/*',
-        label: 'image', // same as key, but not necessarily
-        maxFiles: undefined, // type this object better
+        label: 'image', // Right now same as `id` -- but might not be?
     },
-    video: {
+    {
+        id: 'video',
         accept: 'video/*',
         label: 'video',
         maxFiles: 1,
     },
-} as const;
-
-export type MediaTypesType = typeof MediaTypes;
-export type MediaTypeKey = keyof MediaTypesType;
-export type MediaTypeConfig = MediaTypesType[MediaTypeKey];
-
-export const typeIsMediaType = (type: unknown): type is MediaTypeKey =>
-    typeof type === 'string' && Object.keys(MediaTypes).includes(type);
+] as const;

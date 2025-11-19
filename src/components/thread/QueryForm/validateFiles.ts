@@ -1,11 +1,8 @@
 import { Validate, type ValidateResult } from 'react-hook-form-mui';
 
-import { MediaTypes } from './FileUploadButton/fileUploadMediaConsts';
-import {
-    fileTypesToArray,
-    typeMatchesAllowedTypes,
-} from './FileUploadThumbnails/typeMatchesAllowedTypes';
+import { mediaTypeList } from './FileUploadButton/fileUploadMediaConsts';
 import { QueryFormValues } from './QueryFormController';
+import { fileTypesToArray, typeMatchesAllowedTypes } from './FileUploadButton/fileTypeHelpers';
 
 interface ValidateFilesOptions {
     acceptedFileTypes: string | string[] | Set<string>;
@@ -27,7 +24,7 @@ export const validateFiles = (
     const filesByMediaType = new Map<string, File[]>();
 
     for (const file of fileList) {
-        for (const [mediaType, mediaConfig] of Object.entries(MediaTypes)) {
+        for (const mediaConfig of mediaTypeList) {
             const isMediaTypeAccepted = typeMatchesAllowedTypes(
                 mediaConfig.accept,
                 acceptedFileTypes
@@ -35,11 +32,11 @@ export const validateFiles = (
 
             if (isMediaTypeAccepted) {
                 if (typeMatchesAllowedTypes(file.type, mediaConfig.accept)) {
-                    const existingFiles = filesByMediaType.get(mediaType);
+                    const existingFiles = filesByMediaType.get(mediaConfig.id);
                     if (existingFiles) {
                         existingFiles.push(file);
                     } else {
-                        filesByMediaType.set(mediaType, [file]);
+                        filesByMediaType.set(mediaConfig.id, [file]);
                     }
                     break;
                 }
@@ -52,13 +49,13 @@ export const validateFiles = (
         return `Errors only one of "${acceptedFileTypes.join(', ')}" allowed in a single message.`;
     }
 
-    for (const [mediaType, files] of filesByMediaType) {
-        const mediaConfig = MediaTypes[mediaType as keyof typeof MediaTypes];
+    for (const [mediaTypeId, files] of filesByMediaType) {
+        const mediaConfig = mediaTypeList.find((mediaType) => mediaType.id === mediaTypeId)
 
-        const maxFiles = mediaConfig.maxFiles ?? options.maxFilesPerMessage;
+        const maxFiles = mediaConfig?.maxFiles ?? options.maxFilesPerMessage;
 
         if (maxFiles !== undefined && files.length > maxFiles) {
-            const label = `${mediaConfig.label}${maxFiles > 1 ? 's' : ''}`;
+            const label = `${mediaConfig?.label}${maxFiles > 1 ? 's' : ''}`;
             return `Maximum ${maxFiles} ${label} allowed.`;
         }
     }

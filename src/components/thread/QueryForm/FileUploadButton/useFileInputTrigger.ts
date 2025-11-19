@@ -1,7 +1,7 @@
 import { RefObject, useCallback } from 'react';
 import { Key } from 'react-aria-components';
 
-import { MediaTypes, typeIsMediaType } from './fileUploadMediaConsts';
+import { mediaTypeList } from './fileUploadMediaConsts';
 
 interface UseFileInputTriggerParams {
     inputRef: RefObject<HTMLInputElement>;
@@ -13,10 +13,12 @@ export const useFileInputTrigger = ({
     maxFilesPerMessage,
 }: UseFileInputTriggerParams) => {
     const triggerFileInput = useCallback(
-        (mediaType: string | Key) => {
-            if (!inputRef.current || !typeIsMediaType(mediaType)) return;
+        (mediaType: string | number) => {
+            const mediaConf = mediaTypeList.find((media) => media.id === mediaType);
 
-            const mediaConf = MediaTypes[mediaType];
+            // no media or inputRef
+            if (!inputRef.current || !mediaConf) return;
+
             const maxFiles = mediaConf.maxFiles ?? maxFilesPerMessage;
 
             inputRef.current.accept = mediaConf.accept;
