@@ -27,7 +27,7 @@ export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.isModelConfigEnabled]: false,
     [FeatureToggle.isOlmoASREnabled]: false,
     [FeatureToggle.isAgentPageEnabled]: false,
-    [FeatureToggle.isComparisonPageInternalOnly]: false,
+    [FeatureToggle.isComparisonPageInternalOnly]: true,
 };
 
 const localStorageKey = 'feature-toggles';
