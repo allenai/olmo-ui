@@ -13,7 +13,10 @@ import { extractPointData as extractMolmo1PointData } from '../points/molmo1/ext
 import { extractPointsData as extractMolmo2PointsData } from '../points/molmo2/formatPointsData';
 import { ImagePoints } from '../points/pointsDataTypes';
 import { pointsRegex } from '../points/pointsRegex';
-import { MAX_THREAD_IMAGE_HEIGHT } from '../ThreadDisplay/threadDisplayConsts';
+import {
+    MAX_THREAD_IMAGE_HEIGHT_PX,
+    MIN_THREAD_IMAGE_HEIGHT_PX,
+} from '../ThreadDisplay/threadDisplayConsts';
 import { PointPicture, PointsSets } from './PointPicture';
 import { PointPictureCaption, PointPictureListCaption } from './PointPictureCaption';
 import { PointPictureModal } from './PointPictureModal';
@@ -36,22 +39,32 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
 
     const { content } = message;
     const pointsSets = extractMolmo1PointData(content) ?? extractMolmo2PointsData(content);
-    console.log('points sets', pointsSets);
 
     const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
 
-    const handleClose = () => {
-        setIsModalOpen(false);
+    const handleToggleLightbox = () => {
+        setIsModalOpen((prev) => !prev);
     };
 
     // NOTE: this assumes all points from a response will be a homogenious type
     if (pointsSets?.[0].type === 'image-points') {
         return (
-            <PointPictureList
-                imagePointsSets={pointsSets.filter((set) => set.type === 'image-points')}
-                fileUrls={currentFilesInThread}
-                content={content}
-            />
+            <>
+                <PointPictureList
+                    imagePointsSets={pointsSets.filter((set) => set.type === 'image-points')}
+                    fileUrls={currentFilesInThread}
+                    content={content}
+                    onClick={handleToggleLightbox}
+                />
+                <PointPictureModal open={isModalOpen} closeModal={handleToggleLightbox}>
+                    <PointPictureList
+                        imagePointsSets={pointsSets.filter((set) => set.type === 'image-points')}
+                        fileUrls={currentFilesInThread}
+                        content={content}
+                        showPerImageCaption={true}
+                    />
+                </PointPictureModal>
+            </>
         );
     } else if (pointsSets?.[0].type === 'track-points') {
         // TODO: this space reserved for video points components
@@ -83,10 +96,14 @@ const PointPictureList = ({
     imagePointsSets,
     fileUrls,
     content,
+    showPerImageCaption,
+    onClick,
 }: {
     imagePointsSets: ImagePoints[];
     fileUrls: readonly string[];
     content: string;
+    showPerImageCaption?: boolean;
+    onClick?: () => void;
 }) => {
     const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
     const pointsSetsByFileUrl = fileUrls.reduce<Map<string, PointsSets[]>>((acc, url, index) => {
@@ -113,9 +130,24 @@ const PointPictureList = ({
         return acc;
     }, new Map());
 
+    const isSingleImageList = fileUrls.length === 1;
+
     return (
         <Stack spacing={1}>
-            <Box display="flex" gap={1.5}>
+            <Box
+                component="ul"
+                onClick={onClick}
+                sx={{
+                    display: 'grid',
+                    gridAutoFlow: 'column',
+                    gridAutoColumns: 'auto',
+                    gridTemplateRows: !isSingleImageList ? '200px' : 'auto',
+                    gap: 1.5,
+                    // minHeight: MIN_THREAD_IMAGE_HEIGHT_PX,
+                    maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX,
+                    overflowX: !isSingleImageList ? 'auto' : undefined,
+                    scrollSnapType: 'x mandatory',
+                }}>
                 {fileUrls.map((url) => {
                     const pointsSets = pointsSetsByFileUrl.get(url) || [];
                     return (
@@ -123,14 +155,11 @@ const PointPictureList = ({
                             key={url}
                             imageLink={url}
                             pointsSets={pointsSets}
-                            sx={{
-                                gridArea: 'combined',
-                                maxHeight: MAX_THREAD_IMAGE_HEIGHT,
-                                objectFit: 'contain',
-                                height: 'auto',
-                                maxWidth: '100%',
-                            }}
-                            // caption={<PointPictureCaption pointsSets={pointsSets} />}
+                            caption={
+                                showPerImageCaption && (
+                                    <PointPictureCaption pointsSets={pointsSets} />
+                                )
+                            }
                         />
                     );
                 })}

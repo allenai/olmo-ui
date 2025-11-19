@@ -18,7 +18,7 @@ import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
 import { MessageThinking } from '../ThreadDisplay/MessageThinking';
-import { MAX_THREAD_IMAGE_HEIGHT } from '../ThreadDisplay/threadDisplayConsts';
+import { MAX_THREAD_IMAGE_HEIGHT_PX } from '../ThreadDisplay/threadDisplayConsts';
 import AllToolCalls from '../tools/AllToolCalls';
 import { LLMMessage } from './LLMMessage';
 import { UserMessage } from './UserMessage';
@@ -171,7 +171,7 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
                 {fileUrls ? (
                     <ImageList>
                         {fileUrls.map((url, idx) => (
-                            <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT }}>
+                            <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX }}>
                                 <img src={url} alt={'Uploaded'} loading="lazy" />
                             </ImageListItem>
                         ))}

@@ -20,29 +20,29 @@ interface PointPictureProps {
     sx?: SxProps<Theme>;
 }
 
-export const PointPicture = ({
-    imageLink,
-    pointsSets,
-    caption,
-    sx,
-}: PointPictureProps): ReactNode => {
-    console.log(imageLink, pointsSets);
+export const PointPicture = ({ imageLink, pointsSets, caption }: PointPictureProps): ReactNode => {
     const pointColors = usePointColors();
     return (
-        <Box component="figure" sx={{ margin: 0, marginBlockEnd: 2 }}>
+        <Box component="li" sx={{ height: '100%' }}>
             <Box
+                component="figure"
                 sx={{
                     display: 'grid',
-                    gridTemplate: 'auto / auto',
+                    gridTemplateRows: '100%',
                     gridTemplateAreas: '"combined"',
+                    height: '100%',
                     width: 'fit-content',
-                    height: 'fit-content',
                     maxWidth: '100%',
                     '&:hover': {
                         cursor: 'pointer',
                     },
                 }}>
-                <Box component="img" src={imageLink} alt="" sx={sx} />
+                <Box
+                    component="img"
+                    src={imageLink}
+                    alt=""
+                    sx={{ height: '100%', gridArea: 'combined' }}
+                />
                 {pointsSets.map((pointSet, index) => {
                     return (
                         <PointOnImage
