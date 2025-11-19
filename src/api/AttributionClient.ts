@@ -8,22 +8,6 @@ import type {
 export type AttributionDocumentSnippet = SchemaAttributionDocumentSnippet;
 
 export type Document = SchemaResponseAttributionDocument;
-// export interface Document {
-//     text: string;
-//     text_long: string;
-//     snippets: AttributionDocumentSnippet[];
-//     corresponding_spans: number[];
-//     corresponding_span_texts: string[];
-//     index: string;
-//     url?: string;
-//     source: string;
-//     usage: string;
-//     display_name: string;
-//     source_url: string;
-//     secondary_name?: string;
-//     title?: string;
-//     relevance_score: number;
-// }
 
 export type AttributionSpan = SchemaResponseAttributionSpan;
 export interface TopLevelAttributionSpan extends AttributionSpan {

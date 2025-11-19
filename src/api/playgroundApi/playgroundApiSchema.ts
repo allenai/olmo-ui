@@ -528,8 +528,6 @@ export type components = {
             readonly corresponding_span_text: string;
             /** Text */
             readonly text: string;
-        } & {
-            readonly [key: string]: unknown;
         };
         /** AttributionResponse */
         readonly AttributionResponse: {
@@ -538,9 +536,7 @@ export type components = {
             /** Index */
             readonly index: string;
             /** Spans */
-            readonly spans: readonly components['schemas']['ResponseAttributionSpan'][];
-        } & {
-            readonly [key: string]: unknown;
+            readonly spans: readonly components['schemas']['TopLevelAttributionSpan'][];
         };
         /** AuthenticatedClient */
         readonly AuthenticatedClient: {
@@ -1860,8 +1856,6 @@ export type components = {
             readonly url?: string | null;
             /** Usage */
             readonly usage: string | null;
-        } & {
-            readonly [key: string]: unknown;
         };
         /** ResponseAttributionSpan */
         readonly ResponseAttributionSpan: {
@@ -1871,8 +1865,6 @@ export type components = {
             readonly start_index: number;
             /** Text */
             readonly text: string;
-        } & {
-            readonly [key: string]: unknown;
         };
         /** ResponseModel */
         readonly ResponseModel:
@@ -2108,6 +2100,17 @@ export type components = {
          * @enum {string}
          */
         readonly ToolSource: 'internal' | 'user_defined' | 'model_context_protocol';
+        /** TopLevelAttributionSpan */
+        readonly TopLevelAttributionSpan: {
+            /** Documents */
+            readonly documents?: readonly number[];
+            /** Nested Spans */
+            readonly nested_spans?: readonly components['schemas']['ResponseAttributionSpan'][];
+            /** Start Index */
+            readonly start_index: number;
+            /** Text */
+            readonly text: string;
+        };
         /** UpdateMultiModalModelConfigRequest */
         readonly UpdateMultiModalModelConfigRequest: {
             /** Acceptedfiletypes */
@@ -2453,6 +2456,7 @@ export type SchemaToolCall = components['schemas']['ToolCall'];
 export type SchemaToolCallChunk = components['schemas']['ToolCallChunk'];
 export type SchemaToolDefinition = components['schemas']['ToolDefinition'];
 export type SchemaToolSource = components['schemas']['ToolSource'];
+export type SchemaTopLevelAttributionSpan = components['schemas']['TopLevelAttributionSpan'];
 export type SchemaUpdateMultiModalModelConfigRequest =
     components['schemas']['UpdateMultiModalModelConfigRequest'];
 export type SchemaUpdateTextOnlyModelConfigRequest =
