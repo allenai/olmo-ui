@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { PropsWithChildren, useEffect } from 'react';
+import { PropsWithChildren, type ReactNode, useEffect } from 'react';
 
 import { AppContextState, useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
@@ -86,19 +86,19 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
         const spans = state.attribution.attributionsByMessageId[messageId].spans;
         const documents = state.attribution.attributionsByMessageId[messageId].documents;
 
-        // I don't know why spanIds can be an array, but if it is, we'll just compute the max score
         const spanIdsArray = Array.isArray(spanIds) ? spanIds : [spanIds];
         const spanRelevanceScore = spanIdsArray.reduce((acc, spanId) => {
             const span = spans[spanId];
             if (span == null) {
                 return acc;
             }
-            const nestedSpanRelevanceScore = span.nested_spans.reduce((acc, nestedSpan) => {
-                return nestedSpan.documents.reduce((acc, documentIx) => {
+            const nestedSpanRelevanceScore = (span.nested_spans ?? []).reduce((acc, nestedSpan) => {
+                return (nestedSpan.documents ?? []).reduce((acc, documentIx) => {
                     const document = documents[documentIx];
                     return Math.max(acc, document?.relevance_score ?? 0.0);
                 }, acc);
             }, 0.0);
+
             return Math.max(acc, nestedSpanRelevanceScore);
         }, 0.0);
 
@@ -119,22 +119,23 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             }
             return Math.max(
                 acc,
-                span.nested_spans.reduce((acc, nestedSpan) => {
-                    return nestedSpan.documents.reduce((acc, documentIx) => {
+                (span.nested_spans ?? []).reduce((acc, nestedSpan) => {
+                    return (nestedSpan.documents ?? []).reduce((acc, documentIx) => {
                         const document = documents[documentIx];
                         return Math.max(acc, document?.relevance_score ?? 0.0);
                     }, acc);
                 }, 0.0)
             );
         }, 0.0);
+
         const minRelevanceScore = Object.values(spans).reduce((acc, span) => {
             if (span == null) {
                 return acc;
             }
             return Math.min(
                 acc,
-                span.nested_spans.reduce((acc, nestedSpan) => {
-                    return nestedSpan.documents.reduce((acc, documentIx) => {
+                (span.nested_spans ?? []).reduce((acc, nestedSpan) => {
+                    return (nestedSpan.documents ?? []).reduce((acc, documentIx) => {
                         const document = documents[documentIx];
                         return Math.max(acc, document?.relevance_score ?? 0.0);
                     }, acc);
@@ -163,10 +164,7 @@ export interface AttributionHighlightProps extends PropsWithChildren {
     span: string | string[];
 }
 
-export const AttributionHighlight = ({
-    span,
-    children,
-}: AttributionHighlightProps): JSX.Element => {
+export const AttributionHighlight = ({ span, children }: AttributionHighlightProps): ReactNode => {
     const {
         toggleSelectedSpans,
         shouldShowHighlight,

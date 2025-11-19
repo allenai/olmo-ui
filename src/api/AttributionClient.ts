@@ -3,6 +3,7 @@ import type {
     SchemaAttributionDocumentSnippet,
     SchemaResponseAttributionDocument,
     SchemaResponseAttributionSpan,
+    SchemaTopLevelAttributionSpan,
 } from './playgroundApi/playgroundApiSchema';
 
 export type AttributionDocumentSnippet = SchemaAttributionDocumentSnippet;
@@ -10,9 +11,7 @@ export type AttributionDocumentSnippet = SchemaAttributionDocumentSnippet;
 export type Document = SchemaResponseAttributionDocument;
 
 export type AttributionSpan = SchemaResponseAttributionSpan;
-export interface TopLevelAttributionSpan extends AttributionSpan {
-    nested_spans: AttributionSpan[];
-}
+export type TopLevelAttributionSpan = SchemaTopLevelAttributionSpan;
 
 interface AttributionResponse {
     documents: Document[];

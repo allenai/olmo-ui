@@ -22,8 +22,6 @@ export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = (set
     setSelectedCompareModels: (compareModels: CompareModelState[]) => {
         set(
             (state) => {
-                // @ts-expect-error - Readonly error, something funky with WriteableDraft and readonly
-                // It's OK for us to overwrite here so we can ignore this safely
                 state.selectedCompareModels = compareModels;
             },
             undefined,
@@ -41,7 +39,6 @@ export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = (set
                 }
                 return model;
             });
-            // @ts-expect-error - Readonly error WritableDraft
             state.selectedCompareModels = newCompareModels;
         });
     },

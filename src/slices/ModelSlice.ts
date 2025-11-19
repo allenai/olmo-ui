@@ -11,8 +11,6 @@ export const createModelSlice: OlmoStateCreator<ModelSlice> = (set) => ({
     setSelectedModel: (model: Model) => {
         set(
             (state) => {
-                // @ts-expect-error - Readonly error, something funky with WriteableDraft and readonly
-                // It's OK for us to overwrite here so we can ignore this safely
                 state.selectedModel = model;
             },
             undefined,

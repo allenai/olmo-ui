@@ -27,7 +27,7 @@ describe('AttributionHighlight', () => {
                                 corresponding_span_texts: ['This is a', 'message from the LLM'],
                                 index: '12345',
                                 source: 'c4',
-                                text: 'document 1',
+                                text_long: 'document 1',
                                 relevance_score: 1.6,
                                 snippets: [
                                     {
@@ -89,7 +89,7 @@ describe('AttributionHighlight', () => {
                                 corresponding_span_texts: ['This is a', 'message from the LLM'],
                                 index: '12345',
                                 source: 'c4',
-                                text: 'document 1',
+                                text_long: 'document 1',
                                 relevance_score: 1.6,
                                 snippets: [
                                     {
@@ -151,7 +151,7 @@ describe('AttributionHighlight', () => {
                                 corresponding_span_texts: ['This is a', 'message from the LLM'],
                                 index: '12345',
                                 source: 'c4',
-                                text: 'document 1',
+                                text_long: 'document 1',
                                 relevance_score: 1.6,
                                 snippets: [
                                     {
@@ -216,7 +216,7 @@ describe('AttributionHighlight', () => {
                                 corresponding_span_texts: ['This is a', 'message from the LLM'],
                                 index: '12345',
                                 source: 'c4',
-                                text: 'document 1',
+                                text_long: 'document 1',
                                 relevance_score: 1.6,
                                 snippets: [
                                     {
@@ -278,7 +278,7 @@ describe('AttributionHighlight', () => {
                                 corresponding_span_texts: ['This is a', 'message from the LLM'],
                                 index: '12345',
                                 source: 'c4',
-                                text: 'document 1',
+                                text_long: 'document 1',
                                 relevance_score: 1.6,
                                 snippets: [
                                     {

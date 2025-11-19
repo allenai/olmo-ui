@@ -58,7 +58,7 @@ describe('markedContentSelector', () => {
                                 ],
                                 index: '12345',
                                 source: 'c4',
-                                text: 'document 1',
+                                text_long: 'document 1',
                                 relevance_score: 1.6,
                                 snippets: [
                                     {
@@ -163,7 +163,7 @@ describe('markedContentSelector', () => {
                                 ],
                                 index: '12345',
                                 source: 'c4',
-                                text: 'document 1',
+                                text_long: 'document 1',
                                 relevance_score: 1.6,
                                 snippets: [
                                     {
@@ -267,7 +267,7 @@ describe('markedContentSelector', () => {
                                 ],
                                 index: '12345',
                                 source: 'c4',
-                                text: 'document 1',
+                                text_long: 'document 1',
                                 relevance_score: 1.6,
                                 snippets: [
                                     {
@@ -530,7 +530,6 @@ describe('markedContentSelector', () => {
                         loadingState: RemoteState.Loaded,
                         documents: {
                             '0': {
-                                text: response,
                                 text_long: response,
                                 snippets: [
                                     {
