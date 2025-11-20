@@ -7,8 +7,13 @@ const varnishPlaygroundButtonStyles = css({
     padding: '1',
     borderRadius: 'full',
     color: 'accent.secondary',
-    _hover: { color: 'teal.100' },
+    _hover: {
+        _notDisabled: {
+            color: 'teal.100',
+        },
+    },
     _focusVisible: { outline: '1px solid' },
+    _disabled: { color: 'elements.disabled.fill' },
 });
 
 export const AddMediaButton = ({ isDisabled }: { isDisabled?: boolean }) => {
