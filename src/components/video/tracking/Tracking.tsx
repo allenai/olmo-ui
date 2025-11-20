@@ -91,20 +91,30 @@ const VideoSingleDotTrack = ({
         return { x, y, times };
     }, [fps, trackId, filteredTracks]);
 
-    const { sizeTimes, size } = useMemo(() => {
-        const animation = filteredTracks.flatMap((framePoints) => {
+    const { sizeTimes, size, onScreen } = useMemo(() => {
+        const animation = filteredTracks.flatMap((framePoints, i) => {
             const before = (framePoints.timestamp - PRE_TIMESTAMP_OFFSET) * fps;
             const after = (framePoints.timestamp + POST_TIMESTAMP_OFFSET) * fps;
-
+            const leavingScreen =
+                i === filteredTracks.length - 1 ||
+                filteredTracks[i + 1].timestamp > framePoints.timestamp + 0.5
+                    ? 0
+                    : 1;
+            const enteringScreen =
+                i === 0 || filteredTracks[i - 1].timestamp < framePoints.timestamp - 0.5 ? 0 : 1;
             return [
-                [before, 0],
-                [before + 1, 1],
-                [after, 1],
-                [after + 1, 1],
+                [before, 0, enteringScreen],
+                [before + 1, 1, 1],
+                [after, 1, 1],
+                [after + 1, 0, leavingScreen],
             ];
         });
 
-        const result = { sizeTimes: animation.map((a) => a[0]), size: animation.map((a) => a[1]) };
+        const result = {
+            sizeTimes: animation.map((a) => a[0]),
+            size: animation.map((a) => a[1]),
+            onScreen: animation.map((a) => a[2]),
+        };
 
         return result;
     }, [filteredTracks, fps]);
@@ -119,8 +129,9 @@ const VideoSingleDotTrack = ({
     const xAnimated = interpolate(frame, times, x);
     const yAnimated = interpolate(frame, times, y);
     const shouldShowPoint = interpolate(frame, sizeTimes, size);
+    const onScreenValue = interpolate(frame, sizeTimes, onScreen);
 
-    if (frame < times[0] || frame > times[times.length - 1]) {
+    if (onScreenValue < 0) {
         return null;
     }
 
