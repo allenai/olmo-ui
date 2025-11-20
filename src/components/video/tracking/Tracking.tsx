@@ -131,7 +131,7 @@ const VideoSingleDotTrack = ({
     const shouldShowPoint = interpolate(frame, sizeTimes, size);
     const onScreenValue = interpolate(frame, sizeTimes, onScreen);
 
-    if (onScreenValue < 0) {
+    if (onScreenValue <= 0) {
         return null;
     }
 

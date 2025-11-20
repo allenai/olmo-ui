@@ -47,16 +47,7 @@ export const MCLAREN_VIDEO_TRACKING_DATA: VideoTrackingPoints = {
                 },
             ],
         },
-        {
-            timestamp: 4,
-            tracks: [
-                {
-                    trackId: '1',
-                    x: 60.7,
-                    y: 47.7,
-                },
-            ],
-        },
+
         {
             timestamp: 4.5,
             tracks: [
