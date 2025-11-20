@@ -71,42 +71,42 @@ const VideoSingleDotTrack = ({
 }) => {
     const { height, width, fps } = useVideoConfig();
 
-    const trackIdFilter = useCallback(
-        (frame: PerFrameTrackPoints) => frame.tracks.find((t) => t.trackId === trackId),
-        [trackId]
-    );
+    const filteredTracks = useMemo(() => {
+        // filter down to the trackid
+        return videoTrackingPoints.frameList.filter((frame: PerFrameTrackPoints) =>
+            frame.tracks.find((t) => t.trackId === trackId)
+        );
+    }, [videoTrackingPoints, trackId]);
 
     const { x, y, times } = useMemo(() => {
-        const x = videoTrackingPoints.frameList.filter(trackIdFilter).map((frame) => {
+        const x = filteredTracks.map((frame) => {
             return frame.tracks.find((t) => t.trackId === trackId)?.x || 0;
         });
-        const y = videoTrackingPoints.frameList.filter(trackIdFilter).map((frame) => {
+        const y = filteredTracks.map((frame) => {
             return frame.tracks.find((t) => t.trackId === trackId)?.y || 0;
         });
-        const times = videoTrackingPoints.frameList.filter(trackIdFilter).map((frame) => {
+        const times = filteredTracks.map((frame) => {
             return frame.timestamp * fps;
         });
         return { x, y, times };
-    }, [videoTrackingPoints, fps, trackId, trackIdFilter]);
+    }, [fps, trackId, filteredTracks]);
 
     const { sizeTimes, size } = useMemo(() => {
-        const animation = videoTrackingPoints.frameList
-            .filter(trackIdFilter)
-            .flatMap((framePoints) => {
-                const before = (framePoints.timestamp - PRE_TIMESTAMP_OFFSET) * fps;
-                const after = (framePoints.timestamp + POST_TIMESTAMP_OFFSET) * fps;
-                return [
-                    [before, 0],
-                    [before + 1, 1],
-                    [after, 1],
-                    [after + 1, 1],
-                ];
-            });
+        const animation = filteredTracks.flatMap((framePoints) => {
+            const before = (framePoints.timestamp - PRE_TIMESTAMP_OFFSET) * fps;
+            const after = (framePoints.timestamp + POST_TIMESTAMP_OFFSET) * fps;
+            return [
+                [before, 0],
+                [before + 1, 1],
+                [after, 1],
+                [after + 1, 1],
+            ];
+        });
 
         const result = { sizeTimes: animation.map((a) => a[0]), size: animation.map((a) => a[1]) };
 
         return result;
-    }, [videoTrackingPoints, fps, trackIdFilter]);
+    }, [filteredTracks, fps]);
 
     const frame = useCurrentFrame();
 
