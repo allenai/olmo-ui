@@ -59,6 +59,7 @@ export const VideoDotTrackObjectComponent = ({
 
 const PRE_TIMESTAMP_OFFSET = 0.15; // How long before the frame does the dot appear.
 const POST_TIMESTAMP_OFFSET = 0.15; // How long after the frame does the dot linger.
+const TRACKING_LOST_THRESHHOLD = 0.5; // Hide interpolate if next point is more TRACKING_LOST_THRESHHOLD seconds away
 
 const VideoSingleDotTrack = ({
     trackId,
@@ -97,11 +98,14 @@ const VideoSingleDotTrack = ({
             const after = (framePoints.timestamp + POST_TIMESTAMP_OFFSET) * fps;
             const leavingScreen =
                 i === filteredTracks.length - 1 ||
-                filteredTracks[i + 1].timestamp > framePoints.timestamp + 0.5
+                filteredTracks[i + 1].timestamp > framePoints.timestamp + TRACKING_LOST_THRESHHOLD
                     ? 0
                     : 1;
             const enteringScreen =
-                i === 0 || filteredTracks[i - 1].timestamp < framePoints.timestamp - 0.5 ? 0 : 1;
+                i === 0 ||
+                filteredTracks[i - 1].timestamp < framePoints.timestamp - TRACKING_LOST_THRESHHOLD
+                    ? 0
+                    : 1;
             return [
                 [before, 0, enteringScreen],
                 [before + 1, 1, 1],
