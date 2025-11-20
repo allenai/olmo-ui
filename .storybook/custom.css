@@ -1,0 +1,4 @@
+body, .docs-story {
+  color: var(--vui-colors-text);
+  background-color: var(--vui-colors-background);
+}
