@@ -195,12 +195,10 @@ export const QueryFormController = ({
                 // TODO:
                 // validate
                 // add to files
-                console.log(_dropEvent);
             }}
             getDropOperation={(_types, _allowedOperations) => {
                 // TODO validate
                 // return copy/cancel
-                console.log(_types, _allowedOperations);
                 return 'cancel';
             }}>
             <QueryFormStyledBox>
