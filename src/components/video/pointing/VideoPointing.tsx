@@ -1,19 +1,27 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Player, PlayerRef } from '@remotion/player';
 import { ReactNode, useRef, useState } from 'react';
-
-import { PerFrameTrackPoints } from '@/components/thread/points/pointsDataTypes';
+import { varnishTheme } from '@allenai/varnish2/theme';
+import { useVideoConfig, useCurrentFrame, AbsoluteFill } from 'remotion';
 
 import { SeekBar } from '../seekBar/SeekBar';
-import { VideoTracking } from '../tracking/Tracking';
 import { useVideoMetaData } from '../useVideoMetaData';
+import { VideoOverlayHelper } from '../VideoOverlayHelper';
 
 const FPS = 24;
+
+type UserPointSelect = {
+    x: number; // in percentage
+    y: number; // in percentage
+    timestamp: number; // in seconds
+};
 
 export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
     const playerRef = useRef<PlayerRef>(null);
 
     const { durationInFrames, width, height } = useVideoMetaData(videoUrl, FPS);
+
+    const [userPoints, setUserPoints] = useState<UserPointSelect[]>([]);
 
     return (
         <div>
@@ -27,11 +35,11 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
                 <Player
                     acknowledgeRemotionLicense
                     ref={playerRef}
-                    component={VideoTracking}
+                    component={PointingInputVideo}
                     inputProps={{
                         videoUrl,
-                        videoTrackingPoints,
-                        showInterpolation,
+                        userPoints,
+                        setUserPoints,
                     }}
                     durationInFrames={durationInFrames + 1}
                     compositionWidth={width}
@@ -41,18 +49,17 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
                     moveToBeginningWhenEnded={false}
                 />
             </div>
-            <SeekBar fps={FPS} playerRef={playerRef} data={} durationInFrames={durationInFrames} />
+            <SeekBar fps={FPS} playerRef={playerRef} durationInFrames={durationInFrames} />
         </div>
     );
 }
 
 export const PointSelect: React.FC<{
-    playerRef: React.RefObject<PlayerRef | null>;
     children: ReactNode;
-    frame: number;
-}> = ({ children, frame }) => {
-    const [points, setPoints] = useState<PerFrameTrackPoints[]>([]);
-
+    onPointSelect: (point: UserPointSelect) => void;
+}> = ({ children, onPointSelect }) => {
+    const { fps } = useVideoConfig();
+    const frame = useCurrentFrame();
     const setPoint = (event: React.MouseEvent) => {
         const target = event.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();
@@ -62,25 +69,59 @@ export const PointSelect: React.FC<{
         const y = (event.clientY - rect.top) / rect.height;
 
         // Create VideoFramePoints based on the current frame
-        const timestamp = frame / FPS;
-        const newFramePoint: PerFrameTrackPoints = {
+        const timestamp = frame / fps;
+        onPointSelect({
+            x,
+            y,
             timestamp,
-            tracks: [
-                {
-                    trackId: `point-${Date.now()}`,
-                    x,
-                    y,
-                },
-            ],
-        };
-
-        // Add it to points
-        const updatedPoints = [...points, newFramePoint];
-        setPoints(updatedPoints);
-
-        // Console log points
-        console.log(updatedPoints);
+        });
     };
 
-    return <span onClick={setPoint}>{children}</span>;
+    return <AbsoluteFill onClick={setPoint}>{children}</AbsoluteFill>;
+};
+
+export const PointingInputVideo = ({
+    videoUrl,
+    userPoints,
+    setUserPoints,
+}: {
+    videoUrl: string;
+    userPoints: UserPointSelect[];
+    setUserPoints: (points: UserPointSelect[]) => void;
+}) => {
+    return (
+        <PointSelect onPointSelect={(point) => setUserPoints([point])}>
+            <VideoOverlayHelper videoUrl={videoUrl}>
+                {userPoints.map((point, i) => (
+                    <SinglePoint key={i} point={point} />
+                ))}
+            </VideoOverlayHelper>
+        </PointSelect>
+    );
+};
+
+const SinglePoint = ({ point }: { point: UserPointSelect }) => {
+    const { height, width, fps } = useVideoConfig();
+
+    const frame = useCurrentFrame();
+
+    if (point.timestamp / fps !== frame) {
+        return null;
+    }
+
+    return (
+        <svg
+            className={css({ position: 'absolute', top: '0', left: '0' })}
+            width={width}
+            height={height}>
+            <circle
+                cx={`${point.x * 100}%`}
+                cy={`${point.y * 100}%`}
+                r={'1.5%'}
+                stroke={'white'}
+                strokeWidth={'0.3%'}
+                fill={varnishTheme.palette.primary.main}
+            />
+        </svg>
+    );
 };

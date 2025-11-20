@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MCLAREN_VIDEO, MCLAREN_VIDEO_TRACKING_DATA } from './ExampleTrackingData';
-import { MolmoTrackingVideo } from './MolmoTrackingVideo';
+import { MCLAREN_VIDEO } from './ExampleTrackingData';
+import { VideoPointingInput } from './pointing/VideoPointing';
 
 const meta = {
-    component: MolmoTrackingVideo,
+    component: VideoPointingInput,
     parameters: {},
-} satisfies Meta<typeof MolmoTrackingVideo>;
+} satisfies Meta<typeof VideoPointingInput>;
 
 export default meta;
 
@@ -14,7 +14,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Tracking: Story = {
     args: {
-        videoTrackingPoints: MCLAREN_VIDEO_TRACKING_DATA,
         videoUrl: MCLAREN_VIDEO,
     },
 };
