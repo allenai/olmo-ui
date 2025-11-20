@@ -14,7 +14,7 @@ export const TrackingDotsTimeline = ({
 }) => {
     const dots = useMemo(() => {
         return data.frameList.map((frame) => {
-            return (frame.timestamp / (durationInFrames / fps)) * 100;
+            return (frame.timestamp / ((durationInFrames - 1) / fps)) * 100;
         });
     }, [data, durationInFrames, fps]);
 

@@ -21,7 +21,7 @@ export const useVideoMetaData = (videoUrl: string, fps: number): VideoMetaData =
             const durationInSeconds = videoElement.duration;
             const frames = Math.round(durationInSeconds * fps);
             setDurationInFrames({
-                durationInFrames: frames,
+                durationInFrames: frames + 1,
                 width: videoElement.videoWidth,
                 height: videoElement.videoHeight,
             });

@@ -20,8 +20,8 @@ export const useOnKeyDownControls = (
             times.unshift(0);
         }
 
-        if (times[times.length - 1] !== durationInFrames / fps) {
-            times.push(durationInFrames / fps);
+        if (times[times.length - 1] !== (durationInFrames - 1) / fps) {
+            times.push((durationInFrames - 1) / fps);
         }
 
         return times;

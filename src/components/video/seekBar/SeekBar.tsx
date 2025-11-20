@@ -15,7 +15,7 @@ import { useOnKeyDownControls } from './useOnKeyDownControls';
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
     const pos = clientX;
     const frame = Math.round(
-        interpolate(pos, [0, width], [0, Math.max(durationInFrames, 0)], {
+        interpolate(pos, [0, width], [0, Math.max(durationInFrames - 1, 0)], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
         })
@@ -186,7 +186,7 @@ export const SeekBar: React.FC<{
                 role="slider"
                 aria-label="Video progress"
                 aria-valuemin={0}
-                aria-valuemax={durationInFrames / fps}
+                aria-valuemax={(durationInFrames - 1) / fps}
                 aria-valuenow={frame / fps}
                 tabIndex={0}
                 className={timelineStyle}
@@ -194,7 +194,7 @@ export const SeekBar: React.FC<{
                 <div ref={containerRef} onPointerDown={onPointerDown} className={innerTimeline}>
                     <div
                         style={{
-                            width: `calc(${(frame / durationInFrames) * 100}% + var(--timeline-padding) )`,
+                            width: `calc(${(frame / (durationInFrames - 1)) * 100}% + var(--timeline-padding) )`,
                         }}
                         className={barFill}
                     />
@@ -208,7 +208,7 @@ export const SeekBar: React.FC<{
                         className={knob}
                         data-dragging={dragging.dragging}
                         style={{
-                            left: `calc(${(frame / durationInFrames) * 100}% - var(--knob-width) / 2)`,
+                            left: `calc(${(frame / (durationInFrames - 1)) * 100}% - var(--knob-width) / 2)`,
                         }}
                     />
                 </div>

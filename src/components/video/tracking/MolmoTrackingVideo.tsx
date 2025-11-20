@@ -42,7 +42,7 @@ export function MolmoTrackingVideo({
                         videoTrackingPoints,
                         showInterpolation,
                     }}
-                    durationInFrames={durationInFrames + 1}
+                    durationInFrames={durationInFrames}
                     compositionWidth={width}
                     compositionHeight={height}
                     fps={FPS}
