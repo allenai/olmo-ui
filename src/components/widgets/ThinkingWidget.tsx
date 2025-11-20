@@ -1,7 +1,7 @@
 import { sva } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
 import { CircularProgress } from '@mui/material';
-import { type PropsWithChildren } from 'react';
+import { type PropsWithChildren, useId } from 'react';
 
 import {
     CollapsibleWidgetBase,
@@ -76,6 +76,11 @@ const ThinkingWidget = ({
 }: ThinkingWidgetProps) => {
     const thinkingWidgetClassNames = thinkingWidgetRecipe();
 
+    const thinkingLabel = isThinkingInProgress ? 'Thinking' : 'Thoughts';
+
+    const id = useId();
+    const headingLabelId = `thinking-widget-heading-label-${id}`;
+
     return (
         <CollapsibleWidgetBase
             variant="transparent"
@@ -87,15 +92,18 @@ const ThinkingWidget = ({
                 className={thinkingWidgetClassNames.heading}
                 triggerClassName={thinkingWidgetClassNames.trigger}
                 startAdornment={<ThinkingIcon size="small" />}
-                aria-label={isThinkingInProgress ? 'Thinking' : 'Not thinking'}
+                // aria-label and aria-labelledby apply to the button and heading respectively
+                aria-label={thinkingLabel}
+                aria-labelledby={headingLabelId}
                 endAdornment={
-                    isThinkingInProgress ? (
-                        <CircularProgress size="1em" sx={{ color: 'var(--spinner-color)' }} />
-                    ) : (
+                    <>
+                        {isThinkingInProgress && (
+                            <CircularProgress size="1em" sx={{ color: 'var(--spinner-color)' }} />
+                        )}
                         <ExpandArrowContextAware />
-                    )
+                    </>
                 }>
-                <span>{isThinkingInProgress ? 'Thinking' : 'Thoughts'}</span>
+                <span id={headingLabelId}>{thinkingLabel}</span>
             </CollapsibleWidgetHeading>
             <CollapsibleWidgetPanel className={thinkingWidgetClassNames.panel}>
                 <CollapsibleWidgetContent
