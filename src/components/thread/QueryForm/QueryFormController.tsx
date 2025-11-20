@@ -190,14 +190,13 @@ export const QueryFormController = ({
 
     return (
         <DropZone
-            onDrop={(e) => {
-                console.log(e);
-                // formContext.trigger('files');
+            onDrop={(_dropEvent) => {
+                // validate
+                console.log(_dropEvent);
             }}
-            getDropOperation={(types, allowedOperations) => {
-                console.log(types, allowedOperations);
-
-                return 'copy';
+            getDropOperation={(_types, _allowedOperations) => {
+                console.log(_types, _allowedOperations);
+                return 'cancel';
             }}>
             <QueryFormStyledBox>
                 <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
