@@ -235,7 +235,9 @@ export const QueryFormController = ({
                                                 // isDisabled={disabled}
                                                 // value -- don't think this is useful
                                                 onSelect={(files) => {
-                                                    formContext.setValue('files', files);
+                                                    formContext.setValue('files', files, {
+                                                        shouldValidate: true,
+                                                    });
                                                 }}
                                                 {...fileUploadProps}
                                             />

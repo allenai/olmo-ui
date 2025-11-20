@@ -94,9 +94,12 @@ describe('QueryFormController - File Upload Validation', () => {
 
     describe('File validation', () => {
         it('should accept a single image file', async () => {
-            renderQueryFormController();
+            const { container } = renderQueryFormController();
 
-            const fileInput = screen.getByTestId('file-upload-input');
+            // FileTrigger renders a hidden input
+            const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+            expect(fileInput).toBeInTheDocument();
+
             const file = createMockFile('test-image.jpg', 'image/jpeg');
 
             await userEvent.upload(fileInput, file);
@@ -106,9 +109,11 @@ describe('QueryFormController - File Upload Validation', () => {
         });
 
         it('should accept a single video file', async () => {
-            renderQueryFormController();
+            const { container } = renderQueryFormController();
 
-            const fileInput = screen.getByTestId('file-upload-input');
+            const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+            expect(fileInput).toBeInTheDocument();
+
             const file = createMockFile('test-video.mp4', 'video/mp4');
 
             await userEvent.upload(fileInput, file);
@@ -118,9 +123,11 @@ describe('QueryFormController - File Upload Validation', () => {
         });
 
         it('should accept up to 10 image files', async () => {
-            renderQueryFormController();
+            const { container } = renderQueryFormController();
 
-            const fileInput = screen.getByTestId('file-upload-input');
+            const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+            expect(fileInput).toBeInTheDocument();
+
             const files = Array.from({ length: 10 }, (_, i) =>
                 createMockFile(`image-${i}.jpg`, 'image/jpeg')
             );
@@ -132,14 +139,17 @@ describe('QueryFormController - File Upload Validation', () => {
         });
 
         it('should reject more than 10 image files', async () => {
-            renderQueryFormController();
+            const { container } = renderQueryFormController();
 
-            const fileInput = screen.getByTestId('file-upload-input');
+            const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+            expect(fileInput).toBeInTheDocument();
+
             const files = Array.from({ length: 11 }, (_, i) =>
                 createMockFile(`image-${i}.jpg`, 'image/jpeg')
             );
 
-            await userEvent.upload(fileInput, files);
+            const user = userEvent.setup();
+            await user.upload(fileInput, files);
 
             // Should show error
             await waitFor(() => {
@@ -148,15 +158,18 @@ describe('QueryFormController - File Upload Validation', () => {
         });
 
         it('should reject more than 1 video file', async () => {
-            renderQueryFormController();
+            const { container } = renderQueryFormController();
 
-            const fileInput = screen.getByTestId('file-upload-input');
+            const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+            expect(fileInput).toBeInTheDocument();
+
             const files = [
                 createMockFile('video-1.mp4', 'video/mp4'),
                 createMockFile('video-2.mp4', 'video/mp4'),
             ];
 
-            await userEvent.upload(fileInput, files);
+            const user = userEvent.setup();
+            await user.upload(fileInput, files);
 
             // Should show error
             await waitFor(() => {
@@ -165,23 +178,25 @@ describe('QueryFormController - File Upload Validation', () => {
         });
 
         it('should validate after removing a file', async () => {
-            renderQueryFormController();
+            const { container } = renderQueryFormController();
 
-            const fileInput = screen.getByTestId('file-upload-input');
+            const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+            expect(fileInput).toBeInTheDocument();
+
             const files = Array.from({ length: 11 }, (_, i) =>
                 createMockFile(`image-${i}.jpg`, 'image/jpeg')
             );
 
-            await userEvent.upload(fileInput, files);
+            const user = userEvent.setup();
+            await user.upload(fileInput, files);
 
             // Should show error initially
             await waitFor(() => {
                 expect(screen.getByText('Maximum 10 images allowed.')).toBeInTheDocument();
             });
 
-            // Remove one file by clicking the remove button on the first thumbnail
             const removeButtons = screen.getAllByLabelText(/remove/i);
-            await userEvent.click(removeButtons[0]);
+            await user.click(removeButtons[0]);
 
             // Error should disappear after removing a file
             await waitFor(() => {
@@ -191,7 +206,7 @@ describe('QueryFormController - File Upload Validation', () => {
     });
 
     describe('File upload disabled states', () => {
-        it('should disable file upload when prompt is being sent', () => {
+        it('should disable file upload button when prompt is being sent', () => {
             renderQueryFormController({
                 fileUploadProps: {
                     ...defaultFileUploadProps,
@@ -199,8 +214,8 @@ describe('QueryFormController - File Upload Validation', () => {
                 },
             });
 
-            const fileInput = screen.getByTestId('file-upload-input');
-            expect(fileInput).toBeDisabled();
+            const uploadButton = screen.getByTestId('file-upload-btn');
+            expect(uploadButton).toBeDisabled();
         });
 
         it('should not show file upload button when acceptsFileUpload is false', () => {
@@ -211,7 +226,7 @@ describe('QueryFormController - File Upload Validation', () => {
                 },
             });
 
-            expect(screen.queryByTestId('file-upload-input')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('file-upload-btn')).not.toBeInTheDocument();
         });
     });
 });

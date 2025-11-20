@@ -254,7 +254,7 @@ describe('QueryForm', () => {
     });
 
     it('should show the thumbnail of an uploaded image and allow the user to remove it', async () => {
-        render(
+        const { container } = render(
             <FakeAppContextProvider
                 initialState={{
                     userInfo: createMockUser(),
@@ -279,12 +279,13 @@ describe('QueryForm', () => {
 
         const user = userEvent.setup();
 
-        // Wait for the file upload button to appear (model must accept files)
         await waitFor(() => {
-            expect(screen.getByLabelText('Upload file(s)')).toBeInTheDocument();
+            expect(screen.getByTestId('file-upload-btn')).toBeInTheDocument();
         });
 
-        const fileInput = screen.getByTestId('file-upload-input');
+        // FileTrigger renders a hidden file input
+        const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+        expect(fileInput).toBeInTheDocument();
 
         await act(async () => {
             await user.upload(fileInput, new File(['foo'], 'test.png', { type: 'image/png' }));

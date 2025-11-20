@@ -90,7 +90,6 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
                         onSelect={(files) => {
                             onSelect?.(files ?? undefined);
                         }}
-                        data-testid="file-upload-input"
                         defaultCamera="environment">
                         <AddMediaComponent
                             isDisabled={isFileUploadDisabled || isSendingPrompt}
