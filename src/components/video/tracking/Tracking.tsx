@@ -1,9 +1,12 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { varnishTheme } from '@allenai/varnish2/theme';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 
-import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+import {
+    PerFrameTrackPoints,
+    VideoTrackingPoints,
+} from '@/components/thread/points/pointsDataTypes';
 
 import { VideoOverlayHelper } from '../VideoOverlayHelper';
 
@@ -34,11 +37,10 @@ export const VideoDotTrackObjectComponent = ({
     showInterpolation: boolean;
 }) => {
     const objectIds = useMemo(() => {
-        const ids: Record<string, boolean> = {};
-        videoTrackingPoints.frameList.forEach((frame) => {
-            frame.tracks.forEach((t) => (ids[t.trackId] = true));
-        });
-        return Object.keys(ids);
+        const ids = videoTrackingPoints.frameList
+            .flatMap((frame) => frame.tracks)
+            .map((track) => track.trackId);
+        return [...new Set(ids)];
     }, [videoTrackingPoints]);
 
     return (
@@ -69,36 +71,42 @@ const VideoSingleDotTrack = ({
 }) => {
     const { height, width, fps } = useVideoConfig();
 
+    const trackIdFilter = useCallback(
+        (frame: PerFrameTrackPoints) => frame.tracks.find((t) => t.trackId === trackId),
+        [trackId]
+    );
+
     const { x, y, times } = useMemo(() => {
-        const x = videoTrackingPoints.frameList.map((frame) => {
+        const x = videoTrackingPoints.frameList.filter(trackIdFilter).map((frame) => {
             return frame.tracks.find((t) => t.trackId === trackId)?.x || 0;
         });
-        const y = videoTrackingPoints.frameList.map((frame) => {
+        const y = videoTrackingPoints.frameList.filter(trackIdFilter).map((frame) => {
             return frame.tracks.find((t) => t.trackId === trackId)?.y || 0;
         });
-        const times = videoTrackingPoints.frameList.map((frame) => {
+        const times = videoTrackingPoints.frameList.filter(trackIdFilter).map((frame) => {
             return frame.timestamp * fps;
         });
         return { x, y, times };
-    }, [videoTrackingPoints, fps, trackId]);
+    }, [videoTrackingPoints, fps, trackId, trackIdFilter]);
 
     const { sizeTimes, size } = useMemo(() => {
-        const animation = videoTrackingPoints.frameList.flatMap((framePoints) => {
-            const before = (framePoints.timestamp - PRE_TIMESTAMP_OFFSET) * fps;
-            const after = (framePoints.timestamp + POST_TIMESTAMP_OFFSET) * fps;
-
-            return [
-                [before, 0],
-                [before + 1, 1],
-                [after, 1],
-                [after + 1, 1],
-            ];
-        });
+        const animation = videoTrackingPoints.frameList
+            .filter(trackIdFilter)
+            .flatMap((framePoints) => {
+                const before = (framePoints.timestamp - PRE_TIMESTAMP_OFFSET) * fps;
+                const after = (framePoints.timestamp + POST_TIMESTAMP_OFFSET) * fps;
+                return [
+                    [before, 0],
+                    [before + 1, 1],
+                    [after, 1],
+                    [after + 1, 1],
+                ];
+            });
 
         const result = { sizeTimes: animation.map((a) => a[0]), size: animation.map((a) => a[1]) };
 
         return result;
-    }, [videoTrackingPoints, fps]);
+    }, [videoTrackingPoints, fps, trackIdFilter]);
 
     const frame = useCurrentFrame();
 
