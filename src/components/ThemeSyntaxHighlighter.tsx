@@ -1,4 +1,5 @@
-import { CodeBlock, type CodeBlockProps } from '@allenai/varnish-ui';
+import { type CodeBlockProps } from '@allenai/varnish-ui';
+import { PrismAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 
 import { useColorMode } from './ColorModeProvider';
 import { MathBlock } from './markdownMath/MathBlock';
@@ -18,7 +19,7 @@ export const ThemeSyntaxHighlighter = ({
         return <MathBlock inline={inline}>{children}</MathBlock>;
     }
     return (
-        <CodeBlock
+        <SyntaxHighlighter
             PreTag={inline ? 'span' : 'div'}
             language={language}
             inline={inline}
@@ -26,6 +27,6 @@ export const ThemeSyntaxHighlighter = ({
             wrapLongLines
             colorMode={colorMode}>
             {children}
-        </CodeBlock>
+        </SyntaxHighlighter>
     );
 };
