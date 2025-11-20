@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { varnishTheme } from '@allenai/varnish2/theme';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 
 import {
@@ -95,6 +95,7 @@ const VideoSingleDotTrack = ({
         const animation = filteredTracks.flatMap((framePoints) => {
             const before = (framePoints.timestamp - PRE_TIMESTAMP_OFFSET) * fps;
             const after = (framePoints.timestamp + POST_TIMESTAMP_OFFSET) * fps;
+
             return [
                 [before, 0],
                 [before + 1, 1],
