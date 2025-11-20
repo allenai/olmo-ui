@@ -16,7 +16,7 @@ export const AddMediaButton = ({ isDisabled }: { isDisabled?: boolean }) => {
         <Button
             isDisabled={isDisabled}
             className={varnishPlaygroundButtonStyles}
-            data-test-id="file-upload-btn">
+            data-testid="file-upload-btn">
             <AddCircleRounded color="inherit" />
         </Button>
     );
