@@ -1,5 +1,4 @@
-import { RefObject, useCallback } from 'react';
-import { Key } from 'react-aria-components';
+import { type RefObject, useCallback } from 'react';
 
 import { mediaTypeList } from './fileUploadMediaConsts';
 
@@ -21,6 +20,8 @@ export const useFileInputTrigger = ({
 
             const maxFiles = mediaConf.maxFiles ?? maxFilesPerMessage;
 
+            // maybe move this back to component?
+            // eslint-disable-next-line react-compiler/react-compiler
             inputRef.current.accept = mediaConf.accept;
             inputRef.current.multiple = typeof maxFiles === 'number' && maxFiles > 1;
             inputRef.current.click();

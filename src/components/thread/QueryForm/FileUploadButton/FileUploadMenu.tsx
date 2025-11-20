@@ -1,8 +1,8 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Key, Menu, MenuItem, MenuTrigger, Popover } from 'react-aria-components';
+import { Menu, MenuItem, MenuTrigger, Popover } from 'react-aria-components';
 
-import type { MediaType } from './fileUploadMediaConsts';
 import { AddMediaButton } from './AddMediaButton';
+import type { MediaType } from './fileUploadMediaConsts';
 
 const menuItem = css({
     paddingBlock: '1',
@@ -29,7 +29,7 @@ interface FileUploadMenuProps {
     triggerFileInput: (mediaType: string | number) => void;
     isDisabled?: boolean;
     mediaTypes: MediaType[];
-};
+}
 
 export const FileUploadMenu = ({
     mediaTypes,

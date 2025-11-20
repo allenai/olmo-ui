@@ -1,9 +1,9 @@
 import { Stack } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
 
+import { filesMatchingTypesAllowed } from '../FileUploadButton/fileTypeHelpers';
 import { Thumbnail } from './Thumbnail';
 import { useObjectUrls } from './useObjectUrls';
-import { filesMatchingTypesAllowed } from '../FileUploadButton/fileTypeHelpers';
 
 const ThumbnailContainer = ({ children }: PropsWithChildren): ReactNode => {
     return (

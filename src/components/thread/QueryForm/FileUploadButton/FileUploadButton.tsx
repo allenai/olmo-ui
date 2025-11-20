@@ -42,7 +42,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
         acceptsFileUpload,
         acceptedFileTypes,
         acceptsMultiple,
-        allowFilesInFollowups,
+        allowFilesInFollowups: _allowFilesInFollowups,
         maxFilesPerMessage,
         onSelect,
         // ...props

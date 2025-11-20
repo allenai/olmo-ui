@@ -1,8 +1,7 @@
 import { DevTool } from '@hookform/devtools';
-import { AddRounded, PlusOneOutlined } from '@mui/icons-material';
 import { Stack, Typography } from '@mui/material';
 import { KeyboardEvent, UIEvent, useEffect, useRef, useState } from 'react';
-import { Button, DropZone, FileTrigger } from 'react-aria-components';
+import { DropZone } from 'react-aria-components';
 import {
     Controller,
     FormContainer,

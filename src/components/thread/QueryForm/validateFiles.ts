@@ -1,8 +1,8 @@
 import { Validate, type ValidateResult } from 'react-hook-form-mui';
 
+import { fileTypesToArray, typeMatchesAllowedTypes } from './FileUploadButton/fileTypeHelpers';
 import { mediaTypeList } from './FileUploadButton/fileUploadMediaConsts';
 import { QueryFormValues } from './QueryFormController';
-import { fileTypesToArray, typeMatchesAllowedTypes } from './FileUploadButton/fileTypeHelpers';
 
 interface ValidateFilesOptions {
     acceptedFileTypes: string | string[] | Set<string>;
@@ -50,7 +50,7 @@ export const validateFiles = (
     }
 
     for (const [mediaTypeId, files] of filesByMediaType) {
-        const mediaConfig = mediaTypeList.find((mediaType) => mediaType.id === mediaTypeId)
+        const mediaConfig = mediaTypeList.find((mediaType) => mediaType.id === mediaTypeId);
 
         const maxFiles = mediaConfig?.maxFiles ?? options.maxFilesPerMessage;
 
