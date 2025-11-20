@@ -12,8 +12,9 @@ test.describe('File upload validation', () => {
     });
 
     test('accepts single image file', async ({ page }) => {
+        // FileTrigger renders a hidden file input
         await page
-            .getByTestId('file-upload-input')
+            .locator('input[type="file"]')
             .setInputFiles(path.join(__dirname, 'test-files', 'molmo-boats.png'));
 
         await expect(page.getByText(/Maximum.*allowed/)).not.toBeVisible();
@@ -26,7 +27,7 @@ test.describe('File upload validation', () => {
         const testFilePath = path.join(__dirname, 'test-files', 'molmo-boats.png');
         const files = Array(11).fill(testFilePath);
 
-        await page.getByTestId('file-upload-input').setInputFiles(files);
+        await page.locator('input[type="file"]').setInputFiles(files);
 
         // should show validation error
         await expect(page.getByText('Maximum 10 images allowed')).toBeVisible();
@@ -37,7 +38,7 @@ test.describe('File upload validation', () => {
         const testFilePath = path.join(__dirname, 'test-files', 'molmo-boats.png');
         const files = Array(10).fill(testFilePath);
 
-        await page.getByTestId('file-upload-input').setInputFiles(files);
+        await page.locator('input[type="file"]').setInputFiles(files);
 
         // should not cause validation error
         await expect(page.getByText(/Maximum.*allowed/)).not.toBeVisible();
@@ -48,7 +49,7 @@ test.describe('File upload validation', () => {
         const testFilePath = path.join(__dirname, 'test-files', 'molmo-boats.png');
         const files = Array(11).fill(testFilePath);
 
-        await page.getByTestId('file-upload-input').setInputFiles(files);
+        await page.locator('input[type="file"]').setInputFiles(files);
 
         // check validation
         await expect(page.getByText('Maximum 10 images allowed')).toBeVisible();
@@ -63,7 +64,7 @@ test.describe('File upload validation', () => {
 
     test('can remove files', async ({ page }) => {
         await page
-            .getByTestId('file-upload-input')
+            .locator('input[type="file"]')
             .setInputFiles(path.join(__dirname, 'test-files', 'molmo-boats.png'));
 
         await expect(page.getByRole('img', { name: 'User file molmo-boats.png' })).toBeVisible();

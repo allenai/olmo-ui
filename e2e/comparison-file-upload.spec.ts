@@ -64,7 +64,7 @@ test('disables file upload after first message when models do not allow follow-u
         .click();
 
     await page
-        .getByTestId('file-upload-input')
+        .locator('input[type="file"]')
         .setInputFiles(path.join(__dirname, 'test-files', 'molmo-boats.png'));
 
     await page.getByRole('textbox', { name: /^Message*/ }).fill('Count the boats');

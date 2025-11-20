@@ -13,7 +13,7 @@ test('can send a multimodal prompt', async ({ page }) => {
         .click();
 
     await page
-        .getByTestId('file-upload-input')
+        .locator('input[type="file"]')
         .setInputFiles(path.join(__dirname, 'test-files', 'molmo-boats.png'));
 
     await page.getByRole('textbox', { name: /^Message*/ }).fill('multimodaltest: Count the boats');
@@ -32,7 +32,7 @@ test("removes files when switching to a modal that doesn't allow them", async ({
         .click();
 
     await page
-        .getByTestId('file-upload-input')
+        .locator('input[type="file"]')
         .setInputFiles(path.join(__dirname, 'test-files', 'molmo-boats.png'));
 
     await expect(page.getByRole('img', { name: 'User file molmo-boats.png' })).toBeVisible();
@@ -55,7 +55,7 @@ test('disables file upload after first message when models do not allow followup
         .click();
 
     await page
-        .getByTestId('file-upload-input')
+        .locator('input[type="file"]')
         .setInputFiles(path.join(__dirname, 'test-files', 'molmo-boats.png'));
 
     await page.getByRole('textbox', { name: /^Message*/ }).fill('Count the boats');
