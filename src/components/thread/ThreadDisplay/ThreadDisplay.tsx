@@ -214,6 +214,7 @@ export const ThreadDisplayView = ({
                     isVisible={isScrollToBottomButtonVisible}
                     onScrollToBottom={handleScrollToBottomButtonClick}
                 />
+                {shouldShowAttributionHighlightDescription && <AttributionHighlightDescription />}
             </ThreadMaxWidthContainer>
             <Box
                 sx={{
@@ -224,7 +225,6 @@ export const ThreadDisplayView = ({
                     boxShadow: (theme) => `0 -12px 50px 12px ${theme.palette.background.paper}`,
                 }}
             />
-            {shouldShowAttributionHighlightDescription && <AttributionHighlightDescription />}
         </Box>
     );
 };
