@@ -185,16 +185,21 @@ export const QueryFormController = ({
     };
 
     const _triggerFileSelection = () => {
+        // To be used if we have an add another image button
         inputRef.current?.click();
     };
 
     return (
         <DropZone
             onDrop={(_dropEvent) => {
+                // TODO:
                 // validate
+                // add to files
                 console.log(_dropEvent);
             }}
             getDropOperation={(_types, _allowedOperations) => {
+                // TODO validate
+                // return copy/cancel
                 console.log(_types, _allowedOperations);
                 return 'cancel';
             }}>
@@ -208,44 +213,42 @@ export const QueryFormController = ({
                         />
                         <PromptContainer
                             startAdornment={
-                                <Controller
-                                    name="files"
-                                    control={formContext.control}
-                                    rules={{
-                                        validate: validateFilesWithOptions,
-                                    }}
-                                    render={({
-                                        // not particularly using hook form anymore
-                                        field: {
-                                            name,
-                                            onBlur,
-                                            disabled: _disabled,
-                                            onChange: _onChange,
-                                            value: _value,
-                                            ref: _ref,
-                                        },
-                                    }) => {
-                                        return (
-                                            <FileUploadButton
-                                                // not using react-hook-form's ref
-                                                ref={inputRef}
-                                                name={name}
-                                                onBlur={onBlur}
-                                                // isDisabled={disabled}
-                                                // value -- don't think this is useful
-                                                onSelect={(files) => {
-                                                    formContext.setValue('files', files, {
-                                                        shouldValidate: true,
-                                                    });
-                                                }}
-                                                {...fileUploadProps}
-                                            />
-                                        );
-                                    }}
-                                />
-                            }
-                            endAdornment={
                                 <>
+                                    <Controller
+                                        name="files"
+                                        control={formContext.control}
+                                        rules={{
+                                            validate: validateFilesWithOptions,
+                                        }}
+                                        render={({
+                                            // not particularly using hook form anymore
+                                            field: {
+                                                name,
+                                                onBlur,
+                                                disabled: _disabled,
+                                                onChange: _onChange,
+                                                value: _value,
+                                                ref: _ref,
+                                            },
+                                        }) => {
+                                            return (
+                                                <FileUploadButton
+                                                    // not using react-hook-form's ref
+                                                    ref={inputRef}
+                                                    name={name}
+                                                    onBlur={onBlur}
+                                                    // isDisabled={disabled}
+                                                    // value -- don't think this is useful
+                                                    onSelect={(files) => {
+                                                        formContext.setValue('files', files, {
+                                                            shouldValidate: true,
+                                                        });
+                                                    }}
+                                                    {...fileUploadProps}
+                                                />
+                                            );
+                                        }}
+                                    />
                                     {isTranscribing ? <Waveform /> : null}
                                     <AudioInputButton
                                         onTranscriptionBegin={() => {
@@ -265,18 +268,20 @@ export const QueryFormController = ({
                                             );
                                         }}
                                     />
-                                    <SubmitPauseAdornment
-                                        canPause={canPauseThread}
-                                        onPause={onAbort}
-                                        isSubmitDisabled={
-                                            isSelectedThreadLoading ||
-                                            isLimitReached ||
-                                            isTranscribing ||
-                                            isProcessingAudio ||
-                                            !canEditThread
-                                        }
-                                    />
                                 </>
+                            }
+                            endAdornment={
+                                <SubmitPauseAdornment
+                                    canPause={canPauseThread}
+                                    onPause={onAbort}
+                                    isSubmitDisabled={
+                                        isSelectedThreadLoading ||
+                                        isLimitReached ||
+                                        isTranscribing ||
+                                        isProcessingAudio ||
+                                        !canEditThread
+                                    }
+                                />
                             }>
                             <Controller
                                 control={formContext.control}
