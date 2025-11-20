@@ -5,7 +5,7 @@ export type Point = {
 };
 
 type PerImagePoints = {
-    imageId: string | undefined; // undefined for single image for single image
+    imageId: string | undefined; // undefined for single image
     points: Point[];
 };
 
@@ -27,8 +27,8 @@ export type ImagePoints = {
     imageList: PerImagePoints[];
 };
 
-type PerFramePoints = {
-    timestamp: number; // prefer number here.
+export type PerFramePoints = {
+    timestamp: number;
     points: Point[];
 };
 

@@ -1,8 +1,9 @@
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { ReactNode, useState } from 'react';
 
 import { useMessage, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
+import { MolmoCountingVideo } from '@/components/video/counting/MolmoCountingVideo';
 import { MolmoTrackingVideo } from '@/components/video/tracking/MolmoTrackingVideo';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
@@ -37,6 +38,12 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
 
     const pointInfos = extractMolmo1PointData(content) ?? extractMolmo2PointsData(content);
 
+    const markdownContent = pointInfos
+        ? Array.isArray(pointInfos)
+            ? content.replaceAll(regexMolmo1, '**$<text>**')
+            : content.replaceAll(regexMolmo2, '**$<text>**')
+        : content;
+
     const handleClose = () => {
         setIsModalOpen(false);
     };
@@ -51,10 +58,6 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                       points: pointInfos.imageList[0].points.map(({ x, y }) => ({ x, y })),
                   },
               ];
-
-        const markdownContent = Array.isArray(pointInfos)
-            ? content.replaceAll(regexMolmo1, '**$<text>**')
-            : content.replaceAll(regexMolmo2, '**$<text>**');
 
         return (
             <>
@@ -99,16 +102,26 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                 <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
             </>
         );
-    } else if (pointInfos?.type === 'frame-points' || pointInfos?.type === 'track-points') {
+    } else if (pointInfos?.type) {
+        const videoUrl = lastImagesInThread[0];
+
         if (pointInfos.type === 'track-points') {
             return (
-                <MolmoTrackingVideo
-                    videoTrackingPoints={pointInfos}
-                    videoUrl={lastImagesInThread[0]}
-                />
+                <Stack gap={2}>
+                    <MolmoTrackingVideo videoTrackingPoints={pointInfos} videoUrl={videoUrl} />
+                    <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
+                </Stack>
             );
         }
-        return null;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (pointInfos.type === 'frame-points') {
+            return (
+                <Stack gap={2}>
+                    <MolmoCountingVideo videoUrl={videoUrl} videoPoints={pointInfos} />
+                    <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
+                </Stack>
+            );
+        }
     }
 
     return <StandardMessage messageId={messageId} />;
