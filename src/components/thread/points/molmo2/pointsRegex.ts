@@ -2,4 +2,4 @@
 // message contents, use String.search(pointRegex) !== -1 instead of pointRegex.test(string)
 // as test will start at the last match for testing when using a global regex.
 export const pointsRegex =
-    /<points[\s\S]*?(?:coords=|tracks=)"(?:[^"]*)"[\s\S]*?>(?<text>[\s\S]*?)<\/points>/g;
+    /<(points|tracks)[\s\S]*?coords="(?:[^"]*)"[\s\S]*?>(?<text>[\s\S]*?)<\/(points|tracks)>/g;

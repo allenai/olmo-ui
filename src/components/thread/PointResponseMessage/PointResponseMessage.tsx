@@ -3,6 +3,7 @@ import { ReactNode, useState } from 'react';
 
 import { useMessage, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
+import { MolmoTrackingVideo } from '@/components/video/tracking/MolmoTrackingVideo';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 import { type MessageProps, StandardMessage } from '../ChatMessage/ChatMessage';
@@ -99,7 +100,14 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
             </>
         );
     } else if (pointInfos?.type === 'frame-points' || pointInfos?.type === 'track-points') {
-        // TODO: this space reserved for video points components
+        if (pointInfos.type === 'track-points') {
+            return (
+                <MolmoTrackingVideo
+                    videoTrackingPoints={pointInfos}
+                    videoUrl={lastImagesInThread[0]}
+                />
+            );
+        }
         return null;
     }
 
