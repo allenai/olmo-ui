@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import testImage from 'e2e/test-files/molmo-boats.png';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { withMockQueryContext } from '@/utils/storybook/withMockQueryContext';
@@ -11,7 +10,7 @@ import { PointResponseMessage } from './PointResponseMessage';
 
 // This is just test data. points may not be accurate.
 const mockThreadSingleImage = createMockThread({
-    id: 'thread',
+    id: 'thread-single-image',
     messages: [
         createMockMessage({
             id: 'user-message-1',
@@ -47,7 +46,7 @@ const mockThreadSingleImage = createMockThread({
 });
 
 const mockThreadMultiImage = createMockThread({
-    id: 'thread',
+    id: 'thread-multi-image',
     messages: [
         createMockMessage({
             id: 'user-message-1',
@@ -68,7 +67,7 @@ const mockThreadMultiImage = createMockThread({
 
 const meta = {
     component: PointResponseMessage,
-    decorators: [withMockReactQuery, withMockQueryContext, withMockThreadView],
+    decorators: [withMockQueryContext, withMockThreadView, withMockReactQuery],
     parameters: {
         mockData: [
             {
@@ -76,6 +75,7 @@ const meta = {
                 data: mockThreadSingleImage,
             },
         ],
+        threadView: { threadId: mockThreadSingleImage.id },
     },
 } satisfies Meta<typeof PointResponseMessage>;
 
@@ -103,13 +103,13 @@ export const Molmo2SingleImagePoints: Story = {
 
 export const Molmo2MultiImagePoints: Story = {
     parameters: {
-        decorators: [withMockReactQuery, withMockQueryContext, withMockThreadView],
         mockData: [
             {
                 queryKey: threadOptions(mockThreadMultiImage.id).queryKey,
                 data: [mockThreadMultiImage],
             },
         ],
+        threadView: { threadId: mockThreadMultiImage.id },
     },
     args: {
         messageId: 'assistant-message-molmo2-multi-image-points',

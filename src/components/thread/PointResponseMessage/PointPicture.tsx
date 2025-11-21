@@ -18,19 +18,27 @@ interface PointPictureProps {
     pointsSets: PointsSets[];
     caption?: React.ReactNode;
     sx?: SxProps<Theme>;
+    onClick?: () => void;
 }
 
-export const PointPicture = ({ imageLink, pointsSets, caption }: PointPictureProps): ReactNode => {
+export const PointPicture = ({
+    imageLink,
+    pointsSets,
+    caption,
+    sx,
+    onClick,
+}: PointPictureProps): ReactNode => {
     const pointColors = usePointColors();
     return (
-        <Box component="li" sx={{ height: '100%' }}>
+        <Box component="li" sx={sx}>
             <Box
+                onClick={onClick}
                 component="figure"
                 sx={{
                     display: 'grid',
                     gridTemplateRows: '100%',
                     gridTemplateAreas: '"combined"',
-                    height: '100%',
+                    height: 'inherit',
                     width: 'fit-content',
                     maxWidth: '100%',
                     '&:hover': {
@@ -41,7 +49,7 @@ export const PointPicture = ({ imageLink, pointsSets, caption }: PointPicturePro
                     component="img"
                     src={imageLink}
                     alt=""
-                    sx={{ height: '100%', gridArea: 'combined' }}
+                    sx={{ height: 'inherit', gridArea: 'combined', objectFit: 'contain' }}
                 />
                 {pointsSets.map((pointSet, index) => {
                     return (

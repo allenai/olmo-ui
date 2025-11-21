@@ -1,6 +1,8 @@
+import { Box } from '@mui/material';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
+import { MAX_MAIN_CONTENT_WIDTH } from '@/constants';
 import { withMockQueryContext } from '@/utils/storybook/withMockQueryContext';
 import { withMockThreadView } from '@/utils/storybook/withMockThreadView';
 import { withMockReactQuery } from '@/utils/storybook/withReactQuery';
@@ -17,8 +19,11 @@ const mockThreadMultiImage = createMockThread({
             role: 'user',
             content: 'count the boats',
             fileUrls: [
-                'https://storage.googleapis.com/ai2-playground-molmo/msg_S8V2L5A8K8/msg_S8V2L5A8K8-0.png',
-                'https://storage.googleapis.com/ai2-playground-molmo/msg_N7M6E9E3D5/msg_N7M6E9E3D5-0.png',
+                'https://placehold.co/600x400',
+                'https://placehold.co/1600x900',
+                'https://placehold.co/900x1600',
+                'https://placehold.co/400x600',
+                'https://placehold.co/2000x2000',
             ],
         }),
         createMockMessage({
@@ -50,4 +55,20 @@ export const Default: Story = {
     args: {
         messageId: 'assistant-message-molmo2-multi-image-points',
     },
+    render: (args) => (
+        <Box width={MAX_MAIN_CONTENT_WIDTH}>
+            <PointResponseMessage {...args} />
+        </Box>
+    ),
+};
+
+export const HeightConstrained: Story = {
+    args: {
+        messageId: 'assistant-message-molmo2-multi-image-points',
+    },
+    render: (args) => (
+        <Box height={200} width={MAX_MAIN_CONTENT_WIDTH}>
+            <PointResponseMessage {...args} />
+        </Box>
+    ),
 };

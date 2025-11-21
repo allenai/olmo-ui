@@ -25,7 +25,7 @@ export const PointPictureCaption = ({ pointsSets }: { pointsSets: PointsSets[] }
     );
 };
 
-export const PointPictureListCaption = ({
+export const PointPictureSliderCaption = ({
     pointsSets,
 }: {
     pointsSets: ImagePoints[];

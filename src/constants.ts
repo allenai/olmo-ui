@@ -6,3 +6,5 @@ export const SMALL_LAYOUT_BREAKPOINT: Breakpoint = 'sm';
 
 export const SMALL_CONTAINER_SIZE = '500px';
 export const LARGE_CONTAINER_SIZE = '700px';
+
+export const MAX_MAIN_CONTENT_WIDTH = '750px';
