@@ -64,12 +64,10 @@ export const PointSelect: React.FC<{
         const target = event.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();
 
-        // Get percentage x, y based on the parent frame
         const x = (event.clientX - rect.left) / rect.width;
         const y = (event.clientY - rect.top) / rect.height;
 
-        // Create VideoFramePoints based on the current frame
-        const timestamp = frame / fps;
+        const timestamp = frame * fps;
         onPointSelect({
             x,
             y,
@@ -89,19 +87,25 @@ export const PointingInputVideo = ({
     userPoints: UserPointSelect[];
     setUserPoints: (points: UserPointSelect[]) => void;
 }) => {
+    const { height, width } = useVideoConfig();
     return (
         <PointSelect onPointSelect={(point) => setUserPoints([point])}>
             <VideoOverlayHelper videoUrl={videoUrl}>
-                {userPoints.map((point, i) => (
-                    <SinglePoint key={i} point={point} />
-                ))}
+                <svg
+                    className={css({ position: 'absolute', top: '0', left: '0' })}
+                    width={width}
+                    height={height}>
+                    {userPoints.map((point, i) => (
+                        <SinglePoint key={i} point={point} />
+                    ))}
+                </svg>
             </VideoOverlayHelper>
         </PointSelect>
     );
 };
 
 const SinglePoint = ({ point }: { point: UserPointSelect }) => {
-    const { height, width, fps } = useVideoConfig();
+    const { fps } = useVideoConfig();
 
     const frame = useCurrentFrame();
 
@@ -110,18 +114,13 @@ const SinglePoint = ({ point }: { point: UserPointSelect }) => {
     }
 
     return (
-        <svg
-            className={css({ position: 'absolute', top: '0', left: '0' })}
-            width={width}
-            height={height}>
-            <circle
-                cx={`${point.x * 100}%`}
-                cy={`${point.y * 100}%`}
-                r={'1.5%'}
-                stroke={'white'}
-                strokeWidth={'0.3%'}
-                fill={varnishTheme.palette.primary.main}
-            />
-        </svg>
+        <circle
+            cx={`${point.x * 100}%`}
+            cy={`${point.y * 100}%`}
+            r={'1.5%'}
+            stroke={'white'}
+            strokeWidth={'0.3%'}
+            fill={varnishTheme.palette.primary.main}
+        />
     );
 };
