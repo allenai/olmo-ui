@@ -1,8 +1,8 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
+import { varnishTheme } from '@allenai/varnish2/theme';
 import { Player, PlayerRef } from '@remotion/player';
 import { ReactNode, useRef, useState } from 'react';
-import { varnishTheme } from '@allenai/varnish2/theme';
-import { useVideoConfig, useCurrentFrame, AbsoluteFill } from 'remotion';
+import { AbsoluteFill, useCurrentFrame, useVideoConfig } from 'remotion';
 
 import { SeekBar } from '../seekBar/SeekBar';
 import { useVideoMetaData } from '../useVideoMetaData';
@@ -25,29 +25,33 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
 
     return (
         <div>
-            <div
-                className={css({
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'start',
-                    maxHeight: '[60vh]',
-                })}>
-                <Player
-                    acknowledgeRemotionLicense
-                    ref={playerRef}
-                    component={PointingInputVideo}
-                    inputProps={{
-                        videoUrl,
-                        userPoints,
-                        setUserPoints,
-                    }}
-                    durationInFrames={durationInFrames + 1}
-                    compositionWidth={width}
-                    compositionHeight={height}
-                    fps={FPS}
-                    style={{ width: '100%', flex: '1' }}
-                    moveToBeginningWhenEnded={false}
-                />
+            <div className={css({})}>
+                <PointSelect
+                    className={css({
+                        maxHeight: '[60vh]',
+                        aspectRatio: width / height,
+                    })}
+                    playerRef={playerRef}
+                    onPointSelect={(point) => {
+                        setUserPoints([point]);
+                    }}>
+                    <Player
+                        acknowledgeRemotionLicense
+                        ref={playerRef}
+                        component={PointingInputVideo}
+                        inputProps={{
+                            videoUrl,
+                            userPoints,
+                            setUserPoints,
+                        }}
+                        durationInFrames={durationInFrames + 1}
+                        compositionWidth={width}
+                        compositionHeight={height}
+                        fps={FPS}
+                        style={{ width: '100%' }}
+                        moveToBeginningWhenEnded={false}
+                    />
+                </PointSelect>
             </div>
             <SeekBar fps={FPS} playerRef={playerRef} durationInFrames={durationInFrames} />
         </div>
@@ -56,18 +60,22 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
 
 export const PointSelect: React.FC<{
     children: ReactNode;
+    className: string;
     onPointSelect: (point: UserPointSelect) => void;
-}> = ({ children, onPointSelect }) => {
-    const { fps } = useVideoConfig();
-    const frame = useCurrentFrame();
+    playerRef: React.RefObject<PlayerRef | null>;
+}> = ({ children, onPointSelect, playerRef, className }) => {
     const setPoint = (event: React.MouseEvent) => {
+        if (!playerRef.current) {
+            return;
+        }
         const target = event.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();
 
         const x = (event.clientX - rect.left) / rect.width;
         const y = (event.clientY - rect.top) / rect.height;
 
-        const timestamp = frame * fps;
+        const frame = playerRef.current.getCurrentFrame();
+        const timestamp = frame * FPS;
         onPointSelect({
             x,
             y,
@@ -75,7 +83,11 @@ export const PointSelect: React.FC<{
         });
     };
 
-    return <AbsoluteFill onClick={setPoint}>{children}</AbsoluteFill>;
+    return (
+        <div className={className} onClick={setPoint}>
+            {children}
+        </div>
+    );
 };
 
 export const PointingInputVideo = ({
@@ -89,18 +101,16 @@ export const PointingInputVideo = ({
 }) => {
     const { height, width } = useVideoConfig();
     return (
-        <PointSelect onPointSelect={(point) => setUserPoints([point])}>
-            <VideoOverlayHelper videoUrl={videoUrl}>
-                <svg
-                    className={css({ position: 'absolute', top: '0', left: '0' })}
-                    width={width}
-                    height={height}>
-                    {userPoints.map((point, i) => (
-                        <SinglePoint key={i} point={point} />
-                    ))}
-                </svg>
-            </VideoOverlayHelper>
-        </PointSelect>
+        <VideoOverlayHelper videoUrl={videoUrl}>
+            <svg
+                className={css({ position: 'absolute', top: '0', left: '0' })}
+                width={width}
+                height={height}>
+                {userPoints.map((point, i) => (
+                    <SinglePoint key={i} point={point} />
+                ))}
+            </svg>
+        </VideoOverlayHelper>
     );
 };
 
@@ -123,4 +133,8 @@ const SinglePoint = ({ point }: { point: UserPointSelect }) => {
             fill={varnishTheme.palette.primary.main}
         />
     );
+};
+
+const UserPointHoever = () => {
+    return <div>hi</div>;
 };
