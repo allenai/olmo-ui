@@ -1,6 +1,16 @@
-import { Box, Stack, Typography } from '@mui/material';
-import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
-import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
+import { DevTool } from '@hookform/devtools';
+import { Stack, Typography } from '@mui/material';
+import { KeyboardEvent, UIEvent, useEffect, useRef, useState } from 'react';
+import { DropZone } from 'react-aria-components';
+import {
+    Controller,
+    FormContainer,
+    SubmitHandler,
+    useForm,
+    useWatch,
+    Validate,
+    ValidateResult,
+} from 'react-hook-form-mui';
 import { useNavigation } from 'react-router-dom';
 
 import {
@@ -15,11 +25,14 @@ import { fetchFilesByUrls } from '@/utils/fetchFilesByUrl';
 
 import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { Waveform } from './AudioTranscription/Waveform';
-import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton';
+import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton/FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { handleFormSubmitException } from './handleFormSubmitException';
+import { PromptContainer } from './PromptContainer';
 import { PromptInput } from './PromptInput';
+import { QueryFormStyledBox } from './QueryFormStyledBox';
 import { SubmitPauseAdornment } from './SubmitPauseAdornment';
+import { validateFiles } from './validateFiles';
 
 export interface QueryFormValues {
     content: string;
@@ -61,10 +74,13 @@ export const QueryFormController = ({
 }: QueryFormControllerProps) => {
     const navigation = useNavigation();
 
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
     const isTranscribing = useAppContext((state) => state.isTranscribing);
     const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
 
     const formContext = useForm<QueryFormValues>({
+        mode: 'onChange',
         defaultValues: {
             content: '',
             private: false,
@@ -116,7 +132,18 @@ export const QueryFormController = ({
         }
     }, [formContext, areFilesAllowed, promptTemplate?.fileUrls]);
 
-    const files = formContext.watch('files');
+    const files = useWatch({ control: formContext.control, name: 'files' });
+
+    // Validation function for file uploads
+    const validateFilesWithOptions: Validate<FileList | undefined, QueryFormValues> = (
+        fileList: FileList | undefined
+    ): ValidateResult => {
+        return validateFiles(fileList, {
+            acceptedFileTypes: fileUploadProps.acceptedFileTypes,
+            maxFilesPerMessage: fileUploadProps.maxFilesPerMessage,
+            canMixFileTypes: false, // shouldn't be static
+        });
+    };
 
     const handleRemoveFile = (fileToRemove: File) => {
         if (files == null) {
@@ -132,7 +159,11 @@ export const QueryFormController = ({
             }
         }
 
-        formContext.setValue('files', dataTransfer.files);
+        formContext.setValue('files', dataTransfer.files, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+        });
     };
 
     const handleKeyDown = async (event: KeyboardEvent<HTMLElement>) => {
@@ -153,90 +184,156 @@ export const QueryFormController = ({
         }
     };
 
+    const _triggerFileSelection = () => {
+        // To be used if we have an add another image button
+        inputRef.current?.click();
+    };
+
     return (
-        <Box marginBlockStart="auto" width={1} paddingInline={2}>
-            <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
-                <Stack gap={1} alignItems="flex-start" width={1} position="relative">
-                    <FileUploadThumbnails files={files} onRemoveFile={handleRemoveFile} />
-                    <Controller
-                        control={formContext.control}
-                        name="content"
-                        rules={{
-                            required: true,
-                            pattern: /[^\s]+/,
-                        }}
-                        render={({
-                            field: { onChange, value, ref, name },
-                            fieldState: { error },
-                        }) => (
-                            <PromptInput
-                                name={name}
-                                onChange={onChange}
-                                errorMessage={error?.message}
-                                value={value}
-                                ref={ref}
-                                onKeyDown={handleKeyDown}
-                                aria-label={placeholderText}
-                                placeholder={tempPlaceholder || placeholderText}
-                                isDisabled={isTranscribing || isProcessingAudio}
-                                startAdornment={
-                                    <>
-                                        <AudioInputButton
-                                            onTranscriptionBegin={() => {
-                                                setTempPlaceholder('Transcribing...');
-                                            }}
-                                            onRecordingBegin={() => {
-                                                setTempPlaceholder('Recording...');
-                                            }}
-                                            onComplete={() => {
-                                                setTempPlaceholder('');
-                                            }}
-                                            onTranscriptionComplete={(content) => {
-                                                const values = formContext.getValues();
-                                                formContext.setValue(
-                                                    'content',
-                                                    values.content + content
-                                                );
-                                            }}
-                                        />
-                                        <FileUploadButton
-                                            {...formContext.register('files')}
-                                            {...fileUploadProps}
-                                        />
-                                    </>
-                                }
-                                endAdornment={
-                                    <>
-                                        {isTranscribing ? <Waveform /> : null}
-                                        <SubmitPauseAdornment
-                                            canPause={canPauseThread}
-                                            onPause={onAbort}
-                                            isSubmitDisabled={
-                                                isSelectedThreadLoading ||
-                                                isLimitReached ||
-                                                isTranscribing ||
-                                                isProcessingAudio ||
-                                                !canEditThread
-                                            }
-                                        />
-                                    </>
-                                }
+        <DropZone
+            onDrop={(_dropEvent) => {
+                // TODO:
+                // validate
+                // add to files
+            }}
+            getDropOperation={(_types, _allowedOperations) => {
+                // TODO validate
+                // return copy/cancel
+                return 'cancel';
+            }}>
+            <QueryFormStyledBox>
+                <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
+                    <Stack gap={1} alignItems="flex-start" width={1} position="relative">
+                        <FileUploadThumbnails
+                            files={files}
+                            onRemoveFile={handleRemoveFile}
+                            acceptedFileTypes={fileUploadProps.acceptedFileTypes}
+                        />
+                        <PromptContainer
+                            startAdornment={
+                                <>
+                                    <Controller
+                                        name="files"
+                                        control={formContext.control}
+                                        rules={{
+                                            validate: validateFilesWithOptions,
+                                        }}
+                                        render={({
+                                            // not particularly using hook form anymore
+                                            field: {
+                                                name,
+                                                onBlur,
+                                                disabled: _disabled,
+                                                onChange: _onChange,
+                                                value: _value,
+                                                ref: _ref,
+                                            },
+                                        }) => {
+                                            return (
+                                                <FileUploadButton
+                                                    // not using react-hook-form's ref
+                                                    ref={inputRef}
+                                                    name={name}
+                                                    onBlur={onBlur}
+                                                    // isDisabled={disabled}
+                                                    // value -- don't think this is useful
+                                                    onSelect={(files) => {
+                                                        formContext.setValue('files', files, {
+                                                            shouldValidate: true,
+                                                        });
+                                                    }}
+                                                    {...fileUploadProps}
+                                                />
+                                            );
+                                        }}
+                                    />
+                                    {isTranscribing ? <Waveform /> : null}
+                                    <AudioInputButton
+                                        onTranscriptionBegin={() => {
+                                            setTempPlaceholder('Transcribing...');
+                                        }}
+                                        onRecordingBegin={() => {
+                                            setTempPlaceholder('Recording...');
+                                        }}
+                                        onComplete={() => {
+                                            setTempPlaceholder('');
+                                        }}
+                                        onTranscriptionComplete={(content) => {
+                                            const values = formContext.getValues();
+                                            formContext.setValue(
+                                                'content',
+                                                values.content + content
+                                            );
+                                        }}
+                                    />
+                                </>
+                            }
+                            endAdornment={
+                                <SubmitPauseAdornment
+                                    canPause={canPauseThread}
+                                    onPause={onAbort}
+                                    isSubmitDisabled={
+                                        isSelectedThreadLoading ||
+                                        isLimitReached ||
+                                        isTranscribing ||
+                                        isProcessingAudio ||
+                                        !canEditThread
+                                    }
+                                />
+                            }>
+                            <Controller
+                                control={formContext.control}
+                                name="content"
+                                rules={{
+                                    required: true,
+                                    pattern: /[^\s]+/,
+                                }}
+                                render={({
+                                    field: { onChange, value, ref, name },
+                                    fieldState: { error },
+                                }) => (
+                                    <PromptInput
+                                        name={name}
+                                        onChange={onChange}
+                                        errorMessage={error?.message}
+                                        value={value}
+                                        ref={ref}
+                                        onKeyDown={handleKeyDown}
+                                        aria-label={placeholderText}
+                                        placeholder={tempPlaceholder || placeholderText}
+                                        isDisabled={isTranscribing || isProcessingAudio}
+                                    />
+                                )}
                             />
+                        </PromptContainer>
+                        {!!formContext.formState.errors.files?.message && (
+                            <Typography
+                                variant="subtitle2"
+                                color={(theme) => theme.palette.error.main}>
+                                {formContext.formState.errors.files.message}
+                            </Typography>
                         )}
-                    />
-                    {isLimitReached && (
-                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
-                            You have reached maximum thread length. Please start a new thread.
-                        </Typography>
-                    )}
-                    {!canEditThread && (
-                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
-                            You cannot add a prompt because you are not the thread creator. Please
-                            submit your prompt in a new thread.
-                        </Typography>
-                    )}
-                </Stack>
-            </FormContainer>
-        </Box>
+                        {isLimitReached && (
+                            <Typography
+                                variant="subtitle2"
+                                color={(theme) => theme.palette.error.main}>
+                                You have reached maximum thread length. Please start a new thread.
+                            </Typography>
+                        )}
+                        {!canEditThread && (
+                            <Typography
+                                variant="subtitle2"
+                                color={(theme) => theme.palette.error.main}>
+                                You cannot add a prompt because you are not the thread creator.
+                                Please submit your prompt in a new thread.
+                            </Typography>
+                        )}
+                        {process.env.NODE_ENV === 'development' && (
+                            <DevTool control={formContext.control} />
+                        )}
+                    </Stack>
+                </FormContainer>
+            </QueryFormStyledBox>
+        </DropZone>
     );
 };

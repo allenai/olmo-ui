@@ -77,7 +77,7 @@ const renderFileUploadButton = (
 describe('FileUploadButton', () => {
     it('should render successfully when isMultiModalEnabled flag is enabled and the selected model accepts file upload', () => {
         renderFileUploadButton();
-        expect(screen.getByLabelText('Upload file')).toBeVisible();
+        expect(screen.getByTestId('file-upload-btn')).toBeVisible();
     });
 
     it("should be disabled if the model doesn't accept file uploads for followup messages", () => {

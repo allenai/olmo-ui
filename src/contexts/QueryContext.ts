@@ -4,7 +4,7 @@ import React, { UIEvent } from 'react';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { SchemaPromptTemplateResponse } from '@/api/playgroundApi/playgroundApiSchema';
 import { CreateMessageRequest } from '@/api/playgroundApi/thread';
-import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton';
+import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton/FileUploadButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { RemoteState } from '@/contexts/util';
 

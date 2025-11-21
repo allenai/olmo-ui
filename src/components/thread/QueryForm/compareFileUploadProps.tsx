@@ -7,6 +7,7 @@ interface FileUploadDef {
     requiredFileOption?: string;
     acceptsMultiple: boolean;
     allowFilesInFollowups: boolean;
+    maxFilesPerMessage?: number;
 }
 
 export const DEFAULT_FILE_UPLOAD_PROPS: FileUploadDef = {
@@ -28,6 +29,7 @@ export const convertToFileUploadProps = (model?: Model): FileUploadDef => {
         baseProps.requiredFileOption = model.require_file_to_prompt;
         baseProps.allowFilesInFollowups = model.allow_files_in_followups ?? false;
         baseProps.acceptedFileTypes = new Set(model.accepted_file_types);
+        baseProps.maxFilesPerMessage = model.max_files_per_message ?? undefined;
     }
 
     return baseProps;
