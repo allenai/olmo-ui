@@ -11,6 +11,7 @@ import { type ChangeEventHandler, forwardRef, type KeyboardEventHandler } from '
 // The textarea and div that holds the contents need to have the same styles so they don't get out of sync
 const textareaStyles: SxProps<Theme> = {
     gridRow: '1',
+    gridColumn: '1',
     alignSelf: 'stretch',
     height: 'unset',
     resize: 'none',
