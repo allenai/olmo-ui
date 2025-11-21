@@ -13,7 +13,7 @@ interface PointPictureSliderProps {
     imagePointsSets: ImagePoints[];
     fileUrls: readonly string[];
     showPerImageCaption?: boolean;
-    onClick?: () => void;
+    onClick?: (image: { url: string; index: number }) => void;
 }
 
 export const PointPictureSlider = ({
@@ -90,7 +90,7 @@ export const PointPictureSlider = ({
                 //     positionArea: 'center left',
                 // },
             }}>
-            {fileUrls.map((url) => {
+            {fileUrls.map((url, index) => {
                 const pointsSets = pointsSetsByFileUrl.get(url) || [];
                 return (
                     <PointPicture
@@ -119,7 +119,9 @@ export const PointPictureSlider = ({
                                 : undefined
                         }
                         key={url}
-                        onClick={onClick}
+                        onClick={() => {
+                            return onClick?.({ url, index });
+                        }}
                         imageLink={url}
                         pointsSets={pointsSets}
                         caption={

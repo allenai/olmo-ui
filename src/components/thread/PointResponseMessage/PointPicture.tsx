@@ -42,7 +42,7 @@ export const PointPicture = ({
                     width: 'fit-content',
                     maxWidth: '100%',
                     '&:hover': {
-                        cursor: 'pointer',
+                        cursor: onClick ? 'pointer' : undefined,
                     },
                 }}>
                 <Box

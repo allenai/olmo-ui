@@ -4,19 +4,15 @@ import { ReactNode } from 'react';
 
 interface MediaLightboxProps {
     open: boolean;
-    closeModal: () => void;
+    onClose: () => void;
     children?: React.ReactNode;
 }
 
-export const MediaLightbox = ({
-    open,
-    closeModal: handleClose,
-    children,
-}: MediaLightboxProps): ReactNode => {
+export const MediaLightbox = ({ open, onClose, children }: MediaLightboxProps): ReactNode => {
     return (
         <Dialog
             open={open}
-            onClose={handleClose}
+            onClose={onClose}
             maxWidth="lg"
             PaperProps={{
                 style: {
@@ -33,7 +29,7 @@ export const MediaLightbox = ({
             }}>
             <IconButton
                 aria-label="close"
-                onClick={handleClose}
+                onClick={onClose}
                 sx={(theme) => ({
                     position: 'absolute',
                     right: 8,

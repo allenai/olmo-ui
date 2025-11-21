@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Alert, Box, ImageList, ImageListItem, Typography } from '@mui/material';
+import { Alert, Box, Typography } from '@mui/material';
 import { PropsWithChildren, type ReactNode, useState } from 'react';
 
 import { Label } from '@/api/Label';
@@ -15,10 +15,11 @@ import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
+import { MediaCollapsibleWidget } from '../PointResponseMessage/CollapsibleMediaWidget';
+import { PointPictureList } from '../PointResponseMessage/PointPictureList';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
 import { MessageThinking } from '../ThreadDisplay/MessageThinking';
-import { MAX_THREAD_IMAGE_HEIGHT_PX } from '../ThreadDisplay/threadDisplayConsts';
 import AllToolCalls from '../tools/AllToolCalls';
 import { LLMMessage } from './LLMMessage';
 import { UserMessage } from './UserMessage';
@@ -160,7 +161,6 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
             </Box>
             <Box>
                 <MessageThinking messageId={messageId} />
-
                 <MessageComponent messageId={messageId}>
                     <MessageContent
                         messageId={messageId}
@@ -168,18 +168,16 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
                         hasPoints={hasPoints(content)}
                     />
                 </MessageComponent>
-                {fileUrls ? (
-                    <ImageList>
-                        {fileUrls.map((url, idx) => (
-                            <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX }}>
-                                <img src={url} alt={'Uploaded'} loading="lazy" />
-                            </ImageListItem>
-                        ))}
-                    </ImageList>
+
+                {/* TODO: discriminate on file mime type and render appropriately (e.g. images, videos, PDFs) */}
+                {fileUrls?.length ? (
+                    <MediaCollapsibleWidget fileType="file" fileCount={fileUrls.length}>
+                        <PointPictureList fileUrls={fileUrls} />
+                    </MediaCollapsibleWidget>
                 ) : null}
+
                 <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
                 <InlineAlertMessage messageId={messageId} />
-
                 <MessageInteraction
                     role={role as Role}
                     content={rawMode ? escapeForDisplay(content) : content}

@@ -55,7 +55,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                 <PointPictureSliderCaption pointsSets={imagePointsSets} />
                 <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
 
-                <MediaLightbox open={isModalOpen} closeModal={handleToggleLightbox}>
+                <MediaLightbox open={isModalOpen} onClose={handleToggleLightbox}>
                     <PointPictureSlider
                         imagePointsSets={pointsSets.filter((set) => set.type === 'image-points')}
                         fileUrls={currentFilesInThread}

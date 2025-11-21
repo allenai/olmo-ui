@@ -11,12 +11,14 @@ import {
 
 const IMAGE_OR_FRAME_DELIMITER = '\t';
 const WHITESPACE_DELIMITER = /\s+/;
+const TRACKING_TAG = 'tracks';
+const POINTING_TAG = 'points';
 
 const PointsAttributesSchema = z.object({
     label: z.string(),
     alt: z.string().optional(),
     coords: z.string().optional(),
-    type: z.enum(['points-tag', 'tracks-tag']),
+    type: z.enum([POINTING_TAG, TRACKING_TAG]),
 });
 
 type PointsAttributes = z.infer<typeof PointsAttributesSchema>;
@@ -40,25 +42,25 @@ export const parseAsXML = (content: string) => {
     const xmlTags: PointsAttributes[] = [];
 
     result.xml.forEach((item) => {
-        if (item?.tracks?.['@coords']) {
+        if (item?.[TRACKING_TAG]?.['@coords']) {
             // tracks tag
             xmlTags.push(
                 PointsAttributesSchema.parse({
-                    label: item.tracks['#text'],
-                    alt: item.tracks['@alt'],
-                    coords: item.track['@coords'],
-                    type: 'tracks-tag',
+                    label: item[TRACKING_TAG]['#text'],
+                    alt: item[TRACKING_TAG]['@alt'],
+                    coords: item[TRACKING_TAG]['@coords'],
+                    type: TRACKING_TAG,
                 })
             );
         }
-        if (item?.points?.['@coords']) {
+        if (item?.[POINTING_TAG]?.['@coords']) {
             // points tag
             xmlTags.push(
                 PointsAttributesSchema.parse({
-                    label: item.points['#text'],
-                    alt: item.points['@alt'],
-                    coords: item.points['@coords'],
-                    type: 'points-tag',
+                    label: item[POINTING_TAG]['#text'],
+                    alt: item[POINTING_TAG]['@alt'],
+                    coords: item[POINTING_TAG]['@coords'],
+                    type: POINTING_TAG,
                 })
             );
         }
@@ -86,7 +88,7 @@ export const extractPointsData = (content: string): AllPointsFormats[] | null =>
 };
 
 export const formatPointsData = (pointsAttributes: PointsAttributes) => {
-    if (pointsAttributes.coords && pointsAttributes.type === 'tracks-tag') {
+    if (pointsAttributes.coords && pointsAttributes.type === TRACKING_TAG) {
         const tracksList = pointsAttributes.coords
             .split(IMAGE_OR_FRAME_DELIMITER)
             .map((trackItem) => trackItem.split(WHITESPACE_DELIMITER));
@@ -105,7 +107,7 @@ export const formatPointsData = (pointsAttributes: PointsAttributes) => {
         } satisfies VideoTrackingPoints;
     }
 
-    if (pointsAttributes.coords && pointsAttributes.type === 'points-tag') {
+    if (pointsAttributes.coords && pointsAttributes.type === POINTING_TAG) {
         const coordsList = pointsAttributes.coords.split(IMAGE_OR_FRAME_DELIMITER);
         const imagesOrFramesList = coordsList.map((coordItem) =>
             coordItem.split(WHITESPACE_DELIMITER)
