@@ -51,7 +51,7 @@ export const MarkdownRenderer = ({ className, children: markdown }: MarkdownRend
         <Box
             component={Markdown}
             className={cx(markdownStyles, className)}
-            remarkPlugins={[remarkGfm, customRemarkMath]}
+            remarkPlugins={[remarkGfm, [customRemarkMath, { singleDollarTextMath: false }]]}
             rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{
                 pre: CustomPre,
