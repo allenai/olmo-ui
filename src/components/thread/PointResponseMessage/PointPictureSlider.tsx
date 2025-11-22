@@ -77,18 +77,28 @@ export const PointPictureSlider = ({
                     padding: '0.5rem',
                 },
 
-                // '&::scroll-button(*)': {
-                //     position: 'fixed',
-                //     positionAnchor: '--slider',
-                // },
-                // '&::scroll-button(right)': {
-                //     content: '">"',
-                //     positionArea: 'center right',
-                // },
-                // '&::scroll-button(left)': {
-                //     content: '"<"',
-                //     positionArea: 'center left',
-                // },
+                '&::scroll-button(*)': {
+                    position: 'fixed',
+                    positionAnchor: '--slider',
+                    height: 48,
+                    width: 48,
+                    border: 'none',
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                    color: undefined,
+                    backgroundColor: undefined,
+                    zIndex: 10,
+                },
+                '&::scroll-button(right)': {
+                    content: '">"',
+                    positionArea: 'center right',
+                    translate: '-50%',
+                },
+                '&::scroll-button(left)': {
+                    content: '"<"',
+                    positionArea: 'center left',
+                    translate: '50%',
+                },
             }}>
             {fileUrls.map((url, index) => {
                 const pointsSets = pointsSetsByFileUrl.get(url) || [];
