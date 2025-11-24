@@ -17,11 +17,6 @@ const frameContainerClassName = css({
     maxWidth: '[100%]',
 });
 
-const errorFrameClassName = css({
-    display: 'flex',
-    height: '[100%]',
-});
-
 interface FilmStripProps {
     playerRef: React.RefObject<PlayerRef | null>;
     videoUrl: string;
@@ -67,6 +62,8 @@ export const FilmStrip = ({
     });
 
     if (error) {
+        // was originally showing an error, but it only showed because of CORS
+        // so for now, it either works or it doesn't
         return null;
     }
 
