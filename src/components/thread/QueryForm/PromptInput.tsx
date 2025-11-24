@@ -10,8 +10,7 @@ import { type ChangeEventHandler, forwardRef, type KeyboardEventHandler } from '
 
 // The textarea and div that holds the contents need to have the same styles so they don't get out of sync
 const textareaStyles: SxProps<Theme> = {
-    gridRow: '1',
-    gridColumn: '1',
+    gridArea: 'input',
     alignSelf: 'stretch',
     height: 'unset',
     resize: 'none',
@@ -76,7 +75,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
 
                         // autogrow container styles
                         display: 'grid',
-                        gridTemplateColumns: '1fr',
+                        gridTemplateAreas: '"input"',
                     })}>
                     <Box
                         component="textarea"
