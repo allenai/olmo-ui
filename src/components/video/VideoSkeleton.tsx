@@ -3,14 +3,8 @@ import { type ReactNode } from 'react';
 
 import { LoadingFrame } from './filmStrip/LoadingFrame';
 
-const skeletonBase = css.raw({
+const videoPlayerStyle = css({
     backgroundColor: 'cream.4',
-    animation: 'pulse',
-    animationDuration: '2s',
-    animationIterationCount: 'infinite',
-});
-
-const videoPlayerStyle = css(skeletonBase, {
     width: '[100%]',
     aspectRatio: '16/9',
     borderRadius: 'sm',
@@ -47,7 +41,8 @@ const seekbarContainer = css({
     gap: '2',
 });
 
-const seekbarBarStyle = css(skeletonBase, {
+const seekbarBarStyle = css({
+    backgroundColor: 'cream.4',
     flex: '1',
     height: '[25px]',
     borderRadius: 'sm',
