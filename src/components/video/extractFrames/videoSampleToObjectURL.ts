@@ -1,5 +1,7 @@
 import { VideoSample } from 'mediabunny';
 
+import { constrainSize } from '@/utils/constrainSize';
+
 export type VideoSampleToObjectURLProps = {
     sample: VideoSample;
     imageType?: string;
@@ -23,22 +25,12 @@ export const videoSampleToObjectURL = async ({
     maxHeight,
     imageSmoothingQuality = 'high',
 }: VideoSampleToObjectURLProps): Promise<string> => {
-    let width = sample.displayWidth;
-    let height = sample.displayHeight;
-
-    if (maxWidth || maxHeight) {
-        const aspectRatio = width / height;
-
-        if (maxWidth && width > maxWidth) {
-            width = maxWidth;
-            height = width / aspectRatio;
-        }
-
-        if (maxHeight && height > maxHeight) {
-            height = maxHeight;
-            width = height * aspectRatio;
-        }
-    }
+    const [width, height] = constrainSize(
+        sample.displayWidth,
+        sample.displayHeight,
+        maxWidth,
+        maxHeight
+    );
 
     const canvas = new OffscreenCanvas(Math.round(width), Math.round(height));
     const ctx = canvas.getContext('2d');

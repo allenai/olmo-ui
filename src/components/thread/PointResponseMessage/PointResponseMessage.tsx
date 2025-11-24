@@ -22,7 +22,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
-    const { data: lastImagesInThread } = useThread(threadId, (thread) => {
+    const { data: lastFilesInThread } = useThread(threadId, (thread) => {
         return thread.messages
             .filter((message) => message.role === Role.User && message.fileUrls?.length)
             .at(-1)?.fileUrls;
@@ -32,7 +32,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     }
     const { content } = message;
 
-    if (lastImagesInThread == null) {
+    if (lastFilesInThread == null) {
         return <StandardMessage messageId={messageId} />;
     }
 
@@ -78,7 +78,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                             },
                         }}>
                         <PointPicture
-                            imageLink={lastImagesInThread[0]}
+                            imageLink={lastFilesInThread[0]}
                             pointInfos={points}
                             sx={{
                                 gridArea: 'combined',
@@ -91,7 +91,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                     </Box>
                     <PointPictureModal open={isModalOpen} closeModal={handleClose}>
                         <PointPicture
-                            imageLink={lastImagesInThread[0]}
+                            imageLink={lastFilesInThread[0]}
                             pointInfos={points}
                             caption={<PointPictureCaption pointInfos={points} />}
                             sx={{ gridArea: 'combined' }}
@@ -103,7 +103,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
             </>
         );
     } else if (pointInfos?.type) {
-        const videoUrl = lastImagesInThread[0];
+        const videoUrl = lastFilesInThread[0];
 
         if (pointInfos.type === 'track-points') {
             return (
