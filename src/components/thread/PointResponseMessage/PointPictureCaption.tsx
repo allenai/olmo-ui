@@ -2,8 +2,6 @@ import { styled, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { ReactNode } from 'react';
 
-import { pluralize } from '@/utils/pluralize';
-
 import { ImagePoints } from '../points/pointsDataTypes';
 import { PointCircle } from './PointCircle';
 import { PointsSets } from './PointPicture';
@@ -58,14 +56,8 @@ interface PointLabelProps {
     pointCount?: number;
     imageCount?: number;
 }
-const PointLabel = ({ pointColor, text, pointCount, imageCount }: PointLabelProps): ReactNode => {
-    const imageCountText =
-        imageCount && imageCount > 1
-            ? ` across ${imageCount} ${pluralize(imageCount, 'image')}`
-            : '';
-    const pointCountText = pointCount
-        ? ` - ${pointCount} ${pluralize(pointCount, 'point')}${imageCountText}`
-        : '';
+const PointLabel = ({ pointColor, text, pointCount }: PointLabelProps): ReactNode => {
+    const pointCountText = pointCount ? ` (${pointCount})` : '';
     return (
         <Stack gap="0.5ch" useFlexGap direction="row" alignItems="center">
             <PointLabelSvg

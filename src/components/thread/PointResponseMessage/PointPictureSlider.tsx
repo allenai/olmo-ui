@@ -68,37 +68,6 @@ export const PointPictureSlider = ({
                 scrollSnapType: 'x mandatory',
                 scrollBehavior: 'smooth',
                 scrollMarkerGroup: 'after',
-                '&::scroll-marker-group': {
-                    height: 12,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    backgroundColor: 'inherit',
-                    gap: 1,
-                    padding: '0.5rem',
-                },
-
-                '&::scroll-button(*)': {
-                    position: 'fixed',
-                    positionAnchor: '--slider',
-                    height: 48,
-                    width: 48,
-                    border: 'none',
-                    borderRadius: '50%',
-                    cursor: 'pointer',
-                    color: undefined,
-                    backgroundColor: undefined,
-                    zIndex: 10,
-                },
-                '&::scroll-button(right)': {
-                    content: '">"',
-                    positionArea: 'center right',
-                    translate: '-50%',
-                },
-                '&::scroll-button(left)': {
-                    content: '"<"',
-                    positionArea: 'center left',
-                    translate: '50%',
-                },
             }}>
             {fileUrls.map((url, index) => {
                 const pointsSets = pointsSetsByFileUrl.get(url) || [];
@@ -110,21 +79,7 @@ export const PointPictureSlider = ({
                                       height: '100%',
                                       width: 'max-content',
                                       paddingBottom: showPerImageCaption ? '2.5em' : 0,
-
                                       scrollSnapAlign: 'center',
-                                      '&::scroll-marker': {
-                                          content: '" "',
-                                          width: 10,
-                                          height: 10,
-                                          color: 'currentColor',
-                                          borderRadius: '50%',
-                                          border: '1px solid',
-                                          borderColor: 'currentColor',
-                                          opacity: 0.8,
-                                          '&:target-current': {
-                                              backgroundColor: 'currentColor',
-                                          },
-                                      },
                                   }
                                 : undefined
                         }
