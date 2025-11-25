@@ -85,5 +85,4 @@ const PointOnImageSvg = styled('svg')({
     gridArea: 'combined',
     height: '100%',
     width: '100%',
-    zIndex: 1,
 });

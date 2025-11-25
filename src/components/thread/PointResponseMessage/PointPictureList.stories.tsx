@@ -1,12 +1,14 @@
 import { Box } from '@mui/material';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { ComponentProps } from 'react';
+import { ComponentProps, useState } from 'react';
 import { fn } from 'storybook/test';
 
 import { MAX_MAIN_CONTENT_WIDTH } from '@/constants';
 
+import { MediaLightbox } from './MediaLightbox';
 import { makeFiveMockPoints } from './mockPictureData';
 import { PointPictureList } from './PointPictureList';
+import { PointPictureSlider } from './PointPictureSlider';
 
 const mockListProps: ComponentProps<typeof PointPictureList> = {
     imagePointsSets: [
@@ -57,8 +59,29 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     render: (args) => (
-        <Box width={MAX_MAIN_CONTENT_WIDTH}>
+        <Box maxWidth={MAX_MAIN_CONTENT_WIDTH} width="100%">
             <PointPictureList {...args} />
         </Box>
     ),
+};
+
+export const WithLightboxAndSlider: Story = {
+    render: (args) => {
+        const [lightboxData, setLightboxData] = useState<number | null>(null);
+        const handleLightboxOpen = ({ index }: { index: number }) => {
+            setLightboxData(index);
+        };
+        const handleLightboxClose = () => {
+            setLightboxData(null);
+        };
+
+        return (
+            <Box maxWidth={MAX_MAIN_CONTENT_WIDTH} width="100%">
+                <PointPictureList {...args} onClick={handleLightboxOpen} />
+                <MediaLightbox open={lightboxData !== null} onClose={handleLightboxClose}>
+                    <PointPictureSlider {...args} initialIndex={lightboxData} />
+                </MediaLightbox>
+            </Box>
+        );
+    },
 };

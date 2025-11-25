@@ -1,3 +1,4 @@
+import { Stack } from '@mui/material';
 import { ReactNode, useState } from 'react';
 
 import { useMessage, useThread } from '@/api/playgroundApi/thread';
@@ -17,7 +18,7 @@ import { PointPictureList } from './PointPictureList';
 import { PointPictureSlider } from './PointPictureSlider';
 
 export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [lightboxData, setLightboxData] = useState<number | null>(null);
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
     const { data: currentFilesInThread } = useThread(threadId, (thread) => {
@@ -37,8 +38,11 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
 
     const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
 
-    const handleToggleLightbox = () => {
-        setIsModalOpen((prev) => !prev);
+    const handleLightboxOpen = ({ index }: { index: number }) => {
+        setLightboxData(index);
+    };
+    const handleLightboxClose = () => {
+        setLightboxData(null);
     };
 
     // NOTE: this assumes all points from a response will be a homogenious type
@@ -46,23 +50,24 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
         const imagePointsSets = pointsSets.filter((set) => set.type === 'image-points');
         const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
         return (
-            <>
+            <Stack spacing={1}>
                 <PointPictureList
                     imagePointsSets={pointsSets.filter((set) => set.type === 'image-points')}
                     fileUrls={currentFilesInThread}
-                    onClick={handleToggleLightbox}
+                    onClick={handleLightboxOpen}
                 />
                 <PointPictureSliderCaption pointsSets={imagePointsSets} />
                 <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
 
-                <MediaLightbox open={isModalOpen} onClose={handleToggleLightbox}>
+                <MediaLightbox open={lightboxData !== null} onClose={handleLightboxClose}>
                     <PointPictureSlider
                         imagePointsSets={pointsSets.filter((set) => set.type === 'image-points')}
                         fileUrls={currentFilesInThread}
                         showPerImageCaption={true}
+                        initialIndex={lightboxData}
                     />
                 </MediaLightbox>
-            </>
+            </Stack>
         );
     } else if (pointsSets?.[0].type === 'track-points') {
         // TODO: this space reserved for video points components
