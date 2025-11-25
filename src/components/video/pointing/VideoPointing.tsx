@@ -8,6 +8,7 @@ import { SeekBar } from '../seekBar/SeekBar';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { VideoOverlayHelper } from '../VideoOverlayHelper';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+import { RemoveButton } from '@/components/thread/QueryForm/FileUploadThumbnails/Thumbnail';
 
 const FPS = 24;
 
@@ -17,7 +18,13 @@ type UserPointSelect = {
     timestamp: number; // in seconds
 };
 
-export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
+export function VideoPointingInput({
+    videoUrl,
+    onRemoveFile,
+}: {
+    videoUrl: string;
+    onRemoveFile: () => void;
+}) {
     const playerRef = useRef<PlayerRef>(null);
 
     const { durationInFrames, width, height } = useVideoMetaData(videoUrl, FPS);
@@ -58,6 +65,7 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
                 })}>
                 <PointSelect
                     playerRef={playerRef}
+                    onRemoveFile={onRemoveFile}
                     userPoint={userPoint}
                     onPointSelect={setUserPoint}>
                     <Player
@@ -91,11 +99,13 @@ export const PointSelect = ({
     onPointSelect,
     playerRef,
     userPoint,
+    onRemoveFile,
 }: {
     children: ReactNode;
     onPointSelect: (point: UserPointSelect | null) => void;
     playerRef: React.RefObject<PlayerRef | null>;
     userPoint: UserPointSelect | null;
+    onRemoveFile: () => void;
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -189,6 +199,8 @@ export const PointSelect = ({
             onClick={state !== 'idle' ? onMouseDown : undefined}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}>
+            {state !== 'placing' && <RemoveButton filename="video" onPressRemove={onRemoveFile} />}
+
             {children}
             {state === 'idle' && (
                 <Button
@@ -197,8 +209,7 @@ export const PointSelect = ({
                     size="small"
                     className={css({
                         backgroundColor: 'extra-dark-teal.70',
-                        borderRadius: 'full',
-
+                        borderRadius: 'md',
                         position: 'absolute',
                         bottom: '5',
                         right: '5',
@@ -239,17 +250,6 @@ export const PointSelect = ({
                         height: '[100%]',
                         pointerEvents: 'none',
                     })}>
-                    <defs>
-                        <filter id="circleShadow" x="-50%" y="-50%" width="300%" height="300%">
-                            <feDropShadow
-                                dx="0"
-                                dy="0"
-                                stdDeviation="4"
-                                floodColor={varnishTheme.palette.secondary.main}
-                                floodOpacity="0.8"
-                            />
-                        </filter>
-                    </defs>
                     <style>
                         {`
                             @keyframes shockwave {
@@ -304,14 +304,13 @@ export const PointSelect = ({
                         stroke="white"
                         strokeWidth={2}
                         fill={varnishTheme.palette.secondary.main}
-                        filter={state === 'placing' ? 'url(#circleShadow)' : ''}
                         style={{
+                            pointerEvents: 'auto',
                             ...(showShockwave
                                 ? { animation: 'placeDown 0.25s ease-out forwards' }
                                 : {}),
-                            ...(state === 'placed'
-                                ? { cursor: 'pointer', pointerEvents: 'auto' }
-                                : {}),
+                            ...(state === 'placed' ? { cursor: 'grab' } : {}),
+                            ...(state === 'placing' ? { cursor: 'grabbing' } : {}),
                         }}
                         onMouseDown={(e) => {
                             if (state === 'placed') {

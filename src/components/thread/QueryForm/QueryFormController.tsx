@@ -2,9 +2,6 @@ import { DevTool } from '@hookform/devtools';
 import { Stack, Typography } from '@mui/material';
 import { KeyboardEvent, UIEvent, useEffect, useRef, useState } from 'react';
 import { DropZone } from 'react-aria-components';
-import { VideoPointingInput } from '@/components/video/pointing/VideoPointing';
-
-import { useObjectUrls } from './FileUploadThumbnails/useObjectUrls';
 import {
     Controller,
     FormContainer,
@@ -22,6 +19,7 @@ import {
     SchemaToolCall,
 } from '@/api/playgroundApi/playgroundApiSchema';
 import { useAppContext } from '@/AppContext';
+import { VideoPointingInput } from '@/components/video/pointing/VideoPointing';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
 import { fetchFilesByUrls } from '@/utils/fetchFilesByUrl';
@@ -30,6 +28,7 @@ import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { Waveform } from './AudioTranscription/Waveform';
 import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton/FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
+import { useObjectUrls } from './FileUploadThumbnails/useObjectUrls';
 import { handleFormSubmitException } from './handleFormSubmitException';
 import { PromptContainer } from './PromptContainer';
 import { PromptInput } from './PromptInput';
@@ -209,8 +208,13 @@ export const QueryFormController = ({
             }}>
             <QueryFormStyledBox>
                 <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
-                    {files && modelSupportVideoPointing && files.length > 0 && (
-                        <VideoPointingInput videoUrl={getObjectUrl(files[0])} />
+                    {files && modelSupportVideoPointing && files.length === 1 && (
+                        <VideoPointingInput
+                            onRemoveFile={() => {
+                                handleRemoveFile(files[0]);
+                            }}
+                            videoUrl={getObjectUrl(files[0])}
+                        />
                     )}
                     <Stack gap={1} alignItems="flex-start" width={1} position="relative">
                         <FileUploadThumbnails

@@ -57,12 +57,23 @@ export const Thumbnail = ({ filename, type, src, onPressRemove }: ThumbnailProps
             ) : (
                 <VideoThumbnail videoUrl={src} alt={alt} title={filename} />
             )}
-            <Button
-                className={removeButton}
-                onPress={onPressRemove}
-                aria-label={`Remove ${filename} from files to upload`}>
-                <Close fontSize="inherit" />
-            </Button>
+            <RemoveButton filename={filename} onPressRemove={onPressRemove} />
         </div>
+    );
+};
+
+type RemoveButtonProps = {
+    filename: string;
+    onPressRemove: () => void;
+};
+
+export const RemoveButton = ({ filename, onPressRemove }: RemoveButtonProps): ReactNode => {
+    return (
+        <Button
+            className={removeButton}
+            onPress={onPressRemove}
+            aria-label={`Remove ${filename} from files to upload`}>
+            <Close fontSize="inherit" />
+        </Button>
     );
 };
