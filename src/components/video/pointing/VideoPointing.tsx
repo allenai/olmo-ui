@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { varnishTheme } from '@allenai/varnish2/theme';
 import { Player, PlayerRef } from '@remotion/player';
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode, useRef, useState, useEffect } from 'react';
 import { useCurrentFrame, useVideoConfig } from 'remotion';
 
 import { SeekBar } from '../seekBar/SeekBar';
@@ -65,10 +65,38 @@ export const PointSelect: React.FC<{
     playerRef: React.RefObject<PlayerRef | null>;
 }> = ({ children, onPointSelect, playerRef, className }) => {
     const [state, setState] = useState<'idle' | 'placing' | 'placed'>('placing');
-    const [userPoint, setUserPoint] = useState<{ x: number; y: number } | null>(null);
+    const [userPoint, setUserPoint] = useState<UserPointSelect | null>(null);
 
     const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    const [onSelectedFrame, setOnSelectedFrame] = useState<boolean>(false);
+
+    useEffect(() => {
+        const { current } = playerRef;
+        if (!current) {
+            return;
+        }
+
+        const onFrameUpdate = () => {
+            if (!userPoint) {
+                return;
+            }
+
+            if (Math.abs(current.getCurrentFrame() - userPoint?.timestamp * FPS) < 2) {
+                setOnSelectedFrame(true);
+            } else {
+                setOnSelectedFrame(false);
+            }
+        };
+
+        current.addEventListener('frameupdate', onFrameUpdate);
+        onFrameUpdate();
+
+        return () => {
+            current.removeEventListener('frameupdate', onFrameUpdate);
+        };
+    }, [playerRef, userPoint]);
 
     const setPoint = (event: React.MouseEvent) => {
         if (!playerRef.current) {
@@ -78,27 +106,27 @@ export const PointSelect: React.FC<{
         const target = event.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();
 
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+        const x = (event.clientX - rect.left) / rect.width;
+        const y = (event.clientY - rect.top) / rect.height;
 
         const frame = playerRef.current.getCurrentFrame();
-        const timestamp = frame * FPS;
+        const timestamp = frame / FPS;
         const point = {
-            x: x / rect.width,
-            y: y / rect.height,
+            x: x,
+            y: y,
             timestamp,
         };
         onPointSelect(point);
 
-        setUserPoint({ x, y });
+        setUserPoint(point);
     };
 
     const handleMouseMove = (event: React.MouseEvent) => {
         const target = event.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();
 
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+        const x = (event.clientX - rect.left) / rect.width;
+        const y = (event.clientY - rect.top) / rect.height;
 
         setMousePosition({ x, y });
     };
@@ -118,7 +146,7 @@ export const PointSelect: React.FC<{
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}>
             {children}
-            {dotX && dotY && (
+            {dotX && dotY && (onSelectedFrame || state == 'placing') && (
                 <svg
                     className={css({
                         position: 'absolute',
@@ -141,9 +169,9 @@ export const PointSelect: React.FC<{
                     </defs>
                     {/* Vertical dashed line */}
                     <line
-                        x1={dotX}
+                        x1={dotX * 100 + '%'}
                         y1={0}
-                        x2={dotX}
+                        x2={dotX * 100 + '%'}
                         y2="100%"
                         stroke="white"
                         strokeWidth={1}
@@ -152,16 +180,16 @@ export const PointSelect: React.FC<{
                     {/* Horizontal dashed line */}
                     <line
                         x1={0}
-                        y1={dotY}
+                        y1={dotY * 100 + '%'}
                         x2="100%"
-                        y2={dotY}
+                        y2={dotY * 100 + '%'}
                         stroke="white"
                         strokeWidth={1}
                         strokeDasharray="8 8"
                     />
                     <circle
-                        cx={dotX}
-                        cy={dotY}
+                        cx={dotX * 100 + '%'}
+                        cy={dotY * 100 + '%'}
                         r={10}
                         stroke="white"
                         strokeWidth={2}
