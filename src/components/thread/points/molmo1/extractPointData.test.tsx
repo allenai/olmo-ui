@@ -12,8 +12,9 @@ describe('extractPointData', () => {
 
         // @ts-expect-error - we check that this is truthy above
         const pointData = result[0];
-        expect(pointData.points).toHaveLength(1);
-        expect.soft(pointData.points[0]).toEqual({
+        expect(pointData.imageList[0].points).toHaveLength(1);
+        expect.soft(pointData.imageList[0].points[0]).toEqual({
+            pointId: '1',
             x: 51.2,
             y: 26.4,
         });
@@ -31,12 +32,13 @@ describe('extractPointData', () => {
 
         // @ts-expect-error - we check that this is truthy above
         const pointData = result[0];
-        expect(pointData.points).toHaveLength(21);
-        expect.soft(pointData.points[0]).toEqual({
+        expect(pointData.imageList[0].points).toHaveLength(21);
+        expect.soft(pointData.imageList[0].points[0]).toEqual({
+            pointId: '1',
             x: 5.5,
             y: 81.0,
         });
-        expect.soft(pointData.points[20]).toEqual({ x: 86.5, y: 81.0 });
+        expect.soft(pointData.imageList[0].points[20]).toEqual({ pointId: '21', x: 86.5, y: 81.0 });
         expect.soft(pointData.alt).toEqual('faders.');
     });
 
@@ -53,8 +55,9 @@ describe('extractPointData', () => {
 
         // @ts-expect-error - we check that this is truthy above
         const firstPointData = result[0];
-        expect.soft(firstPointData.points).toHaveLength(1);
-        expect.soft(firstPointData.points[0]).toEqual({
+        expect.soft(firstPointData.imageList[0].points).toHaveLength(1);
+        expect.soft(firstPointData.imageList[0].points[0]).toEqual({
+            pointId: '1',
             x: 51.2,
             y: 26.4,
         });
@@ -62,12 +65,15 @@ describe('extractPointData', () => {
 
         // @ts-expect-error - we check that this is truthy above
         const secondPointData = result[1];
-        expect.soft(secondPointData.points).toHaveLength(21);
-        expect.soft(secondPointData.points[0]).toEqual({
+        expect.soft(secondPointData.imageList[0].points).toHaveLength(21);
+        expect.soft(secondPointData.imageList[0].points[0]).toEqual({
+            pointId: '1',
             x: 5.5,
             y: 81.0,
         });
-        expect.soft(secondPointData.points[20]).toEqual({ x: 86.5, y: 81.0 });
+        expect
+            .soft(secondPointData.imageList[0].points[20])
+            .toEqual({ pointId: '21', x: 86.5, y: 81.0 });
         expect.soft(secondPointData.alt).toEqual('faders.');
     });
 
@@ -88,12 +94,13 @@ describe('extractPointData', () => {
 
         // @ts-expect-error - we check that this is truthy above
         const pointData = result[0];
-        expect(pointData.points).toHaveLength(2);
-        expect.soft(pointData.points[0]).toEqual({
+        expect(pointData.imageList[0].points).toHaveLength(2);
+        expect.soft(pointData.imageList[0].points[0]).toEqual({
+            pointId: '1',
             x: 1.0,
             y: 2.0,
         });
-        expect.soft(pointData.points[1]).toEqual({ x: 5.0, y: 6.0 });
+        expect.soft(pointData.imageList[0].points[1]).toEqual({ pointId: '2', x: 5.0, y: 6.0 });
         expect.soft(pointData.alt).toEqual('mismatched');
     });
 
