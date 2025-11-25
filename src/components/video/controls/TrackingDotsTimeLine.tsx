@@ -10,10 +10,12 @@ export const TrackingDotsTimeline = ({
     data,
     durationInFrames,
     fps,
+    frameClassName,
 }: {
     data: VideoTrackingPoints | VideoFramePoints;
     durationInFrames: number;
     fps: number;
+    frameClassName?: string;
 }) => {
     const dots = useMemo(() => {
         return data.frameList.map((frame) => {
@@ -27,15 +29,7 @@ export const TrackingDotsTimeline = ({
                 return (
                     <div
                         key={index}
-                        className={css({
-                            '--tracking_dot_size': '10px',
-                            position: 'absolute',
-                            width: 'var(--tracking_dot_size)',
-                            height: 'var(--tracking_dot_size)',
-                            borderRadius: 'full',
-                            backgroundColor: 'pink.100',
-                            top: '2',
-                        })}
+                        className={frameClassName}
                         style={{ left: `calc(${leftOffset}% - var(--tracking_dot_size)/2)` }}
                     />
                 );

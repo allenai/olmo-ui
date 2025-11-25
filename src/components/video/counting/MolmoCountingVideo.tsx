@@ -3,6 +3,7 @@ import { type ReactNode, useRef } from 'react';
 
 import type { VideoFramePoints } from '@/components/thread/points/pointsDataTypes';
 
+import { Controls } from '../controls/Controls';
 import { FilmStrip } from '../filmStrip/FilmStrip';
 import { THUMBNAIL_HEIGHT } from '../filmStrip/filmStripConsts';
 import { SeekBar } from '../seekBar/SeekBar';
@@ -65,11 +66,12 @@ export const MolmoCountingVideo = ({
                 height={height}
                 thumbnailHeight={THUMBNAIL_HEIGHT}
             />
-            <SeekBar
+            <Controls
                 playerRef={playerRef}
                 data={videoPoints}
                 fps={FPS}
                 durationInFrames={durationInFrames}
+                frameStyle="dot"
             />
         </VideoPlayerWrapper>
     );
