@@ -33,10 +33,6 @@ export const faqs: FAQCategory[] = [
         category: 'Account',
         questions: [
             {
-                question: 'How do I access the Playground?',
-                answer: 'You can use the Playground and interact with the models without creating an account. Prompts and threads from anonymous use will be regularly deleted.\n\nSigning up for an account will save your prompts and threads and allow you to delete and share them as you choose.',
-            },
-            {
                 question: 'How do I create an account?',
                 answer: 'You can create an account by signing in via your Google account.',
             },
@@ -58,17 +54,13 @@ export const faqs: FAQCategory[] = [
         category: 'Models',
         questions: [
             {
-                question: 'Which models are served in the Playground?',
-                answer: '[Olmo 2](https://allenai.org/olmo) is a family of fully-open language models, developed start-to-finish with open and accessible training data, open-source training code, reproducible training recipes, transparent evaluations, intermediate checkpoints, and more. The Playground is serving the Olmo 2 13B Instruct version of Olmo.\n\n[Tülu 3](https://allenai.org/tulu) is a top-performing instruction model family with fully open fine-tuning data, code, and recipes to serve as a guidebook for modern post-training. Tülu 3 is a fine-tuned version of Llama 3 that was trained on a mix of publicly available, synthetic, and human datasets. The Playground is serving both 70B and 8B versions of Tülu 3.',
-            },
-            {
                 question: 'How accurate and reliable is generated content on the Playground?',
                 answer: 'Playground-generated content is built for research and educational purposes only. It is not intended to be accurate or reliable, but rather as a research tool and to help the general public better understand LLMs. Please do not rely on any Playground-generated content and always use your best judgment, fact-check important information, and consider the context when interpreting content generated on the Playground.',
             },
 
             {
                 question: 'Which models on the Playground are multimodal and how do I use them?',
-                answer: "Currently, the 'Molmo' model in the model dropdown is the only one that supports multimodal interaction. Your first message should include an image and a query. Subsequent prompts can be text-only. Ideally, you'd choose a different language model for purely text-based conversations.",
+                answer: 'Models with the "Multimodal" label can handle non-text input. The "Molmo" models require a file to be send with the first message and don’t allow files to be sent with follow-up messages.',
             },
         ],
     },
@@ -77,19 +69,23 @@ export const faqs: FAQCategory[] = [
         questions: [
             {
                 question: 'What data does Ai2 collect about me?',
-                answer: 'We collect data necessary to improve your experience and the performance of Olmo as described in our general [Terms and Conditions of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/). This includes interaction data with the model, such as queries and responses.\n\nData from anonymous users of the Playground is regularly deleted.\n\nPlease do not include PII (personally identifiable information) or any other sensitive information in model prompts or elsewhere in the Playground.',
+                answer: 'We collect data necessary to improve your experience and the performance of Olmo as described in our general [Terms and Conditions of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/). This includes interaction data with the model, such as queries and responses.\n\nPlease do not include PII (personally identifiable information) or any other sensitive information in model prompts or elsewhere in the Playground.',
             },
             {
-                question: 'How is my data used to improve the Playground’s performance?',
+                question: 'Will my data be used to train Ai2 models?',
+                answer: 'Text-based data that you submit will be used to train models after a process to remove identifying data. Your data will not be added to a public dataset unless you opt in through the "Data collection" menu in your user profile settings. Files such as images or video you submit will only be used to train Ai2 models if you opt in through the "Data collection" menu. Please see our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/) for more information.',
+            },
+            {
+                question: 'How is my data used to improve the Playground website’s performance?',
                 answer: 'Your data helps us understand how users interact with the Playground and the models it serves. We use this interaction data to identify areas for improvement and to develop new features that advance the scientific and educational purposes of Ai2. We analyze aggregated data to inform updates and enhancements to ensure our models remain effective and relevant for scientific research and education in the public interest. Please see our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/) for more information.',
             },
             {
                 question: 'How can I opt out of Ai2 using my Playground data?',
-                answer: 'You can remove your thread from our database by deleting your prompt history within 30 days of its creation. Click the “Delete Thread” button to delete your prompt and the generated response. Please note that you will need to delete your prompt history every 30 days if you do not wish to share any prompt information with us. We currently do not have a permanent “opt out” from prompt history retention; we will also retain the original user information you provided when creating a Playground account, as described in our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/).',
+                answer: 'You can remove your thread from our database by deleting your prompt history within 30 days of its creation. Click the “Delete Thread” button to delete your prompt and the generated response. Please note that you will need to delete your prompt history every 30 days if you do not wish to share any prompt information with us. Any data you submit and do not delete can be used to train models as described in our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/). You can opt out of having your data shared in public datasets through the "Data collection" menu in your user profile settings.',
             },
             {
                 question: 'How can I request my prompt history be deleted?',
-                answer: 'You can use the “Delete Thread” button to delete your prompt and the generated response. Click the “History” button to view your historical prompts and use the “Delete Thread” button to delete threads (including image data when applicable) within the last 30 days. Threads older than 30 days cannot be deleted via the Playground and will be retained as described in our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/).',
+                answer: 'You can use the “Delete Thread” button to delete your prompt and the generated response. Click the “History” button to view your historical prompts and use the “Delete Thread” button to delete threads (including image data when applicable) within the last 30 days. You can request that personal data be removed through our [Personal Data Removal Request form](https://docs.google.com/forms/d/1sTsGVb6TV5lXw2jH95u2nKGc0wQ3PqzFShJdzv8XgN0/edit?ts=68df4a57).',
                 shortId: 'request-prompt-history-delete',
             },
             {
