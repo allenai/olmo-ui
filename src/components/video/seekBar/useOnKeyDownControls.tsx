@@ -10,9 +10,6 @@ export const useOnKeyDownControls = (
     durationInFrames: number
 ) => {
     const timesOfInterest = useMemo(() => {
-        if (!data) {
-            return [];
-        }
         const times = [
             ...data.frameList.map((frame) => {
                 return frame.timestamp;

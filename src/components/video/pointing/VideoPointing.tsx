@@ -200,7 +200,6 @@ export const PointSelect = ({
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}>
             {state !== 'placing' && <RemoveButton filename="video" onPressRemove={onRemoveFile} />}
-
             {children}
             {state === 'idle' && (
                 <Button
@@ -220,7 +219,6 @@ export const PointSelect = ({
                     Place Point (optional)
                 </Button>
             )}
-
             {state === 'placed' && (
                 <Button
                     variant="outlined"
