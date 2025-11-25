@@ -19,6 +19,7 @@ import {
 } from '@/api/playgroundApi/playgroundApiSchema';
 import { FlatMessage } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
+import type { InputPart } from '@/contexts/stream-types';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
 import { fetchFilesByUrls } from '@/utils/fetchFilesByUrl';
@@ -34,6 +35,18 @@ import { QueryFormStyledBox } from './QueryFormStyledBox';
 import { SubmitPauseAdornment } from './SubmitPauseAdornment';
 import { validateFiles } from './validateFiles';
 
+/**
+ * Used for Molmo 2 points.
+ * Formatted into `<points coords="{time} 1 {x} {y}">object</points>` on the API
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface PointInput extends InputPart {
+    type: 'input_points';
+    x: number;
+    y: number;
+    time: number; // what unit is this?
+}
+
 export interface QueryFormValues {
     content: string;
     private: boolean;
@@ -42,6 +55,8 @@ export interface QueryFormValues {
     captchaToken?: string | null;
     role?: FlatMessage['role'];
     toolCallId?: SchemaToolCall['toolCallId'];
+    // Naming this inputParts for some possible future-proofing. Intended to be like OpenAI's "content" field.
+    inputParts?: InputPart[];
 }
 
 interface QueryFormControllerProps {
@@ -60,7 +75,6 @@ interface QueryFormControllerProps {
 
 export const QueryFormController = ({
     handleSubmit,
-    // props
     canEditThread,
     promptTemplate,
     placeholderText,

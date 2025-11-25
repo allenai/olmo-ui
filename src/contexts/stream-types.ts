@@ -11,6 +11,10 @@ import type {
     SchemaToolCallChunk,
 } from '@/api/playgroundApi/playgroundApiSchema';
 
+export interface InputPart {
+    type: string;
+}
+
 // Thread plus streaming state
 export interface StreamingThread extends SchemaThread {
     streamingMessageId?: string;
@@ -24,6 +28,7 @@ export interface StreamMessageRequest {
     files?: FileList;
     role?: SchemaFlatMessage['role'];
     toolCallId?: SchemaToolCall['toolCallId'];
+    inputParts?: InputPart[];
 }
 
 export type MessageChunk = Pick<SchemaFlatMessage, 'content'> & {

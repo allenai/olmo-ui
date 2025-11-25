@@ -75,12 +75,21 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
                 request.parent = lastMessageId;
             }
 
-            const { content, captchaToken, parent, files, role = 'user', toolCallId } = request;
+            const {
+                content,
+                captchaToken,
+                parent,
+                files,
+                role = 'user',
+                toolCallId,
+                inputParts,
+            } = request;
 
             const result = await playgroundApiClient.POST('/v4/threads/', {
                 parseAs: 'stream',
                 body: {
                     content,
+                    inputParts,
                     captchaToken,
                     // @ts-expect-error - We're uploading a FileList but the schema says it wants strings. Need to figure out how to get those to sync up
                     files,
