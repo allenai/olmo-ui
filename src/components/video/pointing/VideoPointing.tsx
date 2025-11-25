@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { varnishTheme } from '@allenai/varnish2/theme';
 import { Player, PlayerRef } from '@remotion/player';
-import { ReactNode, useRef, useState, useEffect } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useCurrentFrame, useVideoConfig } from 'remotion';
 
 import { SeekBar } from '../seekBar/SeekBar';
@@ -65,6 +65,7 @@ export const PointSelect: React.FC<{
 }> = ({ children, onPointSelect, playerRef }) => {
     const [state, setState] = useState<'idle' | 'placing' | 'placed'>('placing');
     const [userPoint, setUserPoint] = useState<UserPointSelect | null>(null);
+    const [showShockwave, setShowShockwave] = useState(false);
 
     const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -82,7 +83,7 @@ export const PointSelect: React.FC<{
                 return;
             }
 
-            if (Math.abs(current.getCurrentFrame() - userPoint?.timestamp * FPS) < 2) {
+            if (Math.abs(current.getCurrentFrame() - userPoint.timestamp * FPS) < 2) {
                 setOnSelectedFrame(true);
             } else {
                 setOnSelectedFrame(false);
@@ -102,6 +103,11 @@ export const PointSelect: React.FC<{
             return;
         }
         setState('placed');
+        setShowShockwave(true);
+        setTimeout(() => {
+            setShowShockwave(false);
+        }, 400);
+
         const target = event.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();
 
@@ -111,8 +117,8 @@ export const PointSelect: React.FC<{
         const frame = playerRef.current.getCurrentFrame();
         const timestamp = frame / FPS;
         const point = {
-            x: x,
-            y: y,
+            x,
+            y,
             timestamp,
         };
         onPointSelect(point);
@@ -134,8 +140,8 @@ export const PointSelect: React.FC<{
         setMousePosition(null);
     };
 
-    const dotX = state == 'placing' ? mousePosition?.x : userPoint!.x;
-    const dotY = state == 'placing' ? mousePosition?.y : userPoint!.y;
+    const dotX = state === 'placing' ? mousePosition?.x : userPoint!.x;
+    const dotY = state === 'placing' ? mousePosition?.y : userPoint!.y;
 
     return (
         <div
@@ -145,7 +151,7 @@ export const PointSelect: React.FC<{
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}>
             {children}
-            {dotX && dotY && (onSelectedFrame || state == 'placing') && (
+            {!!dotX && !!dotY && (onSelectedFrame || state === 'placing') && (
                 <svg
                     className={css({
                         position: 'absolute',
@@ -166,6 +172,33 @@ export const PointSelect: React.FC<{
                             />
                         </filter>
                     </defs>
+                    <style>
+                        {`
+                            @keyframes shockwave {
+                                0% {
+                                    r: 10;
+                                    opacity: .75;
+                                    stroke-width: 3;
+                                }
+                                100% {
+                                    r: 30;
+                                    opacity: 0;
+                                    stroke-width: 0.5;
+                                }
+                            }
+                            @keyframes placeDown {
+                                0% {
+                                    r: 14;
+                                }
+                                50% {
+                                    r: 8;
+                                }
+                                100% {
+                                    r: 10;
+                                }
+                            }
+                        `}
+                    </style>
                     {/* Vertical dashed line */}
                     <line
                         x1={dotX * 100 + '%'}
@@ -189,12 +222,51 @@ export const PointSelect: React.FC<{
                     <circle
                         cx={dotX * 100 + '%'}
                         cy={dotY * 100 + '%'}
-                        r={10}
+                        r={state === 'placing' ? 12 : 10}
                         stroke="white"
                         strokeWidth={2}
-                        fill={`${varnishTheme.palette.secondary.main}`}
+                        fill={varnishTheme.palette.secondary.main}
                         filter={state === 'placing' ? 'url(#circleShadow)' : ''}
+                        style={{
+                            ...(showShockwave
+                                ? { animation: 'placeDown 0.25s ease-out forwards' }
+                                : {}),
+                            ...(state === 'placed'
+                                ? { cursor: 'pointer', pointerEvents: 'auto' }
+                                : {}),
+                        }}
+                        onMouseDown={
+                            state === 'placed'
+                                ? (e) => {
+                                      e.stopPropagation();
+                                      setState('placing');
+                                      setUserPoint(null);
+                                  }
+                                : undefined
+                        }
                     />
+                    {showShockwave && (
+                        <>
+                            <circle
+                                cx={dotX * 100 + '%'}
+                                cy={dotY * 100 + '%'}
+                                r={10}
+                                stroke={varnishTheme.palette.secondary.main}
+                                strokeWidth={2}
+                                fill="none"
+                                style={{ animation: 'shockwave 0.4s ease-out forwards' }}
+                            />
+                            <circle
+                                cx={dotX * 100 + '%'}
+                                cy={dotY * 100 + '%'}
+                                r={10}
+                                stroke="white"
+                                strokeWidth={1.5}
+                                fill="none"
+                                style={{ animation: 'shockwave 0.4s ease-out 0.05s forwards' }}
+                            />
+                        </>
+                    )}
                 </svg>
             )}
         </div>
@@ -203,25 +275,4 @@ export const PointSelect: React.FC<{
 
 export const PointingInputVideo = ({ videoUrl }: { videoUrl: string }) => {
     return <VideoOverlayHelper videoUrl={videoUrl}></VideoOverlayHelper>;
-};
-
-const SinglePoint = ({ point }: { point: UserPointSelect }) => {
-    const { fps } = useVideoConfig();
-
-    const frame = useCurrentFrame();
-
-    if (point.timestamp / fps !== frame) {
-        return null;
-    }
-
-    return (
-        <circle
-            cx={`${point.x * 100}%`}
-            cy={`${point.y * 100}%`}
-            r={'1.5%'}
-            stroke={'white'}
-            strokeWidth={'0.3%'}
-            fill={varnishTheme.palette.primary.main}
-        />
-    );
 };

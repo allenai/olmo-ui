@@ -2,6 +2,9 @@ import { DevTool } from '@hookform/devtools';
 import { Stack, Typography } from '@mui/material';
 import { KeyboardEvent, UIEvent, useEffect, useRef, useState } from 'react';
 import { DropZone } from 'react-aria-components';
+import { VideoPointingInput } from '@/components/video/pointing/VideoPointing';
+
+import { useObjectUrls } from './FileUploadThumbnails/useObjectUrls';
 import {
     Controller,
     FormContainer,
@@ -73,6 +76,9 @@ export const QueryFormController = ({
     fileUploadProps,
 }: QueryFormControllerProps) => {
     const navigation = useNavigation();
+    const getObjectUrl = useObjectUrls();
+
+    const modelSupportVideoPointing = true;
 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -203,6 +209,9 @@ export const QueryFormController = ({
             }}>
             <QueryFormStyledBox>
                 <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
+                    {files && modelSupportVideoPointing && files.length > 0 && (
+                        <VideoPointingInput videoUrl={getObjectUrl(files[0])} />
+                    )}
                     <Stack gap={1} alignItems="flex-start" width={1} position="relative">
                         <FileUploadThumbnails
                             files={files}
