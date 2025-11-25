@@ -1,8 +1,8 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
+import { Button } from '@allenai/varnish-ui';
 import { varnishTheme } from '@allenai/varnish2/theme';
 import { Player, PlayerRef } from '@remotion/player';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { useCurrentFrame, useVideoConfig } from 'remotion';
 
 import { SeekBar } from '../seekBar/SeekBar';
 import { useVideoMetaData } from '../useVideoMetaData';
@@ -21,7 +21,7 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
 
     const { durationInFrames, width, height } = useVideoMetaData(videoUrl, FPS);
 
-    const [userPoints, setUserPoints] = useState<UserPointSelect[]>([]);
+    const [userPoint, setUserPoint] = useState<UserPointSelect | null>(null);
 
     return (
         <div>
@@ -34,9 +34,8 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
                 })}>
                 <PointSelect
                     playerRef={playerRef}
-                    onPointSelect={(point) => {
-                        setUserPoints([point]);
-                    }}>
+                    userPoint={userPoint}
+                    onPointSelect={setUserPoint}>
                     <Player
                         acknowledgeRemotionLicense
                         ref={playerRef}
@@ -58,18 +57,22 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
     );
 }
 
-export const PointSelect: React.FC<{
+export const PointSelect = ({
+    children,
+    onPointSelect,
+    playerRef,
+    userPoint,
+}: {
     children: ReactNode;
-    onPointSelect: (point: UserPointSelect) => void;
+    onPointSelect: (point: UserPointSelect | null) => void;
     playerRef: React.RefObject<PlayerRef | null>;
-}> = ({ children, onPointSelect, playerRef }) => {
-    const [state, setState] = useState<'idle' | 'placing' | 'placed'>('placing');
-    const [userPoint, setUserPoint] = useState<UserPointSelect | null>(null);
-    const [showShockwave, setShowShockwave] = useState(false);
-
-    const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
+    userPoint: UserPointSelect | null;
+}) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
+    const [state, setState] = useState<'idle' | 'placing' | 'placed'>('idle');
+    const [showShockwave, setShowShockwave] = useState(false);
+    const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
     const [onSelectedFrame, setOnSelectedFrame] = useState<boolean>(false);
 
     useEffect(() => {
@@ -98,8 +101,10 @@ export const PointSelect: React.FC<{
         };
     }, [playerRef, userPoint]);
 
-    const setPoint = (event: React.MouseEvent) => {
-        if (!playerRef.current) {
+    const setPoint = (point: null | UserPointSelect) => {
+        if (!point) {
+            setState('idle');
+            onPointSelect(null);
             return;
         }
         setState('placed');
@@ -107,7 +112,13 @@ export const PointSelect: React.FC<{
         setTimeout(() => {
             setShowShockwave(false);
         }, 400);
+        onPointSelect(point);
+    };
 
+    const onMouseDown = (event: React.MouseEvent) => {
+        if (!playerRef.current) {
+            return;
+        }
         const target = event.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();
 
@@ -121,9 +132,7 @@ export const PointSelect: React.FC<{
             y,
             timestamp,
         };
-        onPointSelect(point);
-
-        setUserPoint(point);
+        setPoint(point);
     };
 
     const handleMouseMove = (event: React.MouseEvent) => {
@@ -140,17 +149,56 @@ export const PointSelect: React.FC<{
         setMousePosition(null);
     };
 
-    const dotX = state === 'placing' ? mousePosition?.x : userPoint!.x;
-    const dotY = state === 'placing' ? mousePosition?.y : userPoint!.y;
+    const dotX = state === 'placing' ? mousePosition?.x : userPoint?.x;
+    const dotY = state === 'placing' ? mousePosition?.y : userPoint?.y;
 
     return (
         <div
             ref={containerRef}
             className={css({ position: 'relative' })}
-            onClick={setPoint}
+            onClick={state !== 'idle' ? onMouseDown : undefined}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}>
             {children}
+            {state === 'idle' && (
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    className={css({
+                        backgroundColor: 'extra-dark-teal.70',
+                        borderRadius: 'full',
+
+                        position: 'absolute',
+                        bottom: '5',
+                        right: '5',
+                    })}
+                    onClick={() => {
+                        setState('placing');
+                    }}>
+                    Place Point (optional)
+                </Button>
+            )}
+
+            {state === 'placed' && (
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    className={css({
+                        backgroundColor: 'extra-dark-teal.70',
+                        borderRadius: 'full',
+
+                        position: 'absolute',
+                        bottom: '5',
+                        right: '5',
+                    })}
+                    onClick={() => {
+                        setPoint(null);
+                    }}>
+                    Clear Point
+                </Button>
+            )}
             {!!dotX && !!dotY && (onSelectedFrame || state === 'placing') && (
                 <svg
                     className={css({
@@ -235,15 +283,13 @@ export const PointSelect: React.FC<{
                                 ? { cursor: 'pointer', pointerEvents: 'auto' }
                                 : {}),
                         }}
-                        onMouseDown={
-                            state === 'placed'
-                                ? (e) => {
-                                      e.stopPropagation();
-                                      setState('placing');
-                                      setUserPoint(null);
-                                  }
-                                : undefined
-                        }
+                        onMouseDown={(e) => {
+                            if (state === 'placed') {
+                                e.stopPropagation();
+                                setState('placing');
+                                onPointSelect(null);
+                            }
+                        }}
                     />
                     {showShockwave && (
                         <>
