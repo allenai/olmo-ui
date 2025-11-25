@@ -149,8 +149,10 @@ export const PointSelect = ({
         setMousePosition(null);
     };
 
-    const dotX = state === 'placing' ? mousePosition?.x : userPoint?.x;
-    const dotY = state === 'placing' ? mousePosition?.y : userPoint?.y;
+    const dotXValue = state === 'placing' ? mousePosition?.x : userPoint?.x;
+    const dotYValue = state === 'placing' ? mousePosition?.y : userPoint?.y;
+    const dotX = dotXValue ? `${dotXValue * 100}%` : undefined;
+    const dotY = dotYValue ? `${dotYValue * 100}%` : undefined;
 
     return (
         <div
@@ -249,9 +251,9 @@ export const PointSelect = ({
                     </style>
                     {/* Vertical dashed line */}
                     <line
-                        x1={dotX * 100 + '%'}
+                        x1={dotX}
                         y1={0}
-                        x2={dotX * 100 + '%'}
+                        x2={dotX}
                         y2="100%"
                         stroke="white"
                         strokeWidth={1}
@@ -260,16 +262,16 @@ export const PointSelect = ({
                     {/* Horizontal dashed line */}
                     <line
                         x1={0}
-                        y1={dotY * 100 + '%'}
+                        y1={dotY}
                         x2="100%"
-                        y2={dotY * 100 + '%'}
+                        y2={dotY}
                         stroke="white"
                         strokeWidth={1}
                         strokeDasharray="8 8"
                     />
                     <circle
-                        cx={dotX * 100 + '%'}
-                        cy={dotY * 100 + '%'}
+                        cx={dotX}
+                        cy={dotY}
                         r={state === 'placing' ? 12 : 10}
                         stroke="white"
                         strokeWidth={2}
@@ -294,8 +296,8 @@ export const PointSelect = ({
                     {showShockwave && (
                         <>
                             <circle
-                                cx={dotX * 100 + '%'}
-                                cy={dotY * 100 + '%'}
+                                cx={dotX}
+                                cy={dotY}
                                 r={10}
                                 stroke={varnishTheme.palette.secondary.main}
                                 strokeWidth={2}
@@ -303,8 +305,8 @@ export const PointSelect = ({
                                 style={{ animation: 'shockwave 0.4s ease-out forwards' }}
                             />
                             <circle
-                                cx={dotX * 100 + '%'}
-                                cy={dotY * 100 + '%'}
+                                cx={dotX}
+                                cy={dotY}
                                 r={10}
                                 stroke="white"
                                 strokeWidth={1.5}
