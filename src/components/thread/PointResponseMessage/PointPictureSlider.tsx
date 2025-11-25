@@ -129,7 +129,14 @@ export const PointPictureSlider = ({
                             pointsSets={pointsSets}
                             caption={
                                 showPerImageCaption && (
-                                    <PointPictureCaption pointsSets={pointsSets} />
+                                    <Box
+                                        display="flex"
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                        padding={1}>
+                                        <PointPictureCaption pointsSets={pointsSets} />
+                                        <span>{`Image ${index + 1}/${fileUrls.length}`}</span>
+                                    </Box>
                                 )
                             }
                         />

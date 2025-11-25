@@ -13,7 +13,7 @@ import { extractPointData as extractMolmo1PointData } from '../points/molmo1/ext
 import { extractPointsData as extractMolmo2PointsData } from '../points/molmo2/formatPointsData';
 import { pointsRegex } from '../points/pointsRegex';
 import { MediaLightbox } from './MediaLightbox';
-import { PointPictureSliderCaption } from './PointPictureCaption';
+import { PointPictureListCaption } from './PointPictureCaption';
 import { PointPictureList } from './PointPictureList';
 import { PointPictureSlider } from './PointPictureSlider';
 
@@ -57,7 +57,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                         fileUrls={currentFilesInThread}
                         onClick={handleLightboxOpen}
                     />
-                    <PointPictureSliderCaption pointsSets={imagePointsSets} />
+                    <PointPictureListCaption pointsSets={imagePointsSets} />
                     <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
                 </Stack>
                 <MediaLightbox open={lightboxData !== null} onClose={handleLightboxClose}>
@@ -79,7 +79,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                                 fileUrls={currentFilesInThread}
                                 onClick={handleLightboxOpen}
                             />
-                            <PointPictureSliderCaption pointsSets={imagePointsSets} />
+                            <PointPictureListCaption pointsSets={imagePointsSets} />
                         </Stack>
                     )}
                 </MediaLightbox>

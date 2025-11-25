@@ -7,6 +7,7 @@ import { MAX_MAIN_CONTENT_WIDTH } from '@/constants';
 
 import { MediaLightbox } from './MediaLightbox';
 import { makeFiveMockPoints } from './mockPictureData';
+import { PointPictureListCaption } from './PointPictureCaption';
 import { PointPictureList } from './PointPictureList';
 import { PointPictureSlider } from './PointPictureSlider';
 
@@ -59,8 +60,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     render: (args) => (
-        <Box maxWidth={MAX_MAIN_CONTENT_WIDTH} width="100%">
+        <Box
+            maxWidth={MAX_MAIN_CONTENT_WIDTH}
+            width="100%"
+            display="flex"
+            flexDirection="column"
+            gap={1}>
             <PointPictureList {...args} />
+            <PointPictureListCaption pointsSets={args.imagePointsSets || []} />
         </Box>
     ),
 };

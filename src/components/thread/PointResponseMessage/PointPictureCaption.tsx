@@ -10,7 +10,7 @@ import { usePointColors } from './usePointColors';
 export const PointPictureCaption = ({ pointsSets }: { pointsSets: PointsSets[] }): ReactNode => {
     const pointColors = usePointColors();
     return (
-        <Stack gap={1} useFlexGap component="figcaption" sx={{ marginBlockStart: 1 }}>
+        <Stack gap={1} useFlexGap component="figcaption">
             {pointsSets.map((set, index) => (
                 <PointLabel
                     key={index}
@@ -23,14 +23,14 @@ export const PointPictureCaption = ({ pointsSets }: { pointsSets: PointsSets[] }
     );
 };
 
-export const PointPictureSliderCaption = ({
+export const PointPictureListCaption = ({
     pointsSets,
 }: {
     pointsSets: ImagePoints[];
 }): ReactNode => {
     const pointColors = usePointColors();
     return (
-        <Stack gap={1} useFlexGap component="figcaption" sx={{ marginBlockStart: 1 }}>
+        <Stack gap={1} useFlexGap component="figcaption">
             {pointsSets.map((set, index) => (
                 <PointLabel
                     key={index}
