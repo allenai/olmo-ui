@@ -4,11 +4,12 @@ import { varnishTheme } from '@allenai/varnish2/theme';
 import { Player, PlayerRef } from '@remotion/player';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
+import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+import { RemoveButton } from '@/components/thread/QueryForm/FileUploadThumbnails/Thumbnail';
+
 import { SeekBar } from '../seekBar/SeekBar';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { VideoOverlayHelper } from '../VideoOverlayHelper';
-import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
-import { RemoveButton } from '@/components/thread/QueryForm/FileUploadThumbnails/Thumbnail';
 
 const FPS = 24;
 
@@ -154,8 +155,8 @@ export const PointSelect = ({
         onPointSelect(point);
     };
 
-    const onMouseDown = (event: React.MouseEvent) => {
-        if (!playerRef.current) {
+    const onPointerUp = (event: React.PointerEvent) => {
+        if (!playerRef.current || state == 'idle') {
             return;
         }
         const target = event.currentTarget as HTMLElement;
@@ -174,7 +175,7 @@ export const PointSelect = ({
         setPoint(point);
     };
 
-    const handleMouseMove = (event: React.MouseEvent) => {
+    const onPointerMove = (event: React.PointerEvent) => {
         const target = event.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();
 
@@ -195,10 +196,10 @@ export const PointSelect = ({
     return (
         <div
             ref={containerRef}
-            className={css({ position: 'relative' })}
-            onClick={state !== 'idle' ? onMouseDown : undefined}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}>
+            className={css({ position: 'relative', touchAction: 'none' })}
+            onMouseLeave={handleMouseLeave}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}>
             {state !== 'placing' && <RemoveButton filename="video" onPressRemove={onRemoveFile} />}
             {children}
             {state === 'idle' && (
@@ -217,25 +218,6 @@ export const PointSelect = ({
                         setState('placing');
                     }}>
                     Place Point (optional)
-                </Button>
-            )}
-            {state === 'placed' && (
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    className={css({
-                        backgroundColor: 'extra-dark-teal.70',
-                        borderRadius: 'full',
-
-                        position: 'absolute',
-                        bottom: '5',
-                        right: '5',
-                    })}
-                    onClick={() => {
-                        setPoint(null);
-                    }}>
-                    Clear Point
                 </Button>
             )}
             {!!dotX && !!dotY && (onSelectedFrame || state === 'placing') && (
@@ -310,7 +292,7 @@ export const PointSelect = ({
                             ...(state === 'placed' ? { cursor: 'grab' } : {}),
                             ...(state === 'placing' ? { cursor: 'grabbing' } : {}),
                         }}
-                        onMouseDown={(e) => {
+                        onPointerDown={(e) => {
                             if (state === 'placed') {
                                 e.stopPropagation();
                                 setState('placing');
@@ -341,6 +323,24 @@ export const PointSelect = ({
                         </>
                     )}
                 </svg>
+            )}
+            {state === 'placed' && (
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    className={css({
+                        backgroundColor: 'extra-dark-teal.70',
+                        borderRadius: 'md',
+                        position: 'absolute',
+                        bottom: '5',
+                        left: '5',
+                    })}
+                    onClick={() => {
+                        setPoint(null);
+                    }}>
+                    Clear Point
+                </Button>
             )}
         </div>
     );

@@ -61,6 +61,8 @@ interface QueryFormControllerProps {
     fileUploadProps: FileuploadPropsBase;
 }
 
+export const MODEL_SUPPORTS_POINTING_INPUT = true;
+
 export const QueryFormController = ({
     handleSubmit,
     canEditThread,
@@ -76,8 +78,6 @@ export const QueryFormController = ({
 }: QueryFormControllerProps) => {
     const navigation = useNavigation();
     const getObjectUrl = useObjectUrls();
-
-    const modelSupportVideoPointing = true;
 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -208,7 +208,7 @@ export const QueryFormController = ({
             }}>
             <QueryFormStyledBox>
                 <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
-                    {files && modelSupportVideoPointing && files.length === 1 && (
+                    {files && MODEL_SUPPORTS_POINTING_INPUT && files.length === 1 && (
                         <VideoPointingInput
                             onRemoveFile={() => {
                                 handleRemoveFile(files[0]);
