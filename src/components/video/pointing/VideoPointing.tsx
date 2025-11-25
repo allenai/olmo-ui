@@ -25,12 +25,14 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
 
     return (
         <div>
-            <div className={css({})}>
+            <div
+                style={{
+                    aspectRatio: width / height,
+                }}
+                className={css({
+                    maxHeight: '[60vh]',
+                })}>
                 <PointSelect
-                    className={css({
-                        maxHeight: '[60vh]',
-                        aspectRatio: width / height,
-                    })}
                     playerRef={playerRef}
                     onPointSelect={(point) => {
                         setUserPoints([point]);
@@ -41,8 +43,6 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
                         component={PointingInputVideo}
                         inputProps={{
                             videoUrl,
-                            userPoints,
-                            setUserPoints,
                         }}
                         durationInFrames={durationInFrames + 1}
                         compositionWidth={width}
@@ -60,10 +60,9 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
 
 export const PointSelect: React.FC<{
     children: ReactNode;
-    className: string;
     onPointSelect: (point: UserPointSelect) => void;
     playerRef: React.RefObject<PlayerRef | null>;
-}> = ({ children, onPointSelect, playerRef, className }) => {
+}> = ({ children, onPointSelect, playerRef }) => {
     const [state, setState] = useState<'idle' | 'placing' | 'placed'>('placing');
     const [userPoint, setUserPoint] = useState<UserPointSelect | null>(null);
 
@@ -141,7 +140,7 @@ export const PointSelect: React.FC<{
     return (
         <div
             ref={containerRef}
-            className={css({ position: 'relative' }) + ' ' + className}
+            className={css({ position: 'relative' })}
             onClick={setPoint}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}>
@@ -202,28 +201,8 @@ export const PointSelect: React.FC<{
     );
 };
 
-export const PointingInputVideo = ({
-    videoUrl,
-    userPoints,
-    setUserPoints,
-}: {
-    videoUrl: string;
-    userPoints: UserPointSelect[];
-    setUserPoints: (points: UserPointSelect[]) => void;
-}) => {
-    const { height, width } = useVideoConfig();
-    return (
-        <VideoOverlayHelper videoUrl={videoUrl}>
-            <svg
-                className={css({ position: 'absolute', top: '0', left: '0' })}
-                width={width}
-                height={height}>
-                {userPoints.map((point, i) => (
-                    <SinglePoint key={i} point={point} />
-                ))}
-            </svg>
-        </VideoOverlayHelper>
-    );
+export const PointingInputVideo = ({ videoUrl }: { videoUrl: string }) => {
+    return <VideoOverlayHelper videoUrl={videoUrl}></VideoOverlayHelper>;
 };
 
 const SinglePoint = ({ point }: { point: UserPointSelect }) => {

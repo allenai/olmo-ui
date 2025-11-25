@@ -7,7 +7,7 @@ export const VideoOverlayHelper = ({
     children,
 }: {
     videoUrl: string;
-    children: ReactNode;
+    children?: ReactNode;
 }) => {
     return (
         <AbsoluteFill>
