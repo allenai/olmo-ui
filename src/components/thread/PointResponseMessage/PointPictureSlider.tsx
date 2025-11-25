@@ -28,38 +28,13 @@ export const PointPictureSlider = ({
     onClick,
 }: PointPictureSliderProps): ReactNode => {
     const sliderRef = useRef<HTMLUListElement | null>(null);
-    const wrapperRef = useRef<HTMLDivElement | null>(null);
     const itemsRef = useRef<HTMLLIElement[]>([]);
     const [scrollIndex, setScrollIndex] = useState(initialIndex || 0);
-    // const observerRef = useRef<IntersectionObserver | null>(null);
 
     useEffect(() => {
         if (!sliderRef.current) return;
         if (sliderRef.current.children.length < 2) return;
         itemsRef.current = [...sliderRef.current.children] as HTMLLIElement[];
-
-        // if (observerRef.current) observerRef.current.disconnect();
-        // observerRef.current = new IntersectionObserver(
-        //     (entries) => {
-        //         const index = entries.findIndex((entry) => entry.isIntersecting);
-        //         itemsRef.current[index]?.scrollIntoView({
-        //             behavior: 'smooth',
-        //             inline: 'center',
-        //         });
-        //     },
-        //     {
-        //         threshold: 0.5,
-        //         root: wrapperRef.current,
-        //         rootMargin: '0px 80%',
-        //     }
-        // );
-        // itemsRef.current.forEach((node) => {
-        //     observerRef.current?.observe(node);
-        // });
-
-        // return () => {
-        //     observerRef.current?.disconnect();
-        // };
     }, []);
 
     useEffect(() => {
@@ -111,7 +86,6 @@ export const PointPictureSlider = ({
 
     return (
         <Box
-            ref={wrapperRef}
             sx={{
                 position: 'relative',
                 anchorName: '--slider',
@@ -149,9 +123,7 @@ export const PointPictureSlider = ({
                                           paddingBottom: showPerImageCaption ? '2.5em' : 0,
                                           scrollSnapAlign: 'center',
                                       }
-                                    : {
-                                          height: '100%',
-                                      }
+                                    : undefined
                             }
                             key={url}
                             onClick={() => {
