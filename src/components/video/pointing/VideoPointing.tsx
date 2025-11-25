@@ -7,6 +7,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { SeekBar } from '../seekBar/SeekBar';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { VideoOverlayHelper } from '../VideoOverlayHelper';
+import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 const FPS = 24;
 
@@ -22,6 +23,29 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
     const { durationInFrames, width, height } = useVideoMetaData(videoUrl, FPS);
 
     const [userPoint, setUserPoint] = useState<UserPointSelect | null>(null);
+
+    const mapPointToData = (userPoint: UserPointSelect | null) => {
+        // TODO refactor seekbar to generic type
+        const point: VideoTrackingPoints = {
+            label: '1',
+            type: 'track-points',
+            frameList: userPoint
+                ? [
+                      {
+                          timestamp: userPoint.timestamp,
+                          tracks: [
+                              {
+                                  x: userPoint.x,
+                                  trackId: '1',
+                                  y: userPoint.y,
+                              },
+                          ],
+                      },
+                  ]
+                : [],
+        };
+        return point;
+    };
 
     return (
         <div>
@@ -52,7 +76,12 @@ export function VideoPointingInput({ videoUrl }: { videoUrl: string }) {
                     />
                 </PointSelect>
             </div>
-            <SeekBar fps={FPS} playerRef={playerRef} durationInFrames={durationInFrames} />
+            <SeekBar
+                fps={FPS}
+                playerRef={playerRef}
+                data={mapPointToData(userPoint)}
+                durationInFrames={durationInFrames}
+            />
         </div>
     );
 }

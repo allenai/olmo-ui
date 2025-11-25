@@ -50,7 +50,7 @@ export const SeekBar: React.FC<{
         dragging: false,
     });
 
-    const onKeyDownControls = useOnKeyDownControls(playerRef, data || null, fps, durationInFrames);
+    const onKeyDownControls = useOnKeyDownControls(playerRef, data, fps, durationInFrames);
 
     useEffect(() => {
         const { current } = playerRef;
@@ -201,13 +201,11 @@ export const SeekBar: React.FC<{
                         }}
                         className={barFill}
                     />
-                    {data && (
-                        <TrackingDotsTimeline
-                            fps={fps}
-                            durationInFrames={durationInFrames}
-                            data={data}
-                        />
-                    )}
+                    <TrackingDotsTimeline
+                        fps={fps}
+                        durationInFrames={durationInFrames}
+                        data={data}
+                    />
                     <div
                         id="knob"
                         className={knob}
