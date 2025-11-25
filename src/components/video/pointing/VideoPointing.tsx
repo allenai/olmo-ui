@@ -2,7 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { varnishTheme } from '@allenai/varnish2/theme';
 import { Player, PlayerRef } from '@remotion/player';
 import { ReactNode, useRef, useState } from 'react';
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from 'remotion';
+import { useCurrentFrame, useVideoConfig } from 'remotion';
 
 import { SeekBar } from '../seekBar/SeekBar';
 import { useVideoMetaData } from '../useVideoMetaData';
@@ -64,28 +64,112 @@ export const PointSelect: React.FC<{
     onPointSelect: (point: UserPointSelect) => void;
     playerRef: React.RefObject<PlayerRef | null>;
 }> = ({ children, onPointSelect, playerRef, className }) => {
+    const [state, setState] = useState<'idle' | 'placing' | 'placed'>('placing');
+    const [userPoint, setUserPoint] = useState<{ x: number; y: number } | null>(null);
+
+    const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+
     const setPoint = (event: React.MouseEvent) => {
         if (!playerRef.current) {
             return;
         }
+        setState('placed');
         const target = event.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();
 
-        const x = (event.clientX - rect.left) / rect.width;
-        const y = (event.clientY - rect.top) / rect.height;
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
 
         const frame = playerRef.current.getCurrentFrame();
         const timestamp = frame * FPS;
-        onPointSelect({
-            x,
-            y,
+        const point = {
+            x: x / rect.width,
+            y: y / rect.height,
             timestamp,
-        });
+        };
+        onPointSelect(point);
+
+        setUserPoint({ x, y });
     };
 
+    const handleMouseMove = (event: React.MouseEvent) => {
+        const target = event.currentTarget as HTMLElement;
+        const rect = target.getBoundingClientRect();
+
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        setMousePosition({ x, y });
+    };
+
+    const handleMouseLeave = () => {
+        setMousePosition(null);
+    };
+
+    const dotX = state == 'placing' ? mousePosition?.x : userPoint!.x;
+    const dotY = state == 'placing' ? mousePosition?.y : userPoint!.y;
+
     return (
-        <div className={className} onClick={setPoint}>
+        <div
+            ref={containerRef}
+            className={css({ position: 'relative' }) + ' ' + className}
+            onClick={setPoint}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}>
             {children}
+            {dotX && dotY && (
+                <svg
+                    className={css({
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        width: '[100%]',
+                        height: '[100%]',
+                        pointerEvents: 'none',
+                    })}>
+                    <defs>
+                        <filter id="circleShadow" x="-50%" y="-50%" width="300%" height="300%">
+                            <feDropShadow
+                                dx="0"
+                                dy="0"
+                                stdDeviation="4"
+                                floodColor={varnishTheme.palette.secondary.main}
+                                floodOpacity="0.8"
+                            />
+                        </filter>
+                    </defs>
+                    {/* Vertical dashed line */}
+                    <line
+                        x1={dotX}
+                        y1={0}
+                        x2={dotX}
+                        y2="100%"
+                        stroke="white"
+                        strokeWidth={1}
+                        strokeDasharray="8 8"
+                    />
+                    {/* Horizontal dashed line */}
+                    <line
+                        x1={0}
+                        y1={dotY}
+                        x2="100%"
+                        y2={dotY}
+                        stroke="white"
+                        strokeWidth={1}
+                        strokeDasharray="8 8"
+                    />
+                    <circle
+                        cx={dotX}
+                        cy={dotY}
+                        r={10}
+                        stroke="white"
+                        strokeWidth={2}
+                        fill={`${varnishTheme.palette.secondary.main}`}
+                        filter={state === 'placing' ? 'url(#circleShadow)' : ''}
+                    />
+                </svg>
+            )}
         </div>
     );
 };
@@ -133,8 +217,4 @@ const SinglePoint = ({ point }: { point: UserPointSelect }) => {
             fill={varnishTheme.palette.primary.main}
         />
     );
-};
-
-const UserPointHoever = () => {
-    return <div>hi</div>;
 };
