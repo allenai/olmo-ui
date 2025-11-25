@@ -90,7 +90,7 @@ export const PointPictureSlider = ({
                 position: 'relative',
                 anchorName: '--slider',
                 height: '100%',
-                maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX,
+                maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX + 20, // clearance for markers
             }}>
             <Box
                 component="ul"
