@@ -1,5 +1,6 @@
 import { MessageStreamErrorType } from '@/api/Message';
 import type {
+    SchemaCreateMessageRequest,
     SchemaErrorChunk,
     SchemaFlatMessage,
     SchemaModelResponseChunk,
@@ -10,10 +11,6 @@ import type {
     SchemaToolCall,
     SchemaToolCallChunk,
 } from '@/api/playgroundApi/playgroundApiSchema';
-
-export interface InputPart {
-    type: string;
-}
 
 // Thread plus streaming state
 export interface StreamingThread extends SchemaThread {
@@ -28,7 +25,7 @@ export interface StreamMessageRequest {
     files?: FileList;
     role?: SchemaFlatMessage['role'];
     toolCallId?: SchemaToolCall['toolCallId'];
-    inputParts?: InputPart[];
+    inputParts?: SchemaCreateMessageRequest['inputParts'];
 }
 
 export type MessageChunk = Pick<SchemaFlatMessage, 'content'> & {

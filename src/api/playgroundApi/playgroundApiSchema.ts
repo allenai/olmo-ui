@@ -620,6 +620,8 @@ export type components = {
              * @default null
              */
             host?: string | null;
+            /** Inputparts */
+            inputParts?: components['schemas']['Molmo2PointPart'][];
             /**
              * Logprobs
              * @default null
@@ -1461,6 +1463,26 @@ export type components = {
          * @enum {string}
          */
         ModelType: 'base' | 'chat';
+        /** Molmo2PointPart */
+        Molmo2PointPart: {
+            /**
+             * Label
+             * @default object
+             */
+            label?: string;
+            /** Time */
+            time: number;
+            /**
+             * Type
+             * @default molmo_2_input_point
+             * @constant
+             */
+            type?: 'molmo_2_input_point';
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+        };
         /** MultiModalModel */
         MultiModalModel: {
             /**
@@ -2423,6 +2445,7 @@ export type SchemaModelOrder = components['schemas']['ModelOrder'];
 export type SchemaModelResponse = components['schemas']['ModelResponse'];
 export type SchemaModelResponseChunk = components['schemas']['ModelResponseChunk'];
 export type SchemaModelType = components['schemas']['ModelType'];
+export type SchemaMolmo2PointPart = components['schemas']['Molmo2PointPart'];
 export type SchemaMultiModalModel = components['schemas']['MultiModalModel'];
 export type SchemaMultiModalResponseModel = components['schemas']['MultiModalResponseModel'];
 export type SchemaParameterDef = components['schemas']['ParameterDef'];
