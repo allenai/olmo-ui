@@ -50,24 +50,40 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
         const imagePointsSets = pointsSets.filter((set) => set.type === 'image-points');
         const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
         return (
-            <Stack spacing={1}>
-                <PointPictureList
-                    imagePointsSets={pointsSets.filter((set) => set.type === 'image-points')}
-                    fileUrls={currentFilesInThread}
-                    onClick={handleLightboxOpen}
-                />
-                <PointPictureSliderCaption pointsSets={imagePointsSets} />
-                <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
-
-                <MediaLightbox open={lightboxData !== null} onClose={handleLightboxClose}>
-                    <PointPictureSlider
+            <>
+                <Stack spacing={1}>
+                    <PointPictureList
                         imagePointsSets={pointsSets.filter((set) => set.type === 'image-points')}
                         fileUrls={currentFilesInThread}
-                        showPerImageCaption={true}
-                        initialIndex={lightboxData}
+                        onClick={handleLightboxOpen}
                     />
+                    <PointPictureSliderCaption pointsSets={imagePointsSets} />
+                    <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
+                </Stack>
+                <MediaLightbox open={lightboxData !== null} onClose={handleLightboxClose}>
+                    {currentFilesInThread.length > 1 ? (
+                        <PointPictureSlider
+                            imagePointsSets={pointsSets.filter(
+                                (set) => set.type === 'image-points'
+                            )}
+                            fileUrls={currentFilesInThread}
+                            showPerImageCaption={true}
+                            initialIndex={lightboxData}
+                        />
+                    ) : (
+                        <Stack spacing={1}>
+                            <PointPictureList
+                                imagePointsSets={pointsSets.filter(
+                                    (set) => set.type === 'image-points'
+                                )}
+                                fileUrls={currentFilesInThread}
+                                onClick={handleLightboxOpen}
+                            />
+                            <PointPictureSliderCaption pointsSets={imagePointsSets} />
+                        </Stack>
+                    )}
                 </MediaLightbox>
-            </Stack>
+            </>
         );
     } else if (pointsSets?.[0].type === 'track-points') {
         // TODO: this space reserved for video points components

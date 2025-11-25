@@ -89,7 +89,7 @@ export const PointPictureSlider = ({
             sx={{
                 position: 'relative',
                 anchorName: '--slider',
-                height: isSingleImageList ? 'auto' : '100%',
+                height: '100%',
                 maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX,
             }}>
             <Box
@@ -105,7 +105,7 @@ export const PointPictureSlider = ({
                     height: '100%',
                     backgroundColor: 'inherit',
 
-                    overflowX: !isSingleImageList ? 'auto' : undefined,
+                    overflowX: 'auto',
 
                     scrollSnapType: 'x mandatory',
                     scrollBehavior: 'smooth',
@@ -115,16 +115,12 @@ export const PointPictureSlider = ({
                     return (
                         <PointPicture
                             data-index={index}
-                            sx={
-                                !isSingleImageList
-                                    ? {
-                                          height: '100%',
-                                          width: 'max-content',
-                                          paddingBottom: showPerImageCaption ? '2.5em' : 0,
-                                          scrollSnapAlign: 'center',
-                                      }
-                                    : undefined
-                            }
+                            sx={{
+                                height: '100%',
+                                width: 'max-content',
+                                paddingBottom: showPerImageCaption ? '2.5em' : 0,
+                                scrollSnapAlign: 'center',
+                            }}
                             key={url}
                             onClick={() => {
                                 return onClick?.({ url, index });
