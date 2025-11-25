@@ -144,7 +144,6 @@ export const PointSelect = ({
 
         setMousePosition({ x, y });
     };
-
     const handleMouseLeave = () => {
         setMousePosition(null);
     };
@@ -256,7 +255,7 @@ export const PointSelect = ({
                         x2={dotX}
                         y2="100%"
                         stroke="white"
-                        strokeWidth={1}
+                        strokeWidth={1.25}
                         strokeDasharray="8 8"
                     />
                     {/* Horizontal dashed line */}
@@ -266,7 +265,7 @@ export const PointSelect = ({
                         x2="100%"
                         y2={dotY}
                         stroke="white"
-                        strokeWidth={1}
+                        strokeWidth={1.25}
                         strokeDasharray="8 8"
                     />
                     <circle
