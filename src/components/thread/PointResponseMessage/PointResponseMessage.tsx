@@ -34,7 +34,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     }
 
     const { content } = message;
-    const pointsSets = extractMolmo1PointData(content) ?? extractMolmo2PointsData(content);
+    const AllLabelPoints = extractMolmo1PointData(content) ?? extractMolmo2PointsData(content);
 
     const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
 
@@ -46,26 +46,24 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     };
 
     // NOTE: this assumes all points from a response will be a homogenious type
-    if (pointsSets?.[0].type === 'image-points') {
-        const imagePointsSets = pointsSets.filter((set) => set.type === 'image-points');
+    if (AllLabelPoints?.[0].type === 'image-points') {
+        const imageLabelPoints = AllLabelPoints.filter((set) => set.type === 'image-points');
         const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
         return (
             <>
                 <Stack spacing={1}>
                     <PointPictureList
-                        imagePointsSets={pointsSets.filter((set) => set.type === 'image-points')}
+                        imagePointsSets={imageLabelPoints}
                         fileUrls={currentFilesInThread}
                         onClick={handleLightboxOpen}
                     />
-                    <PointPictureListCaption pointsSets={imagePointsSets} />
+                    <PointPictureListCaption pointsSets={imageLabelPoints} />
                     <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
                 </Stack>
                 <MediaLightbox open={lightboxItem !== null} onClose={handleLightboxClose}>
                     {currentFilesInThread.length > 1 ? (
                         <PointPictureSlider
-                            imagePointsSets={pointsSets.filter(
-                                (set) => set.type === 'image-points'
-                            )}
+                            imagePointsSets={imageLabelPoints}
                             fileUrls={currentFilesInThread}
                             showPerImageCaption={true}
                             moveToItem={lightboxItem ?? undefined}
@@ -73,36 +71,33 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                     ) : (
                         <Stack spacing={1}>
                             <PointPictureList
-                                imagePointsSets={pointsSets.filter(
-                                    (set) => set.type === 'image-points'
-                                )}
+                                imagePointsSets={imageLabelPoints}
                                 fileUrls={currentFilesInThread}
                                 onClick={handleLightboxOpen}
                             />
-                            <PointPictureListCaption pointsSets={imagePointsSets} />
+                            <PointPictureListCaption pointsSets={imageLabelPoints} />
                         </Stack>
                     )}
                 </MediaLightbox>
             </>
         );
-    } else if (pointsSets?.[0].type === 'track-points') {
-        // TODO: this space reserved for video points components
-        const pointInfos = pointsSets.filter((set) => set.type === 'track-points')[0];
+    } else if (AllLabelPoints?.[0].type === 'track-points') {
+        const videoTrackingPoints = AllLabelPoints.filter((set) => set.type === 'track-points')[0];
         const videoUrl = currentFilesInThread[0];
 
         return (
             <Stack gap={2}>
-                <MolmoTrackingVideo videoTrackingPoints={pointInfos} videoUrl={videoUrl} />
+                <MolmoTrackingVideo videoTrackingPoints={videoTrackingPoints} videoUrl={videoUrl} />
                 <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
             </Stack>
         );
-    } else if (pointsSets?.[0].type === 'frame-points') {
-        const pointInfos = pointsSets.filter((set) => set.type === 'frame-points')[0];
+    } else if (AllLabelPoints?.[0].type === 'frame-points') {
+        const videoFramePoints = AllLabelPoints.filter((set) => set.type === 'frame-points')[0];
         const videoUrl = currentFilesInThread[0];
 
         return (
             <Stack gap={2}>
-                <MolmoCountingVideo videoUrl={videoUrl} videoPoints={pointInfos} />
+                <MolmoCountingVideo videoUrl={videoUrl} videoPoints={videoFramePoints} />
                 <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
             </Stack>
         );
