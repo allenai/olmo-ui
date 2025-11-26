@@ -4,13 +4,8 @@ import { varnishTheme } from '@allenai/varnish2/theme';
 import { PlayerRef } from '@remotion/player';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
+import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
 import { RemoveButton } from '@/components/thread/QueryForm/FileUploadThumbnails/Thumbnail';
-
-export type UserPointSelect = {
-    x: number; // in percentage
-    y: number; // in percentage
-    timestamp: number; // in seconds
-};
 
 export const VideoDotControl = ({
     children,
@@ -21,9 +16,9 @@ export const VideoDotControl = ({
     fps,
 }: {
     children: ReactNode;
-    onPointSelect: (point: UserPointSelect | null) => void;
+    onPointSelect: (point: SchemaMolmo2PointPart | null) => void;
     playerRef: React.RefObject<PlayerRef | null>;
-    userPoint: UserPointSelect | null;
+    userPoint: SchemaMolmo2PointPart | null;
     onRemoveFile: () => void;
     fps: number;
 }) => {
@@ -42,8 +37,7 @@ export const VideoDotControl = ({
 
         const onFrameUpdate = () => {
             setOnSelectedFrame(
-                userPoint !== null &&
-                    Math.abs(current.getCurrentFrame() - userPoint.timestamp * fps) < 2
+                userPoint !== null && Math.abs(current.getCurrentFrame() - userPoint.time * fps) < 2
             );
         };
 
@@ -55,7 +49,7 @@ export const VideoDotControl = ({
         };
     }, [playerRef, userPoint]);
 
-    const setPoint = (point: UserPointSelect) => {
+    const setPoint = (point: SchemaMolmo2PointPart) => {
         setState('placed');
         setShowShockwave(true);
         setTimeout(() => {
@@ -84,10 +78,10 @@ export const VideoDotControl = ({
         }
 
         const frame = playerRef.current.getCurrentFrame();
-        const timestamp = frame / fps;
+        const time = frame / fps;
         const point = {
             ...percentXYFromEvent(event),
-            timestamp,
+            time,
         };
         setPoint(point);
     };

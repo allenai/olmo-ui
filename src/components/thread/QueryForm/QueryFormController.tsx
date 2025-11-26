@@ -209,11 +209,31 @@ export const QueryFormController = ({
             <QueryFormStyledBox>
                 <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
                     {files && MODEL_SUPPORTS_POINTING_INPUT && files.length === 1 && (
-                        <VideoPointingInput
-                            onRemoveFile={() => {
-                                handleRemoveFile(files[0]);
+                        <Controller
+                            name="inputParts"
+                            control={formContext.control}
+                            render={({
+                                // not particularly using hook form anymore
+                                field: {
+                                    name,
+                                    onBlur,
+                                    disabled: _disabled,
+                                    onChange,
+                                    value: value,
+                                    ref: _ref,
+                                },
+                            }) => {
+                                return (
+                                    <VideoPointingInput
+                                        onRemoveFile={() => {
+                                            handleRemoveFile(files[0]);
+                                        }}
+                                        videoUrl={getObjectUrl(files[0])}
+                                        userPoint={value ? value[0] : null}
+                                        setUserPoint={(point) => onChange(point ? [point] : [])}
+                                    />
+                                );
                             }}
-                            videoUrl={getObjectUrl(files[0])}
                         />
                     )}
                     <Stack gap={1} alignItems="flex-start" width={1} position="relative">

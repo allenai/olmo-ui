@@ -1,29 +1,33 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Player, PlayerRef } from '@remotion/player';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { SeekBar } from '../seekBar/SeekBar';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { VideoOverlayHelper } from '../VideoOverlayHelper';
-import { UserPointSelect, VideoDotControl } from './VideoDotControl';
+
+import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
+import { VideoDotControl } from './VideoDotControl';
 const FPS = 24;
 
 export function VideoPointingInput({
     videoUrl,
     onRemoveFile,
+    userPoint,
+    setUserPoint,
 }: {
     videoUrl: string;
     onRemoveFile: () => void;
+    userPoint: SchemaMolmo2PointPart | null;
+    setUserPoint: (value: SchemaMolmo2PointPart | null) => void;
 }) {
     const playerRef = useRef<PlayerRef>(null);
 
     const { durationInFrames, width, height } = useVideoMetaData(videoUrl, FPS);
 
-    const [userPoint, setUserPoint] = useState<UserPointSelect | null>(null);
-
-    const mapPointToData = (userPoint: UserPointSelect | null) => {
+    const mapPointToData = (userPoint: SchemaMolmo2PointPart | null) => {
         // TODO refactor seekbar to generic type
         const point: VideoTrackingPoints = {
             label: '1',
@@ -31,7 +35,7 @@ export function VideoPointingInput({
             frameList: userPoint
                 ? [
                       {
-                          timestamp: userPoint.timestamp,
+                          timestamp: userPoint.time,
                           tracks: [
                               {
                                   x: userPoint.x,
