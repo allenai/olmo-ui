@@ -1,12 +1,10 @@
-import { Box } from '@mui/material';
+import Masonry from '@mui/lab/Masonry';
 import { ReactNode } from 'react';
 
 import { ImagePoints } from '../points/pointsDataTypes';
 import {
     MAX_THREAD_IMAGE_HEIGHT_PX,
     MAX_THREAD_IMAGE_WIDTH_PX,
-    MIN_THREAD_IMAGE_HEIGHT_PX,
-    MIN_THREAD_IMAGE_WIDTH_PX,
 } from '../ThreadDisplay/threadDisplayConsts';
 import { PointPicture, PointsSets } from './PointPicture';
 
@@ -47,14 +45,7 @@ export const PointPictureList = ({
     }, new Map());
 
     return (
-        <Box
-            component="ul"
-            sx={{
-                display: 'grid',
-                gridTemplateColumns: `repeat(auto-fit, minmax(${MIN_THREAD_IMAGE_WIDTH_PX}px, auto))`,
-                gridTemplateRows: `repeat(auto-fit, minmax(${MIN_THREAD_IMAGE_HEIGHT_PX}px, auto))`,
-                gap: 1,
-            }}>
+        <Masonry columns={fileUrls.length < 3 ? fileUrls.length : 3} spacing={1}>
             {fileUrls.map((url, index) => {
                 const pointsSets = pointsSetsByFileUrl.get(url) || [];
                 return (
@@ -78,6 +69,6 @@ export const PointPictureList = ({
                     />
                 );
             })}
-        </Box>
+        </Masonry>
     );
 };

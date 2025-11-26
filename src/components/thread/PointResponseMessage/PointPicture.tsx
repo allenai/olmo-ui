@@ -1,5 +1,4 @@
-import { Box, styled } from '@mui/material';
-import { SxProps, Theme } from '@mui/system';
+import { Box, BoxProps, styled } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { Point } from '../points/pointsDataTypes';
@@ -13,11 +12,10 @@ export interface PointsSets {
     points: Point[];
 }
 
-interface PointPictureProps {
+interface PointPictureProps extends BoxProps {
     imageLink: string;
     pointsSets: PointsSets[];
     caption?: React.ReactNode;
-    sx?: SxProps<Theme>;
     onClick?: () => void;
 }
 
@@ -25,13 +23,13 @@ export const PointPicture = ({
     imageLink,
     pointsSets,
     caption,
-    sx,
     onClick,
+    ...boxProps
 }: PointPictureProps): ReactNode => {
     const pointColors = usePointColors();
 
     return (
-        <Box component="li" sx={sx}>
+        <Box {...boxProps}>
             <Box
                 component={onClick ? 'button' : 'figure'}
                 onClick={onClick}

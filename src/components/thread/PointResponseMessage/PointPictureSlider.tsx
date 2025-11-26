@@ -175,14 +175,14 @@ export const PointPictureSlider = ({
                     const pointsSets = pointsSetsByFileUrl.get(url) || [];
                     return (
                         <PointPicture
-                            data-index={index}
+                            key={url}
+                            component="li"
                             sx={{
                                 height: '100%',
                                 width: 'max-content',
                                 paddingBottom: showPerImageCaption ? '2.5em' : 0,
                                 scrollSnapAlign: 'center',
                             }}
-                            key={url}
                             onClick={
                                 onClick
                                     ? () => {
