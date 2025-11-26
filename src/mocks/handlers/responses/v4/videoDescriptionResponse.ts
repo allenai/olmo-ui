@@ -1,7 +1,9 @@
 // video description -- thread
 import type { Thread } from '@/api/playgroundApi/thread';
+import VIDEO_DESCRIPTION_VIDEO from '@/mocks/sample-data/tracking-video.mp4';
 
 export const VIDEO_DESCRIPTION_ROOT_ID = 'msg_W4L8D1A8R9';
+export { VIDEO_DESCRIPTION_VIDEO };
 
 export const videoDescriptionResponse = {
     id: VIDEO_DESCRIPTION_ROOT_ID,
@@ -19,9 +21,7 @@ export const videoDescriptionResponse = {
             errorSeverity: null,
             expirationTime: null,
             extraParameters: null,
-            fileUrls: [
-                'https://storage.googleapis.com/ai2-playground-molmo/msg_W4L8D1A8R9/msg_W4L8D1A8R9-0.mp4',
-            ],
+            fileUrls: [VIDEO_DESCRIPTION_VIDEO],
             final: true,
             finishReason: null,
             harmful: null,

@@ -1,7 +1,7 @@
 // video counting -- streaming
 import type { StreamingMessageResponse } from '@/contexts/stream-types';
 
-import { VIDEO_COUNTING_ROOT_ID } from '../videoCountingResponse';
+import { VIDEO_COUNTING_ROOT_ID, VIDEO_COUNTING_VIDEO } from '../videoCountingResponse';
 
 export const videoCountingStreamResponse = [
     {
@@ -24,9 +24,7 @@ export const videoCountingStreamResponse = [
                 errorSeverity: null,
                 expirationTime: null,
                 extraParameters: null,
-                fileUrls: [
-                    'https://storage.googleapis.com/ai2-playground-molmo/msg_K8S9I3A8K5/msg_K8S9I3A8K5-0.MOV',
-                ],
+                fileUrls: [VIDEO_COUNTING_VIDEO],
                 final: false,
                 finishReason: null,
                 harmful: null,
@@ -842,9 +840,7 @@ export const videoCountingStreamResponse = [
                 errorSeverity: null,
                 expirationTime: null,
                 extraParameters: null,
-                fileUrls: [
-                    'https://storage.googleapis.com/ai2-playground-molmo/msg_K8S9I3A8K5/msg_K8S9I3A8K5-0.MOV',
-                ],
+                fileUrls: [VIDEO_COUNTING_VIDEO],
                 final: true,
                 finishReason: null,
                 harmful: null,

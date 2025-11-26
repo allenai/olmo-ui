@@ -1,7 +1,9 @@
 // video counting thread
 import type { Thread } from '@/api/playgroundApi/thread';
+import VIDEO_COUNTING_VIDEO from '@/mocks/sample-data/counting-video.mp4';
 
 export const VIDEO_COUNTING_ROOT_ID = 'msg_K8S9I3A8K5';
+export { VIDEO_COUNTING_VIDEO };
 
 export const videoCountingResponse = {
     id: VIDEO_COUNTING_ROOT_ID,
@@ -19,9 +21,7 @@ export const videoCountingResponse = {
             errorSeverity: null,
             expirationTime: null,
             extraParameters: null,
-            fileUrls: [
-                'https://storage.googleapis.com/ai2-playground-molmo/msg_K8S9I3A8K5/msg_K8S9I3A8K5-0.MOV',
-            ],
+            fileUrls: [VIDEO_COUNTING_VIDEO],
             final: true,
             finishReason: null,
             harmful: null,

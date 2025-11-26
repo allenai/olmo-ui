@@ -1,7 +1,7 @@
 // video tracking streaming
 import type { StreamingMessageResponse } from '@/contexts/stream-types';
 
-import { VIDEO_TRACKING_ROOT_ID } from '../videoTrackingResponse';
+import { VIDEO_TRACKING_ROOT_ID, VIDEO_TRACKING_VIDEO } from '../videoTrackingResponse';
 
 export const videoTrackingStreamResponse = [
     {
@@ -24,9 +24,7 @@ export const videoTrackingStreamResponse = [
                 errorSeverity: null,
                 expirationTime: null,
                 extraParameters: null,
-                fileUrls: [
-                    'https://storage.googleapis.com/ai2-playground-molmo/msg_G3J4A0O1D2/msg_G3J4A0O1D2-0.mp4',
-                ],
+                fileUrls: [VIDEO_TRACKING_VIDEO],
                 final: false,
                 finishReason: null,
                 harmful: null,
@@ -1362,9 +1360,7 @@ export const videoTrackingStreamResponse = [
                 errorSeverity: null,
                 expirationTime: null,
                 extraParameters: null,
-                fileUrls: [
-                    'https://storage.googleapis.com/ai2-playground-molmo/msg_G3J4A0O1D2/msg_G3J4A0O1D2-0.mp4',
-                ],
+                fileUrls: [VIDEO_TRACKING_VIDEO],
                 final: true,
                 finishReason: null,
                 harmful: null,

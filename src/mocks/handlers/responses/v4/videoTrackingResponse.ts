@@ -1,7 +1,9 @@
 // video tracking -- thread
 import type { Thread } from '@/api/playgroundApi/thread';
+import VIDEO_TRACKING_VIDEO from '@/mocks/sample-data/tracking-video.mp4';
 
 export const VIDEO_TRACKING_ROOT_ID = 'msg_G3J4A0O1D2';
+export { VIDEO_TRACKING_VIDEO };
 
 export const videoTrackingResponse = {
     id: VIDEO_TRACKING_ROOT_ID,
@@ -19,9 +21,7 @@ export const videoTrackingResponse = {
             errorSeverity: null,
             expirationTime: null,
             extraParameters: null,
-            fileUrls: [
-                'https://storage.googleapis.com/ai2-playground-molmo/msg_G3J4A0O1D2/msg_G3J4A0O1D2-0.mp4',
-            ],
+            fileUrls: [VIDEO_TRACKING_VIDEO],
             final: true,
             finishReason: null,
             harmful: null,

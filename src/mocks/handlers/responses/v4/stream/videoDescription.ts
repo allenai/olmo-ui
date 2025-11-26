@@ -1,7 +1,7 @@
 // video description -- streaming
 import type { StreamingMessageResponse } from '@/contexts/stream-types';
 
-import { VIDEO_DESCRIPTION_ROOT_ID } from '../videoDescriptionResponse';
+import { VIDEO_DESCRIPTION_ROOT_ID, VIDEO_DESCRIPTION_VIDEO } from '../videoDescriptionResponse';
 
 export const videoDescriptionStreamResponse = [
     {
@@ -24,9 +24,7 @@ export const videoDescriptionStreamResponse = [
                 errorSeverity: null,
                 expirationTime: null,
                 extraParameters: null,
-                fileUrls: [
-                    'https://storage.googleapis.com/ai2-playground-molmo/msg_W4L8D1A8R9/msg_W4L8D1A8R9-0.mp4',
-                ],
+                fileUrls: [VIDEO_DESCRIPTION_VIDEO],
                 final: false,
                 finishReason: null,
                 harmful: null,
@@ -587,9 +585,7 @@ export const videoDescriptionStreamResponse = [
                 errorSeverity: null,
                 expirationTime: null,
                 extraParameters: null,
-                fileUrls: [
-                    'https://storage.googleapis.com/ai2-playground-molmo/msg_W4L8D1A8R9/msg_W4L8D1A8R9-0.mp4',
-                ],
+                fileUrls: [VIDEO_DESCRIPTION_VIDEO],
                 final: true,
                 finishReason: null,
                 harmful: null,
