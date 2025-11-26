@@ -1,6 +1,7 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
 import { SettingsRounded } from '@mui/icons-material';
 import { type Key, Menu, MenuItem, MenuTrigger, Popover } from 'react-aria-components';
+
+import { menuClassName, menuItemClassName } from '@/components/menu/sharedMenuStyles';
 
 import { ControlButton } from './ControlButton';
 
@@ -16,10 +17,10 @@ export const SettingsControl = ({
             <ControlButton>
                 <SettingsRounded />
             </ControlButton>
-            <Popover placement="top left">
-                <Menu items={menuItems} onAction={onAction} className={menu}>
+            <Popover placement="top">
+                <Menu items={menuItems} onAction={onAction} className={menuClassName}>
                     {({ id, label }) => (
-                        <MenuItem className={menuItem} key={id} id={id}>
+                        <MenuItem className={menuItemClassName} key={id} id={id}>
                             {label}
                         </MenuItem>
                     )}
@@ -28,25 +29,3 @@ export const SettingsControl = ({
         </MenuTrigger>
     );
 };
-
-const menuItem = css({
-    color: 'text',
-    paddingBlock: '1',
-    paddingInline: '5',
-    cursor: 'pointer',
-    _hover: {
-        backgroundColor: 'background.opacity-4',
-    },
-    outline: 'none',
-});
-
-const menu = css({
-    display: 'grid',
-    gap: '2',
-    paddingBlock: '2',
-    backgroundColor: 'elements.overrides.form.input.fill',
-    borderRadius: 'sm',
-    overflow: 'hidden',
-    boxShadow: '0 4px 4px 0 rgba(0, 0, 0, 0.20)',
-    outline: 'none',
-});
