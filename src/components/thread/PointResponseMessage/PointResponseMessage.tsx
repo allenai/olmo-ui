@@ -18,7 +18,7 @@ import { PointPictureList } from './PointPictureList';
 import { PointPictureSlider } from './PointPictureSlider';
 
 export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => {
-    const [lightboxData, setLightboxData] = useState<number | null>(null);
+    const [lightboxItem, setLightboxItem] = useState<number>();
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
     const { data: currentFilesInThread } = useThread(threadId, (thread) => {
@@ -39,10 +39,10 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
 
     const handleLightboxOpen = ({ index }: { index: number }) => {
-        setLightboxData(index);
+        setLightboxItem(index);
     };
     const handleLightboxClose = () => {
-        setLightboxData(null);
+        setLightboxItem(undefined);
     };
 
     // NOTE: this assumes all points from a response will be a homogenious type
@@ -60,7 +60,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                     <PointPictureListCaption pointsSets={imagePointsSets} />
                     <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
                 </Stack>
-                <MediaLightbox open={lightboxData !== null} onClose={handleLightboxClose}>
+                <MediaLightbox open={lightboxItem !== undefined} onClose={handleLightboxClose}>
                     {currentFilesInThread.length > 1 ? (
                         <PointPictureSlider
                             imagePointsSets={pointsSets.filter(
@@ -68,7 +68,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                             )}
                             fileUrls={currentFilesInThread}
                             showPerImageCaption={true}
-                            initialIndex={lightboxData}
+                            moveToItem={lightboxItem}
                         />
                     ) : (
                         <Stack spacing={1}>

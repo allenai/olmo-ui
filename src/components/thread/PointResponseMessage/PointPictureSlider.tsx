@@ -13,24 +13,26 @@ import { PointPicture, PointsSets } from './PointPicture';
 import { PointPictureCaption } from './PointPictureCaption';
 
 interface PointPictureSliderProps {
-    initialIndex?: number | null;
+    moveToItem?: number;
     imagePointsSets?: ImagePoints[];
     fileUrls: readonly string[];
     showPerImageCaption?: boolean;
     onClick?: (image: { url: string; index: number }) => void;
+    onItemChange?: (newItemIndex: number) => void;
 }
 
 export const PointPictureSlider = ({
-    initialIndex,
+    moveToItem,
     imagePointsSets = [],
     fileUrls,
     showPerImageCaption,
     onClick,
+    onItemChange,
 }: PointPictureSliderProps): ReactNode => {
     const sliderRef = useRef<HTMLUListElement | null>(null);
     const itemsRef = useRef<HTMLLIElement[]>([]);
     const scrollBehaviorRef = useRef<ScrollBehavior>('instant');
-    const [scrollIndex, setScrollIndex] = useState(initialIndex || 0);
+    const [scrollIndex, setScrollIndex] = useState(0);
 
     const isAtStart = scrollIndex <= 0;
     const isAtEnd = scrollIndex >= itemsRef.current.length - 1;
@@ -90,10 +92,18 @@ export const PointPictureSlider = ({
             });
             scrollBehaviorRef.current = 'smooth';
         }, 50);
+        onItemChange?.(scrollIndex);
         return () => {
             clearTimeout(to);
         };
-    }, [scrollIndex]);
+    }, [onItemChange, scrollIndex]);
+
+    // use moveToItem and onItemChange for controlled movement
+    useEffect(() => {
+        if (moveToItem != null) {
+            setScrollIndex(moveToItem);
+        }
+    }, [moveToItem]);
 
     const pointsSetsByFileUrl = fileUrls.reduce<Map<string, PointsSets[]>>((acc, url, index) => {
         imagePointsSets.forEach(({ label, alt, imageList }) => {
