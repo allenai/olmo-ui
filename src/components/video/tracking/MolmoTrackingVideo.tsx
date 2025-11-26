@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { SeekBar } from '../seekBar/SeekBar';
+import { Controls } from '../controls/Controls';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { FPS, MOVE_TO_BEGINNING_WHEN_ENDED } from '../videoConsts';
 import { VideoTracking } from './Tracking';
@@ -44,16 +44,18 @@ export function MolmoTrackingVideo({
                     durationInFrames={durationInFrames}
                     compositionWidth={width}
                     compositionHeight={height}
+                    initiallyMuted={true}
                     fps={FPS}
                     style={{ width: '100%', flex: '1' }}
                     moveToBeginningWhenEnded={MOVE_TO_BEGINNING_WHEN_ENDED}
                 />
             </div>
-            <SeekBar
+            <Controls
                 fps={FPS}
                 playerRef={playerRef}
                 data={videoTrackingPoints}
                 durationInFrames={durationInFrames}
+                frameStyle="line"
             />
             <Checkbox
                 isSelected={showInterpolation}

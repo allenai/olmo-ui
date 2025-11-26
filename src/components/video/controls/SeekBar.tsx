@@ -1,17 +1,7 @@
-import { css, sva } from '@allenai/varnish-panda-runtime/css';
-import { Button } from '@allenai/varnish-ui';
-import { PauseRounded, PlayArrowRounded } from '@mui/icons-material';
-import type { PlayerRef } from '@remotion/player';
-import React, {
-    forwardRef,
-    KeyboardEventHandler,
-    PointerEventHandler,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
-import { interpolate } from 'remotion';
+import { sva } from '@allenai/varnish-panda-runtime/css';
+import { cx } from '@allenai/varnish-ui';
+import { forwardRef, KeyboardEventHandler, PointerEventHandler } from 'react';
+import { Button } from 'react-aria-components';
 
 import type {
     VideoFramePoints,
@@ -19,31 +9,18 @@ import type {
 } from '@/components/thread/points/pointsDataTypes';
 
 import { TrackingDotsTimeline } from './TrackingDotsTimeLine';
-import { useElementSize } from './useElementSize';
-import { useOnKeyDownControls } from './useOnKeyDownControls';
-
-const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
-    const pos = clientX;
-    const frame = Math.round(
-        interpolate(pos, [0, width], [0, Math.max(durationInFrames - 1, 0)], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-        })
-    );
-    return frame;
-};
 
 interface SeekBarProps {
     durationInFrames: number;
     frame: number;
     fps: number;
-    frameStyle: 'dot' | 'line';
-    //
     videoPoints: VideoTrackingPoints | VideoFramePoints;
-    //
     onKeyDownControls: KeyboardEventHandler<HTMLElement>;
     onPointerDown: PointerEventHandler<HTMLElement>;
     dragging: boolean;
+    // variant:
+    frameStyle: 'dot' | 'line';
+    knobBehindMarkers?: boolean;
 }
 
 export const SeekBar = forwardRef<HTMLDivElement, SeekBarProps>(function SeekBar(
@@ -68,32 +45,40 @@ export const SeekBar = forwardRef<HTMLDivElement, SeekBarProps>(function SeekBar
             aria-valuemin={0}
             aria-valuemax={(durationInFrames - 1) / fps}
             aria-valuenow={frame / fps}
-            tabIndex={0}
+            tabIndex={-1} // focus on knob seems more correct
             className={seekBarClassName.container}
             onKeyDown={onKeyDownControls}>
+            <div
+                className={seekBarClassName.played}
+                style={{
+                    width: `calc(${(frame / (durationInFrames - 1)) * 100}%)`,
+                }}
+            />
             <div
                 ref={containerRef}
                 onPointerDown={onPointerDown}
                 className={seekBarClassName.inner}>
                 <div
+                    id="knob-background"
+                    className={cx(seekBarClassName.knob, seekBarClassName.knobBackground)}
+                    data-dragging={String(dragging)}
                     style={{
-                        //
-                        width: `calc(${(frame / (durationInFrames - 1)) * 100}% + var(--timeline-padding) )`,
+                        left: `calc(${(frame / (durationInFrames - 1)) * 100}%)`,
                     }}
-                    className={seekBarClassName.barFill}
                 />
                 <TrackingDotsTimeline
                     fps={fps}
                     durationInFrames={durationInFrames}
                     data={videoPoints}
-                    frameClassName={seekBarClassName.frame}
+                    frameClassName={seekBarClassName.marker}
                 />
-                <div
+                <Button
                     id="knob"
-                    className={seekBarClassName.knob}
+                    onPointerDown={onPointerDown}
+                    className={cx(seekBarClassName.knob, seekBarClassName.knobRing)}
                     data-dragging={String(dragging)}
                     style={{
-                        left: `calc(${(frame / (durationInFrames - 1)) * 100}% - var(--knob-width) / 2)`,
+                        left: `calc(${(frame / (durationInFrames - 1)) * 100}%)`,
                     }}
                 />
             </div>
@@ -102,77 +87,110 @@ export const SeekBar = forwardRef<HTMLDivElement, SeekBarProps>(function SeekBar
 });
 
 const seekbar = sva({
-    slots: ['container', 'inner', 'barFill', 'knob', 'frame'],
+    slots: ['container', 'inner', 'played', 'knob', 'knobBackground', 'knobRing', 'marker'],
     base: {
         container: {
-            '--bar-height': '25px',
-            '--timeline-padding': '10px',
+            '--bar-height': '{spacing.3}',
+            '--timeline-padding': '6px', // half the height
+            '--knob-border-width': '2px',
+            '--knob-size': 'calc(var(--bar-height))',
 
-            paddingInline: 'var(--timeline-padding, 10px)',
             userSelect: 'none',
-            WebkitUserSelect: 'none',
             boxSizing: 'border-box',
             cursor: 'pointer',
             position: 'relative',
             touchAction: 'none',
-            backgroundColor: 'white',
-            borderRadius: 'sm',
-            borderWidth: '2',
-            borderColor: 'pink.30',
+            borderRadius: 'full',
             flex: '1',
+
+            backgroundColor: 'background.opacity-20',
+            outline: 'none',
+            outlineOffset: '0',
+
+            _focusVisible: {
+                outlineColor: 'cream.50',
+            },
+        },
+        played: {
+            position: 'absolute',
+            left: '0',
+            height: 'var(--bar-height)',
+            paddingInline: 'var(--timeline-padding)',
+            backgroundColor: 'teal.100',
+            borderRadius: 'full',
         },
         inner: {
             height: 'var(--bar-height)',
-            width: 'auto',
+            width: '[calc(100% - 2 * var(--timeline-padding))]',
+            marginInline: 'var(--timeline-padding)',
             position: 'relative',
-        },
-        barFill: {
-            height: 'var(--bar-height)',
-            backgroundColor: 'pink.20',
-            borderRadius: 'sm',
-            position: 'absolute',
-            marginLeft: `[calc( -1 * var(--timeline-padding) )]`,
-            left: '0',
+            isolation: 'isolate',
         },
         knob: {
-            '--knob-width': '10px',
-            height: '[calc(var(--bar-height) + 10px)]',
-            width: 'var(--knob-width)',
-            borderRadius: 'sm',
+            height: 'var(--knob-size)',
+            width: 'var(--knob-size)',
+
+            borderRadius: 'full',
+
+            transform: '[translateX(-50%)]',
+
             position: 'absolute',
             cursor: 'grab',
-            top: '[-5px]',
-            backgroundColor: 'teal.100',
-            '&[data-dragging=true]': {
+            top: '0',
+
+            _dragging: {
                 cursor: 'grabbing',
             },
+            _focusVisible: {
+                outline: 'none',
+                borderColor: 'cream.80',
+            },
         },
-        frame: {
+        knobBackground: {
+            backgroundColor: 'elements.primary.contrast',
+        },
+        knobRing: {
+            outline: 'var(--knob-border-width) solid',
+            outlineColor: 'background.opacity-50',
+        },
+        marker: {
             position: 'absolute',
             backgroundColor: 'pink.100',
-            top: '2',
         },
     },
     variants: {
         frameStyle: {
             dot: {
-                frame: {
-                    '--tracking_dot_size': '10px',
+                marker: {
+                    '--tracking_dot_size': '{spacing.3}',
                     borderRadius: 'full',
                     width: 'var(--tracking_dot_size)',
                     height: 'var(--tracking_dot_size)',
                 },
             },
             line: {
-                frame: {
-                    '--tracking_dot_size': '1px',
+                marker: {
+                    '--tracking_dot_size': '2px',
                     width: 'var(--tracking_dot_size)',
                     height: '[100%]',
+                },
+            },
+        },
+        // configurable knob indexing
+        knobBehindMarkers: {
+            true: {
+                // style one way
+            },
+            false: {
+                // style another way
+                knob: {
+                    zIndex: '[1]',
                 },
             },
         },
     },
     defaultVariants: {
         frameStyle: 'dot',
+        knobBehindMarkers: false,
     },
 });

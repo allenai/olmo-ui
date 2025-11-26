@@ -6,7 +6,6 @@ import type { VideoFramePoints } from '@/components/thread/points/pointsDataType
 import { Controls } from '../controls/Controls';
 import { FilmStrip } from '../filmStrip/FilmStrip';
 import { THUMBNAIL_HEIGHT } from '../filmStrip/filmStripConsts';
-import { SeekBar } from '../seekBar/SeekBar';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { FPS, MOVE_TO_BEGINNING_WHEN_ENDED } from '../videoConsts';
 import { VideoPlayerContainer, VideoPlayerWrapper } from '../VideoPlayerContainer';
@@ -53,6 +52,7 @@ export const MolmoCountingVideo = ({
                     compositionWidth={width}
                     compositionHeight={height}
                     fps={FPS}
+                    initiallyMuted={true}
                     style={{ width: '100%', flex: 1 }}
                     moveToBeginningWhenEnded={MOVE_TO_BEGINNING_WHEN_ENDED}
                 />

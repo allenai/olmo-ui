@@ -18,7 +18,7 @@ interface FramePointsProps {
 
 export const FramePoints = memo(function FramePoints({ points }: FramePointsProps): ReactNode {
     return (
-        <svg className={svgClassName}>
+        <svg className={svgClassName} aria-hidden>
             {points.map(({ x, y, pointId }) => (
                 <circle
                     key={pointId}

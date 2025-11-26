@@ -1,14 +1,22 @@
 import type { PlayerRef } from '@remotion/player';
-import React, { useCallback, useMemo } from 'react';
+import React, { KeyboardEventHandler, useCallback, useMemo } from 'react';
 
 import { VideoFramePoints, VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+
+export type JumpBasedOnCurrentFn = (direction: 'forward' | 'back') => void;
+
+type UseOnKeyDownControlsReturn = {
+    handleKeyDown: KeyboardEventHandler<HTMLElement>;
+    jumpBasedOnCurrent: JumpBasedOnCurrentFn;
+};
 
 export const useOnKeyDownControls = (
     playerRef: React.RefObject<PlayerRef | null>,
     data: VideoTrackingPoints | VideoFramePoints,
     fps: number,
-    durationInFrames: number
-) => {
+    durationInFrames: number,
+    disableSpace: boolean = false
+): UseOnKeyDownControlsReturn => {
     const timesOfInterest = useMemo(() => {
         const times = [
             ...data.frameList.map((frame) => {
@@ -52,8 +60,20 @@ export const useOnKeyDownControls = (
         [playerRef, fps, timesOfInterest]
     );
 
-    const onKeyDown = useCallback(
-        (e: React.KeyboardEvent<HTMLDivElement>, disableSpace: boolean = false) => {
+    const jumpBasedOnCurrent: JumpBasedOnCurrentFn = useCallback(
+        (direction: 'forward' | 'back') => {
+            if (!playerRef.current) {
+                return;
+            }
+            const player = playerRef.current;
+            player.pause();
+            jumpBasedOnTime(player.getCurrentFrame(), direction);
+        },
+        [playerRef, jumpBasedOnTime]
+    );
+
+    const handleKeyDown: KeyboardEventHandler<HTMLElement> = useCallback(
+        (e: React.KeyboardEvent<HTMLDivElement>) => {
             if (!playerRef.current) {
                 return;
             }
@@ -72,17 +92,21 @@ export const useOnKeyDownControls = (
             if (e.code === 'ArrowLeft') {
                 e.preventDefault();
                 player.pause();
-                jumpBasedOnTime(playerRef.current.getCurrentFrame(), 'back');
+                jumpBasedOnTime(player.getCurrentFrame(), 'back');
                 return;
             }
 
             if (e.code === 'ArrowRight') {
                 e.preventDefault();
                 player.pause();
-                jumpBasedOnTime(playerRef.current.getCurrentFrame(), 'forward');
+                jumpBasedOnTime(player.getCurrentFrame(), 'forward');
             }
         },
-        [playerRef, jumpBasedOnTime]
+        [playerRef, jumpBasedOnTime, disableSpace]
     );
-    return onKeyDown;
+
+    return {
+        handleKeyDown,
+        jumpBasedOnCurrent,
+    };
 };

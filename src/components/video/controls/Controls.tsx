@@ -1,12 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import type { PlayerRef } from '@remotion/player';
-import {
-    RefObject,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { interpolate } from 'remotion';
 
 import type {
@@ -14,10 +8,17 @@ import type {
     VideoTrackingPoints,
 } from '@/components/thread/points/pointsDataTypes';
 
+import { FullScreenButton } from './FullScreenButton';
 import { PlayPause } from './PlayPause';
 import { SeekBar } from './SeekBar';
+import { SeekNext } from './SeekNext';
+import { SeekPrevious } from './SeekPrevious';
+import { SettingsControl } from './SettingsControl';
+import { TimeDisplay } from './TimeDisplay';
 import { useElementSize } from './useElementSize';
 import { useOnKeyDownControls } from './useOnKeyDownControls';
+import { VolumeControl } from './VolumeControl';
+import { Key } from 'react-aria-components';
 
 // helper
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
@@ -40,14 +41,22 @@ type Dragging =
           wasPlaying: boolean;
       };
 
-// Adapted from https://www.remotion.dev/docs/player/custom-controls#seek-bar
-export const Controls: React.FC<{
+interface ControlsProps {
     playerRef: RefObject<PlayerRef | null>;
     data: VideoTrackingPoints | VideoFramePoints;
     fps: number;
     durationInFrames: number;
     frameStyle: 'dot' | 'line';
-}> = ({ data: videoPoints, playerRef, fps, durationInFrames, frameStyle }) => {
+}
+
+// Adapted from https://www.remotion.dev/docs/player/custom-controls#seek-bar
+export const Controls = ({
+    data: videoPoints,
+    playerRef,
+    fps,
+    durationInFrames,
+    frameStyle,
+}: ControlsProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const { width } = useElementSize(containerRef); // We need to track element size for dragging the time scrub to work correctly.
 
@@ -57,7 +66,7 @@ export const Controls: React.FC<{
         dragging: false,
     });
 
-    const handleKeyDownControls = useOnKeyDownControls(
+    const { handleKeyDown, jumpBasedOnCurrent } = useOnKeyDownControls(
         playerRef,
         videoPoints,
         fps,
@@ -180,6 +189,7 @@ export const Controls: React.FC<{
         if (!playerRef.current) {
             return;
         }
+
         if (playing) {
             playerRef.current.pause();
         } else {
@@ -197,17 +207,51 @@ export const Controls: React.FC<{
                 frameStyle={frameStyle}
                 dragging={dragging.dragging}
                 frame={frame}
-                onKeyDownControls={handleKeyDownControls}
+                onKeyDownControls={handleKeyDown}
                 onPointerDown={handlePointerDown}
             />
-            <div>
-                <PlayPause playing={playing} handlePlayPause={handlePlayPause} />
+            <div className={bottomControls}>
+                <div className={controlsGroup}>
+                    <SeekPrevious jumpBasedOnCurrent={jumpBasedOnCurrent} />
+                    <PlayPause playing={playing} handlePlayPause={handlePlayPause} />
+                    <SeekNext jumpBasedOnCurrent={jumpBasedOnCurrent} />
+                </div>
+                <div className={controlsGroup}>
+                    <TimeDisplay
+                        playerRef={playerRef}
+                        durationInFrames={durationInFrames}
+                        fps={fps}
+                    />
+                    <VolumeControl playerRef={playerRef} />
+                    {/*<SettingsControl menuItems={[]} onAction={() => {}} /> */}
+                    <FullScreenButton playerRef={playerRef} />
+                </div>
             </div>
         </div>
     );
 };
 
 const controlsContainer = css({
+    backgroundColor: {
+        base: 'white',
+        _dark: 'cream.10',
+    },
     display: 'grid',
+
+    gap: '2',
+    paddingInline: '3',
+    paddingBlockStart: '2',
+    paddingBlockEnd: '1',
+
+    borderBottomRadius: 'sm',
+});
+
+const bottomControls = css({
+    display: 'flex',
+    justifyContent: 'space-between',
+});
+
+const controlsGroup = css({
+    display: 'flex',
     gap: '2',
 });
