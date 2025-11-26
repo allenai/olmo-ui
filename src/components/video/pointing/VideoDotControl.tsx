@@ -31,7 +31,7 @@ export const VideoDotControl = ({
 
     useEffect(() => {
         const { current } = playerRef;
-        if (!current) {
+        if (!current || !userPoint) {
             return;
         }
 
@@ -79,10 +79,16 @@ export const VideoDotControl = ({
 
         const frame = playerRef.current.getCurrentFrame();
         const time = frame / fps;
+
+        const { x, y } = percentXYFromEvent(event);
+
         const point = {
-            ...percentXYFromEvent(event),
-            time,
-        };
+            x: +(x * 1000).toFixed(0),
+            y: +(y * 1000).toFixed(0),
+            time: +time.toFixed(2),
+            type: 'molmo_2_input_point',
+        } satisfies SchemaMolmo2PointPart;
+
         setPoint(point);
     };
 
@@ -94,8 +100,8 @@ export const VideoDotControl = ({
         setMousePosition(null);
     };
 
-    const dotXValue = state === 'placing' ? mousePosition?.x : userPoint?.x;
-    const dotYValue = state === 'placing' ? mousePosition?.y : userPoint?.y;
+    const dotXValue = state === 'placing' ? mousePosition?.x : (userPoint?.x || 0) / 1000;
+    const dotYValue = state === 'placing' ? mousePosition?.y : (userPoint?.y || 0) / 1000;
     const dotX = dotXValue ? `${dotXValue * 100}%` : undefined;
     const dotY = dotYValue ? `${dotYValue * 100}%` : undefined;
 
