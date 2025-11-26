@@ -1,6 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import type { PlayerRef } from '@remotion/player';
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { Key } from 'react-aria-components';
 import { interpolate } from 'remotion';
 
 import type {
@@ -18,7 +19,6 @@ import { TimeDisplay } from './TimeDisplay';
 import { useElementSize } from './useElementSize';
 import { useOnKeyDownControls } from './useOnKeyDownControls';
 import { VolumeControl } from './VolumeControl';
-import { Key } from 'react-aria-components';
 
 // helper
 const getFrameFromX = (clientX: number, durationInFrames: number, width: number) => {
@@ -212,9 +212,15 @@ export const Controls = ({
             />
             <div className={bottomControls}>
                 <div className={controlsGroup}>
-                    <SeekPrevious jumpBasedOnCurrent={jumpBasedOnCurrent} />
+                    <SeekPrevious
+                        isDisabled={frame === 0}
+                        jumpBasedOnCurrent={jumpBasedOnCurrent}
+                    />
                     <PlayPause playing={playing} handlePlayPause={handlePlayPause} />
-                    <SeekNext jumpBasedOnCurrent={jumpBasedOnCurrent} />
+                    <SeekNext
+                        isDisabled={frame === durationInFrames - 1}
+                        jumpBasedOnCurrent={jumpBasedOnCurrent}
+                    />
                 </div>
                 <div className={controlsGroup}>
                     <TimeDisplay
@@ -223,7 +229,7 @@ export const Controls = ({
                         fps={fps}
                     />
                     <VolumeControl playerRef={playerRef} />
-                    {/*<SettingsControl menuItems={[]} onAction={() => {}} /> */}
+                    {/* <SettingsControl menuItems={[]} onAction={() => {}} /> */}
                     <FullScreenButton playerRef={playerRef} />
                 </div>
             </div>

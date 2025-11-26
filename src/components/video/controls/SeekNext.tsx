@@ -1,11 +1,17 @@
 import { SkipNextRounded } from '@mui/icons-material';
+import { Focusable } from 'react-aria-components';
 
 import { StyledTooltip } from '@/components/StyledTooltip';
 
 import { ControlButton } from './ControlButton';
 import type { JumpBasedOnCurrentFn } from './useOnKeyDownControls';
 
-export const SeekNext = ({ jumpBasedOnCurrent }: { jumpBasedOnCurrent: JumpBasedOnCurrentFn }) => {
+interface SeekNextProps {
+    isDisabled?: boolean;
+    jumpBasedOnCurrent: JumpBasedOnCurrentFn;
+}
+
+export const SeekNext = ({ isDisabled, jumpBasedOnCurrent }: SeekNextProps) => {
     const handlePress = () => {
         jumpBasedOnCurrent('forward');
     };
@@ -13,10 +19,15 @@ export const SeekNext = ({ jumpBasedOnCurrent }: { jumpBasedOnCurrent: JumpBased
     const tooltipLabel = 'Jump the next frame with points';
 
     return (
-        <StyledTooltip content={tooltipLabel} placement='top'>
-            <ControlButton onPress={handlePress} aria-label={tooltipLabel}>
-                <SkipNextRounded />
-            </ControlButton>
+        <StyledTooltip content={tooltipLabel} placement="top">
+            <Focusable>
+                <ControlButton
+                    isDisabled={isDisabled}
+                    onPress={handlePress}
+                    aria-label={tooltipLabel}>
+                    <SkipNextRounded />
+                </ControlButton>
+            </Focusable>
         </StyledTooltip>
     );
 };

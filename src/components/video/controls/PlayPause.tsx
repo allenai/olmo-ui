@@ -9,8 +9,10 @@ export const PlayPause = ({
     playing: boolean;
     handlePlayPause: (e: unknown) => void;
 }) => {
+    const label = playing ? 'Pause the video' : 'Play the video';
+
     return (
-        <ControlButton onPress={handlePlayPause}>
+        <ControlButton onPress={handlePlayPause} aria-label={label}>
             {playing ? <PauseRounded /> : <PlayArrowRounded />}
         </ControlButton>
     );

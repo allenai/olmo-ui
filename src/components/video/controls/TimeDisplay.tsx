@@ -45,10 +45,8 @@ export const TimeDisplay = ({
 
     return (
         <div className={timeDisplay}>
-            <span>
-                {formatTime(time, fps, decimalPlaces)}/
-                {formatTime(durationInFrames, fps, decimalPlaces)}
-            </span>
+            {formatTime(time, fps, decimalPlaces)}/
+            {formatTime(durationInFrames, fps, decimalPlaces)}
         </div>
     );
 };

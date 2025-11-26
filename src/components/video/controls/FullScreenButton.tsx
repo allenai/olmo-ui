@@ -61,7 +61,7 @@ export const FullScreenButton = ({ playerRef }: FullScreenButtonProps) => {
     }
 
     return (
-        <ControlButton onPress={handleClick}>
+        <ControlButton onPress={handleClick} aria-label="Toggle fullscreen">
             <FullscreenRounded />
         </ControlButton>
     );

@@ -9,7 +9,12 @@ export const ControlButton = styled(Button, {
         borderRadius: 'full',
         transition: '[color 0.2s]',
         _hover: {
-            color: 'links.hovered',
+            _notDisabled: {
+                color: 'links.hovered',
+            },
+        },
+        _disabled: {
+            color: 'elements.disabled.fill',
         },
     },
 });
