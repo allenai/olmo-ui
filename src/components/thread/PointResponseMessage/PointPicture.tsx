@@ -76,7 +76,7 @@ const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
     // This allows us to scale down to smaller sizes
     <PointOnImageSvg aria-hidden width="0" height="0" sx={{ color: fill }}>
         {points.map((point) => (
-            <PointCircle key={point.pointId} xPercent={point.x} yPercent={point.y} shouldAnimate />
+            <PointCircle key={point.pointId} cx={point.x} cy={point.y} />
         ))}
     </PointOnImageSvg>
 );

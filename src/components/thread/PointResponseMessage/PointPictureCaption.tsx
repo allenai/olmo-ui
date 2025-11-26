@@ -66,7 +66,7 @@ const PointLabel = ({ pointColor, text, pointCount }: PointLabelProps): ReactNod
                 width="1em"
                 aria-hidden
                 sx={{ color: pointColor }}>
-                <PointCircle xPercent={50} yPercent={50} />
+                <PointCircle cx={50} cy={50} />
             </PointLabelSvg>
             <Typography>{`${text}${pointCountText}`}</Typography>
         </Stack>
