@@ -29,19 +29,70 @@ export const PointPictureSlider = ({
 }: PointPictureSliderProps): ReactNode => {
     const sliderRef = useRef<HTMLUListElement | null>(null);
     const itemsRef = useRef<HTMLLIElement[]>([]);
+    const scrollBehaviorRef = useRef<ScrollBehavior>('instant');
     const [scrollIndex, setScrollIndex] = useState(initialIndex || 0);
+
+    const isAtStart = scrollIndex <= 0;
+    const isAtEnd = scrollIndex >= itemsRef.current.length - 1;
 
     useEffect(() => {
         if (!sliderRef.current) return;
         if (sliderRef.current.children.length < 2) return;
         itemsRef.current = [...sliderRef.current.children] as HTMLLIElement[];
+
+        sliderRef.current.addEventListener('scrollend', (event) => {
+            if (event.target instanceof Element) {
+                // at start
+                if (event.target.scrollLeft === 0) {
+                    setScrollIndex(0);
+                }
+
+                //
+                if (
+                    event.target.scrollLeft ===
+                    event.target.scrollWidth - event.target.clientWidth
+                ) {
+                    setScrollIndex(itemsRef.current.length - 1);
+                }
+
+                // middle calculates item nearset middle of scroll window (clientWidth)
+                if (
+                    event.target.scrollLeft > 0 &&
+                    event.target.scrollLeft < event.target.scrollWidth
+                ) {
+                    const targetCenter = event.target.scrollLeft + event.target.clientWidth / 2;
+                    const closestIndex = itemsRef.current.reduce<{
+                        index: number;
+                        distance: number;
+                    }>(
+                        (acc, item, index) => {
+                            const itemCenter = item.offsetLeft + item.offsetWidth / 2;
+                            const distance = Math.abs(itemCenter - targetCenter);
+                            if (distance < acc.distance) {
+                                return { index, distance };
+                            }
+                            return acc;
+                        },
+                        { index: 0, distance: Infinity }
+                    ).index;
+                    setScrollIndex(closestIndex);
+                }
+            }
+        });
     }, []);
 
     useEffect(() => {
-        itemsRef.current[scrollIndex]?.scrollIntoView({
-            behavior: 'smooth',
-            inline: 'center',
-        });
+        // needs small timout to scroll properly on mount
+        const to = setTimeout(() => {
+            itemsRef.current[scrollIndex]?.scrollIntoView({
+                behavior: scrollBehaviorRef.current,
+                inline: 'center',
+            });
+            scrollBehaviorRef.current = 'smooth';
+        }, 50);
+        return () => {
+            clearTimeout(to);
+        };
     }, [scrollIndex]);
 
     const pointsSetsByFileUrl = fileUrls.reduce<Map<string, PointsSets[]>>((acc, url, index) => {
@@ -71,7 +122,7 @@ export const PointPictureSlider = ({
     const isSingleImageList = fileUrls.length === 1;
     const buttonProps: SxProps<Theme> = (theme) => ({
         position: 'fixed',
-        positionAnchor: '--slider',
+        positionAnchor: '--slider-container',
         color: theme.color['dark-teal-100'].hex,
         backgroundColor: theme.color['cream-10'].hex,
         '&:hover': {
@@ -88,7 +139,7 @@ export const PointPictureSlider = ({
         <Box
             sx={{
                 position: 'relative',
-                anchorName: '--slider',
+                anchorName: '--slider-container',
                 height: '100%',
                 maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX + 20, // clearance for markers
             }}>
@@ -143,9 +194,11 @@ export const PointPictureSlider = ({
                     );
                 })}
             </Box>
+
+            {/* Page Marks */}
             <Box
                 sx={{
-                    height: 12,
+                    height: 'auto',
                     display: 'flex',
                     justifyContent: 'center',
                     backgroundColor: 'inherit',
@@ -161,8 +214,8 @@ export const PointPictureSlider = ({
                         }}
                         sx={{
                             content: '" "',
-                            width: 10,
-                            height: 10,
+                            width: 12,
+                            aspectRatio: 1,
                             color: 'currentColor',
                             borderRadius: '50%',
                             border: '1px solid',
@@ -178,6 +231,7 @@ export const PointPictureSlider = ({
             </Box>
             {!isSingleImageList && (
                 <>
+                    {/* Next Button */}
                     <IconButton
                         onClick={() => {
                             setScrollIndex((prev) =>
@@ -190,10 +244,12 @@ export const PointPictureSlider = ({
                                 positionArea: 'center right',
                                 translate: '-110%',
                             },
-                            scrollIndex === itemsRef.current.length - 1 ? buttonDisabledProps : {},
+                            isAtEnd ? buttonDisabledProps : {},
                         ]}>
                         <ChevronIcon />
                     </IconButton>
+
+                    {/* Previous Button */}
                     <IconButton
                         onClick={() => {
                             setScrollIndex((prev) => (prev > 0 ? prev - 1 : prev));
@@ -205,7 +261,7 @@ export const PointPictureSlider = ({
                                 translate: '110%',
                                 transform: 'rotate(180deg)',
                             },
-                            scrollIndex === 0 ? buttonDisabledProps : {},
+                            isAtStart ? buttonDisabledProps : {},
                         ]}>
                         <ChevronIcon />
                     </IconButton>
