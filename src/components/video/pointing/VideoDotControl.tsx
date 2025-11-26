@@ -1,7 +1,7 @@
-import { css, sva } from '@allenai/varnish-panda-runtime/css';
+import { css, cva } from '@allenai/varnish-panda-runtime/css';
 import { Button } from '@allenai/varnish-ui';
-import { varnishTheme } from '@allenai/varnish2/theme';
 import { Route } from '@mui/icons-material';
+import { Box } from '@mui/material';
 import { PlayerRef } from '@remotion/player';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
@@ -113,34 +113,20 @@ export const VideoDotControl = ({
             onPointerUp={onPointerUp}>
             {children}
             {!!dotX && !!dotY && (onSelectedFrame || state === 'placing') && (
-                <svg className={svgWrapper}>
-                    <style>
-                        {`
-                            @keyframes shockwave {
-                                0% {
-                                    r: 10;
-                                    opacity: .75;
-                                    stroke-width: 3;
-                                }
-                                100% {
-                                    r: 30;
-                                    opacity: 0;
-                                    stroke-width: 0.5;
-                                }
-                            }
-                            @keyframes placeDown {
-                                0% {
-                                    r: 14;
-                                }
-                                50% {
-                                    r: 8;
-                                }
-                                100% {
-                                    r: 10;
-                                }
-                            }
-                        `}
-                    </style>
+                <Box
+                    component="svg"
+                    className={svgWrapper}
+                    sx={{
+                        '@keyframes shockwave': {
+                            '0%': { r: 10, opacity: 0.75, strokeWidth: 3 },
+                            '100%': { r: 30, opacity: 0, strokeWidth: 0.5 },
+                        },
+                        '@keyframes placeDown': {
+                            '0%': { r: 14 },
+                            '50%': { r: 8 },
+                            '100%': { r: 10 },
+                        },
+                    }}>
                     {/* Vertical dashed line */}
                     <line
                         x1={dotX}
@@ -167,12 +153,9 @@ export const VideoDotControl = ({
                         r={state === 'placing' ? 12 : 10}
                         stroke="white"
                         strokeWidth={2}
-                        fill={varnishTheme.palette.secondary.main}
-                        style={{
-                            pointerEvents: 'auto',
-                            animation: showShockwave ? 'placeDown 0.25s ease-out forwards' : '',
-                            cursor: state === 'placing' ? 'grabbing' : 'grab',
-                        }}
+                        className={mainDotStyle}
+                        data-placing={state === 'placing' || undefined}
+                        data-animating={showShockwave || undefined}
                         onPointerDown={(e) => {
                             if (state === 'placed') {
                                 e.stopPropagation();
@@ -187,10 +170,9 @@ export const VideoDotControl = ({
                                 cx={dotX}
                                 cy={dotY}
                                 r={10}
-                                stroke={varnishTheme.palette.secondary.main}
                                 strokeWidth={2}
                                 fill="none"
-                                style={{ animation: 'shockwave 0.4s ease-out forwards' }}
+                                className={shockwaveStyle({ variant: 'primary' })}
                             />
                             <circle
                                 cx={dotX}
@@ -199,11 +181,11 @@ export const VideoDotControl = ({
                                 stroke="white"
                                 strokeWidth={1.5}
                                 fill="none"
-                                style={{ animation: 'shockwave 0.4s ease-out 0.05s forwards' }}
+                                className={shockwaveStyle({ variant: 'secondary' })}
                             />
                         </>
                     )}
-                </svg>
+                </Box>
             )}
             {state !== 'placing' && (
                 <RemoveButton
@@ -218,7 +200,7 @@ export const VideoDotControl = ({
                 <Button
                     variant="outlined"
                     size="small"
-                    className={onScreenButtonRecipe({ position: 'left' }).button}
+                    className={onScreenButtonRecipe({ position: 'left' })}
                     onClick={() => {
                         clearPoint();
                     }}>
@@ -230,7 +212,7 @@ export const VideoDotControl = ({
                 <Button
                     variant="outlined"
                     size="small"
-                    className={onScreenButtonRecipe({ position: 'right' }).button}
+                    className={onScreenButtonRecipe({ position: 'right' })}
                     onClick={() => {
                         setState('placing');
                     }}>
@@ -251,33 +233,54 @@ const svgWrapper = css({
     pointerEvents: 'none',
 });
 
-const onScreenButtonRecipe = sva({
-    slots: ['button'],
+const mainDotStyle = css({
+    fill: 'accent.secondary',
+    pointerEvents: 'auto',
+    cursor: 'grab',
+    '&[data-placing]': {
+        cursor: 'grabbing',
+    },
+    '&[data-animating]': {
+        animation: 'placeDown 0.25s ease-out forwards',
+    },
+});
+
+const shockwaveStyle = cva({
     base: {
-        button: {
-            color: 'cream.100',
-            borderColor: 'cream.100',
-            backgroundColor: 'extra-dark-teal.80',
-            borderRadius: 'sm',
-            position: 'absolute',
-            bottom: '5',
-            _hover: {
-                borderColor: 'cream.100!', // IDK why i need important here
-                outline: 'none',
+        animation: 'shockwave 0.4s ease-out forwards',
+    },
+    variants: {
+        variant: {
+            primary: {
+                stroke: 'accent.secondary',
             },
+            secondary: {
+                animationDelay: '0.05s',
+            },
+        },
+    },
+});
+
+const onScreenButtonRecipe = cva({
+    base: {
+        color: 'cream.100',
+        borderColor: 'cream.100',
+        backgroundColor: 'extra-dark-teal.80',
+        borderRadius: 'sm',
+        position: 'absolute',
+        bottom: '5',
+        _hover: {
+            borderColor: 'cream.100!', // IDK why i need important here
+            outline: 'none',
         },
     },
     variants: {
         position: {
             left: {
-                button: {
-                    left: '5',
-                },
+                left: '5',
             },
             right: {
-                button: {
-                    right: '5',
-                },
+                right: '5',
             },
         },
     },
