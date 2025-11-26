@@ -173,9 +173,13 @@ export const PointPictureSlider = ({
                                 scrollSnapAlign: 'center',
                             }}
                             key={url}
-                            onClick={() => {
-                                return onClick?.({ url, index });
-                            }}
+                            onClick={
+                                onClick
+                                    ? () => {
+                                          onClick({ url, index });
+                                      }
+                                    : undefined
+                            }
                             imageLink={url}
                             pointsSets={pointsSets}
                             caption={
@@ -207,11 +211,13 @@ export const PointPictureSlider = ({
                 }}>
                 {fileUrls.map((_, index) => (
                     <Box
-                        className={index === scrollIndex ? 'active' : undefined}
                         key={index}
+                        className={index === scrollIndex ? 'active' : undefined}
+                        component="button"
                         onClick={() => {
                             setScrollIndex(index);
                         }}
+                        aria-label={`scroll to image ${index + 1}`}
                         sx={{
                             content: '" "',
                             width: 12,

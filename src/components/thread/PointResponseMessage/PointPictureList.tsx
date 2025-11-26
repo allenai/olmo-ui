@@ -66,7 +66,13 @@ export const PointPictureList = ({
                             maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX,
                             maxWidth: MAX_THREAD_IMAGE_WIDTH_PX,
                         }}
-                        onClick={() => onClick?.({ url, index })}
+                        onClick={
+                            onClick
+                                ? () => {
+                                      onClick({ url, index });
+                                  }
+                                : undefined
+                        }
                         imageLink={url}
                         pointsSets={pointsSets}
                     />

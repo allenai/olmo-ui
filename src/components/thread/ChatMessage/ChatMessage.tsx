@@ -171,7 +171,10 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
 
                 {/* TODO: discriminate on file mime type and render appropriately (e.g. images, videos, PDFs) */}
                 {fileUrls?.length ? (
-                    <MediaCollapsibleWidget fileType="file" fileCount={fileUrls.length}>
+                    <MediaCollapsibleWidget
+                        fileType="file"
+                        fileCount={fileUrls.length}
+                        defaultExpanded>
                         <PointPictureList fileUrls={fileUrls} />
                     </MediaCollapsibleWidget>
                 ) : null}

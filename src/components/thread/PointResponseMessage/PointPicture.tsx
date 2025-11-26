@@ -29,11 +29,12 @@ export const PointPicture = ({
     onClick,
 }: PointPictureProps): ReactNode => {
     const pointColors = usePointColors();
+
     return (
         <Box component="li" sx={sx}>
             <Box
+                component={onClick ? 'button' : 'figure'}
                 onClick={onClick}
-                component="figure"
                 sx={{
                     display: 'grid',
                     gridTemplateRows: '100%',
