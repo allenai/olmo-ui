@@ -1,14 +1,14 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import {
     SliderBase,
-    SliderProps,
+    type SliderProps,
     SliderThumb,
     SliderTrack,
     SliderTrackIndicator,
 } from '@allenai/varnish-ui';
 import { VolumeUpRounded } from '@mui/icons-material';
 import type { PlayerRef } from '@remotion/player';
-import { type RefObject, useCallback, useEffect, useState } from 'react';
+import { memo, type RefObject, useCallback, useEffect, useState } from 'react';
 import {
     DialogTrigger,
     Popover,
@@ -33,7 +33,7 @@ interface VolumeControlProps {
     playerRef: RefObject<PlayerRef | null>;
 }
 
-export const VolumeControl = ({ playerRef }: VolumeControlProps) => {
+export const VolumeControl = memo(function VolumeControl({ playerRef }: VolumeControlProps) {
     // default UI to muted and 0 volume
     const [volume, setVolume] = useState(playerRef.current?.getVolume() ?? 0);
     const [_muted, setMuted] = useState(playerRef.current?.isMuted() ?? true);
@@ -95,7 +95,7 @@ export const VolumeControl = ({ playerRef }: VolumeControlProps) => {
             </Popover>
         </DialogTrigger>
     );
-};
+});
 
 // wanted access to the thumb
 // this is essentially stolen from varnish-ui

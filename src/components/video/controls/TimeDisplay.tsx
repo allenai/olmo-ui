@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { PlayerRef } from '@remotion/player';
-import { type ReactNode, type RefObject, useEffect, useState } from 'react';
+import { type ReactNode, type RefObject, useEffect, useState, memo } from 'react';
 
 import { formatTime } from './formatTime';
 
@@ -18,12 +18,12 @@ interface TimeDisplayProps {
     fps: number;
     decimalPlaces?: number;
 }
-export const TimeDisplay = ({
+export const TimeDisplay = memo(function TimeDisplay({
     playerRef,
     durationInFrames,
     fps,
     decimalPlaces = 0,
-}: TimeDisplayProps): ReactNode => {
+}: TimeDisplayProps): ReactNode {
     const [time, setTime] = useState(0);
 
     useEffect(() => {
@@ -49,4 +49,4 @@ export const TimeDisplay = ({
             {formatTime(durationInFrames, fps, decimalPlaces)}
         </div>
     );
-};
+});

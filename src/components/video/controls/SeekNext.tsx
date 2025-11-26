@@ -1,4 +1,5 @@
 import { SkipNextRounded } from '@mui/icons-material';
+import { memo } from 'react';
 import { Focusable } from 'react-aria-components';
 
 import { StyledTooltip } from '@/components/StyledTooltip';
@@ -11,7 +12,7 @@ interface SeekNextProps {
     jumpBasedOnCurrent: JumpBasedOnCurrentFn;
 }
 
-export const SeekNext = ({ isDisabled, jumpBasedOnCurrent }: SeekNextProps) => {
+export const SeekNext = memo(function SeekNext({ isDisabled, jumpBasedOnCurrent }: SeekNextProps) {
     const handlePress = () => {
         jumpBasedOnCurrent('forward');
     };
@@ -30,4 +31,4 @@ export const SeekNext = ({ isDisabled, jumpBasedOnCurrent }: SeekNextProps) => {
             </Focusable>
         </StyledTooltip>
     );
-};
+});

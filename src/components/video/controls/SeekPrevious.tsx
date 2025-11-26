@@ -1,4 +1,5 @@
 import { SkipPreviousRounded } from '@mui/icons-material';
+import { memo } from 'react';
 import { Focusable } from 'react-aria-components';
 
 import { StyledTooltip } from '@/components/StyledTooltip';
@@ -11,7 +12,10 @@ interface SeekPreviousProps {
     jumpBasedOnCurrent: JumpBasedOnCurrentFn;
 }
 
-export const SeekPrevious = ({ isDisabled, jumpBasedOnCurrent }: SeekPreviousProps) => {
+export const SeekPrevious = memo(function SeekPrevious({
+    isDisabled,
+    jumpBasedOnCurrent,
+}: SeekPreviousProps) {
     const handlePress = () => {
         jumpBasedOnCurrent('back');
     };
@@ -30,4 +34,4 @@ export const SeekPrevious = ({ isDisabled, jumpBasedOnCurrent }: SeekPreviousPro
             </Focusable>
         </StyledTooltip>
     );
-};
+});

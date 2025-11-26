@@ -1,16 +1,18 @@
 import { FullscreenRounded } from '@mui/icons-material';
 import type { PlayerRef } from '@remotion/player';
-import React, { useCallback, useEffect, useState } from 'react';
+import { type RefObject, memo, useCallback, useEffect, useState } from 'react';
 
 import { ControlButton } from './ControlButton';
 
 // https://www.remotion.dev/docs/player/custom-controls#fullscreen-button
 
 interface FullScreenButtonProps {
-    playerRef: React.RefObject<PlayerRef | null>;
+    playerRef: RefObject<PlayerRef | null>;
 }
 
-export const FullScreenButton = ({ playerRef }: FullScreenButtonProps) => {
+export const FullScreenButton = memo(function FullScreenButton({
+    playerRef,
+}: FullScreenButtonProps) {
     const [supportsFullscreen, setSupportsFullscreen] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -65,4 +67,4 @@ export const FullScreenButton = ({ playerRef }: FullScreenButtonProps) => {
             <FullscreenRounded />
         </ControlButton>
     );
-};
+});

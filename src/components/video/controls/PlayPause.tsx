@@ -1,14 +1,15 @@
 import { PauseRounded, PlayArrowRounded } from '@mui/icons-material';
+import { memo } from 'react';
 
 import { ControlButton } from './ControlButton';
 
-export const PlayPause = ({
+export const PlayPause = memo(function PlayPause({
     playing,
     handlePlayPause,
 }: {
     playing: boolean;
     handlePlayPause: (e: unknown) => void;
-}) => {
+}) {
     const label = playing ? 'Pause the video' : 'Play the video';
 
     return (
@@ -16,4 +17,4 @@ export const PlayPause = ({
             {playing ? <PauseRounded /> : <PlayArrowRounded />}
         </ControlButton>
     );
-};
+});

@@ -1,6 +1,6 @@
 import { sva } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
-import { forwardRef, KeyboardEventHandler, PointerEventHandler } from 'react';
+import { forwardRef, type KeyboardEventHandler, type PointerEventHandler } from 'react';
 import { Button } from 'react-aria-components';
 
 import type {

@@ -1,17 +1,18 @@
 import { SettingsRounded } from '@mui/icons-material';
+import { memo } from 'react';
 import { type Key, Menu, MenuItem, MenuTrigger, Popover } from 'react-aria-components';
 
 import { menuClassName, menuItemClassName } from '@/components/menu/sharedMenuStyles';
 
 import { ControlButton } from './ControlButton';
 
-export const SettingsControl = ({
+export const SettingsControl = memo(function SettingsControl({
     menuItems,
     onAction,
 }: {
     menuItems: Array<{ id: string; label: string }>;
     onAction: (key: Key) => void;
-}) => {
+}) {
     return (
         <MenuTrigger>
             <ControlButton>
@@ -28,4 +29,4 @@ export const SettingsControl = ({
             </Popover>
         </MenuTrigger>
     );
-};
+});

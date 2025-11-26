@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import type { PlayerRef } from '@remotion/player';
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
-import { Key } from 'react-aria-components';
+import { type RefObject, memo, useCallback, useEffect, useRef, useState } from 'react';
+import type { Key } from 'react-aria-components';
 import { interpolate } from 'remotion';
 
 import type {
@@ -59,7 +59,7 @@ type ControlsProps = {
 );
 
 // Adapted from https://www.remotion.dev/docs/player/custom-controls#seek-bar
-export const Controls = ({
+export const Controls = memo(function Controls({
     data: videoPoints,
     playerRef,
     fps,
@@ -67,7 +67,7 @@ export const Controls = ({
     frameStyle,
     onSettingsAction,
     settingsItems,
-}: ControlsProps) => {
+}: ControlsProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const { width } = useElementSize(containerRef); // We need to track element size for dragging the time scrub to work correctly.
 
@@ -248,7 +248,7 @@ export const Controls = ({
             </div>
         </div>
     );
-};
+});
 
 const controlsContainer = css({
     backgroundColor: {
