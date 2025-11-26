@@ -105,6 +105,7 @@ export const VideoDotControl = ({
     const dotY = dotYValue ? `${dotYValue * 100}%` : undefined;
 
     return (
+        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
         <div
             ref={containerRef}
             className={css({ position: 'relative', touchAction: 'none' })}
