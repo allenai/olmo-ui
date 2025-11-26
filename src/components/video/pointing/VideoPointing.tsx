@@ -2,13 +2,12 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Player, PlayerRef } from '@remotion/player';
 import { useRef } from 'react';
 
+import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { SeekBar } from '../seekBar/SeekBar';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { VideoOverlayHelper } from '../VideoOverlayHelper';
-
-import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
 import { VideoDotControl } from './VideoDotControl';
 const FPS = 24;
 

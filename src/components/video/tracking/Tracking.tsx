@@ -2,10 +2,12 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { varnishTheme } from '@allenai/varnish2/theme';
 import { useMemo } from 'react';
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+
 import {
     PerFrameTrackPoints,
     VideoTrackingPoints,
 } from '@/components/thread/points/pointsDataTypes';
+
 import { VideoOverlayHelper } from '../VideoOverlayHelper';
 
 export const VideoTracking = ({
