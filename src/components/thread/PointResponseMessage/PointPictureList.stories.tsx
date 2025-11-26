@@ -74,19 +74,19 @@ export const Default: Story = {
 
 export const WithLightboxAndSlider: Story = {
     render: (args) => {
-        const [lightboxData, setLightboxData] = useState<number | null>(null);
+        const [lightboxItem, setLightboxItem] = useState<number | null>(null);
         const handleLightboxOpen = ({ index }: { index: number }) => {
-            setLightboxData(index);
+            setLightboxItem(index);
         };
         const handleLightboxClose = () => {
-            setLightboxData(null);
+            setLightboxItem(null);
         };
 
         return (
             <Box maxWidth={MAX_MAIN_CONTENT_WIDTH} width="100%">
                 <PointPictureList {...args} onClick={handleLightboxOpen} />
-                <MediaLightbox open={lightboxData !== null} onClose={handleLightboxClose}>
-                    <PointPictureSlider {...args} initialIndex={lightboxData} />
+                <MediaLightbox open={lightboxItem !== null} onClose={handleLightboxClose}>
+                    <PointPictureSlider {...args} moveToItem={lightboxItem ?? undefined} />
                 </MediaLightbox>
             </Box>
         );

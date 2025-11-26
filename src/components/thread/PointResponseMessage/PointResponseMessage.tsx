@@ -18,7 +18,7 @@ import { PointPictureList } from './PointPictureList';
 import { PointPictureSlider } from './PointPictureSlider';
 
 export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => {
-    const [lightboxItem, setLightboxItem] = useState<number>();
+    const [lightboxItem, setLightboxItem] = useState<number | null>(null);
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
     const { data: currentFilesInThread } = useThread(threadId, (thread) => {
@@ -42,7 +42,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
         setLightboxItem(index);
     };
     const handleLightboxClose = () => {
-        setLightboxItem(undefined);
+        setLightboxItem(null);
     };
 
     // NOTE: this assumes all points from a response will be a homogenious type
@@ -60,7 +60,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                     <PointPictureListCaption pointsSets={imagePointsSets} />
                     <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
                 </Stack>
-                <MediaLightbox open={lightboxItem !== undefined} onClose={handleLightboxClose}>
+                <MediaLightbox open={lightboxItem !== null} onClose={handleLightboxClose}>
                     {currentFilesInThread.length > 1 ? (
                         <PointPictureSlider
                             imagePointsSets={pointsSets.filter(
@@ -68,7 +68,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                             )}
                             fileUrls={currentFilesInThread}
                             showPerImageCaption={true}
-                            moveToItem={lightboxItem}
+                            moveToItem={lightboxItem ?? undefined}
                         />
                     ) : (
                         <Stack spacing={1}>
