@@ -1,10 +1,11 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import type { PlayerRef } from '@remotion/player';
-import { type ReactNode, useCallback, useMemo } from 'react';
+import { type ReactNode, type RefObject, useCallback, useMemo } from 'react';
 
 import type { VideoFramePoints } from '@/components/thread/points/pointsDataTypes';
 import { useExtractFrames } from '@/components/video/extractFrames/useExtractFrames';
 
+import { THUMBNAIL_HEIGHT } from './filmStripConsts';
 import { Frame } from './Frame';
 
 const frameContainerClassName = css({
@@ -18,7 +19,7 @@ const frameContainerClassName = css({
 });
 
 interface FilmStripProps {
-    playerRef: React.RefObject<PlayerRef | null>;
+    playerRef: RefObject<PlayerRef | null>;
     videoUrl: string;
     fps: number;
     width: number;
@@ -34,7 +35,7 @@ export const FilmStrip = ({
     width,
     height,
     videoPoints,
-    thumbnailHeight = 100,
+    thumbnailHeight = THUMBNAIL_HEIGHT,
 }: FilmStripProps): ReactNode => {
     const timestamps = useMemo(
         () => videoPoints.frameList.map((frame) => frame.timestamp),
