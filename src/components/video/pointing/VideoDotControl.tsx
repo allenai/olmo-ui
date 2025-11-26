@@ -119,26 +119,7 @@ export const VideoDotControl = ({
             onMouseLeave={handleMouseLeave}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}>
-            {state !== 'placing' && <RemoveButton filename="video" onPressRemove={onRemoveFile} />}
             {children}
-            {state === 'idle' && (
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    className={css({
-                        backgroundColor: 'extra-dark-teal.70',
-                        borderRadius: 'md',
-                        position: 'absolute',
-                        bottom: '5',
-                        right: '5',
-                    })}
-                    onClick={() => {
-                        setState('placing');
-                    }}>
-                    Place Point (optional)
-                </Button>
-            )}
             {!!dotX && !!dotY && (onSelectedFrame || state === 'placing') && (
                 <svg
                     className={css({
@@ -259,6 +240,25 @@ export const VideoDotControl = ({
                         setPoint(null);
                     }}>
                     Clear Point
+                </Button>
+            )}
+            {state !== 'placing' && <RemoveButton filename="video" onPressRemove={onRemoveFile} />}
+            {state === 'idle' && (
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    className={css({
+                        backgroundColor: 'extra-dark-teal.70',
+                        borderRadius: 'md',
+                        position: 'absolute',
+                        bottom: '5',
+                        right: '5',
+                    })}
+                    onClick={() => {
+                        setState('placing');
+                    }}>
+                    Place Point (optional)
                 </Button>
             )}
         </div>
