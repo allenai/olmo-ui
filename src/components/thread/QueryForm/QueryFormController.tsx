@@ -194,6 +194,12 @@ export const QueryFormController = ({
         inputRef.current?.click();
     };
 
+    const showTrackingInput =
+        files &&
+        files.length === 1 &&
+        files[0].type.startsWith('video') &&
+        MODEL_SUPPORTS_POINTING_INPUT;
+
     return (
         <DropZone
             onDrop={(_dropEvent) => {
@@ -208,21 +214,11 @@ export const QueryFormController = ({
             }}>
             <QueryFormStyledBox>
                 <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
-                    {files && MODEL_SUPPORTS_POINTING_INPUT && files.length === 1 && (
+                    {showTrackingInput && (
                         <Controller
                             name="inputParts"
                             control={formContext.control}
-                            render={({
-                                // not particularly using hook form anymore
-                                field: {
-                                    name,
-                                    onBlur,
-                                    disabled: _disabled,
-                                    onChange,
-                                    value,
-                                    ref: _ref,
-                                },
-                            }) => {
+                            render={({ field: { onChange, value } }) => {
                                 return (
                                     <VideoPointingInput
                                         onRemoveFile={() => {
@@ -239,11 +235,13 @@ export const QueryFormController = ({
                         />
                     )}
                     <Stack gap={1} alignItems="flex-start" width={1} position="relative">
-                        <FileUploadThumbnails
-                            files={files}
-                            onRemoveFile={handleRemoveFile}
-                            acceptedFileTypes={fileUploadProps.acceptedFileTypes}
-                        />
+                        {!showTrackingInput && (
+                            <FileUploadThumbnails
+                                files={files}
+                                onRemoveFile={handleRemoveFile}
+                                acceptedFileTypes={fileUploadProps.acceptedFileTypes}
+                            />
+                        )}
                         <PromptContainer
                             startAdornment={
                                 <>
