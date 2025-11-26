@@ -219,7 +219,7 @@ export const QueryFormController = ({
                                     onBlur,
                                     disabled: _disabled,
                                     onChange,
-                                    value: value,
+                                    value,
                                     ref: _ref,
                                 },
                             }) => {
@@ -230,7 +230,9 @@ export const QueryFormController = ({
                                         }}
                                         videoUrl={getObjectUrl(files[0])}
                                         userPoint={value ? value[0] : null}
-                                        setUserPoint={(point) => onChange(point ? [point] : [])}
+                                        setUserPoint={(point) => {
+                                            onChange(point ? [point] : []);
+                                        }}
                                     />
                                 );
                             }}

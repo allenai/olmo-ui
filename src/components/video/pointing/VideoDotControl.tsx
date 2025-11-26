@@ -209,7 +209,6 @@ export const VideoDotControl = ({
             {state === 'placed' && (
                 <Button
                     variant="outlined"
-                    color="secondary"
                     size="small"
                     className={`${onScreenButton} ${css({ left: '5' })}`}
                     onClick={() => {
@@ -230,13 +229,12 @@ export const VideoDotControl = ({
             {state === 'idle' && (
                 <Button
                     variant="outlined"
-                    color="secondary"
                     size="small"
                     className={`${onScreenButton} ${css({ right: '5' })}`}
                     onClick={() => {
                         setState('placing');
                     }}>
-                    Place Point (optional)
+                    Add Tracking Point
                 </Button>
             )}
         </div>
@@ -253,8 +251,14 @@ const svgWrapper = css({
 });
 
 const onScreenButton = css({
-    backgroundColor: 'extra-dark-teal.70',
-    borderRadius: 'md',
+    color: 'cream.100',
+    borderColor: 'cream.100',
+    backgroundColor: 'extra-dark-teal.80',
+    borderRadius: 'sm',
     position: 'absolute',
     bottom: '5',
+    _hover: {
+        borderColor: 'cream.100!', // IDK why i need important here
+        outline: 'none',
+    },
 });
