@@ -1,14 +1,17 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { useMemo } from 'react';
 
-import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+import type {
+    VideoFramePoints,
+    VideoTrackingPoints,
+} from '@/components/thread/points/pointsDataTypes';
 
 export const TrackingDotsTimeline = ({
     data,
     durationInFrames,
     fps,
 }: {
-    data: VideoTrackingPoints;
+    data: VideoTrackingPoints | VideoFramePoints;
     durationInFrames: number;
     fps: number;
 }) => {

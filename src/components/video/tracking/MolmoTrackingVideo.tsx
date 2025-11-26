@@ -7,9 +7,8 @@ import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes'
 
 import { SeekBar } from '../seekBar/SeekBar';
 import { useVideoMetaData } from '../useVideoMetaData';
+import { FPS, MOVE_TO_BEGINNING_WHEN_ENDED } from '../videoConsts';
 import { VideoTracking } from './Tracking';
-
-const FPS = 24;
 
 export function MolmoTrackingVideo({
     videoTrackingPoints,
@@ -47,7 +46,7 @@ export function MolmoTrackingVideo({
                     compositionHeight={height}
                     fps={FPS}
                     style={{ width: '100%', flex: '1' }}
-                    moveToBeginningWhenEnded={false}
+                    moveToBeginningWhenEnded={MOVE_TO_BEGINNING_WHEN_ENDED}
                 />
             </div>
             <SeekBar

@@ -6,7 +6,10 @@ import type { PlayerRef } from '@remotion/player';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { interpolate } from 'remotion';
 
-import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+import type {
+    VideoFramePoints,
+    VideoTrackingPoints,
+} from '@/components/thread/points/pointsDataTypes';
 
 import { TrackingDotsTimeline } from './TrackingDotsTimeLine';
 import { useElementSize } from './useElementSize';
@@ -26,7 +29,7 @@ const getFrameFromX = (clientX: number, durationInFrames: number, width: number)
 // Adapted from https://www.remotion.dev/docs/player/custom-controls#seek-bar
 export const SeekBar: React.FC<{
     playerRef: React.RefObject<PlayerRef | null>;
-    data: VideoTrackingPoints;
+    data: VideoTrackingPoints | VideoFramePoints;
     fps: number;
     durationInFrames: number;
 }> = ({ data, playerRef, fps, durationInFrames }) => {

@@ -1,7 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Video } from '@remotion/media';
-import { ReactNode } from 'react';
-import { AbsoluteFill } from 'remotion';
+import type { ReactNode } from 'react';
+import { AbsoluteFill, OffthreadVideo } from 'remotion';
 
 export const VideoOverlayHelper = ({
     videoUrl,
@@ -13,7 +12,7 @@ export const VideoOverlayHelper = ({
     return (
         <AbsoluteFill>
             <AbsoluteFill>{children}</AbsoluteFill>
-            <Video className={css({ borderRadius: 'sm' })} muted={true} src={videoUrl} />
+            <OffthreadVideo className={css({ borderRadius: 'sm' })} muted={true} src={videoUrl} />
         </AbsoluteFill>
     );
 };

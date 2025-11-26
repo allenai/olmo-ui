@@ -1,11 +1,11 @@
 import type { PlayerRef } from '@remotion/player';
 import React, { useCallback, useMemo } from 'react';
 
-import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+import { VideoFramePoints, VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 export const useOnKeyDownControls = (
     playerRef: React.RefObject<PlayerRef | null>,
-    data: VideoTrackingPoints,
+    data: VideoTrackingPoints | VideoFramePoints,
     fps: number,
     durationInFrames: number
 ) => {

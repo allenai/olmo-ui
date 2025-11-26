@@ -35,6 +35,9 @@ import {
     userToolCallsStreamResponse,
     userToolCallsStreamToolResponse,
 } from './responses/v4/stream/userToolCalls';
+import { videoCountingStreamResponse } from './responses/v4/stream/videoCounting';
+import { videoDescriptionStreamResponse } from './responses/v4/stream/videoDescription';
+import { videoTrackingStreamResponse } from './responses/v4/stream/videoTracking';
 import { streamResponseWithSystemMessage } from './responses/v4/stream/withSystemMessage';
 import {
     THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
@@ -48,6 +51,18 @@ import {
     USER_TOOL_CALLS_THREAD_ROOT_ID,
     userToolCallsResponse,
 } from './responses/v4/userToolCallsResponse';
+import {
+    VIDEO_COUNTING_ROOT_ID,
+    videoCountingResponse,
+} from './responses/v4/videoCountingResponse';
+import {
+    VIDEO_DESCRIPTION_ROOT_ID,
+    videoDescriptionResponse,
+} from './responses/v4/videoDescriptionResponse';
+import {
+    VIDEO_TRACKING_ROOT_ID,
+    videoTrackingResponse,
+} from './responses/v4/videoTrackingResponse';
 import { typedHttp } from './typedHttp';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
@@ -253,7 +268,26 @@ const v4ThreadResponses = {
     [USER_TOOL_CALLS_THREAD_ROOT_ID]: userToolCallsResponse,
     [INTERNAL_TOOL_CALLS_THREAD_ROOT_ID]: internalToolCallsResponse,
     [THREAD_WITH_LATEX_IN_RESPONSE_ID]: threadWithLatexInResponse,
+    // molmo2
+    [VIDEO_TRACKING_ROOT_ID]: videoTrackingResponse,
+    [VIDEO_COUNTING_ROOT_ID]: videoCountingResponse,
+    [VIDEO_DESCRIPTION_ROOT_ID]: videoDescriptionResponse,
 };
+
+const v4ChatStreamMap = {
+    'include system message': streamResponseWithSystemMessage,
+    'multimodaltest: Count the boats': fakeMultiModalStreamMessages,
+    thinkingAndToolCalls: thinkingAndToolCallsStreamResponse,
+    internalToolCalls: internalToolCallsStreamResponse,
+    userToolCalls: userToolCallsStreamResponse,
+    bogusToolCallWithError: bogusToolCallsStreamErrorResponse,
+    'track the car': videoTrackingStreamResponse,
+    'count the vehicles in the video': videoCountingStreamResponse,
+    'what is this a video of?': videoDescriptionStreamResponse,
+};
+
+const contentIsStreamMessage = (content: unknown): content is keyof typeof v4ChatStreamMap =>
+    typeof content === 'string' && content in v4ChatStreamMap;
 
 export interface MessagesResponseV4 {
     threads: Thread[];
@@ -304,10 +338,6 @@ export const v4ThreadHandlers = [
             response = userToolCallsStreamToolResponse;
         } else if (formData.get('parent') != null) {
             response = fakeFollowupResponse(formData.get('parent') as string);
-        } else if (content === 'include system message') {
-            response = streamResponseWithSystemMessage;
-        } else if (content === 'multimodaltest: Count the boats') {
-            response = fakeMultiModalStreamMessages;
         } else if (content === 'compare') {
             const modelId = formData.get('model');
             if (modelId === 'tulu2') {
@@ -315,14 +345,9 @@ export const v4ThreadHandlers = [
             } else if (modelId === 'Olmo-peteish-dpo-preview') {
                 response = fakeNewThreadMessages;
             }
-        } else if (content === 'thinkingAndToolCalls') {
-            response = thinkingAndToolCallsStreamResponse;
-        } else if (content === 'internalToolCalls') {
-            response = internalToolCallsStreamResponse;
-        } else if (content === 'userToolCalls') {
-            response = userToolCallsStreamResponse;
-        } else if (content === 'bogusToolCallWithError') {
-            response = bogusToolCallsStreamErrorResponse;
+        } else if (contentIsStreamMessage(content)) {
+            // for basic stream responses, we can just add to the map
+            response = v4ChatStreamMap[content];
         } else {
             response = fakeNewThreadMessages;
         }
