@@ -1,5 +1,6 @@
 import { MessageStreamErrorType } from '@/api/Message';
 import type {
+    SchemaCreateMessageRequest,
     SchemaErrorChunk,
     SchemaFlatMessage,
     SchemaModelResponseChunk,
@@ -22,8 +23,9 @@ export interface StreamMessageRequest {
     captchaToken?: string | null;
     parent?: string;
     files?: FileList;
-    role?: SchemaFlatMessage['role'];
+    role?: SchemaCreateMessageRequest['role'];
     toolCallId?: SchemaToolCall['toolCallId'];
+    inputParts?: SchemaCreateMessageRequest['inputParts'];
 }
 
 export type MessageChunk = Pick<SchemaFlatMessage, 'content'> & {

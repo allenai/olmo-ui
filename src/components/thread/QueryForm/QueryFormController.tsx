@@ -14,10 +14,10 @@ import {
 import { useNavigation } from 'react-router-dom';
 
 import {
+    type SchemaCreateMessageRequest,
     SchemaPromptTemplateResponse,
     SchemaToolCall,
 } from '@/api/playgroundApi/playgroundApiSchema';
-import { FlatMessage } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
@@ -40,8 +40,9 @@ export interface QueryFormValues {
     files?: FileList;
     // This isn't part of the form data explicitly, but is added in the submit handler
     captchaToken?: string | null;
-    role?: FlatMessage['role'];
+    role?: SchemaCreateMessageRequest['role'];
     toolCallId?: SchemaToolCall['toolCallId'];
+    inputParts?: SchemaCreateMessageRequest['inputParts'];
 }
 
 interface QueryFormControllerProps {
@@ -60,7 +61,6 @@ interface QueryFormControllerProps {
 
 export const QueryFormController = ({
     handleSubmit,
-    // props
     canEditThread,
     promptTemplate,
     placeholderText,
