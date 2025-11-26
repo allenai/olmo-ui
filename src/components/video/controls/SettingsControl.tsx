@@ -16,7 +16,7 @@ export const SettingsControl = ({
             <ControlButton>
                 <SettingsRounded />
             </ControlButton>
-            <Popover>
+            <Popover placement="top left">
                 <Menu items={menuItems} onAction={onAction} className={menu}>
                     {({ id, label }) => (
                         <MenuItem className={menuItem} key={id} id={id}>
@@ -30,6 +30,7 @@ export const SettingsControl = ({
 };
 
 const menuItem = css({
+    color: 'text',
     paddingBlock: '1',
     paddingInline: '5',
     cursor: 'pointer',
