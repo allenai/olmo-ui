@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Checkbox } from '@allenai/varnish-ui';
 import { Player, PlayerRef } from '@remotion/player';
 import { useRef, useState } from 'react';
+import { Key } from 'react-aria-components';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
@@ -9,7 +9,6 @@ import { Controls } from '../controls/Controls';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { FPS, MOVE_TO_BEGINNING_WHEN_ENDED } from '../videoConsts';
 import { VideoTracking } from './Tracking';
-import { Key } from 'react-aria-components';
 
 export function MolmoTrackingVideo({
     videoTrackingPoints,
