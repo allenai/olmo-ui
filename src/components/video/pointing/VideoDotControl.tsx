@@ -268,6 +268,7 @@ const onScreenButtonRecipe = cva({
         backgroundColor: 'extra-dark-teal.80',
         borderRadius: 'sm',
         position: 'absolute',
+        cursor: 'pointer',
         bottom: '5',
         _hover: {
             borderColor: 'cream.100!', // IDK why i need important here
