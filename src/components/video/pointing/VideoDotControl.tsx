@@ -41,15 +41,10 @@ export const VideoDotControl = ({
         }
 
         const onFrameUpdate = () => {
-            if (!userPoint) {
-                return;
-            }
-
-            if (Math.abs(current.getCurrentFrame() - userPoint.timestamp * fps) < 2) {
-                setOnSelectedFrame(true);
-            } else {
-                setOnSelectedFrame(false);
-            }
+            setOnSelectedFrame(
+                userPoint !== null &&
+                    Math.abs(current.getCurrentFrame() - userPoint.timestamp * fps) < 2
+            );
         };
 
         current.addEventListener('frameupdate', onFrameUpdate);
@@ -60,12 +55,7 @@ export const VideoDotControl = ({
         };
     }, [playerRef, userPoint]);
 
-    const setPoint = (point: null | UserPointSelect) => {
-        if (!point) {
-            setState('idle');
-            onPointSelect(null);
-            return;
-        }
+    const setPoint = (point: UserPointSelect) => {
         setState('placed');
         setShowShockwave(true);
         setTimeout(() => {
@@ -74,35 +64,38 @@ export const VideoDotControl = ({
         onPointSelect(point);
     };
 
-    const onPointerUp = (event: React.PointerEvent) => {
-        if (!playerRef.current || state === 'idle') {
-            return;
-        }
+    const clearPoint = () => {
+        setState('idle');
+        onPointSelect(null);
+    };
+
+    const percentXYFromEvent = (event: React.PointerEvent) => {
         const target = event.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();
 
         const x = (event.clientX - rect.left) / rect.width;
         const y = (event.clientY - rect.top) / rect.height;
+        return { x, y };
+    };
+
+    const onPointerUp = (event: React.PointerEvent) => {
+        if (!playerRef.current || state === 'idle') {
+            return;
+        }
 
         const frame = playerRef.current.getCurrentFrame();
         const timestamp = frame / fps;
         const point = {
-            x,
-            y,
+            ...percentXYFromEvent(event),
             timestamp,
         };
         setPoint(point);
     };
 
     const onPointerMove = (event: React.PointerEvent) => {
-        const target = event.currentTarget as HTMLElement;
-        const rect = target.getBoundingClientRect();
-
-        const x = (event.clientX - rect.left) / rect.width;
-        const y = (event.clientY - rect.top) / rect.height;
-
-        setMousePosition({ x, y });
+        setMousePosition(percentXYFromEvent(event));
     };
+
     const handleMouseLeave = () => {
         setMousePosition(null);
     };
@@ -121,15 +114,7 @@ export const VideoDotControl = ({
             onPointerUp={onPointerUp}>
             {children}
             {!!dotX && !!dotY && (onSelectedFrame || state === 'placing') && (
-                <svg
-                    className={css({
-                        position: 'absolute',
-                        top: '0',
-                        left: '0',
-                        width: '[100%]',
-                        height: '[100%]',
-                        pointerEvents: 'none',
-                    })}>
+                <svg className={svgWrapper}>
                     <style>
                         {`
                             @keyframes shockwave {
@@ -186,11 +171,8 @@ export const VideoDotControl = ({
                         fill={varnishTheme.palette.secondary.main}
                         style={{
                             pointerEvents: 'auto',
-                            ...(showShockwave
-                                ? { animation: 'placeDown 0.25s ease-out forwards' }
-                                : {}),
-                            ...(state === 'placed' ? { cursor: 'grab' } : {}),
-                            ...(state === 'placing' ? { cursor: 'grabbing' } : {}),
+                            animation: showShockwave ? 'placeDown 0.25s ease-out forwards' : '',
+                            cursor: state === 'placing' ? 'grabbing' : 'grab',
                         }}
                         onPointerDown={(e) => {
                             if (state === 'placed') {
@@ -229,32 +211,28 @@ export const VideoDotControl = ({
                     variant="outlined"
                     color="secondary"
                     size="small"
-                    className={css({
-                        backgroundColor: 'extra-dark-teal.70',
-                        borderRadius: 'md',
-                        position: 'absolute',
-                        bottom: '5',
-                        left: '5',
-                    })}
+                    className={`${onScreenButton} ${css({ left: '5' })}`}
                     onClick={() => {
-                        setPoint(null);
+                        clearPoint();
                     }}>
                     Clear Point
                 </Button>
             )}
-            {state !== 'placing' && <RemoveButton filename="video" onPressRemove={onRemoveFile} />}
+            {state !== 'placing' && (
+                <RemoveButton
+                    filename="video"
+                    onPressRemove={() => {
+                        clearPoint();
+                        onRemoveFile();
+                    }}
+                />
+            )}
             {state === 'idle' && (
                 <Button
                     variant="outlined"
                     color="secondary"
                     size="small"
-                    className={css({
-                        backgroundColor: 'extra-dark-teal.70',
-                        borderRadius: 'md',
-                        position: 'absolute',
-                        bottom: '5',
-                        right: '5',
-                    })}
+                    className={`${onScreenButton} ${css({ right: '5' })}`}
                     onClick={() => {
                         setState('placing');
                     }}>
@@ -264,3 +242,19 @@ export const VideoDotControl = ({
         </div>
     );
 };
+
+const svgWrapper = css({
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    width: '[100%]',
+    height: '[100%]',
+    pointerEvents: 'none',
+});
+
+const onScreenButton = css({
+    backgroundColor: 'extra-dark-teal.70',
+    borderRadius: 'md',
+    position: 'absolute',
+    bottom: '5',
+});
