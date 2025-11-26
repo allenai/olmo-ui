@@ -1,10 +1,9 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
+import { css, sva } from '@allenai/varnish-panda-runtime/css';
 import { Button } from '@allenai/varnish-ui';
 import { varnishTheme } from '@allenai/varnish2/theme';
+import { Route } from '@mui/icons-material';
 import { PlayerRef } from '@remotion/player';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-
-import { Route } from '@mui/icons-material';
 
 import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
 import { RemoveButton } from '@/components/thread/QueryForm/FileUploadThumbnails/Thumbnail';
@@ -38,9 +37,7 @@ export const VideoDotControl = ({
         }
 
         const onFrameUpdate = () => {
-            setOnSelectedFrame(
-                userPoint !== null && Math.abs(current.getCurrentFrame() - userPoint.time * fps) < 2
-            );
+            setOnSelectedFrame(Math.abs(current.getCurrentFrame() - userPoint.time * fps) < 2);
         };
 
         current.addEventListener('frameupdate', onFrameUpdate);
@@ -49,7 +46,7 @@ export const VideoDotControl = ({
         return () => {
             current.removeEventListener('frameupdate', onFrameUpdate);
         };
-    }, [playerRef, userPoint]);
+    }, [playerRef, userPoint, fps]);
 
     const setPoint = (point: SchemaMolmo2PointPart) => {
         setState('placed');
@@ -208,17 +205,6 @@ export const VideoDotControl = ({
                     )}
                 </svg>
             )}
-            {state === 'placed' && (
-                <Button
-                    variant="outlined"
-                    size="small"
-                    className={`${onScreenButton} ${css({ left: '5' })}`}
-                    onClick={() => {
-                        clearPoint();
-                    }}>
-                    Clear Point
-                </Button>
-            )}
             {state !== 'placing' && (
                 <RemoveButton
                     filename="video"
@@ -228,11 +214,23 @@ export const VideoDotControl = ({
                     }}
                 />
             )}
+            {state === 'placed' && (
+                <Button
+                    variant="outlined"
+                    size="small"
+                    className={onScreenButtonRecipe({ position: 'left' }).button}
+                    onClick={() => {
+                        clearPoint();
+                    }}>
+                    Clear Point
+                </Button>
+            )}
+
             {state === 'idle' && (
                 <Button
                     variant="outlined"
                     size="small"
-                    className={`${onScreenButton} ${css({ right: '5' })}`}
+                    className={onScreenButtonRecipe({ position: 'right' }).button}
                     onClick={() => {
                         setState('placing');
                     }}>
@@ -253,15 +251,34 @@ const svgWrapper = css({
     pointerEvents: 'none',
 });
 
-const onScreenButton = css({
-    color: 'cream.100',
-    borderColor: 'cream.100',
-    backgroundColor: 'extra-dark-teal.80',
-    borderRadius: 'sm',
-    position: 'absolute',
-    bottom: '5',
-    _hover: {
-        borderColor: 'cream.100!', // IDK why i need important here
-        outline: 'none',
+const onScreenButtonRecipe = sva({
+    slots: ['button'],
+    base: {
+        button: {
+            color: 'cream.100',
+            borderColor: 'cream.100',
+            backgroundColor: 'extra-dark-teal.80',
+            borderRadius: 'sm',
+            position: 'absolute',
+            bottom: '5',
+            _hover: {
+                borderColor: 'cream.100!', // IDK why i need important here
+                outline: 'none',
+            },
+        },
+    },
+    variants: {
+        position: {
+            left: {
+                button: {
+                    left: '5',
+                },
+            },
+            right: {
+                button: {
+                    right: '5',
+                },
+            },
+        },
     },
 });
