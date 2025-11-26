@@ -20,7 +20,7 @@ export const SeekPrevious = memo(function SeekPrevious({
         jumpBasedOnCurrent('back');
     };
 
-    const tooltipLabel = 'Jump the previous frame with points';
+    const tooltipLabel = 'Jump to the previous frame with points';
 
     return (
         <StyledTooltip content={tooltipLabel} placement="top">

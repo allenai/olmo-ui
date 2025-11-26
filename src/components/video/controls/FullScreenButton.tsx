@@ -1,6 +1,6 @@
 import { FullscreenRounded } from '@mui/icons-material';
 import type { PlayerRef } from '@remotion/player';
-import { type RefObject, memo, useCallback, useEffect, useState } from 'react';
+import { memo, type RefObject, useCallback, useEffect, useState } from 'react';
 
 import { ControlButton } from './ControlButton';
 
@@ -41,7 +41,7 @@ export const FullScreenButton = memo(function FullScreenButton({
             // @ts-expect-error Types not defined
             document.webkitFullscreenEnabled ||
             false;
-        // Must be handled client-side to avoid SSR hydration mismatch
+
         setSupportsFullscreen(docFullScreen);
     }, []);
 

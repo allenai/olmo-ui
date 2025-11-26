@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { PlayerRef } from '@remotion/player';
-import { type ReactNode, type RefObject, useEffect, useState, memo } from 'react';
+import { memo, type ReactNode, type RefObject, useEffect, useState } from 'react';
 
 import { formatTime } from './formatTime';
 

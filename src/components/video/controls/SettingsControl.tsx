@@ -6,13 +6,15 @@ import { menuClassName, menuItemClassName } from '@/components/menu/sharedMenuSt
 
 import { ControlButton } from './ControlButton';
 
+interface SettingsControlProps {
+    menuItems: Array<{ id: string; label: string }>;
+    onAction: (key: Key) => void;
+}
+
 export const SettingsControl = memo(function SettingsControl({
     menuItems,
     onAction,
-}: {
-    menuItems: Array<{ id: string; label: string }>;
-    onAction: (key: Key) => void;
-}) {
+}: SettingsControlProps) {
     return (
         <MenuTrigger>
             <ControlButton>

@@ -97,7 +97,7 @@ export const VolumeControl = memo(function VolumeControl({ playerRef }: VolumeCo
     );
 });
 
-// wanted access to the thumb
+// wanted access to the thumb for a11y focus (otherwise the container gets focus instead)
 // this is essentially stolen from varnish-ui
 const Slider = <T extends number | number[]>({
     color = 'default',
@@ -123,6 +123,7 @@ const Slider = <T extends number | number[]>({
                                 // this need orientation for the css variants
                                 // eslint-disable-next-line @typescript-eslint/no-deprecated
                                 orientation={orientation}
+                                // popover gives focus to the whole component, instead of the thumb
                                 // eslint-disable-next-line jsx-a11y/no-autofocus
                                 autoFocus
                                 key={i}

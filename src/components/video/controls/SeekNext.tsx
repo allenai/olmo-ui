@@ -17,7 +17,7 @@ export const SeekNext = memo(function SeekNext({ isDisabled, jumpBasedOnCurrent 
         jumpBasedOnCurrent('forward');
     };
 
-    const tooltipLabel = 'Jump the next frame with points';
+    const tooltipLabel = 'Jump to the next frame with points';
 
     return (
         <StyledTooltip content={tooltipLabel} placement="top">

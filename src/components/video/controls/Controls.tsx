@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import type { PlayerRef } from '@remotion/player';
-import { type RefObject, memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import type { Key } from 'react-aria-components';
 import { interpolate } from 'remotion';
 

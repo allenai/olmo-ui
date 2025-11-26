@@ -3,13 +3,12 @@ import { memo } from 'react';
 
 import { ControlButton } from './ControlButton';
 
-export const PlayPause = memo(function PlayPause({
-    playing,
-    handlePlayPause,
-}: {
+interface PlayPauseProps {
     playing: boolean;
     handlePlayPause: (e: unknown) => void;
-}) {
+}
+
+export const PlayPause = memo(function PlayPause({ playing, handlePlayPause }: PlayPauseProps) {
     const label = playing ? 'Pause the video' : 'Play the video';
 
     return (
