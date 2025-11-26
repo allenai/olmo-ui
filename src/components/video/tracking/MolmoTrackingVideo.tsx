@@ -9,6 +9,7 @@ import { Controls } from '../controls/Controls';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { FPS, MOVE_TO_BEGINNING_WHEN_ENDED } from '../videoConsts';
 import { VideoTracking } from './Tracking';
+import { Key } from 'react-aria-components';
 
 export function MolmoTrackingVideo({
     videoTrackingPoints,
@@ -22,6 +23,12 @@ export function MolmoTrackingVideo({
     const [showInterpolation, setShowInterpolation] = useState(true);
 
     const { durationInFrames, width, height } = useVideoMetaData(videoUrl, FPS);
+
+    const handleSettings = (id: Key) => {
+        if (id === 'toggle-interpolation') {
+            setShowInterpolation(!showInterpolation);
+        }
+    };
 
     return (
         <div>
@@ -56,16 +63,14 @@ export function MolmoTrackingVideo({
                 data={videoTrackingPoints}
                 durationInFrames={durationInFrames}
                 frameStyle="line"
+                onSettingsAction={handleSettings}
+                settingsItems={[
+                    {
+                        id: 'toggle-interpolation',
+                        label: showInterpolation ? 'Hide tween' : 'Show tween',
+                    },
+                ]}
             />
-            <Checkbox
-                isSelected={showInterpolation}
-                onChange={(isChecked) => {
-                    setShowInterpolation(isChecked);
-                }}
-                aria-label={`Toggle Interpolation between tracking points`}
-                className={css({ paddingTop: '1' })}>
-                <span>Interpolation</span>
-            </Checkbox>
         </div>
     );
 }

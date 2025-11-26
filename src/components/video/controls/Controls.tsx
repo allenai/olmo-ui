@@ -41,13 +41,22 @@ type Dragging =
           wasPlaying: boolean;
       };
 
-interface ControlsProps {
+type ControlsProps = {
     playerRef: RefObject<PlayerRef | null>;
     data: VideoTrackingPoints | VideoFramePoints;
     fps: number;
     durationInFrames: number;
     frameStyle: 'dot' | 'line';
-}
+} & ( // both or none
+    | {
+          onSettingsAction?: never;
+          settingsItems?: never;
+      }
+    | {
+          onSettingsAction: (id: Key) => void;
+          settingsItems: Array<{ id: string; label: string }>;
+      }
+);
 
 // Adapted from https://www.remotion.dev/docs/player/custom-controls#seek-bar
 export const Controls = ({
@@ -56,6 +65,8 @@ export const Controls = ({
     fps,
     durationInFrames,
     frameStyle,
+    onSettingsAction,
+    settingsItems,
 }: ControlsProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const { width } = useElementSize(containerRef); // We need to track element size for dragging the time scrub to work correctly.
@@ -229,7 +240,9 @@ export const Controls = ({
                         fps={fps}
                     />
                     <VolumeControl playerRef={playerRef} />
-                    {/* <SettingsControl menuItems={[]} onAction={() => {}} /> */}
+                    {settingsItems && settingsItems.length ? (
+                        <SettingsControl menuItems={settingsItems} onAction={onSettingsAction} />
+                    ) : null}
                     <FullScreenButton playerRef={playerRef} />
                 </div>
             </div>
