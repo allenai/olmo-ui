@@ -4,6 +4,8 @@ import { varnishTheme } from '@allenai/varnish2/theme';
 import { PlayerRef } from '@remotion/player';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
+import { Route } from '@mui/icons-material';
+
 import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
 import { RemoveButton } from '@/components/thread/QueryForm/FileUploadThumbnails/Thumbnail';
 
@@ -234,6 +236,7 @@ export const VideoDotControl = ({
                     onClick={() => {
                         setState('placing');
                     }}>
+                    <Route />
                     Add Tracking Point
                 </Button>
             )}
