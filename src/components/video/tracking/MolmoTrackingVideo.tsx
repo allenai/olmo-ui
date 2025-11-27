@@ -1,11 +1,19 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Checkbox } from '@allenai/varnish-ui';
 import { Player, PlayerRef } from '@remotion/player';
 import { useRef, useState } from 'react';
+import { Key } from 'react-aria-components';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { SeekBar } from '../seekBar/SeekBar';
+import { Controls, ControlsGroup, SplitControls } from '../controls/Controls';
+import { FullScreenButton } from '../controls/FullScreenButton';
+import { PlayPause } from '../controls/PlayPause';
+import { SeekBar } from '../controls/SeekBar';
+import { SeekNext } from '../controls/SeekNext';
+import { SeekPrevious } from '../controls/SeekPrevious';
+import { SettingsControl } from '../controls/SettingsControl';
+import { TimeDisplay } from '../controls/TimeDisplay';
+import { VolumeControl } from '../controls/VolumeControl';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { FPS, MOVE_TO_BEGINNING_WHEN_ENDED } from '../videoConsts';
 import { VideoTracking } from './Tracking';
@@ -22,6 +30,12 @@ export function MolmoTrackingVideo({
     const [showInterpolation, setShowInterpolation] = useState(true);
 
     const { durationInFrames, width, height } = useVideoMetaData(videoUrl, FPS);
+
+    const handleSettings = (id: Key) => {
+        if (id === 'toggle-interpolation') {
+            setShowInterpolation(!showInterpolation);
+        }
+    };
 
     return (
         <div>
@@ -44,26 +58,40 @@ export function MolmoTrackingVideo({
                     durationInFrames={durationInFrames}
                     compositionWidth={width}
                     compositionHeight={height}
+                    initiallyMuted={true}
                     fps={FPS}
                     style={{ width: '100%', flex: '1' }}
                     moveToBeginningWhenEnded={MOVE_TO_BEGINNING_WHEN_ENDED}
                 />
             </div>
-            <SeekBar
-                fps={FPS}
+            <Controls
                 playerRef={playerRef}
-                data={videoTrackingPoints}
-                durationInFrames={durationInFrames}
-            />
-            <Checkbox
-                isSelected={showInterpolation}
-                onChange={(isChecked) => {
-                    setShowInterpolation(isChecked);
-                }}
-                aria-label={`Toggle Interpolation between tracking points`}
-                className={css({ paddingTop: '1' })}>
-                <span>Interpolation</span>
-            </Checkbox>
+                framePoints={videoTrackingPoints}
+                fps={FPS}
+                durationInFrames={durationInFrames}>
+                <SeekBar frameStyle="line" />
+                <SplitControls>
+                    <ControlsGroup>
+                        <SeekPrevious />
+                        <PlayPause />
+                        <SeekNext />
+                    </ControlsGroup>
+                    <ControlsGroup>
+                        <TimeDisplay />
+                        <VolumeControl />
+                        <SettingsControl
+                            onAction={handleSettings}
+                            menuItems={[
+                                {
+                                    id: 'toggle-interpolation',
+                                    label: showInterpolation ? 'Hide tween' : 'Show tween',
+                                },
+                            ]}
+                        />
+                        <FullScreenButton />
+                    </ControlsGroup>
+                </SplitControls>
+            </Controls>
         </div>
     );
 }
