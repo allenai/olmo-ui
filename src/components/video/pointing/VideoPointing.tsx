@@ -5,9 +5,16 @@ import { useRef } from 'react';
 import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { SeekBar } from '../seekBar/SeekBar';
+import { Controls, ControlsGroup, SplitControls } from '../controls/Controls';
+import { PlayPause } from '../controls/PlayPause';
+import { SeekBar } from '../controls/SeekBar';
+import { SeekNext } from '../controls/SeekNext';
+import { SeekPrevious } from '../controls/SeekPrevious';
+import { TimeDisplay } from '../controls/TimeDisplay';
+import { VolumeControl } from '../controls/VolumeControl';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { VideoOverlayHelper } from '../VideoOverlayHelper';
+import { VideoPlayerWrapper } from '../VideoPlayerContainer';
 import { VideoDotControl } from './VideoDotControl';
 const FPS = 24;
 
@@ -50,7 +57,7 @@ export function VideoPointingInput({
     };
 
     return (
-        <div>
+        <VideoPlayerWrapper>
             <div
                 style={{
                     aspectRatio: width / height,
@@ -76,18 +83,32 @@ export function VideoPointingInput({
                         compositionWidth={width}
                         compositionHeight={height}
                         fps={FPS}
-                        style={{ width: '100%' }}
+                        style={{
+                            width: '100%',
+                        }}
                         moveToBeginningWhenEnded={false}
                     />
                 </VideoDotControl>
             </div>
-            <SeekBar
-                fps={FPS}
+            <Controls
                 playerRef={playerRef}
-                data={mapPointToData(userPoint)}
-                durationInFrames={durationInFrames}
-            />
-        </div>
+                framePoints={mapPointToData(userPoint)}
+                fps={FPS}
+                durationInFrames={durationInFrames}>
+                <SeekBar frameStyle="line" />
+                <SplitControls>
+                    <ControlsGroup>
+                        <SeekPrevious />
+                        <PlayPause />
+                        <SeekNext />
+                    </ControlsGroup>
+                    <ControlsGroup>
+                        <TimeDisplay />
+                        <VolumeControl />
+                    </ControlsGroup>
+                </SplitControls>
+            </Controls>
+        </VideoPlayerWrapper>
     );
 }
 
