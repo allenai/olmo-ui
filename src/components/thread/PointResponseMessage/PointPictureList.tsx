@@ -53,7 +53,7 @@ export const PointPictureList = ({
                         key={url}
                         sx={{
                             height: 'fit-content',
-                            width: 'fitContent',
+                            width: 'fit-content',
                             maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX,
                             maxWidth: MAX_THREAD_IMAGE_WIDTH_PX,
                         }}

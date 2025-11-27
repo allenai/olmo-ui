@@ -34,7 +34,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     }
 
     const { content } = message;
-    const AllLabelPoints = extractMolmo1PointData(content) ?? extractMolmo2PointsData(content);
+    const allLabelPoints = extractMolmo1PointData(content) ?? extractMolmo2PointsData(content);
 
     const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
 
@@ -46,8 +46,8 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     };
 
     // NOTE: this assumes all points from a response will be a homogenious type
-    if (AllLabelPoints?.[0].type === 'image-points') {
-        const imageLabelPoints = AllLabelPoints.filter((set) => set.type === 'image-points');
+    if (allLabelPoints?.[0].type === 'image-points') {
+        const imageLabelPoints = allLabelPoints.filter((set) => set.type === 'image-points');
         const markdownContent = content.replaceAll(pointsRegex, '**$<text>**');
         return (
             <>
@@ -81,8 +81,8 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                 </MediaLightbox>
             </>
         );
-    } else if (AllLabelPoints?.[0].type === 'track-points') {
-        const videoTrackingPoints = AllLabelPoints.filter((set) => set.type === 'track-points')[0];
+    } else if (allLabelPoints?.[0].type === 'track-points') {
+        const videoTrackingPoints = allLabelPoints.filter((set) => set.type === 'track-points')[0];
         const videoUrl = currentFilesInThread[0];
 
         return (
@@ -91,8 +91,8 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                 <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
             </Stack>
         );
-    } else if (AllLabelPoints?.[0].type === 'frame-points') {
-        const videoFramePoints = AllLabelPoints.filter((set) => set.type === 'frame-points')[0];
+    } else if (allLabelPoints?.[0].type === 'frame-points') {
+        const videoFramePoints = allLabelPoints.filter((set) => set.type === 'frame-points')[0];
         const videoUrl = currentFilesInThread[0];
 
         return (
