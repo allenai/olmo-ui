@@ -1,5 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 
+import { MolmoTrackingVideo } from '@/components/video/tracking/MolmoTrackingVideo';
+
 import { MediaCollapsibleWidget } from '../PointResponseMessage/CollapsibleMediaWidget';
 import { PointPictureList } from '../PointResponseMessage/PointPictureList';
 
@@ -16,7 +18,7 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
     useEffect(() => {
         const determineFileType = async (url: string) => {
             try {
-                const response = await fetch(url, { method: 'HEAD' });
+                const response = await fetch(url, { method: 'GET' }); // TODO: change to HEAD when CORS allows this on the bucket
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -44,17 +46,20 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
 
     if (fileType === 'image') {
         return (
-            <MediaCollapsibleWidget fileType="file" fileCount={fileUrls.length} defaultExpanded>
+            <MediaCollapsibleWidget fileType={fileType} fileCount={fileUrls.length} defaultExpanded>
                 <PointPictureList fileUrls={fileUrls} />
             </MediaCollapsibleWidget>
         );
     }
     if (fileType === 'video') {
         return (
-            <MediaCollapsibleWidget
-                fileType="file"
-                fileCount={fileUrls.length}
-                defaultExpanded></MediaCollapsibleWidget>
+            <MediaCollapsibleWidget fileType={fileType} fileCount={fileUrls.length} defaultExpanded>
+                <MolmoTrackingVideo
+                    videoUrl={fileUrls[0]}
+                    videoTrackingPoints={{ label: '', type: 'track-points', frameList: [] }}
+                    suppressInterpolation
+                />
+            </MediaCollapsibleWidget>
         );
     }
 

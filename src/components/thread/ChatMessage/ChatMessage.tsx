@@ -15,14 +15,15 @@ import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
-import { MediaCollapsibleWidget } from '../PointResponseMessage/CollapsibleMediaWidget';
-import { PointPictureList } from '../PointResponseMessage/PointPictureList';
+// import { MediaCollapsibleWidget } from '../PointResponseMessage/CollapsibleMediaWidget';
+// import { PointPictureList } from '../PointResponseMessage/PointPictureList';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
 import { MessageThinking } from '../ThreadDisplay/MessageThinking';
 import AllToolCalls from '../tools/AllToolCalls';
 import { LLMMessage } from './LLMMessage';
 import { UserMessage } from './UserMessage';
+import { UserMessageFileWidget } from './UserMessageFileWidget';
 
 export const CHAT_ICON_WIDTH = 28;
 export const CHAT_MESSAGE_CLASS_NAME = 'chat-message';
@@ -169,15 +170,7 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
                     />
                 </MessageComponent>
 
-                {/* TODO: discriminate on file mime type and render appropriately (e.g. images, videos, PDFs) */}
-                {fileUrls?.length ? (
-                    <MediaCollapsibleWidget
-                        fileType="file"
-                        fileCount={fileUrls.length}
-                        defaultExpanded>
-                        <PointPictureList fileUrls={fileUrls} />
-                    </MediaCollapsibleWidget>
-                ) : null}
+                {fileUrls?.length ? <UserMessageFileWidget fileUrls={fileUrls} /> : null}
 
                 <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
                 <InlineAlertMessage messageId={messageId} />
