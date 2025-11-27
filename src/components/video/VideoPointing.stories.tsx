@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import COUNTING_VIDEO from '@/mocks/sample-data/counting-video.mp4';
+
 import { VideoPointingInput } from './pointing/VideoPointing';
 
 const meta = {
