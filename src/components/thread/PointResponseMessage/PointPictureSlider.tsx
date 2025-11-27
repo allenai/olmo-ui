@@ -127,8 +127,8 @@ export const PointPictureSlider = ({
 
     const isSingleImageList = fileUrls.length === 1;
     const buttonProps: SxProps<Theme> = (theme) => ({
-        position: 'fixed',
-        positionAnchor: '--slider-container',
+        position: 'absolute',
+        top: '50%',
         color: theme.color['dark-teal-100'].hex,
         backgroundColor: theme.color['cream-10'].hex,
         '&:hover': {
@@ -145,7 +145,6 @@ export const PointPictureSlider = ({
         <Box
             sx={{
                 position: 'relative',
-                anchorName: '--slider-container',
                 height: '100%',
                 maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX + 20, // clearance for markers
             }}>
@@ -243,6 +242,23 @@ export const PointPictureSlider = ({
             </Box>
             {!isSingleImageList && (
                 <>
+                    {/* Previous Button */}
+                    <IconButton
+                        onClick={() => {
+                            setScrollIndex((prev) => (prev > 0 ? prev - 1 : prev));
+                        }}
+                        sx={[
+                            buttonProps,
+                            {
+                                left: 0,
+                                translate: '50%',
+                                transform: 'rotate(180deg)',
+                            },
+                            isAtStart ? buttonDisabledProps : {},
+                        ]}>
+                        <ChevronIcon />
+                    </IconButton>
+
                     {/* Next Button */}
                     <IconButton
                         onClick={() => {
@@ -253,27 +269,10 @@ export const PointPictureSlider = ({
                         sx={[
                             buttonProps,
                             {
-                                positionArea: 'center right',
-                                translate: '-110%',
+                                right: 0,
+                                translate: '-50%',
                             },
                             isAtEnd ? buttonDisabledProps : {},
-                        ]}>
-                        <ChevronIcon />
-                    </IconButton>
-
-                    {/* Previous Button */}
-                    <IconButton
-                        onClick={() => {
-                            setScrollIndex((prev) => (prev > 0 ? prev - 1 : prev));
-                        }}
-                        sx={[
-                            buttonProps,
-                            {
-                                positionArea: 'center left',
-                                translate: '110%',
-                                transform: 'rotate(180deg)',
-                            },
-                            isAtStart ? buttonDisabledProps : {},
                         ]}>
                         <ChevronIcon />
                     </IconButton>
