@@ -95,7 +95,7 @@ export function VideoPointingInput({
                 framePoints={mapPointToData(userPoint)}
                 fps={FPS}
                 durationInFrames={durationInFrames}>
-                <SeekBar frameStyle="line" />
+                <SeekBar frameStyle="dot" />
                 <SplitControls>
                     <ControlsGroup>
                         <SeekPrevious />
