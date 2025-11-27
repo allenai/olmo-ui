@@ -1,19 +1,17 @@
 import { PauseRounded, PlayArrowRounded } from '@mui/icons-material';
 import { memo } from 'react';
 
+import { usePlayback } from './context/usePlayback';
 import { ControlButton } from './ControlButton';
 
-interface PlayPauseProps {
-    playing: boolean;
-    handlePlayPause: (e: unknown) => void;
-}
+export const PlayPause = memo(function PlayPause() {
+    const { isPlaying, togglePlayback } = usePlayback();
 
-export const PlayPause = memo(function PlayPause({ playing, handlePlayPause }: PlayPauseProps) {
-    const label = playing ? 'Pause the video' : 'Play the video';
+    const label = isPlaying ? 'Pause the video' : 'Play the video';
 
     return (
-        <ControlButton onPress={handlePlayPause} aria-label={label}>
-            {playing ? <PauseRounded /> : <PlayArrowRounded />}
+        <ControlButton onPress={togglePlayback} aria-label={label}>
+            {isPlaying ? <PauseRounded /> : <PlayArrowRounded />}
         </ControlButton>
     );
 });

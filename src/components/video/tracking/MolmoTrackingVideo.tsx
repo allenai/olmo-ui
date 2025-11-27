@@ -5,7 +5,15 @@ import { Key } from 'react-aria-components';
 
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-import { Controls } from '../controls/Controls';
+import { Controls, ControlsGroup, SplitControls } from '../controls/Controls';
+import { FullScreenButton } from '../controls/FullScreenButton';
+import { PlayPause } from '../controls/PlayPause';
+import { SeekBar } from '../controls/SeekBar';
+import { SeekNext } from '../controls/SeekNext';
+import { SeekPrevious } from '../controls/SeekPrevious';
+import { SettingsControl } from '../controls/SettingsControl';
+import { TimeDisplay } from '../controls/TimeDisplay';
+import { VolumeControl } from '../controls/VolumeControl';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { FPS, MOVE_TO_BEGINNING_WHEN_ENDED } from '../videoConsts';
 import { VideoTracking } from './Tracking';
@@ -57,19 +65,33 @@ export function MolmoTrackingVideo({
                 />
             </div>
             <Controls
-                fps={FPS}
                 playerRef={playerRef}
-                data={videoTrackingPoints}
-                durationInFrames={durationInFrames}
-                frameStyle="line"
-                onSettingsAction={handleSettings}
-                settingsItems={[
-                    {
-                        id: 'toggle-interpolation',
-                        label: showInterpolation ? 'Hide tween' : 'Show tween',
-                    },
-                ]}
-            />
+                framePoints={videoTrackingPoints}
+                fps={FPS}
+                durationInFrames={durationInFrames}>
+                <SeekBar frameStyle="line" />
+                <SplitControls>
+                    <ControlsGroup>
+                        <SeekPrevious />
+                        <PlayPause />
+                        <SeekNext />
+                    </ControlsGroup>
+                    <ControlsGroup>
+                        <TimeDisplay />
+                        <VolumeControl />
+                        <SettingsControl
+                            onAction={handleSettings}
+                            menuItems={[
+                                {
+                                    id: 'toggle-interpolation',
+                                    label: showInterpolation ? 'Hide tween' : 'Show tween',
+                                },
+                            ]}
+                        />
+                        <FullScreenButton />
+                    </ControlsGroup>
+                </SplitControls>
+            </Controls>
         </div>
     );
 }

@@ -1,41 +1,25 @@
 import { sva } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
-import { forwardRef, type KeyboardEventHandler, type PointerEventHandler } from 'react';
+import { memo } from 'react';
 import { Button } from 'react-aria-components';
 
-import type {
-    VideoFramePoints,
-    VideoTrackingPoints,
-} from '@/components/thread/points/pointsDataTypes';
-
+import { useControls } from './context/ControlsContext';
+import { useCurrentFrame } from './context/useCurrentFrame';
+import { useTimeline } from './context/useTimeline';
 import { TrackingDotsTimeline } from './TrackingDotsTimeLine';
+import { useSeekBarDrag } from './useSeekBarDrag';
 
 interface SeekBarProps {
-    durationInFrames: number;
-    frame: number;
-    fps: number;
-    videoPoints: VideoTrackingPoints | VideoFramePoints;
-    onKeyDownControls: KeyboardEventHandler<HTMLElement>;
-    onPointerDown: PointerEventHandler<HTMLElement>;
-    dragging: boolean;
-    // variant:
     frameStyle: 'dot' | 'line';
     knobBehindMarkers?: boolean;
 }
 
-export const SeekBar = forwardRef<HTMLDivElement, SeekBarProps>(function SeekBar(
-    {
-        durationInFrames,
-        frame,
-        fps,
-        frameStyle,
-        videoPoints,
-        onKeyDownControls,
-        onPointerDown,
-        dragging,
-    },
-    containerRef
-) {
+export const SeekBar = memo(function SeekBar({ frameStyle }: SeekBarProps) {
+    const { framePoints } = useControls();
+    const frame = useCurrentFrame();
+    const { fps, durationInFrames, handleKeyDown } = useTimeline();
+    const { containerRef, dragging, handlePointerDown } = useSeekBarDrag();
+
     const seekBarClassName = seekbar({ frameStyle });
 
     return (
@@ -47,7 +31,7 @@ export const SeekBar = forwardRef<HTMLDivElement, SeekBarProps>(function SeekBar
             aria-valuenow={frame / fps}
             tabIndex={-1} // focus on knob seems more correct
             className={seekBarClassName.container}
-            onKeyDown={onKeyDownControls}>
+            onKeyDown={handleKeyDown}>
             <div
                 className={seekBarClassName.played}
                 style={{
@@ -56,7 +40,7 @@ export const SeekBar = forwardRef<HTMLDivElement, SeekBarProps>(function SeekBar
             />
             <div
                 ref={containerRef}
-                onPointerDown={onPointerDown}
+                onPointerDown={handlePointerDown}
                 className={seekBarClassName.inner}>
                 <div
                     id="knob-background"
@@ -66,15 +50,17 @@ export const SeekBar = forwardRef<HTMLDivElement, SeekBarProps>(function SeekBar
                         left: `calc(${(frame / (durationInFrames - 1)) * 100}%)`,
                     }}
                 />
-                <TrackingDotsTimeline
-                    fps={fps}
-                    durationInFrames={durationInFrames}
-                    data={videoPoints}
-                    frameClassName={seekBarClassName.marker}
-                />
+                {framePoints ? (
+                    <TrackingDotsTimeline
+                        fps={fps}
+                        durationInFrames={durationInFrames}
+                        data={framePoints}
+                        frameClassName={seekBarClassName.marker}
+                    />
+                ) : null}
                 <Button
                     id="knob"
-                    onPointerDown={onPointerDown}
+                    onPointerDown={handlePointerDown}
                     className={cx(seekBarClassName.knob, seekBarClassName.knobRing)}
                     data-dragging={String(dragging)}
                     style={{

@@ -1,7 +1,8 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { PlayerRef } from '@remotion/player';
-import { memo, type ReactNode, type RefObject, useEffect, useState } from 'react';
+import { memo, type ReactNode } from 'react';
 
+import { useCurrentFrame } from './context/useCurrentFrame';
+import { useTimeline } from './context/useTimeline';
 import { formatTime } from './formatTime';
 
 const timeDisplay = css({
@@ -11,41 +12,19 @@ const timeDisplay = css({
     alignSelf: 'center',
 });
 
-// from: https://www.remotion.dev/docs/player/custom-controls#time-display
 interface TimeDisplayProps {
-    playerRef: RefObject<PlayerRef | null>;
-    durationInFrames: number;
-    fps: number;
     decimalPlaces?: number;
 }
+
 export const TimeDisplay = memo(function TimeDisplay({
-    playerRef,
-    durationInFrames,
-    fps,
     decimalPlaces = 0,
 }: TimeDisplayProps): ReactNode {
-    const [time, setTime] = useState(0);
-
-    useEffect(() => {
-        const player = playerRef.current;
-        if (!player) {
-            return;
-        }
-
-        const onTimeUpdate = () => {
-            setTime(player.getCurrentFrame());
-        };
-
-        player.addEventListener('frameupdate', onTimeUpdate);
-
-        return () => {
-            player.removeEventListener('frameupdate', onTimeUpdate);
-        };
-    }, [playerRef]);
+    const frame = useCurrentFrame();
+    const { fps, durationInFrames } = useTimeline();
 
     return (
         <div className={timeDisplay}>
-            {formatTime(time, fps, decimalPlaces)} /{` `}
+            {formatTime(frame, fps, decimalPlaces)} /{` `}
             {formatTime(durationInFrames, fps, decimalPlaces)}
         </div>
     );

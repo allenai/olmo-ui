@@ -3,7 +3,14 @@ import { type ReactNode, useRef } from 'react';
 
 import type { VideoFramePoints } from '@/components/thread/points/pointsDataTypes';
 
-import { Controls } from '../controls/Controls';
+import { Controls, ControlsGroup, SplitControls } from '../controls/Controls';
+import { FullScreenButton } from '../controls/FullScreenButton';
+import { PlayPause } from '../controls/PlayPause';
+import { SeekBar } from '../controls/SeekBar';
+import { SeekNext } from '../controls/SeekNext';
+import { SeekPrevious } from '../controls/SeekPrevious';
+import { TimeDisplay } from '../controls/TimeDisplay';
+import { VolumeControl } from '../controls/VolumeControl';
 import { FilmStrip } from '../filmStrip/FilmStrip';
 import { THUMBNAIL_HEIGHT } from '../filmStrip/filmStripConsts';
 import { useVideoMetaData } from '../useVideoMetaData';
@@ -68,11 +75,23 @@ export const MolmoCountingVideo = ({
             />
             <Controls
                 playerRef={playerRef}
-                data={videoPoints}
+                framePoints={videoPoints}
                 fps={FPS}
-                durationInFrames={durationInFrames}
-                frameStyle="dot"
-            />
+                durationInFrames={durationInFrames}>
+                <SeekBar frameStyle="dot" />
+                <SplitControls>
+                    <ControlsGroup>
+                        <SeekPrevious />
+                        <PlayPause />
+                        <SeekNext />
+                    </ControlsGroup>
+                    <ControlsGroup>
+                        <TimeDisplay />
+                        <VolumeControl />
+                        <FullScreenButton />
+                    </ControlsGroup>
+                </SplitControls>
+            </Controls>
         </VideoPlayerWrapper>
     );
 };

@@ -7,14 +7,14 @@ import {
     SliderTrackIndicator,
 } from '@allenai/varnish-ui';
 import { VolumeUpRounded } from '@mui/icons-material';
-import type { PlayerRef } from '@remotion/player';
-import { memo, type RefObject, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback } from 'react';
 import {
     DialogTrigger,
     Popover,
     type SliderTrackRenderProps as AriaSliderTrackRenderProps,
 } from 'react-aria-components';
 
+import { useVolume } from './context/useVolume';
 import { ControlButton } from './ControlButton';
 
 const volumePopover = css({
@@ -29,54 +29,18 @@ const volumePopover = css({
     boxShadow: '0 4px 4px 0 rgba(0, 0, 0, 0.20)',
 });
 
-interface VolumeControlProps {
-    playerRef: RefObject<PlayerRef | null>;
-}
-
-export const VolumeControl = memo(function VolumeControl({ playerRef }: VolumeControlProps) {
-    // default UI to muted and 0 volume
-    const [volume, setVolume] = useState(playerRef.current?.getVolume() ?? 0);
-    const [_muted, setMuted] = useState(playerRef.current?.isMuted() ?? true);
-
-    useEffect(() => {
-        const player = playerRef.current;
-        if (!player) {
-            return;
-        }
-
-        const onVolumeChange = () => {
-            setVolume(player.getVolume());
-        };
-
-        const onMuteChange = () => {
-            setMuted(player.isMuted());
-        };
-
-        player.addEventListener('volumechange', onVolumeChange);
-        player.addEventListener('mutechange', onMuteChange);
-
-        return () => {
-            player.removeEventListener('volumechange', onVolumeChange);
-            player.removeEventListener('mutechange', onMuteChange);
-        };
-    }, [playerRef]);
+export const VolumeControl = memo(function VolumeControl() {
+    const { volume, isMuted, setVolume, unMute } = useVolume();
 
     const handleChange = useCallback(
         (value: number) => {
-            const player = playerRef.current;
-            if (!player) {
-                return;
-            }
-
             const newVolume = Number(value) / 100;
-            if (newVolume > 0 && player.isMuted()) {
-                player.unmute();
+            if (newVolume > 0 && isMuted) {
+                unMute();
             }
-
-            player.setVolume(newVolume);
             setVolume(newVolume);
         },
-        [playerRef]
+        [isMuted, setVolume, unMute]
     );
 
     return (

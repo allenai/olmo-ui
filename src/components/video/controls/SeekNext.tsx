@@ -4,20 +4,20 @@ import { Focusable } from 'react-aria-components';
 
 import { StyledTooltip } from '@/components/StyledTooltip';
 
+import { useCurrentFrame } from './context/useCurrentFrame';
+import { useTimeline } from './context/useTimeline';
 import { ControlButton } from './ControlButton';
-import type { JumpBasedOnCurrentFn } from './useOnKeyDownControls';
 
-interface SeekNextProps {
-    isDisabled?: boolean;
-    jumpBasedOnCurrent: JumpBasedOnCurrentFn;
-}
+export const SeekNext = memo(function SeekNext() {
+    const frame = useCurrentFrame();
+    const { durationInFrames, jumpBasedOnCurrent } = useTimeline();
 
-export const SeekNext = memo(function SeekNext({ isDisabled, jumpBasedOnCurrent }: SeekNextProps) {
     const handlePress = () => {
         jumpBasedOnCurrent('forward');
     };
 
     const tooltipLabel = 'Jump to the next frame with points';
+    const isDisabled = frame === durationInFrames - 1;
 
     return (
         <StyledTooltip content={tooltipLabel} placement="top">

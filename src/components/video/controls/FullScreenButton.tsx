@@ -1,25 +1,20 @@
 import { FullscreenRounded } from '@mui/icons-material';
-import type { PlayerRef } from '@remotion/player';
-import { memo, type RefObject, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
+import { useControls } from './context/ControlsContext';
 import { ControlButton } from './ControlButton';
 
 // https://www.remotion.dev/docs/player/custom-controls#fullscreen-button
 
-interface FullScreenButtonProps {
-    playerRef: RefObject<PlayerRef | null>;
-}
-
-export const FullScreenButton = memo(function FullScreenButton({
-    playerRef,
-}: FullScreenButtonProps) {
+export const FullScreenButton = memo(function FullScreenButton() {
+    const { playerRef } = useControls();
     const [supportsFullscreen, setSupportsFullscreen] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     useEffect(() => {
-        const { current } = playerRef;
+        const player = playerRef.current;
 
-        if (!current) {
+        if (!player) {
             return;
         }
 
@@ -27,10 +22,10 @@ export const FullScreenButton = memo(function FullScreenButton({
             setIsFullscreen(document.fullscreenElement !== null);
         };
 
-        current.addEventListener('fullscreenchange', onFullscreenChange);
+        player.addEventListener('fullscreenchange', onFullscreenChange);
 
         return () => {
-            current.removeEventListener('fullscreenchange', onFullscreenChange);
+            player.removeEventListener('fullscreenchange', onFullscreenChange);
         };
     }, [playerRef]);
 
@@ -46,15 +41,15 @@ export const FullScreenButton = memo(function FullScreenButton({
     }, []);
 
     const handleClick = useCallback(() => {
-        const { current } = playerRef;
-        if (!current) {
+        const player = playerRef.current;
+        if (!player) {
             return;
         }
 
         if (isFullscreen) {
-            current.exitFullscreen();
+            player.exitFullscreen();
         } else {
-            current.requestFullscreen();
+            player.requestFullscreen();
         }
     }, [isFullscreen, playerRef]);
 

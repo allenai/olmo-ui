@@ -3,26 +3,31 @@ import React, { KeyboardEventHandler, useCallback, useMemo } from 'react';
 
 import { VideoFramePoints, VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
-export type JumpBasedOnCurrentFn = (direction: 'forward' | 'back') => void;
+type JumpDirection = 'forward' | 'back';
+
+export type JumpBasedOnCurrentFn = (direction: JumpDirection) => void;
 
 type UseOnKeyDownControlsReturn = {
     handleKeyDown: KeyboardEventHandler<HTMLElement>;
+    jumpBasedOnTime: (frame: number, direction: JumpDirection) => void;
     jumpBasedOnCurrent: JumpBasedOnCurrentFn;
 };
 
 export const useOnKeyDownControls = (
     playerRef: React.RefObject<PlayerRef | null>,
-    data: VideoTrackingPoints | VideoFramePoints,
+    data: VideoTrackingPoints | VideoFramePoints | undefined,
     fps: number,
     durationInFrames: number,
     disableSpace: boolean = false
 ): UseOnKeyDownControlsReturn => {
     const timesOfInterest = useMemo(() => {
-        const times = [
-            ...data.frameList.map((frame) => {
-                return frame.timestamp;
-            }),
-        ];
+        const times = data
+            ? [
+                  ...data.frameList.map((frame) => {
+                      return frame.timestamp;
+                  }),
+              ]
+            : [];
 
         if (times[0] !== 0) {
             times.unshift(0);
@@ -107,6 +112,7 @@ export const useOnKeyDownControls = (
 
     return {
         handleKeyDown,
+        jumpBasedOnTime,
         jumpBasedOnCurrent,
     };
 };
