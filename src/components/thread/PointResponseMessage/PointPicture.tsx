@@ -14,6 +14,7 @@ export interface PointsSets {
 
 interface PointPictureProps extends BoxProps {
     imageLink: string;
+    imageAlt?: string;
     pointsSets: PointsSets[];
     caption?: React.ReactNode;
     onClick?: () => void;
@@ -21,6 +22,7 @@ interface PointPictureProps extends BoxProps {
 
 export const PointPicture = ({
     imageLink,
+    imageAlt,
     pointsSets,
     caption,
     onClick,
@@ -36,9 +38,11 @@ export const PointPicture = ({
                 sx={{
                     display: 'grid',
                     gridTemplateRows: '100%',
+                    gridTemplateColumns: '100%',
                     gridTemplateAreas: '"combined"',
+                    justifyItems: 'center',
                     height: 'inherit',
-                    width: 'fit-content',
+                    width: 'auto',
                     maxWidth: '100%',
                     '&:hover': {
                         cursor: onClick ? 'pointer' : undefined,
@@ -47,8 +51,13 @@ export const PointPicture = ({
                 <Box
                     component="img"
                     src={imageLink}
-                    alt=""
-                    sx={{ height: 'inherit', gridArea: 'combined', objectFit: 'contain' }}
+                    alt={imageAlt}
+                    sx={{
+                        height: 'inherit',
+                        width: 'inherit',
+                        gridArea: 'combined',
+                        objectFit: 'contain',
+                    }}
                 />
                 {pointsSets.map((pointSet, index) => {
                     return (

@@ -154,14 +154,14 @@ export const PointPictureSlider = ({
                 sx={{
                     display: 'grid',
                     gridAutoFlow: 'column',
-                    gridAutoColumns: 'auto',
-                    gridTemplateRows: `minmax(${MIN_THREAD_IMAGE_HEIGHT_PX}px, ${MAX_THREAD_IMAGE_HEIGHT_PX}px)`,
+                    gridAutoColumns: 'max-content',
+                    gridTemplateRows: `minmax(${MIN_THREAD_IMAGE_HEIGHT_PX}px, 50vmin)`,
                     gap: 1.5,
 
                     height: '100%',
                     backgroundColor: 'inherit',
 
-                    overflowX: 'auto',
+                    overflowX: 'hidden',
 
                     scrollSnapType: 'x mandatory',
                     scrollBehavior: 'smooth',
@@ -174,7 +174,6 @@ export const PointPictureSlider = ({
                             component="li"
                             sx={{
                                 height: '100%',
-                                width: 'max-content',
                                 paddingBottom: showPerImageCaption ? '2.5em' : 0,
                                 scrollSnapAlign: 'center',
                             }}
@@ -186,6 +185,7 @@ export const PointPictureSlider = ({
                                     : undefined
                             }
                             imageLink={url}
+                            imageAlt={`image ${index + 1}`} // llm response will often refer to images by number
                             pointsSets={pointsSets}
                             caption={
                                 showPerImageCaption && (
