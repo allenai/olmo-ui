@@ -1,39 +1,67 @@
-import { Box, styled } from '@mui/material';
-import { SxProps, Theme } from '@mui/system';
+import { Box, BoxProps, styled } from '@mui/material';
 import { ReactNode } from 'react';
 
-import { Point, PointInfo } from '../points/molmo1/extractPointData';
+import { Point } from '../points/pointsDataTypes';
 import { PointCircle } from './PointCircle';
 import { usePointColors } from './usePointColors';
 
-interface PointPictureProps {
+export interface PointsSets {
+    label: string;
+    alt?: string;
+    url: string;
+    points: Point[];
+}
+
+interface PointPictureProps extends BoxProps {
     imageLink: string;
-    pointInfos: PointInfo[];
+    pointsSets: PointsSets[];
     caption?: React.ReactNode;
-    sx?: SxProps<Theme>;
+    onClick?: () => void;
 }
 
 export const PointPicture = ({
     imageLink,
-    pointInfos,
+    pointsSets,
     caption,
-    sx,
+    onClick,
+    ...boxProps
 }: PointPictureProps): ReactNode => {
     const pointColors = usePointColors();
+
     return (
-        <>
-            <Box component="img" src={imageLink} alt="" sx={sx} />
-            {pointInfos.map((pointInfo, i) => {
-                return (
-                    <PointOnImage
-                        key={i}
-                        points={pointInfo.points}
-                        fill={pointColors[i % pointColors.length]}
-                    />
-                );
-            })}
-            {caption}
-        </>
+        <Box {...boxProps}>
+            <Box
+                component={onClick ? 'button' : 'figure'}
+                onClick={onClick}
+                sx={{
+                    display: 'grid',
+                    gridTemplateRows: '100%',
+                    gridTemplateAreas: '"combined"',
+                    height: 'inherit',
+                    width: 'fit-content',
+                    maxWidth: '100%',
+                    '&:hover': {
+                        cursor: onClick ? 'pointer' : undefined,
+                    },
+                }}>
+                <Box
+                    component="img"
+                    src={imageLink}
+                    alt=""
+                    sx={{ height: 'inherit', gridArea: 'combined', objectFit: 'contain' }}
+                />
+                {pointsSets.map((pointSet, index) => {
+                    return (
+                        <PointOnImage
+                            key={`${pointSet.url}-${index}`}
+                            points={pointSet.points}
+                            fill={pointColors[index % pointColors.length]}
+                        />
+                    );
+                })}
+                {caption}
+            </Box>
+        </Box>
     );
 };
 
@@ -45,8 +73,8 @@ const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
     // Height and width are applied here to give it a minimum viewport of 0w,0h. Otherwise it gets set to the default of 300wx150h
     // This allows us to scale down to smaller sizes
     <PointOnImageSvg aria-hidden width="0" height="0" sx={{ color: fill }}>
-        {points.map((point, pointIndex) => (
-            <PointCircle xPercent={point.x} yPercent={point.y} key={pointIndex} shouldAnimate />
+        {points.map((point) => (
+            <PointCircle key={point.pointId} cx={point.x} cy={point.y} />
         ))}
     </PointOnImageSvg>
 );
@@ -56,5 +84,4 @@ const PointOnImageSvg = styled('svg')({
     gridArea: 'combined',
     height: '100%',
     width: '100%',
-    zIndex: 1,
 });

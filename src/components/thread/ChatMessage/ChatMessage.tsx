@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Alert, Box, ImageList, ImageListItem, Typography } from '@mui/material';
+import { Alert, Box, Typography } from '@mui/material';
 import { PropsWithChildren, type ReactNode, useState } from 'react';
 
 import { Label } from '@/api/Label';
@@ -18,10 +18,10 @@ import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
 import { MessageThinking } from '../ThreadDisplay/MessageThinking';
-import { MAX_THREAD_IMAGE_HEIGHT } from '../ThreadDisplay/threadDisplayConsts';
 import AllToolCalls from '../tools/AllToolCalls';
 import { LLMMessage } from './LLMMessage';
 import { UserMessage } from './UserMessage';
+import { UserMessageFileWidget } from './UserMessageFileWidget';
 
 export const CHAT_ICON_WIDTH = 28;
 export const CHAT_MESSAGE_CLASS_NAME = 'chat-message';
@@ -160,7 +160,6 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
             </Box>
             <Box>
                 <MessageThinking messageId={messageId} />
-
                 <MessageComponent messageId={messageId}>
                     <MessageContent
                         messageId={messageId}
@@ -168,18 +167,11 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
                         hasPoints={hasPoints(content)}
                     />
                 </MessageComponent>
-                {fileUrls ? (
-                    <ImageList>
-                        {fileUrls.map((url, idx) => (
-                            <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT }}>
-                                <img src={url} alt={'Uploaded'} loading="lazy" />
-                            </ImageListItem>
-                        ))}
-                    </ImageList>
-                ) : null}
+
+                {fileUrls?.length ? <UserMessageFileWidget fileUrls={fileUrls} /> : null}
+
                 <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
                 <InlineAlertMessage messageId={messageId} />
-
                 <MessageInteraction
                     role={role as Role}
                     content={rawMode ? escapeForDisplay(content) : content}

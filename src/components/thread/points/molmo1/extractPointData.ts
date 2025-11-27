@@ -1,16 +1,7 @@
+import { ImagePoints, Point } from '../pointsDataTypes';
 import { pointRegex } from './pointRegex';
 
-export interface Point {
-    x: number;
-    y: number;
-}
-
-export interface PointInfo {
-    points: Point[];
-    alt: string;
-}
-
-export function extractPointData(input: string): PointInfo[] | null {
+export function extractPointData(input: string): ImagePoints[] | null {
     const pointXmls = input.match(pointRegex);
 
     if (pointXmls == null || pointXmls.length === 0) {
@@ -49,7 +40,10 @@ export function extractPointData(input: string): PointInfo[] | null {
                 return acc;
             }
 
+            const count = acc.length + 1;
+
             acc.push({
+                pointId: `${count}`,
                 x: Number(x),
                 y: Number(y),
             } as Point);
@@ -58,9 +52,16 @@ export function extractPointData(input: string): PointInfo[] | null {
         }, []);
 
         return {
-            points: coordinatePairs,
-            alt: element.getAttribute('alt') ?? '',
-        } as PointInfo;
+            label: element.textContent,
+            alt: element.getAttribute('alt') ?? undefined,
+            type: 'image-points',
+            imageList: [
+                {
+                    imageId: '1',
+                    points: coordinatePairs,
+                },
+            ],
+        } satisfies ImagePoints;
     });
 
     return points;

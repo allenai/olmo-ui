@@ -11,12 +11,14 @@ import {
 
 const IMAGE_OR_FRAME_DELIMITER = '\t';
 const WHITESPACE_DELIMITER = /\s+/;
+const TRACKING_TAG = 'tracks';
+const POINTING_TAG = 'points';
 
 const PointsAttributesSchema = z.object({
     label: z.string(),
     alt: z.string().optional(),
-    coords: z.string(),
-    tag: z.union([z.literal('tracks'), z.literal('points')]),
+    coords: z.string().optional(),
+    type: z.enum([POINTING_TAG, TRACKING_TAG]),
 });
 
 type PointsAttributes = z.infer<typeof PointsAttributesSchema>;
@@ -37,37 +39,48 @@ export const parseAsXML = (content: string) => {
         throw Error(message);
     }
 
-    const xml = result.xml.filter((item) => !!item.points || !!item.tracks)[0];
-    if (!xml) {
+    const xmlTags: PointsAttributes[] = [];
+
+    result.xml.forEach((item) => {
+        if (item?.[TRACKING_TAG]?.['@coords']) {
+            // tracks tag
+            xmlTags.push(
+                PointsAttributesSchema.parse({
+                    label: item[TRACKING_TAG]['#text'],
+                    alt: item[TRACKING_TAG]['@alt'],
+                    coords: item[TRACKING_TAG]['@coords'],
+                    type: TRACKING_TAG,
+                })
+            );
+        }
+        if (item?.[POINTING_TAG]?.['@coords']) {
+            // points tag
+            xmlTags.push(
+                PointsAttributesSchema.parse({
+                    label: item[POINTING_TAG]['#text'],
+                    alt: item[POINTING_TAG]['@alt'],
+                    coords: item[POINTING_TAG]['@coords'],
+                    type: POINTING_TAG,
+                })
+            );
+        }
+    });
+
+    if (!xmlTags.length) {
         const message = 'XML parsing error: No points parsed';
         throw Error(message);
     }
 
-    if (xml.points) {
-        return PointsAttributesSchema.parse({
-            tag: 'points',
-            label: xml.points['#text'],
-            alt: xml.points['@alt'],
-            coords: xml.points['@coords'],
-        });
-    } else if (xml.tracks) {
-        return PointsAttributesSchema.parse({
-            tag: 'tracks',
-            label: xml.tracks['#text'],
-            alt: xml.tracks['@alt'],
-            coords: xml.tracks['@coords'],
-        });
-    } else {
-        const message = 'XML parsing error: Unexpected tag';
-        throw Error(message);
-    }
+    return xmlTags;
 };
 
-export const extractPointsData = (content: string): AllPointsFormats | null => {
+export const extractPointsData = (content: string): AllPointsFormats[] | null => {
     try {
         const parseResult = parseAsXML(content);
 
-        return formatPointsData(parseResult) || null;
+        return parseResult
+            .map((res) => formatPointsData(res))
+            .filter((i) => typeof i !== 'undefined');
     } catch (e) {
         console.error((e as Error).message);
         return null;
@@ -75,7 +88,7 @@ export const extractPointsData = (content: string): AllPointsFormats | null => {
 };
 
 export const formatPointsData = (pointsAttributes: PointsAttributes) => {
-    if (pointsAttributes.tag === 'tracks') {
+    if (pointsAttributes.coords && pointsAttributes.type === TRACKING_TAG) {
         const tracksList = pointsAttributes.coords
             .split(IMAGE_OR_FRAME_DELIMITER)
             .map((trackItem) => trackItem.split(WHITESPACE_DELIMITER));
@@ -93,7 +106,8 @@ export const formatPointsData = (pointsAttributes: PointsAttributes) => {
             })),
         } satisfies VideoTrackingPoints;
     }
-    if (pointsAttributes.tag === 'points') {
+
+    if (pointsAttributes.coords && pointsAttributes.type === POINTING_TAG) {
         const coordsList = pointsAttributes.coords.split(IMAGE_OR_FRAME_DELIMITER);
         const imagesOrFramesList = coordsList.map((coordItem) =>
             coordItem.split(WHITESPACE_DELIMITER)

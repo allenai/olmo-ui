@@ -1,1 +1,5 @@
-export const MAX_THREAD_IMAGE_HEIGHT = 500;
+export const MAX_THREAD_IMAGE_HEIGHT_PX = 500;
+export const MIN_THREAD_IMAGE_HEIGHT_PX = 200;
+
+export const MAX_THREAD_IMAGE_WIDTH_PX = 500;
+export const MIN_THREAD_IMAGE_WIDTH_PX = 200;

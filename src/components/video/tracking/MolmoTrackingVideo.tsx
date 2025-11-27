@@ -21,13 +21,15 @@ import { VideoTracking } from './Tracking';
 export function MolmoTrackingVideo({
     videoTrackingPoints,
     videoUrl,
+    suppressInterpolation,
 }: {
     videoTrackingPoints: VideoTrackingPoints;
     videoUrl: string;
+    suppressInterpolation?: boolean;
 }) {
     const playerRef = useRef<PlayerRef>(null);
 
-    const [showInterpolation, setShowInterpolation] = useState(true);
+    const [showInterpolation, setShowInterpolation] = useState(!suppressInterpolation);
 
     const { durationInFrames, width, height } = useVideoMetaData(videoUrl, FPS);
 
