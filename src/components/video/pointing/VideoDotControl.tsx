@@ -217,7 +217,7 @@ export const VideoDotControl = ({
                     onClick={() => {
                         setState('placing');
                     }}>
-                    <Route />
+                    <Route fontSize="inherit" />
                     Add Tracking Point
                 </Button>
             )}
