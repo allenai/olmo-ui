@@ -35,7 +35,7 @@ export const PointPictureSlider = ({
     const [scrollIndex, setScrollIndex] = useState(0);
 
     const isAtStart = scrollIndex <= 0;
-    const isAtEnd = scrollIndex >= itemsRef.current.length - 1;
+    const isAtEnd = scrollIndex >= fileUrls.length - 1;
 
     useEffect(() => {
         if (!sliderRef.current) return;

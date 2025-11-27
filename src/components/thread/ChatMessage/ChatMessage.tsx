@@ -15,8 +15,6 @@ import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
-// import { MediaCollapsibleWidget } from '../PointResponseMessage/CollapsibleMediaWidget';
-// import { PointPictureList } from '../PointResponseMessage/PointPictureList';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
 import { MessageThinking } from '../ThreadDisplay/MessageThinking';
