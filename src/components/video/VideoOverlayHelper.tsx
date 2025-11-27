@@ -12,7 +12,7 @@ export const VideoOverlayHelper = ({
     return (
         <AbsoluteFill>
             <AbsoluteFill>{children}</AbsoluteFill>
-            <OffthreadVideo className={css({ borderRadius: 'sm' })} muted={true} src={videoUrl} />
+            <OffthreadVideo className={css({ borderRadius: 'sm' })} src={videoUrl} />
         </AbsoluteFill>
     );
 };

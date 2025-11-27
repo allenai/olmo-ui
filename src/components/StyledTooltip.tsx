@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 import { useDesktopOrUp } from './dolma/shared';
 
 interface StyledTooltipProps extends Omit<TooltipProps, 'children' | 'arrow'> {
+    id?: string;
     desktopPlacement?: TooltipProps['placement'];
     children: ReactNode;
     arrow?: boolean;

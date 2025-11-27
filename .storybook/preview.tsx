@@ -8,6 +8,7 @@ import { fn } from 'storybook/test';
 import { ColorModeContext } from '@/components/ColorModeProvider';
 
 import '../styled-system/styles.css'
+import './custom.css'
 import { createMemoryRouter, MemoryRouter, RouterProvider, useRouteError } from 'react-router-dom';
 import { BubbleError } from '@/utils/test/BubbleError';
 

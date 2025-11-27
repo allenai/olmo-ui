@@ -3,9 +3,16 @@ import { type ReactNode, useRef } from 'react';
 
 import type { VideoFramePoints } from '@/components/thread/points/pointsDataTypes';
 
+import { Controls, ControlsGroup, SplitControls } from '../controls/Controls';
+import { FullScreenButton } from '../controls/FullScreenButton';
+import { PlayPause } from '../controls/PlayPause';
+import { SeekBar } from '../controls/SeekBar';
+import { SeekNext } from '../controls/SeekNext';
+import { SeekPrevious } from '../controls/SeekPrevious';
+import { TimeDisplay } from '../controls/TimeDisplay';
+import { VolumeControl } from '../controls/VolumeControl';
 import { FilmStrip } from '../filmStrip/FilmStrip';
 import { THUMBNAIL_HEIGHT } from '../filmStrip/filmStripConsts';
-import { SeekBar } from '../seekBar/SeekBar';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { FPS, MOVE_TO_BEGINNING_WHEN_ENDED } from '../videoConsts';
 import { VideoPlayerContainer, VideoPlayerWrapper } from '../VideoPlayerContainer';
@@ -52,6 +59,7 @@ export const MolmoCountingVideo = ({
                     compositionWidth={width}
                     compositionHeight={height}
                     fps={FPS}
+                    initiallyMuted={true}
                     style={{ width: '100%', flex: 1 }}
                     moveToBeginningWhenEnded={MOVE_TO_BEGINNING_WHEN_ENDED}
                 />
@@ -65,12 +73,25 @@ export const MolmoCountingVideo = ({
                 height={height}
                 thumbnailHeight={THUMBNAIL_HEIGHT}
             />
-            <SeekBar
+            <Controls
                 playerRef={playerRef}
-                data={videoPoints}
+                framePoints={videoPoints}
                 fps={FPS}
-                durationInFrames={durationInFrames}
-            />
+                durationInFrames={durationInFrames}>
+                <SeekBar frameStyle="dot" />
+                <SplitControls>
+                    <ControlsGroup>
+                        <SeekPrevious />
+                        <PlayPause />
+                        <SeekNext />
+                    </ControlsGroup>
+                    <ControlsGroup>
+                        <TimeDisplay />
+                        <VolumeControl />
+                        <FullScreenButton />
+                    </ControlsGroup>
+                </SplitControls>
+            </Controls>
         </VideoPlayerWrapper>
     );
 };
