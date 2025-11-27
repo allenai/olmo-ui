@@ -59,9 +59,8 @@ interface QueryFormControllerProps {
     isLimitReached: boolean;
     remoteState?: RemoteState;
     fileUploadProps: FileuploadPropsBase;
+    modelSupportsPointingInput?: boolean;
 }
-
-export const MODEL_SUPPORTS_POINTING_INPUT = true;
 
 export const QueryFormController = ({
     handleSubmit,
@@ -75,6 +74,7 @@ export const QueryFormController = ({
     isLimitReached,
     remoteState,
     fileUploadProps,
+    modelSupportsPointingInput = true,
 }: QueryFormControllerProps) => {
     const navigation = useNavigation();
     const getObjectUrl = useObjectUrls();
@@ -198,7 +198,7 @@ export const QueryFormController = ({
         files &&
         files.length === 1 &&
         files[0].type.startsWith('video') &&
-        MODEL_SUPPORTS_POINTING_INPUT;
+        modelSupportsPointingInput;
 
     return (
         <DropZone

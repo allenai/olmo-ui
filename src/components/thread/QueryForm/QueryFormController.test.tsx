@@ -64,7 +64,7 @@ const renderQueryFormController = (
 
     return renderWithRouter(
         <FakeAppContextProvider initialState={initialStates}>
-            <QueryFormController {...props} />
+            <QueryFormController modelSupportsPointingInput={false} {...props} />
         </FakeAppContextProvider>,
         {
             wrapperProps: {
