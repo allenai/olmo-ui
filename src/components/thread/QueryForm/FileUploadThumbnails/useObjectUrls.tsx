@@ -20,7 +20,7 @@ export const useObjectUrls = () => {
     return function getObjectUrl(file: File) {
         const map = mapRef.current;
         if (!map) {
-            throw Error('Cannot getObjectUrl while unmounted');
+            return '';
         }
         if (!map.has(file)) {
             const url = URL.createObjectURL(file);

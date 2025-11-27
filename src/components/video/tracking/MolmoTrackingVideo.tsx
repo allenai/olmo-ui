@@ -1,4 +1,3 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
 import { Player, PlayerRef } from '@remotion/player';
 import { useRef, useState } from 'react';
 import { Key } from 'react-aria-components';
@@ -16,6 +15,8 @@ import { TimeDisplay } from '../controls/TimeDisplay';
 import { VolumeControl } from '../controls/VolumeControl';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { FPS, MOVE_TO_BEGINNING_WHEN_ENDED } from '../videoConsts';
+import { VideoPlayerContainer, VideoPlayerWrapper } from '../VideoPlayerContainer';
+import { FilmStripSkeleton, SeekBarSkeleton, VideoPlayerSkeleton } from '../VideoSkeleton';
 import { VideoTracking } from './Tracking';
 
 export function MolmoTrackingVideo({
@@ -31,7 +32,19 @@ export function MolmoTrackingVideo({
 
     const [showInterpolation, setShowInterpolation] = useState(!suppressInterpolation);
 
-    const { durationInFrames, width, height } = useVideoMetaData(videoUrl, FPS);
+    const { durationInFrames, width, height, isLoading } = useVideoMetaData(videoUrl, FPS);
+
+    if (isLoading) {
+        return (
+            <VideoPlayerWrapper>
+                <VideoPlayerContainer>
+                    <VideoPlayerSkeleton />
+                </VideoPlayerContainer>
+                <FilmStripSkeleton />
+                <SeekBarSkeleton />
+            </VideoPlayerWrapper>
+        );
+    }
 
     const handleSettings = (id: Key) => {
         if (id === 'toggle-interpolation') {
@@ -40,14 +53,8 @@ export function MolmoTrackingVideo({
     };
 
     return (
-        <div>
-            <div
-                className={css({
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'start',
-                    maxHeight: '[60vh]',
-                })}>
+        <VideoPlayerWrapper>
+            <VideoPlayerContainer>
                 <Player
                     acknowledgeRemotionLicense
                     ref={playerRef}
@@ -65,7 +72,7 @@ export function MolmoTrackingVideo({
                     style={{ width: '100%', flex: '1' }}
                     moveToBeginningWhenEnded={MOVE_TO_BEGINNING_WHEN_ENDED}
                 />
-            </div>
+            </VideoPlayerContainer>
             <Controls
                 playerRef={playerRef}
                 framePoints={videoTrackingPoints}
@@ -94,6 +101,6 @@ export function MolmoTrackingVideo({
                     </ControlsGroup>
                 </SplitControls>
             </Controls>
-        </div>
+        </VideoPlayerWrapper>
     );
 }

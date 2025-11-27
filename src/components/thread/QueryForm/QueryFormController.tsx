@@ -19,6 +19,7 @@ import {
     SchemaToolCall,
 } from '@/api/playgroundApi/playgroundApiSchema';
 import { useAppContext } from '@/AppContext';
+import { VideoPointingInput } from '@/components/video/pointing/VideoPointing';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
 import { fetchFilesByUrls } from '@/utils/fetchFilesByUrl';
@@ -27,6 +28,7 @@ import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { Waveform } from './AudioTranscription/Waveform';
 import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton/FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
+import { useObjectUrls } from './FileUploadThumbnails/useObjectUrls';
 import { handleFormSubmitException } from './handleFormSubmitException';
 import { PromptContainer } from './PromptContainer';
 import { PromptInput } from './PromptInput';
@@ -57,6 +59,7 @@ interface QueryFormControllerProps {
     isLimitReached: boolean;
     remoteState?: RemoteState;
     fileUploadProps: FileuploadPropsBase;
+    modelSupportsPointingInput?: boolean;
 }
 
 export const QueryFormController = ({
@@ -71,8 +74,10 @@ export const QueryFormController = ({
     isLimitReached,
     remoteState,
     fileUploadProps,
+    modelSupportsPointingInput = true,
 }: QueryFormControllerProps) => {
     const navigation = useNavigation();
+    const getObjectUrl = useObjectUrls();
 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -189,6 +194,12 @@ export const QueryFormController = ({
         inputRef.current?.click();
     };
 
+    const showTrackingInput =
+        files &&
+        files.length === 1 &&
+        files[0].type.startsWith('video') &&
+        modelSupportsPointingInput;
+
     return (
         <DropZone
             onDrop={(_dropEvent) => {
@@ -203,12 +214,34 @@ export const QueryFormController = ({
             }}>
             <QueryFormStyledBox>
                 <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
-                    <Stack gap={1} alignItems="flex-start" width={1} position="relative">
-                        <FileUploadThumbnails
-                            files={files}
-                            onRemoveFile={handleRemoveFile}
-                            acceptedFileTypes={fileUploadProps.acceptedFileTypes}
+                    {showTrackingInput && (
+                        <Controller
+                            name="inputParts"
+                            control={formContext.control}
+                            render={({ field: { onChange, value } }) => {
+                                return (
+                                    <VideoPointingInput
+                                        onRemoveFile={() => {
+                                            handleRemoveFile(files[0]);
+                                        }}
+                                        videoUrl={getObjectUrl(files[0])}
+                                        userPoint={value ? value[0] : null}
+                                        setUserPoint={(point) => {
+                                            onChange(point ? [point] : []);
+                                        }}
+                                    />
+                                );
+                            }}
                         />
+                    )}
+                    <Stack gap={1} alignItems="flex-start" width={1} position="relative">
+                        {!showTrackingInput && (
+                            <FileUploadThumbnails
+                                files={files}
+                                onRemoveFile={handleRemoveFile}
+                                acceptedFileTypes={fileUploadProps.acceptedFileTypes}
+                            />
+                        )}
                         <PromptContainer
                             startAdornment={
                                 <>
