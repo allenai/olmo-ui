@@ -6,7 +6,6 @@ import {
     useImperativeHandle,
     useRef,
 } from 'react';
-import { Focusable } from 'react-aria-components';
 
 import { StyledTooltip } from '@/components/StyledTooltip';
 import { useFeatureToggles } from '@/FeatureToggleContext';
