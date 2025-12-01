@@ -1,6 +1,6 @@
 import { Box, IconButton } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import { ChevronIcon } from '@/components/assets/ChevronIcon';
 
@@ -9,7 +9,7 @@ import { MIN_THREAD_IMAGE_HEIGHT_PX } from '../ThreadDisplay/threadDisplayConsts
 import { PointPicture, PointsSets } from './PointPicture';
 import { PointPictureCaption } from './PointPictureCaption';
 
-const SCROLL_END_BUFFER_PX = 10;
+const SCROLL_BUFFER_PX = 10;
 
 interface PointPictureSliderProps {
     moveToItem?: number;
@@ -32,7 +32,6 @@ export const PointPictureSlider = ({
 }: PointPictureSliderProps): ReactNode => {
     const sliderRef = useRef<HTMLUListElement | null>(null);
     const itemsRef = useRef<HTMLLIElement[]>([]);
-    const scrollBehaviorRef = useRef<ScrollBehavior>('instant');
     const [scrollIndex, setScrollIndex] = useState(0);
 
     const isAtStart = scrollIndex <= 0;
@@ -45,18 +44,20 @@ export const PointPictureSlider = ({
 
         sliderRef.current.addEventListener('scrollend', (event) => {
             if (event.target instanceof Element) {
-                if (event.target.scrollLeft <= SCROLL_END_BUFFER_PX) {
+                const scrollMin = 0 + SCROLL_BUFFER_PX;
+                const scrollMax =
+                    event.target.scrollWidth - event.target.clientWidth - SCROLL_BUFFER_PX;
+                if (event.target.scrollLeft <= scrollMin) {
                     // at start
                     setScrollIndex(0);
                 } else if (
                     // at end
-                    event.target.scrollLeft ===
-                    event.target.scrollWidth - event.target.clientWidth
+                    event.target.scrollLeft >= scrollMax
                 ) {
                     setScrollIndex(itemsRef.current.length - 1);
                 } else if (
-                    event.target.scrollLeft > 0 &&
-                    event.target.scrollLeft >= event.target.scrollWidth - SCROLL_END_BUFFER_PX
+                    event.target.scrollLeft > scrollMin &&
+                    event.target.scrollLeft < scrollMax
                 ) {
                     // middle calculates item nearset middle of scroll window (clientWidth)
                     const targetCenter = event.target.scrollLeft + event.target.clientWidth / 2;
@@ -80,25 +81,29 @@ export const PointPictureSlider = ({
         });
     }, []);
 
-    useEffect(() => {
-        // needs small timout to scroll properly on mount
-        const to = setTimeout(() => {
-            itemsRef.current[scrollIndex]?.scrollIntoView({
-                behavior: scrollBehaviorRef.current,
+    const handleClickToMove = useCallback(
+        (scrollToIndex: number) => {
+            itemsRef.current[scrollToIndex]?.scrollIntoView({
+                behavior: 'smooth',
                 inline: 'center',
             });
-            scrollBehaviorRef.current = 'smooth';
-        }, 50);
-        onItemChange?.(scrollIndex);
-        return () => {
-            clearTimeout(to);
-        };
-    }, [onItemChange, scrollIndex]);
+            onItemChange?.(scrollToIndex);
+        },
+        [onItemChange]
+    );
 
     // use moveToItem and onItemChange for controlled movement
     useEffect(() => {
         if (moveToItem != null) {
-            setScrollIndex(moveToItem);
+            const to = setTimeout(() => {
+                itemsRef.current[moveToItem]?.scrollIntoView({
+                    behavior: 'instant',
+                    inline: 'center',
+                });
+            }, 50);
+            return () => {
+                clearTimeout(to);
+            };
         }
     }, [moveToItem]);
 
@@ -229,7 +234,7 @@ export const PointPictureSlider = ({
                         className={index === scrollIndex ? 'active' : undefined}
                         component="button"
                         onClick={() => {
-                            setScrollIndex(index);
+                            handleClickToMove(index);
                         }}
                         aria-label={`scroll to image ${index + 1}`}
                         sx={{
@@ -254,7 +259,7 @@ export const PointPictureSlider = ({
                     {/* Previous Button */}
                     <IconButton
                         onClick={() => {
-                            setScrollIndex((prev) => (prev > 0 ? prev - 1 : prev));
+                            handleClickToMove(scrollIndex > 0 ? scrollIndex - 1 : scrollIndex);
                         }}
                         sx={[
                             buttonProps,
@@ -271,8 +276,10 @@ export const PointPictureSlider = ({
                     {/* Next Button */}
                     <IconButton
                         onClick={() => {
-                            setScrollIndex((prev) =>
-                                prev < itemsRef.current.length - 1 ? prev + 1 : prev
+                            handleClickToMove(
+                                scrollIndex < itemsRef.current.length - 1
+                                    ? scrollIndex + 1
+                                    : scrollIndex
                             );
                         }}
                         sx={[
