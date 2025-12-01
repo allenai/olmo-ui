@@ -41,7 +41,7 @@ export const PointPictureSlider = ({
 
         sliderRef.current.addEventListener('scrollend', (event) => {
             if (event.target instanceof Element) {
-                if (event.target.scrollLeft === 0) {
+                if (event.target.scrollLeft <= 10) {
                     // at start
                     setScrollIndex(0);
                 } else if (
@@ -52,7 +52,7 @@ export const PointPictureSlider = ({
                     setScrollIndex(itemsRef.current.length - 1);
                 } else if (
                     event.target.scrollLeft > 0 &&
-                    event.target.scrollLeft < event.target.scrollWidth
+                    event.target.scrollLeft >= event.target.scrollWidth - 10
                 ) {
                     // middle calculates item nearset middle of scroll window (clientWidth)
                     const targetCenter = event.target.scrollLeft + event.target.clientWidth / 2;
@@ -157,7 +157,7 @@ export const PointPictureSlider = ({
                     height: '100%',
                     backgroundColor: 'inherit',
 
-                    overflowX: 'hidden',
+                    overflowX: 'auto',
 
                     scrollSnapType: 'x mandatory',
                     scrollBehavior: 'smooth',
