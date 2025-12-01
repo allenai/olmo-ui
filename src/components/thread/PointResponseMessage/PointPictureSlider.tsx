@@ -5,10 +5,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { ChevronIcon } from '@/components/assets/ChevronIcon';
 
 import { ImagePoints } from '../points/pointsDataTypes';
-import {
-    MAX_THREAD_IMAGE_HEIGHT_PX,
-    MIN_THREAD_IMAGE_HEIGHT_PX,
-} from '../ThreadDisplay/threadDisplayConsts';
+import { MIN_THREAD_IMAGE_HEIGHT_PX } from '../ThreadDisplay/threadDisplayConsts';
 import { PointPicture, PointsSets } from './PointPicture';
 import { PointPictureCaption } from './PointPictureCaption';
 
@@ -146,7 +143,6 @@ export const PointPictureSlider = ({
             sx={{
                 position: 'relative',
                 height: '100%',
-                maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX + 20, // clearance for markers
             }}>
             <Box
                 component="ul"
@@ -154,14 +150,14 @@ export const PointPictureSlider = ({
                 sx={{
                     display: 'grid',
                     gridAutoFlow: 'column',
-                    gridAutoColumns: 'auto',
-                    gridTemplateRows: `minmax(${MIN_THREAD_IMAGE_HEIGHT_PX}px, ${MAX_THREAD_IMAGE_HEIGHT_PX}px)`,
+                    gridAutoColumns: 'max-content',
+                    gridTemplateRows: `minmax(${MIN_THREAD_IMAGE_HEIGHT_PX}px, 50vmin)`,
                     gap: 1.5,
 
                     height: '100%',
                     backgroundColor: 'inherit',
 
-                    overflowX: 'auto',
+                    overflowX: 'hidden',
 
                     scrollSnapType: 'x mandatory',
                     scrollBehavior: 'smooth',
@@ -174,7 +170,6 @@ export const PointPictureSlider = ({
                             component="li"
                             sx={{
                                 height: '100%',
-                                width: 'max-content',
                                 paddingBottom: showPerImageCaption ? '2.5em' : 0,
                                 scrollSnapAlign: 'center',
                             }}
@@ -186,6 +181,7 @@ export const PointPictureSlider = ({
                                     : undefined
                             }
                             imageLink={url}
+                            imageAlt={`image ${index + 1}`} // llm response will often refer to images by number
                             pointsSets={pointsSets}
                             caption={
                                 showPerImageCaption && (
@@ -193,6 +189,7 @@ export const PointPictureSlider = ({
                                         display="flex"
                                         justifyContent="space-between"
                                         alignItems="center"
+                                        width="100%"
                                         padding={1}>
                                         <PointPictureCaption pointsSets={pointsSets} />
                                         <span>{`Image ${index + 1}/${fileUrls.length}`}</span>
