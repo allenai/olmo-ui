@@ -326,10 +326,10 @@ describe('SingleThreadProvider', () => {
             const { result } = renderProvider();
 
             await waitFor(() => {
-                // MSW mock provides 5 models total:
+                // MSW mock provides 6 models total:
                 // olmo-7b-chat (is_visible: false) - filtered out
-                // Result: 4 visible models returned
-                expect(result.current.availableModels).toHaveLength(4);
+                // Result: 5 visible models returned
+                expect(result.current.availableModels).toHaveLength(5);
             });
         });
 
