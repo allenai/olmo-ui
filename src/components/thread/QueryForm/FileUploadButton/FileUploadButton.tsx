@@ -82,22 +82,22 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     }
 
     return (
-        <StyledTooltip isDisabled={!tooltipContent} content={tooltipContent} placement="top">
-            <Focusable>
-                <span>
-                    <MediaTrigger
-                        inputRef={inputRef}
-                        acceptsMultiple={acceptsMultiple}
-                        isDisabled={isFileUploadDisabled || isSendingPrompt}
-                        mediaTypes={mediaTypes}
-                        triggerFileInput={triggerFileInput}
-                        acceptedFileTypes={fileTypes}
-                        onSelect={(files) => {
-                            onSelect?.(files ?? undefined);
-                        }}
-                    />
-                </span>
-            </Focusable>
+        <StyledTooltip
+            isDisabled={!tooltipContent}
+            wrapChildrenWithFocus={isFileUploadDisabled}
+            content={tooltipContent}
+            placement="top">
+            <MediaTrigger
+                inputRef={inputRef}
+                acceptsMultiple={acceptsMultiple}
+                isDisabled={isFileUploadDisabled || isSendingPrompt}
+                mediaTypes={mediaTypes}
+                triggerFileInput={triggerFileInput}
+                acceptedFileTypes={fileTypes}
+                onSelect={(files) => {
+                    onSelect?.(files ?? undefined);
+                }}
+            />
         </StyledTooltip>
     );
 });
