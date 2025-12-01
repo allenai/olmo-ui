@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test';
 import path from 'path';
 
 import { expect, test } from './playwright-utils';
@@ -64,4 +65,26 @@ test('disables file upload after first message when models do not allow followup
     await expect(page.locator('[data-is-streaming="true"]')).not.toBeVisible();
 
     await expect(page.getByTestId('file-upload-btn')).toBeDisabled();
+});
+
+const addBoatFileToInput = async ({ page }: { page: Page }) => {
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    await page.getByLabel('Choose type of files').click();
+    await page.getByText('Upload images').click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(path.join(__dirname, 'test-files', 'molmo-boats.png'));
+};
+
+test('can append files after adding one', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('combobox', { name: 'Model:' }).click();
+    await page
+        .getByRole('option', { name: /^Test Multimodal Model\s/ })
+        .first()
+        .click();
+
+    await addBoatFileToInput({ page });
+    await addBoatFileToInput({ page });
+
+    await expect(page.getByRole('img', { name: 'User file molmo-boats.png' })).toHaveCount(2);
 });

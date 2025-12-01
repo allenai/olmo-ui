@@ -200,6 +200,30 @@ export const QueryFormController = ({
         files[0].type.startsWith('video') &&
         modelSupportsPointingInput;
 
+    const handleFileSelect = (newFiles: FileList | undefined) => {
+        const currentFiles = formContext.getValues('files');
+
+        const dataTransfer = new DataTransfer();
+
+        if (currentFiles) {
+            for (const file of currentFiles) {
+                dataTransfer.items.add(file);
+            }
+        }
+
+        if (newFiles) {
+            for (const file of newFiles) {
+                dataTransfer.items.add(file);
+            }
+        }
+
+        formContext.setValue('files', dataTransfer.files, {
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true,
+        });
+    };
+
     return (
         <DropZone
             onDrop={(_dropEvent) => {
@@ -270,11 +294,7 @@ export const QueryFormController = ({
                                                     onBlur={onBlur}
                                                     // isDisabled={disabled}
                                                     // value -- don't think this is useful
-                                                    onSelect={(files) => {
-                                                        formContext.setValue('files', files, {
-                                                            shouldValidate: true,
-                                                        });
-                                                    }}
+                                                    onSelect={handleFileSelect}
                                                     {...fileUploadProps}
                                                 />
                                             );
