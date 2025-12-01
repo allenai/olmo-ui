@@ -5,10 +5,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { ChevronIcon } from '@/components/assets/ChevronIcon';
 
 import { ImagePoints } from '../points/pointsDataTypes';
-import {
-    MAX_THREAD_IMAGE_HEIGHT_PX,
-    MIN_THREAD_IMAGE_HEIGHT_PX,
-} from '../ThreadDisplay/threadDisplayConsts';
+import { MIN_THREAD_IMAGE_HEIGHT_PX } from '../ThreadDisplay/threadDisplayConsts';
 import { PointPicture, PointsSets } from './PointPicture';
 import { PointPictureCaption } from './PointPictureCaption';
 
@@ -146,7 +143,6 @@ export const PointPictureSlider = ({
             sx={{
                 position: 'relative',
                 height: '100%',
-                maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX + 20, // clearance for markers
             }}>
             <Box
                 component="ul"
