@@ -161,6 +161,10 @@ export const PointPictureSlider = ({
 
                     scrollSnapType: 'x mandatory',
                     scrollBehavior: 'smooth',
+
+                    // this is the computed size of the pager
+                    // 12px + 8px + 8px
+                    paddingBottom: '28px',
                 }}>
                 {fileUrls.map((url, index) => {
                     const pointsSets = pointsSetsByFileUrl.get(url) || [];
@@ -200,8 +204,6 @@ export const PointPictureSlider = ({
                     );
                 })}
             </Box>
-
-            {/* Page Marks */}
             <Box
                 sx={{
                     height: 'auto',
@@ -210,6 +212,14 @@ export const PointPictureSlider = ({
                     backgroundColor: 'inherit',
                     gap: 1,
                     padding: '0.5rem',
+
+                    // position the pager to the bottom of the container
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    width: '100%',
+                    // this is extra space for the scroll bar (made up value here).
+                    marginBottom: '10px',
                 }}>
                 {fileUrls.map((_, index) => (
                     <Box
@@ -237,6 +247,8 @@ export const PointPictureSlider = ({
                     />
                 ))}
             </Box>
+            {/* Page Marks */}
+
             {!isSingleImageList && (
                 <>
                     {/* Previous Button */}
