@@ -13,6 +13,8 @@ const thumbnailContainer = css({
     borderRadius: 'sm',
     maxWidth: '[clamp(80px, 30cqw, 120px)]',
     maxHeight: '[clamp(80px, 30cqw, 120px)]',
+    width: '[100%]',
+    height: '[100%]',
     aspectRatio: '1',
 });
 
