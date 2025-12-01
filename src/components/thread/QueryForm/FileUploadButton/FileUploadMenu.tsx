@@ -18,7 +18,7 @@ export const FileUploadMenu = ({
 }: FileUploadMenuProps) => {
     return (
         <MenuTrigger>
-            <AddMediaButton isDisabled={isDisabled} />
+            <AddMediaButton isDisabled={isDisabled} aria-label="Choose type of files" />
             <Popover>
                 <Menu className={menuClassName} items={mediaTypes} onAction={handleMenuAction}>
                     {(mediaType) => (

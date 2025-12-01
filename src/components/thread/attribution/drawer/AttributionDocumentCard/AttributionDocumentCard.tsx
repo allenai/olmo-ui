@@ -1,6 +1,5 @@
 import { Box, Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
 import { PropsWithChildren, ReactNode, useState } from 'react';
-import { Focusable } from 'react-aria-components';
 import { useShallow } from 'zustand/react/shallow';
 
 import { Document as AttributionDocument, Document } from '@/api/AttributionClient';

@@ -54,7 +54,7 @@ export const MediaTrigger = ({
             onSelect={(files) => {
                 onSelect(files ?? undefined);
             }}>
-            <AddMediaButton isDisabled={isDisabled} />
+            <AddMediaButton isDisabled={isDisabled} aria-label="Select files" />
         </FileTrigger>
     );
 };
