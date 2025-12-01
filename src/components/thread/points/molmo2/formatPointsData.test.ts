@@ -91,8 +91,10 @@ describe('Parse Points', () => {
     });
 
     it('parse multi image points into ImagePoints', () => {
-        const singleImagePointsTag = `
+        const singleImagePointsTagWithTab = `
           <points alt="alt_text" coords="1 1 193 076 2 226 144\t2 3 411 150 4 422 061">label_text</points>`;
+        const singleImagePointsTagWithSemi = `
+          <points alt="alt_text" coords="1 1 193 076 2 226 144;2 3 411 150 4 422 061">label_text</points>`;
 
         const expected: ImagePoints[] = [
             {
@@ -134,13 +136,15 @@ describe('Parse Points', () => {
             },
         ];
 
-        const result = extractPointsData(singleImagePointsTag);
+        expect(extractPointsData(singleImagePointsTagWithTab)).toStrictEqual(expected);
 
-        expect(result).toStrictEqual(expected);
+        expect(extractPointsData(singleImagePointsTagWithSemi)).toStrictEqual(expected);
     });
 
     it('parse multi image points with multiple points tags into ImagePoints', () => {
-        const singleImagePointsTag = `
+        const singleImagePointsTagWithTab = `
+          <points alt="alt_text" coords="1 1 193 076 2 226 144\t2 3 411 150 4 422 061">label_text</points> and <points alt="alt_text2" coords="1 1 193 076 2 226 144\t2 3 411 150 4 422 061">label_text2</points>`;
+        const singleImagePointsTagWithSemi = `
           <points alt="alt_text" coords="1 1 193 076 2 226 144\t2 3 411 150 4 422 061">label_text</points> and <points alt="alt_text2" coords="1 1 193 076 2 226 144\t2 3 411 150 4 422 061">label_text2</points>`;
 
         const expected: ImagePoints[] = [
@@ -220,13 +224,16 @@ describe('Parse Points', () => {
             },
         ];
 
-        const result = extractPointsData(singleImagePointsTag);
+        expect(extractPointsData(singleImagePointsTagWithTab)).toStrictEqual(expected);
 
-        expect(result).toStrictEqual(expected);
+        expect(extractPointsData(singleImagePointsTagWithSemi)).toStrictEqual(expected);
     });
 
     it('parse video frame points into VideoFramePoints', () => {
-        const singleImagePointsTag = `
+        const singleImagePointsTagWithTab = `
+          <points alt="alt_text" coords="0.0 1 193 076 2 226 144\t30.0 3 411 150 4 422 061">label_text</points>`;
+
+        const singleImagePointsTagWithSemi = `
           <points alt="alt_text" coords="0.0 1 193 076 2 226 144\t30.0 3 411 150 4 422 061">label_text</points>`;
 
         const expected: VideoFramePoints[] = [
@@ -269,13 +276,15 @@ describe('Parse Points', () => {
             },
         ];
 
-        const result = extractPointsData(singleImagePointsTag);
-
-        expect(result).toStrictEqual(expected);
+        expect(extractPointsData(singleImagePointsTagWithTab)).toStrictEqual(expected);
+        expect(extractPointsData(singleImagePointsTagWithSemi)).toStrictEqual(expected);
     });
 
     it('parse video tracking points into VideoTrackingPoints', () => {
-        const singleImagePointsTag = `
+        const singleImagePointsTagWithTab = `
+          <tracks alt="alt_text" coords="0.0 1 193 076 2 226 144\t30.0 1 411 150 2 422 061">label_text</tracks>`;
+
+        const singleImagePointsTagWithSemi = `
           <tracks alt="alt_text" coords="0.0 1 193 076 2 226 144\t30.0 1 411 150 2 422 061">label_text</tracks>`;
 
         const expected: VideoTrackingPoints[] = [
@@ -318,9 +327,8 @@ describe('Parse Points', () => {
             },
         ];
 
-        const result = extractPointsData(singleImagePointsTag);
-
-        expect(result).toStrictEqual(expected);
+        expect(extractPointsData(singleImagePointsTagWithTab)).toStrictEqual(expected);
+        expect(extractPointsData(singleImagePointsTagWithSemi)).toStrictEqual(expected);
     });
 
     it('parse will return null when coords do not have the proper value format (imbalanced xy pairs)', () => {

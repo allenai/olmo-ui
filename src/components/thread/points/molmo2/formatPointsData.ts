@@ -9,7 +9,7 @@ import {
     VideoTrackingPoints,
 } from '../pointsDataTypes';
 
-const IMAGE_OR_FRAME_DELIMITER = '\t';
+const IMAGE_OR_FRAME_DELIMITER = /[\t;]/;
 const WHITESPACE_DELIMITER = /\s+/;
 const TRACKING_TAG = 'tracks';
 const POINTING_TAG = 'points';
