@@ -9,6 +9,8 @@ import { MIN_THREAD_IMAGE_HEIGHT_PX } from '../ThreadDisplay/threadDisplayConsts
 import { PointPicture, PointsSets } from './PointPicture';
 import { PointPictureCaption } from './PointPictureCaption';
 
+const SCROLL_END_BUFFER_PX = 10;
+
 interface PointPictureSliderProps {
     moveToItem?: number;
     imagePointsSets?: ImagePoints[];
@@ -43,7 +45,7 @@ export const PointPictureSlider = ({
 
         sliderRef.current.addEventListener('scrollend', (event) => {
             if (event.target instanceof Element) {
-                if (event.target.scrollLeft <= 10) {
+                if (event.target.scrollLeft <= SCROLL_END_BUFFER_PX) {
                     // at start
                     setScrollIndex(0);
                 } else if (
@@ -54,7 +56,7 @@ export const PointPictureSlider = ({
                     setScrollIndex(itemsRef.current.length - 1);
                 } else if (
                     event.target.scrollLeft > 0 &&
-                    event.target.scrollLeft >= event.target.scrollWidth - 10
+                    event.target.scrollLeft >= event.target.scrollWidth - SCROLL_END_BUFFER_PX
                 ) {
                     // middle calculates item nearset middle of scroll window (clientWidth)
                     const targetCenter = event.target.scrollLeft + event.target.clientWidth / 2;
