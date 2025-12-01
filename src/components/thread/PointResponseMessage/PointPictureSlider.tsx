@@ -193,6 +193,7 @@ export const PointPictureSlider = ({
                                         display="flex"
                                         justifyContent="space-between"
                                         alignItems="center"
+                                        width="100%"
                                         padding={1}>
                                         <PointPictureCaption pointsSets={pointsSets} />
                                         <span>{`Image ${index + 1}/${fileUrls.length}`}</span>
