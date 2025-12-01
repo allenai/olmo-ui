@@ -1,6 +1,5 @@
 import { Box, Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
 import { PropsWithChildren, ReactNode, useState } from 'react';
-import { Focusable } from 'react-aria-components';
 import { useShallow } from 'zustand/react/shallow';
 
 import { Document as AttributionDocument, Document } from '@/api/AttributionClient';
@@ -213,46 +212,36 @@ const LocateSpanButton = ({
 
     const locateUnavailable = isSpanSelected && noDocumentsSelected;
 
-    const locateButton = (
-        <Button
-            variant="text"
-            disabled={locateUnavailable}
-            sx={(theme) => ({
-                padding: 0,
-                fontWeight: 'semiBold',
-                '[data-selected-document="true"] &': {
-                    fontWeight: theme.font.weight.semiBold,
-                    color: theme.palette.secondary.contrastText,
-                },
-            })}
-            onClick={() => {
-                if (isDocumentSelected) {
-                    unselectDocument(documentId);
-                } else {
-                    selectDocument(documentId);
-                    if (!isDesktop) {
-                        closeDrawer('attribution');
+    return (
+        <StyledTooltip
+            content="Locating span is not available when a span is selected"
+            placement="top"
+            wrapChildrenWithFocus={locateUnavailable}>
+            <Button
+                variant="text"
+                disabled={locateUnavailable}
+                sx={(theme) => ({
+                    padding: 0,
+                    fontWeight: 'semiBold',
+                    '[data-selected-document="true"] &': {
+                        fontWeight: theme.font.weight.semiBold,
+                        color: theme.palette.secondary.contrastText,
+                    },
+                })}
+                onClick={() => {
+                    if (isDocumentSelected) {
+                        unselectDocument(documentId);
+                    } else {
+                        selectDocument(documentId);
+                        if (!isDesktop) {
+                            closeDrawer('attribution');
+                        }
                     }
-                }
-            }}>
-            {isDocumentSelected
-                ? 'Show all spans'
-                : `Locate span${correspondingSpanCount > 1 ? 's' : ''}`}
-        </Button>
+                }}>
+                {isDocumentSelected
+                    ? 'Show all spans'
+                    : `Locate span${correspondingSpanCount > 1 ? 's' : ''}`}
+            </Button>
+        </StyledTooltip>
     );
-
-    if (locateUnavailable) {
-        return (
-            <StyledTooltip
-                content="Locating span is not available when a span is selected"
-                placement="top">
-                {/* Tooltips shouldn't show if the child is disabled (bad a11y according to WAI-ARIA), we are overriding this by wrapping the `locateButton` */}
-                <Focusable>
-                    <span>{locateButton}</span>
-                </Focusable>
-            </StyledTooltip>
-        );
-    }
-
-    return locateButton;
 };

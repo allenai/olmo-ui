@@ -16,11 +16,17 @@ const varnishPlaygroundButtonStyles = css({
     _disabled: { color: 'elements.disabled.fill' },
 });
 
-export const AddMediaButton = ({ isDisabled }: { isDisabled?: boolean }) => {
+interface AddMediaButtonProps {
+    isDisabled?: boolean;
+    'aria-label'?: string;
+}
+
+export const AddMediaButton = ({ isDisabled, 'aria-label': ariaLabel }: AddMediaButtonProps) => {
     return (
         <Button
             isDisabled={isDisabled}
             className={varnishPlaygroundButtonStyles}
+            aria-label={ariaLabel}
             data-testid="file-upload-btn">
             <AddCircleRounded color="inherit" />
         </Button>

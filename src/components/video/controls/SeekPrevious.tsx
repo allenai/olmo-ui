@@ -1,6 +1,5 @@
 import { SkipPreviousRounded } from '@mui/icons-material';
 import { memo } from 'react';
-import { Focusable } from 'react-aria-components';
 
 import { StyledTooltip } from '@/components/StyledTooltip';
 
@@ -20,15 +19,10 @@ export const SeekPrevious = memo(function SeekPrevious() {
     const isDisabled = frame === 0;
 
     return (
-        <StyledTooltip content={tooltipLabel} placement="top">
-            <Focusable>
-                <ControlButton
-                    isDisabled={isDisabled}
-                    onPress={handlePress}
-                    aria-label={tooltipLabel}>
-                    <SkipPreviousRounded />
-                </ControlButton>
-            </Focusable>
+        <StyledTooltip content={tooltipLabel} placement="top" wrapChildrenWithFocus={isDisabled}>
+            <ControlButton isDisabled={isDisabled} onPress={handlePress} aria-label={tooltipLabel}>
+                <SkipPreviousRounded />
+            </ControlButton>
         </StyledTooltip>
     );
 });
