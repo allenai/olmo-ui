@@ -14,6 +14,7 @@ interface PointPictureSliderProps {
     imagePointsSets?: ImagePoints[];
     fileUrls: readonly string[];
     showPerImageCaption?: boolean;
+    pageMarkHeightPx?: number;
     onClick?: (image: { url: string; index: number }) => void;
     onItemChange?: (newItemIndex: number) => void;
 }
@@ -23,6 +24,7 @@ export const PointPictureSlider = ({
     imagePointsSets = [],
     fileUrls,
     showPerImageCaption,
+    pageMarkHeightPx = 12,
     onClick,
     onItemChange,
 }: PointPictureSliderProps): ReactNode => {
@@ -156,7 +158,7 @@ export const PointPictureSlider = ({
 
                     height: '100%',
                     backgroundColor: 'inherit',
-
+                    paddingBottom: `${pageMarkHeightPx * 2 + 16}px`, // total height of page marker div
                     overflowX: 'auto',
 
                     scrollSnapType: 'x mandatory',
@@ -210,6 +212,14 @@ export const PointPictureSlider = ({
                     backgroundColor: 'inherit',
                     gap: 1,
                     padding: '0.5rem',
+
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    width: '100%',
+
+                    // extimated extra space for the scroll bar
+                    marginBottom: `${pageMarkHeightPx}px`,
                 }}>
                 {fileUrls.map((_, index) => (
                     <Box
@@ -222,7 +232,7 @@ export const PointPictureSlider = ({
                         aria-label={`scroll to image ${index + 1}`}
                         sx={{
                             content: '" "',
-                            width: 12,
+                            width: pageMarkHeightPx,
                             aspectRatio: 1,
                             color: 'currentColor',
                             borderRadius: '50%',
