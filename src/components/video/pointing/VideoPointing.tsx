@@ -86,6 +86,9 @@ export function VideoPointingInput({
                         style={{
                             width: '100%',
                         }}
+                        className={css({
+                            borderTopRadius: 'lg',
+                        })}
                         moveToBeginningWhenEnded={false}
                     />
                 </VideoDotControl>

@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { DevTool } from '@hookform/devtools';
 import { Stack, Typography } from '@mui/material';
 import { KeyboardEvent, UIEvent, useEffect, useRef, useState } from 'react';
@@ -239,24 +240,30 @@ export const QueryFormController = ({
             <QueryFormStyledBox>
                 <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
                     {showTrackingInput && (
-                        <Controller
-                            name="inputParts"
-                            control={formContext.control}
-                            render={({ field: { onChange, value } }) => {
-                                return (
-                                    <VideoPointingInput
-                                        onRemoveFile={() => {
-                                            handleRemoveFile(files[0]);
-                                        }}
-                                        videoUrl={getObjectUrl(files[0])}
-                                        userPoint={value ? value[0] : null}
-                                        setUserPoint={(point) => {
-                                            onChange(point ? [point] : []);
-                                        }}
-                                    />
-                                );
-                            }}
-                        />
+                        <div
+                            className={css({
+                                paddingTop: '1',
+                                paddingBottom: '3',
+                            })}>
+                            <Controller
+                                name="inputParts"
+                                control={formContext.control}
+                                render={({ field: { onChange, value } }) => {
+                                    return (
+                                        <VideoPointingInput
+                                            onRemoveFile={() => {
+                                                handleRemoveFile(files[0]);
+                                            }}
+                                            videoUrl={getObjectUrl(files[0])}
+                                            userPoint={value ? value[0] : null}
+                                            setUserPoint={(point) => {
+                                                onChange(point ? [point] : []);
+                                            }}
+                                        />
+                                    );
+                                }}
+                            />
+                        </div>
                     )}
                     <Stack gap={1} alignItems="flex-start" width={1} position="relative">
                         {!showTrackingInput && (
