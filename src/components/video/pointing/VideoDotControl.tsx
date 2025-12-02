@@ -205,7 +205,7 @@ export const VideoDotControl = ({
                     onClick={() => {
                         clearPoint();
                     }}>
-                    Clear Point
+                    Clear point
                 </Button>
             )}
 
@@ -218,7 +218,7 @@ export const VideoDotControl = ({
                         setState('placing');
                     }}>
                     <Route fontSize="inherit" />
-                    Add Tracking Point
+                    Add tracking point
                 </Button>
             )}
         </div>
@@ -265,14 +265,15 @@ const shockwaveStyle = cva({
 const onScreenButtonRecipe = cva({
     base: {
         color: 'cream.100',
-        borderColor: 'cream.100',
-        backgroundColor: 'extra-dark-teal.80',
+        borderColor: 'cream.50',
         borderRadius: 'sm',
+        backgroundColor: 'dark-teal.100',
+        border: '[2px solid]',
         position: 'absolute',
         cursor: 'pointer',
         bottom: '5',
         _hover: {
-            borderColor: 'cream.100!', // IDK why i need important here
+            borderColor: 'cream.50!',
             outline: 'none',
         },
     },
