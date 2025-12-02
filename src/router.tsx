@@ -41,6 +41,8 @@ import { ComparisonPage } from './pages/comparison/ComparisonPage';
 import { comparisonPageLoader } from './pages/comparison/comparisonPageLoader';
 import { ErrorPage } from './pages/errorPage/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
+import { ModelPage } from './pages/model/ModelPage';
+import { modelPageLoader } from './pages/model/modelPageLoader';
 import { handleRevalidation, playgroundLoader } from './pages/playgroundLoader';
 import { UIRefreshThreadPage } from './pages/UIRefreshThreadPage';
 
@@ -100,6 +102,16 @@ export const routes: RouteObject[] = [
                         ],
                         loader: playgroundLoader(queryClient),
                         shouldRevalidate: handleRevalidation,
+                    },
+                    {
+                        path: links.model.root,
+                        children: [
+                            {
+                                path: links.model.root,
+                                loader: modelPageLoader(queryClient),
+                                element: <ModelPage />,
+                            },
+                        ],
                     },
                     {
                         path: '/agent',
