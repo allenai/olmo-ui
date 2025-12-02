@@ -40,9 +40,11 @@ export const PointPictureSlider = ({
     useEffect(() => {
         if (!sliderRef.current) return;
         if (sliderRef.current.children.length < 2) return;
-        itemsRef.current = [...sliderRef.current.children] as HTMLLIElement[];
 
-        sliderRef.current.addEventListener('scrollend', (event) => {
+        const sliderEl = sliderRef.current;
+        itemsRef.current = [...sliderEl.children] as HTMLLIElement[];
+
+        const scrollEndCallback = (event: Event) => {
             if (event.target instanceof Element) {
                 const scrollMin = 0 + SCROLL_BUFFER_PX;
                 const scrollMax =
@@ -78,7 +80,13 @@ export const PointPictureSlider = ({
                     setScrollIndex(closestIndex);
                 }
             }
-        });
+        };
+
+        sliderEl.addEventListener('scrollend', scrollEndCallback);
+
+        return () => {
+            sliderEl.removeEventListener('scrollend', scrollEndCallback);
+        };
     }, []);
 
     const handleClickToMove = (scrollToIndex: number) => {
