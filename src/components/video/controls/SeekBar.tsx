@@ -103,7 +103,7 @@ const seekbar = sva({
             height: 'var(--bar-height)',
             paddingInline: 'var(--timeline-padding)',
             backgroundColor: 'teal.100',
-            borderRadius: 'full',
+            borderLeftRadius: 'full',
         },
         inner: {
             height: 'var(--bar-height)',

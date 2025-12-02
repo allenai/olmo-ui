@@ -10,7 +10,6 @@ const playerContainerClassName = css({
 
 const wrapperClassName = css({
     display: 'grid',
-    gap: '2',
 });
 
 export const VideoPlayerContainer = ({ children }: PropsWithChildren): ReactNode => {
