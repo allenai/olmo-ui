@@ -38,16 +38,14 @@ export const Controls = memo(function Controls({
 
 const controlsContainer = css({
     backgroundColor: {
-        base: 'white',
-        _dark: 'cream.10',
+        base: 'white/50',
+        _dark: 'background.opacity-4',
     },
     display: 'grid',
-
     gap: '2',
     paddingInline: '3',
     paddingBlockStart: '2',
     paddingBlockEnd: '1',
-
     borderBottomRadius: 'sm',
 });
 

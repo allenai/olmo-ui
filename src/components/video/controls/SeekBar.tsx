@@ -32,16 +32,17 @@ export const SeekBar = memo(function SeekBar({ frameStyle }: SeekBarProps) {
             tabIndex={-1} // focus on knob seems more correct
             className={seekBarClassName.container}
             onKeyDown={handleKeyDown}>
-            <div
-                className={seekBarClassName.played}
-                style={{
-                    width: `calc(${(frame / (durationInFrames - 1)) * 100}%)`,
-                }}
-            />
+            <div className={seekBarClassName.playedEndCap} />
             <div
                 ref={containerRef}
                 onPointerDown={handlePointerDown}
                 className={seekBarClassName.inner}>
+                <div
+                    className={seekBarClassName.played}
+                    style={{
+                        width: `calc(${(frame / (durationInFrames - 1)) * 100}%)`,
+                    }}
+                />
                 <div
                     id="knob-background"
                     className={cx(seekBarClassName.knob, seekBarClassName.knobBackground)}
@@ -73,7 +74,16 @@ export const SeekBar = memo(function SeekBar({ frameStyle }: SeekBarProps) {
 });
 
 const seekbar = sva({
-    slots: ['container', 'inner', 'played', 'knob', 'knobBackground', 'knobRing', 'marker'],
+    slots: [
+        'container',
+        'inner',
+        'played',
+        'knob',
+        'knobBackground',
+        'knobRing',
+        'marker',
+        'playedEndCap',
+    ],
     base: {
         container: {
             '--bar-height': '{spacing.3}',
@@ -101,9 +111,15 @@ const seekbar = sva({
             position: 'absolute',
             left: '0',
             height: 'var(--bar-height)',
-            paddingInline: 'var(--timeline-padding)',
             backgroundColor: 'teal.100',
-            borderRadius: 'full',
+        },
+        playedEndCap: {
+            position: 'absolute',
+            left: '0',
+            height: 'var(--bar-height)',
+            width: 'var(--timeline-padding)',
+            backgroundColor: 'teal.100',
+            borderLeftRadius: 'full',
         },
         inner: {
             height: 'var(--bar-height)',

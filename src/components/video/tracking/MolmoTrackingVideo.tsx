@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { Player, PlayerRef } from '@remotion/player';
 import { useRef, useState } from 'react';
 import { Key } from 'react-aria-components';
@@ -70,6 +71,9 @@ export function MolmoTrackingVideo({
                     initiallyMuted={true}
                     fps={FPS}
                     style={{ width: '100%', flex: '1' }}
+                    className={css({
+                        borderTopRadius: 'sm',
+                    })}
                     moveToBeginningWhenEnded={MOVE_TO_BEGINNING_WHEN_ENDED}
                 />
             </VideoPlayerContainer>

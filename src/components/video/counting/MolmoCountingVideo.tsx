@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { Player, type PlayerRef } from '@remotion/player';
 import { type ReactNode, useRef } from 'react';
 
@@ -60,6 +61,9 @@ export const MolmoCountingVideo = ({
                     compositionHeight={height}
                     fps={FPS}
                     initiallyMuted={true}
+                    className={css({
+                        borderTopRadius: 'sm',
+                    })}
                     style={{ width: '100%', flex: 1 }}
                     moveToBeginningWhenEnded={MOVE_TO_BEGINNING_WHEN_ENDED}
                 />
