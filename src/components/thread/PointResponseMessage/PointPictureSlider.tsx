@@ -1,6 +1,6 @@
 import { Box, IconButton } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 import { ChevronIcon } from '@/components/assets/ChevronIcon';
 
@@ -81,16 +81,13 @@ export const PointPictureSlider = ({
         });
     }, []);
 
-    const handleClickToMove = useCallback(
-        (scrollToIndex: number) => {
-            itemsRef.current[scrollToIndex]?.scrollIntoView({
-                behavior: 'smooth',
-                inline: 'center',
-            });
-            onItemChange?.(scrollToIndex);
-        },
-        [onItemChange]
-    );
+    const handleClickToMove = (scrollToIndex: number) => {
+        itemsRef.current[scrollToIndex]?.scrollIntoView({
+            behavior: 'smooth',
+            inline: 'center',
+        });
+        onItemChange?.(scrollToIndex);
+    };
 
     // use moveToItem and onItemChange for controlled movement
     useEffect(() => {
