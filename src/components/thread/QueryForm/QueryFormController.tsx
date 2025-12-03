@@ -113,11 +113,8 @@ export const QueryFormController = ({
     }, [formContext, navigation.state]);
 
     useStreamEvent('onFirstMessage', () => {
-        console.log('first message');
         formContext.reset();
-        formContext.setValue('files', undefined);
         if (inputRef.current) {
-            console.log(inputRef.current.value);
             inputRef.current.value = '';
         }
     });
@@ -190,6 +187,7 @@ export const QueryFormController = ({
             return;
         }
         try {
+            console.log(data);
             await handleSubmit(data);
         } catch (e) {
             handleFormSubmitException(e, formContext);

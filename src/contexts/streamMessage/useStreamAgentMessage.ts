@@ -82,6 +82,7 @@ export const useStreamAgentMessage: UseStreamMessage<AgentChatStreamMutationVari
                 bodySerializer: (body) => {
                     const formData = new FormData();
                     for (const property in body) {
+                        console.log(property);
                         const value = body[property as keyof SchemaAgentChatRequest];
                         mapValueToFormData(formData, property, value);
                     }
