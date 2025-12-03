@@ -11,6 +11,7 @@ const buttonClassNames = css({
     position: 'relative',
     display: 'flex',
     flexShrink: 0,
+    height: '[100%]',
     overflow: 'hidden',
     borderRadius: 'sm',
     border: '2px solid transparent',
@@ -18,6 +19,12 @@ const buttonClassNames = css({
         borderColor: 'accent.secondary',
     },
     cursor: 'pointer',
+});
+
+const imageClassNames = css({
+    display: 'flex',
+    height: '[100%]',
+    width: '[100%]',
 });
 
 interface FrameProps {
@@ -54,16 +61,12 @@ export const Frame = memo(function Frame({
     }
 
     return (
-        <Button onPress={handlePress} aria-label={label} className={buttonClassNames}>
-            <img
-                src={src}
-                alt={alt}
-                className={css({
-                    display: 'flex',
-                    height: '[100%]',
-                })}
-                style={{ aspectRatio }}
-            />
+        <Button
+            onPress={handlePress}
+            aria-label={label}
+            className={buttonClassNames}
+            style={{ aspectRatio }}>
+            <img src={src} alt={alt} className={imageClassNames} />
             <FramePoints points={points} />
         </Button>
     );

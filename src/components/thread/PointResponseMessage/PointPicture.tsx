@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { Box, BoxProps, styled } from '@mui/material';
 import { ReactNode } from 'react';
 
@@ -36,6 +37,7 @@ export const PointPicture = ({
                 component={onClick ? 'button' : 'figure'}
                 onClick={onClick}
                 sx={{
+                    position: 'relative',
                     display: 'grid',
                     gridTemplateRows: '100%',
                     gridTemplateColumns: '100%',
@@ -61,15 +63,22 @@ export const PointPicture = ({
                 />
                 {pointsSets.map((pointSet, index) => {
                     return (
-                        <PointOnImage
+                        <div
                             key={`${pointSet.url}-${index}`}
-                            points={pointSet.points}
-                            fill={pointColors[index % pointColors.length]}
-                        />
+                            className={css({
+                                position: 'absolute',
+                                width: '[100%]',
+                                height: '[100%]',
+                            })}>
+                            <PointOnImage
+                                points={pointSet.points}
+                                fill={pointColors[index % pointColors.length]}
+                            />
+                        </div>
                     );
                 })}
-                {caption}
             </Box>
+            {caption}
         </Box>
     );
 };
@@ -81,7 +90,13 @@ interface PointOnImageProps {
 const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
     // Height and width are applied here to give it a minimum viewport of 0w,0h. Otherwise it gets set to the default of 300wx150h
     // This allows us to scale down to smaller sizes
-    <PointOnImageSvg aria-hidden width="0" height="0" sx={{ color: fill }}>
+    <PointOnImageSvg
+        aria-hidden
+        width="0"
+        height="0"
+        sx={{
+            color: fill,
+        }}>
         {points.map((point) => (
             <PointCircle key={point.pointId} cx={point.x} cy={point.y} />
         ))}
