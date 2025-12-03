@@ -53,6 +53,12 @@ export function MolmoTrackingVideo({
         }
     };
 
+    console.log({
+        videoUrl,
+        videoTrackingPoints,
+        showInterpolation,
+    });
+
     return (
         <VideoPlayerWrapper>
             <VideoPlayerContainer>
