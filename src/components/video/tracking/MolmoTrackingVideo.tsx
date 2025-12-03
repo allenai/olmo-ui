@@ -97,7 +97,9 @@ export function MolmoTrackingVideo({
                             menuItems={[
                                 {
                                     id: 'toggle-interpolation',
-                                    label: showInterpolation ? 'Hide tween' : 'Show tween',
+                                    label: showInterpolation
+                                        ? 'Hide point transitions'
+                                        : 'Show point transitions',
                                 },
                             ]}
                         />
