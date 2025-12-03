@@ -1,7 +1,7 @@
 import { alpha, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
-import { familySpecificQueryFormNoticesMap } from './family-specific-query-form-notices-map';
+import { familySpecificQueryFormNoticesMap } from './familySpecificQueryFormNoticesMap';
 
 export interface QueryFormNoticeProps {
     selectedModelFamilyId?: string | null;
