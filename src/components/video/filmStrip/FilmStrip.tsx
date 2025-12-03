@@ -4,6 +4,7 @@ import { type ReactNode, type RefObject, useCallback, useMemo } from 'react';
 
 import type { VideoFramePoints } from '@/components/thread/points/pointsDataTypes';
 import { useExtractFrames } from '@/components/video/extractFrames/useExtractFrames';
+import { SliderFadeOverflow } from '@/components/widgets/SliderFadeOverflow';
 
 import { THUMBNAIL_HEIGHT } from './filmStripConsts';
 import { Frame } from './Frame';
@@ -11,11 +12,7 @@ import { Frame } from './Frame';
 const frameContainerClassName = css({
     display: 'flex',
     gap: '3',
-    overflowX: 'auto',
-    paddingBlock: '3',
     marginInline: 'auto',
-    width: '[fit-content]',
-    maxWidth: '[100%]',
 });
 
 interface FilmStripProps {
@@ -69,21 +66,29 @@ export const FilmStrip = ({
     }
 
     return (
-        <div className={frameContainerClassName} style={{ height: `${thumbnailHeight}px` }}>
-            {frames.map((frame, idx) => (
-                <Frame
-                    key={`${videoPoints.frameList[idx].timestamp}-${idx}`}
-                    src={frame}
-                    fps={fps}
-                    alt={videoPoints.alt}
-                    label={videoPoints.label}
-                    points={videoPoints.frameList[idx].points}
-                    timestamp={videoPoints.frameList[idx].timestamp}
-                    width={width}
-                    height={height}
-                    seekToFrame={seekToFrame}
-                />
-            ))}
-        </div>
+        <SliderFadeOverflow
+            className={css({
+                width: '[100%]',
+                marginBlock: '3',
+                '--background-color': '{colors.background}',
+                maxWidth: '[100%]',
+            })}>
+            <div className={frameContainerClassName} style={{ height: `${thumbnailHeight}px` }}>
+                {frames.map((frame, idx) => (
+                    <Frame
+                        key={`${videoPoints.frameList[idx].timestamp}-${idx}`}
+                        src={frame}
+                        fps={fps}
+                        alt={videoPoints.alt}
+                        label={videoPoints.label}
+                        points={videoPoints.frameList[idx].points}
+                        timestamp={videoPoints.frameList[idx].timestamp}
+                        width={width}
+                        height={height}
+                        seekToFrame={seekToFrame}
+                    />
+                ))}
+            </div>
+        </SliderFadeOverflow>
     );
 };
