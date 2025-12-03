@@ -42,14 +42,6 @@ export const PointPicture = ({
                 onClick={onClick}
                 sx={{
                     position: 'relative',
-                    display: 'grid',
-                    gridTemplateRows: '100%',
-                    gridTemplateColumns: '100%',
-                    gridTemplateAreas: '"combined"',
-                    justifyItems: 'center',
-                    height: 'inherit',
-                    width: 'auto',
-                    maxWidth: '100%',
                     '&:hover': {
                         cursor: onClick ? 'pointer' : undefined,
                     },
@@ -59,12 +51,9 @@ export const PointPicture = ({
                     src={imageLink}
                     alt={imageAlt}
                     sx={{
-                        height: 'inherit',
-                        width: 'inherit',
-                        gridArea: 'combined',
                         objectFit: 'contain',
-                        maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX,
-                        maxWidth: MAX_THREAD_IMAGE_WIDTH_PX,
+                        width: 'auto',
+                        maxHeight: '500px',
                     }}
                 />
                 {pointsSets.map((pointSet, index) => {
@@ -73,6 +62,8 @@ export const PointPicture = ({
                             key={`${pointSet.url}-${index}`}
                             className={css({
                                 position: 'absolute',
+                                top: '0',
+                                left: '0',
                                 width: '[100%]',
                                 height: '[100%]',
                             })}>
