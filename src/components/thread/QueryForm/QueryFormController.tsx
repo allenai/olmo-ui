@@ -114,6 +114,9 @@ export const QueryFormController = ({
 
     useStreamEvent('onFirstMessage', () => {
         formContext.reset();
+        if (inputRef.current) {
+            inputRef.current.files = null;
+        }
     });
 
     useEffect(() => {
@@ -289,7 +292,7 @@ export const QueryFormController = ({
                                                 onBlur,
                                                 disabled: _disabled,
                                                 onChange: _onChange,
-                                                value: _value,
+                                                value,
                                                 ref: _ref,
                                             },
                                         }) => {
