@@ -133,6 +133,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                                 <SelectListBoxItem text="No family" id="no_family" />
                                 <SelectListBoxItem text="Olmo" id="olmo" />
                                 <SelectListBoxItem text="Tülu" id="tulu" />
+                                <SelectListBoxItem text="Molmo 2" id="molmo-2" />
                             </SelectListBoxSection>
                         </ControlledSelect>
 
