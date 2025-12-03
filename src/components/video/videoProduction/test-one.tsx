@@ -1,7 +1,37 @@
-import { registerRoot } from 'remotion';
-import { VideoTracking } from '../tracking/Tracking';
-import { Composition } from 'remotion';
+import { Composition, registerRoot } from 'remotion';
 
+import { VideoTracking } from '../tracking/Tracking';
+
+import { Input, ALL_FORMATS, UrlSource } from 'mediabunny';
+
+export const getMediaMetadata = async (src: string) => {
+    const input = new Input({
+        formats: ALL_FORMATS,
+        source: new UrlSource(src, {
+            getRetryDelay: () => null,
+        }),
+    });
+
+    const durationInSeconds = await input.computeDuration();
+    const videoTrack = await input.getPrimaryVideoTrack();
+    const dimensions = videoTrack
+        ? {
+              width: videoTrack.displayWidth,
+              height: videoTrack.displayHeight,
+          }
+        : null;
+    const packetStats = await videoTrack?.computePacketStats(50);
+    const fps = packetStats?.averagePacketRate ?? null;
+
+    console.log(fps);
+    console.log(durationInSeconds * fps!);
+    console.log(dimensions);
+    return {
+        durationInSeconds,
+        dimensions,
+        fps,
+    };
+};
 const render = {
     videoUrl:
         'https://storage.googleapis.com/ai2-playground-molmo/msg_K5R0Y9X7W3/msg_K5R0Y9X7W3-0.mp4',
@@ -84,15 +114,20 @@ const render = {
     showInterpolation: true,
 };
 
+//getMediaMetadata(render.videoUrl);
+
+const fps = 24;
+const durationInFrames = 75;
+
 export const RemotionRoot: React.FC = () => {
     return (
         <>
             <Composition
                 component={VideoTracking}
-                durationInFrames={300}
-                width={1080}
+                durationInFrames={durationInFrames}
+                width={1920}
                 height={1080}
-                fps={30}
+                fps={fps!}
                 id="test-render"
                 defaultProps={render}
             />
@@ -101,5 +136,4 @@ export const RemotionRoot: React.FC = () => {
     );
 };
 registerRoot(RemotionRoot);
-
 // npx remotion studio ./src/components/video/videoProduction/test-one.tsx
