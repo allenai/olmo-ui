@@ -19,7 +19,11 @@ export const SeekNext = memo(function SeekNext() {
     const isDisabled = frame === durationInFrames - 1;
 
     return (
-        <StyledTooltip content={tooltipLabel} placement="top" wrapChildrenWithFocus={isDisabled}>
+        <StyledTooltip
+            delay={600}
+            content={tooltipLabel}
+            placement="top"
+            wrapChildrenWithFocus={isDisabled}>
             <ControlButton isDisabled={isDisabled} onPress={handlePress} aria-label={tooltipLabel}>
                 <SkipNextRounded />
             </ControlButton>
