@@ -114,6 +114,13 @@ export const QueryFormController = ({
 
     useStreamEvent('onFirstMessage', () => {
         formContext.reset();
+        // in iOS this is presisting, even after formContext.reset();
+        // Ensure the files is set to undefined
+        formContext.setValue('files', undefined, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+        });
     });
 
     useEffect(() => {
