@@ -115,7 +115,7 @@ export const QueryFormController = ({
     useStreamEvent('onFirstMessage', () => {
         formContext.reset();
         if (inputRef.current) {
-            inputRef.current.files = null;
+            inputRef.current.value = '';
         }
     });
 
