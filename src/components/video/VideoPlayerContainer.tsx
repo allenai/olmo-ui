@@ -2,7 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { PropsWithChildren, type ReactNode } from 'react';
 
 const playerContainerClassName = css({
-    maxHeight: '[60vh]',
+    maxHeight: '[50svh]',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'start',
