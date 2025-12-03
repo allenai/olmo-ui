@@ -113,14 +113,11 @@ export const QueryFormController = ({
     }, [formContext, navigation.state]);
 
     useStreamEvent('onFirstMessage', () => {
+        // Clear the file input element to prevent iOS Safari from holding stale references
+        if (inputRef.current) {
+            inputRef.current.value = '';
+        }
         formContext.reset();
-        // in iOS this is presisting, even after formContext.reset();
-        // Ensure the files is set to undefined
-        formContext.setValue('files', undefined, {
-            shouldDirty: true,
-            shouldTouch: true,
-            shouldValidate: true,
-        });
     });
 
     useEffect(() => {
@@ -191,7 +188,10 @@ export const QueryFormController = ({
             return;
         }
         try {
-            await handleSubmit(data);
+            // iOS Safari workaround: react-hook-form's handleSubmit returns stale FileList
+            // after reset, but useWatch correctly tracks the value. Use `files` from
+            // useWatch instead of data.files.
+            await handleSubmit({ ...data, files });
         } catch (e) {
             handleFormSubmitException(e, formContext);
         }
@@ -289,30 +289,14 @@ export const QueryFormController = ({
                                         rules={{
                                             validate: validateFilesWithOptions,
                                         }}
-                                        render={({
-                                            // not particularly using hook form anymore
-                                            field: {
-                                                name,
-                                                onBlur,
-                                                disabled: _disabled,
-                                                onChange: _onChange,
-                                                value: _value,
-                                                ref: _ref,
-                                            },
-                                        }) => {
-                                            return (
-                                                <FileUploadButton
-                                                    // not using react-hook-form's ref
-                                                    ref={inputRef}
-                                                    name={name}
-                                                    onBlur={onBlur}
-                                                    // isDisabled={disabled}
-                                                    // value -- don't think this is useful
-                                                    onSelect={handleFileSelect}
-                                                    {...fileUploadProps}
-                                                />
-                                            );
-                                        }}
+                                        render={({ field: { onBlur } }) => (
+                                            <FileUploadButton
+                                                ref={inputRef}
+                                                onBlur={onBlur}
+                                                onSelect={handleFileSelect}
+                                                {...fileUploadProps}
+                                            />
+                                        )}
                                     />
                                     {isTranscribing ? <Waveform /> : null}
                                     <AudioInputButton
