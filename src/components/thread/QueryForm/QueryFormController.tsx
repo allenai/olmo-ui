@@ -237,7 +237,7 @@ export const QueryFormController = ({
                 // return copy/cancel
                 return 'cancel';
             }}>
-            <QueryFormStyledBox>
+            <QueryFormStyledBox isModal={showTrackingInput}>
                 <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
                     {showTrackingInput && (
                         <div
