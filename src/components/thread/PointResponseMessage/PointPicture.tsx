@@ -3,6 +3,7 @@ import { Box, BoxProps, styled } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { Point } from '../points/pointsDataTypes';
+import { MAX_THREAD_IMAGE_HEIGHT_PX } from '../ThreadDisplay/threadDisplayConsts';
 import { PointCircle } from './PointCircle';
 import { usePointColors } from './usePointColors';
 
@@ -38,14 +39,6 @@ export const PointPicture = ({
                 onClick={onClick}
                 sx={{
                     position: 'relative',
-                    display: 'grid',
-                    gridTemplateRows: '100%',
-                    gridTemplateColumns: '100%',
-                    gridTemplateAreas: '"combined"',
-                    justifyItems: 'center',
-                    height: 'inherit',
-                    width: 'auto',
-                    maxWidth: '100%',
                     '&:hover': {
                         cursor: onClick ? 'pointer' : undefined,
                     },
@@ -55,10 +48,9 @@ export const PointPicture = ({
                     src={imageLink}
                     alt={imageAlt}
                     sx={{
-                        height: 'inherit',
-                        width: 'inherit',
-                        gridArea: 'combined',
                         objectFit: 'contain',
+                        width: 'auto',
+                        maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX,
                     }}
                 />
                 {pointsSets.map((pointSet, index) => {
@@ -67,6 +59,8 @@ export const PointPicture = ({
                             key={`${pointSet.url}-${index}`}
                             className={css({
                                 position: 'absolute',
+                                top: '0',
+                                left: '0',
                                 width: '[100%]',
                                 height: '[100%]',
                             })}>
