@@ -3,6 +3,10 @@ import { Box, BoxProps, styled } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { Point } from '../points/pointsDataTypes';
+import {
+    MAX_THREAD_IMAGE_HEIGHT_PX,
+    MAX_THREAD_IMAGE_WIDTH_PX,
+} from '../ThreadDisplay/threadDisplayConsts';
 import { PointCircle } from './PointCircle';
 import { usePointColors } from './usePointColors';
 
@@ -59,6 +63,8 @@ export const PointPicture = ({
                         width: 'inherit',
                         gridArea: 'combined',
                         objectFit: 'contain',
+                        maxHeight: MAX_THREAD_IMAGE_HEIGHT_PX,
+                        maxWidth: MAX_THREAD_IMAGE_WIDTH_PX,
                     }}
                 />
                 {pointsSets.map((pointSet, index) => {
