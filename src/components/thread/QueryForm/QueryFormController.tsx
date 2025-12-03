@@ -242,7 +242,7 @@ export const QueryFormController = ({
                 return 'cancel';
             }}>
             <QueryFormStyledBox>
-                <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
+                <form onSubmit={formContext.handleSubmit(handleSubmitController)}>
                     {showTrackingInput && (
                         <div
                             className={css({
@@ -396,7 +396,7 @@ export const QueryFormController = ({
                             <DevTool control={formContext.control} />
                         )}
                     </Stack>
-                </FormContainer>
+                </form>
             </QueryFormStyledBox>
         </DropZone>
     );
