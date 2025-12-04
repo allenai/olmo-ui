@@ -40,7 +40,10 @@ export const QueryFormStyledBox = ({
             className={css({
                 position: 'relative',
                 marginInline: '4',
-                minHeight: '[52px]', // I don't like this, but it prevents layout shift
+                // TODO: find a better layout for this
+                //
+                // I don't like this, but it prevents layout shift
+                minHeight: '[calc(1.5rem + 28px)]',
             })}>
             <div className={queryFormStyledBox({ isModal })}>{children}</div>
         </div>
