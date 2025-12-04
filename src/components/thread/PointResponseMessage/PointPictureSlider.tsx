@@ -48,13 +48,11 @@ export const PointPictureSlider = ({
             ([entry]) => {
                 const itemIndex = itemsRef.current.indexOf(entry.target as HTMLLIElement);
                 if (entry.isIntersecting) {
-                    entry.target.setAttribute('data-active-item', 'true');
                     setActiveItems((prev) => {
                         prev[itemIndex] = true;
                         return [...prev];
                     });
                 } else {
-                    entry.target.setAttribute('data-active-item', 'false');
                     setActiveItems((prev) => {
                         prev[itemIndex] = false;
                         return [...prev];
@@ -63,7 +61,7 @@ export const PointPictureSlider = ({
             },
             {
                 root: sliderEl,
-                rootMargin: '0px',
+                rootMargin: '1px',
                 threshold: 0.6,
             }
         );
@@ -223,12 +221,12 @@ export const PointPictureSlider = ({
                         {fileUrls.map((_, index) => (
                             <Box
                                 key={index}
+                                className={activeItems[index] ? 'active' : undefined}
                                 component="button"
                                 onClick={() => {
                                     handleClickToMove(index);
                                 }}
                                 aria-label={`scroll to image ${index + 1}`}
-                                data-active-item={activeItems[index]}
                                 sx={{
                                     content: '" "',
                                     width: pageMarkHeightPx,
@@ -239,7 +237,7 @@ export const PointPictureSlider = ({
                                     borderColor: 'currentColor',
                                     opacity: 0.8,
                                     cursor: 'pointer',
-                                    '&[data-active-item="true"]': {
+                                    '&.active': {
                                         backgroundColor: 'currentColor',
                                     },
                                 }}
