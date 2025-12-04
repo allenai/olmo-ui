@@ -3,6 +3,7 @@ import { AddCircleRounded } from '@mui/icons-material';
 import { Button } from 'react-aria-components';
 
 const varnishPlaygroundButtonStyles = css({
+    display: 'flex',
     cursor: 'pointer',
     padding: '1',
     borderRadius: 'full',

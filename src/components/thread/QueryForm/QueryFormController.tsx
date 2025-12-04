@@ -244,13 +244,26 @@ export const QueryFormController = ({
                 // return copy/cancel
                 return 'cancel';
             }}>
-            <QueryFormStyledBox>
-                <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
+            <QueryFormStyledBox isModal={showTrackingInput}>
+                <FormContainer
+                    formContext={formContext}
+                    onSuccess={handleSubmitController}
+                    FormProps={{
+                        className: css({
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: '[100%]',
+                        }),
+                    }}>
                     {showTrackingInput && (
                         <div
                             className={css({
                                 paddingTop: '1',
                                 paddingBottom: '3',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                width: '[100%]',
+                                minHeight: '[0]',
                             })}>
                             <Controller
                                 name="inputParts"
