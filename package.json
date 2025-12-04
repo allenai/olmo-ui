@@ -88,6 +88,7 @@
     "micromark-factory-space": "^2.0.1",
     "micromark-util-character": "^2.1.1",
     "micromark-util-symbol": "^2.0.1",
+    "mime": "^4.1.0",
     "openapi-fetch": "^0.14.0",
     "openapi-react-query": "^0.5.0",
     "partial-json": "0.1.7",

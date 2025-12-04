@@ -1,9 +1,8 @@
 import { css, cva } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
+import mime from 'mime/lite';
 import type { PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
-
-import { useDetermineMimeType } from '@/utils/useDetermineFileType';
 
 import { useVideoThumbnail } from '../../QueryForm/FileUploadThumbnails/useVideoThumbnail';
 
@@ -58,7 +57,7 @@ export interface LinkCardProps extends PropsWithChildren {
 }
 
 export const LinkCard = ({ url, mediaUrl, alt, className, children }: LinkCardProps) => {
-    const { mimeType } = useDetermineMimeType(mediaUrl);
+    const mimeType = mediaUrl ? mime.getType(mediaUrl) : '';
     const thumbnail = useVideoThumbnail({ videoUrl: mediaUrl || '', offsetPercent: 0.1 });
     const imageSrc = mimeType?.startsWith('video/')
         ? thumbnail
