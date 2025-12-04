@@ -1,10 +1,7 @@
 import mime from 'mime/lite';
 import { ReactNode } from 'react';
 
-import { MolmoTrackingVideo } from '@/components/video/tracking/MolmoTrackingVideo';
-
-import { MediaCollapsibleWidget } from '../PointResponseMessage/CollapsibleMediaWidget';
-import { PointPictureList } from '../PointResponseMessage/PointPictureList';
+import { FileThumbnails } from '../QueryForm/FileUploadThumbnails/FileThumbnailDisplay';
 
 interface UserMessageFileWidgetProps {
     fileUrls: string[];
@@ -15,23 +12,33 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
 
     if (fileUrls.length === 0) return null;
 
-    if (mimeType?.startsWith('image/')) {
-        return (
-            <MediaCollapsibleWidget fileType="image" fileCount={fileUrls.length} defaultExpanded>
-                <PointPictureList fileUrls={fileUrls} />
-            </MediaCollapsibleWidget>
-        );
+                const headers = response.headers;
+                const contentType = headers.get('Content-Type');
+
+                if (contentType?.startsWith('image/')) {
+                    setFileType('image');
+                } else if (contentType?.startsWith('video/')) {
+                    setFileType('video');
+                } else {
+                    setFileType('file');
+                }
+            } catch (error) {
+                console.error('Error fetching fileUrl headers:', error);
+                setFileType('file');
+            }
+        };
+
+        void determineFileType(fileUrls[0]);
+    }, [fileUrls]);
+
+    if (isPending || fileUrls.length === 0) return null;
+
+    // todo here...
+    if (fileType === 'image') {
+        return <FileThumbnails mediaType="image/" urls={fileUrls} />;
     }
-    if (mimeType?.startsWith('video/')) {
-        return (
-            <MediaCollapsibleWidget fileType="video" fileCount={fileUrls.length} defaultExpanded>
-                <MolmoTrackingVideo
-                    videoUrl={fileUrls[0]}
-                    videoTrackingPoints={{ label: '', type: 'track-points', frameList: [] }}
-                    suppressInterpolation
-                />
-            </MediaCollapsibleWidget>
-        );
+    if (fileType === 'video') {
+        return <FileThumbnails mediaType="video" urls={fileUrls} />;
     }
 
     return null;

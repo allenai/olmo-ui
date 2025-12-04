@@ -47,7 +47,7 @@ interface ThumbnailProps {
     filename: string;
     type: string;
     src: string;
-    onPressRemove: () => void;
+    onPressRemove?: () => void;
 }
 
 export const Thumbnail = ({ filename, type, src, onPressRemove }: ThumbnailProps): ReactNode => {
@@ -59,7 +59,7 @@ export const Thumbnail = ({ filename, type, src, onPressRemove }: ThumbnailProps
             ) : (
                 <VideoThumbnail videoUrl={src} alt={alt} title={filename} />
             )}
-            <RemoveButton filename={filename} onPressRemove={onPressRemove} />
+            {onPressRemove && <RemoveButton filename={filename} onPressRemove={onPressRemove} />}
         </div>
     );
 };

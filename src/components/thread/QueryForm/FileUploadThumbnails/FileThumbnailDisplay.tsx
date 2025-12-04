@@ -59,3 +59,28 @@ export const FileUploadThumbnails = ({
         </ThumbnailContainer>
     );
 };
+
+interface ThumbnailDisplayProps {
+    urls?: string[];
+    mediaType: string;
+}
+
+export const FileThumbnails = ({ urls, mediaType }: ThumbnailDisplayProps): ReactNode => {
+    if (urls == null || urls.length === 0) {
+        return null;
+    }
+
+    const files: { mediaType: string; name: string; src: string }[] = urls.map((u) => ({
+        mediaType,
+        src: u,
+        name: 'hello',
+    }));
+
+    return (
+        <ThumbnailContainer>
+            {files.map((file, i) => (
+                <Thumbnail key={i} type={file.mediaType} filename={file.name} src={file.src} />
+            ))}
+        </ThumbnailContainer>
+    );
+};
