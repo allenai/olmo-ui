@@ -1,5 +1,5 @@
 import { Close } from '@mui/icons-material';
-import { Dialog, IconButton } from '@mui/material';
+import { Backdrop, BackdropProps, Dialog, IconButton } from '@mui/material';
 import { ReactNode } from 'react';
 
 interface MediaLightboxProps {
@@ -16,29 +16,42 @@ export const MediaLightbox = ({ open, onClose, children }: MediaLightboxProps): 
             maxWidth="lg"
             PaperProps={{
                 style: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
                     color: 'white',
+                    backgroundColor: 'transparent',
+                    backgroundImage: 'none',
+                    boxShadow: 'none',
                 },
+            }}
+            slots={{
+                backdrop: BackdropWithCloseButton,
             }}
             slotProps={{
                 backdrop: {
                     style: {
                         backgroundColor: 'rgba(0, 0, 0, 0.8)',
                     },
+                    onClick: onClose,
                 },
             }}>
+            {children}
+        </Dialog>
+    );
+};
+
+const BackdropWithCloseButton = (props: BackdropProps) => {
+    return (
+        <Backdrop {...props}>
             <IconButton
                 aria-label="close"
-                onClick={onClose}
                 sx={(theme) => ({
-                    position: 'absolute',
-                    right: 8,
-                    top: 8,
+                    position: 'fixed',
+                    right: '10dvw',
+                    top: '10dvh',
                     color: theme.palette.grey[500],
+                    border: '2px solid currentColor',
                 })}>
                 <Close />
             </IconButton>
-            {children}
-        </Dialog>
+        </Backdrop>
     );
 };

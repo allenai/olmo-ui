@@ -9,8 +9,6 @@ import { MIN_THREAD_IMAGE_HEIGHT_PX } from '../ThreadDisplay/threadDisplayConsts
 import { PointPicture, PointsSets } from './PointPicture';
 import { PointPictureCaption } from './PointPictureCaption';
 
-const SCROLL_BUFFER_PX = 10;
-
 interface PointPictureSliderProps {
     moveToItem?: number;
     imagePointsSets?: ImagePoints[];
@@ -22,7 +20,7 @@ interface PointPictureSliderProps {
 }
 
 export const PointPictureSlider = ({
-    moveToItem,
+    moveToItem = 0,
     imagePointsSets = [],
     fileUrls,
     showPerImageCaption,
@@ -32,10 +30,12 @@ export const PointPictureSlider = ({
 }: PointPictureSliderProps): ReactNode => {
     const sliderRef = useRef<HTMLUListElement | null>(null);
     const itemsRef = useRef<HTMLLIElement[]>([]);
-    const [scrollIndex, setScrollIndex] = useState(0);
+    const [activeItems, setActiveItems] = useState<Array<boolean>>(
+        fileUrls.map((_, index) => index === moveToItem)
+    );
 
-    const isAtStart = scrollIndex <= 0;
-    const isAtEnd = scrollIndex >= fileUrls.length - 1;
+    const isAtStart = activeItems[0];
+    const isAtEnd = activeItems[fileUrls.length - 1];
 
     useEffect(() => {
         if (!sliderRef.current) return;
@@ -44,48 +44,38 @@ export const PointPictureSlider = ({
         const sliderEl = sliderRef.current;
         itemsRef.current = [...sliderEl.children] as HTMLLIElement[];
 
-        const scrollEndCallback = (event: Event) => {
-            if (event.target instanceof Element) {
-                const scrollMin = 0 + SCROLL_BUFFER_PX;
-                const scrollMax =
-                    event.target.scrollWidth - event.target.clientWidth - SCROLL_BUFFER_PX;
-                if (event.target.scrollLeft <= scrollMin) {
-                    // at start
-                    setScrollIndex(0);
-                } else if (
-                    // at end
-                    event.target.scrollLeft >= scrollMax
-                ) {
-                    setScrollIndex(itemsRef.current.length - 1);
-                } else if (
-                    event.target.scrollLeft > scrollMin &&
-                    event.target.scrollLeft < scrollMax
-                ) {
-                    // middle calculates item nearset middle of scroll window (clientWidth)
-                    const targetCenter = event.target.scrollLeft + event.target.clientWidth / 2;
-                    const closestIndex = itemsRef.current.reduce<{
-                        index: number;
-                        distance: number;
-                    }>(
-                        (acc, item, index) => {
-                            const itemCenter = item.offsetLeft + item.offsetWidth / 2;
-                            const distance = Math.abs(itemCenter - targetCenter);
-                            if (distance < acc.distance) {
-                                return { index, distance };
-                            }
-                            return acc;
-                        },
-                        { index: 0, distance: Infinity }
-                    ).index;
-                    setScrollIndex(closestIndex);
-                }
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    const itemIndex = itemsRef.current.indexOf(entry.target as HTMLLIElement);
+                    if (entry.isIntersecting) {
+                        setActiveItems((prev) => {
+                            prev[itemIndex] = true;
+                            return [...prev];
+                        });
+                    } else {
+                        setActiveItems((prev) => {
+                            prev[itemIndex] = false;
+                            return [...prev];
+                        });
+                    }
+                });
+            },
+            {
+                root: sliderEl,
+                rootMargin: '1px',
+                threshold: 0.8,
             }
-        };
+        );
 
-        sliderEl.addEventListener('scrollend', scrollEndCallback);
+        itemsRef.current.forEach((el) => {
+            observer.observe(el);
+        });
 
         return () => {
-            sliderEl.removeEventListener('scrollend', scrollEndCallback);
+            itemsRef.current.forEach((el) => {
+                observer.unobserve(el);
+            });
         };
     }, []);
 
@@ -99,16 +89,11 @@ export const PointPictureSlider = ({
 
     // use moveToItem and onItemChange for controlled movement
     useEffect(() => {
-        if (moveToItem != null) {
-            const to = setTimeout(() => {
-                itemsRef.current[moveToItem]?.scrollIntoView({
-                    behavior: 'instant',
-                    inline: 'center',
-                });
-            }, 50);
-            return () => {
-                clearTimeout(to);
-            };
+        if (moveToItem !== 0) {
+            itemsRef.current[moveToItem]?.scrollIntoView({
+                behavior: 'instant',
+                inline: 'center',
+            });
         }
     }, [moveToItem]);
 
@@ -215,55 +200,57 @@ export const PointPictureSlider = ({
                 })}
             </Box>
 
-            {/* Page Marks */}
-            <Box
-                sx={{
-                    height: 'auto',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    backgroundColor: 'inherit',
-                    gap: 1,
-                    padding: '0.5rem',
-
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    width: '100%',
-
-                    // extimated extra space for the scroll bar
-                    marginBottom: `${pageMarkHeightPx}px`,
-                }}>
-                {fileUrls.map((_, index) => (
-                    <Box
-                        key={index}
-                        className={index === scrollIndex ? 'active' : undefined}
-                        component="button"
-                        onClick={() => {
-                            handleClickToMove(index);
-                        }}
-                        aria-label={`scroll to image ${index + 1}`}
-                        sx={{
-                            content: '" "',
-                            width: pageMarkHeightPx,
-                            aspectRatio: 1,
-                            color: 'currentColor',
-                            borderRadius: '50%',
-                            border: '1px solid',
-                            borderColor: 'currentColor',
-                            opacity: 0.8,
-                            cursor: 'pointer',
-                            '&.active': {
-                                backgroundColor: 'currentColor',
-                            },
-                        }}
-                    />
-                ))}
-            </Box>
             {!isSingleImageList && (
                 <>
+                    {/* Page Marks */}
+                    <Box
+                        sx={{
+                            height: 'auto',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            backgroundColor: 'inherit',
+                            gap: 1,
+                            padding: '0.5rem',
+
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            width: '100%',
+
+                            // extimated extra space for the scroll bar
+                            marginBottom: `${pageMarkHeightPx}px`,
+                        }}>
+                        {fileUrls.map((_, index) => (
+                            <Box
+                                key={index}
+                                className={activeItems[index] ? 'active' : undefined}
+                                component="button"
+                                onClick={() => {
+                                    handleClickToMove(index);
+                                }}
+                                aria-label={`scroll to image ${index + 1}`}
+                                sx={{
+                                    content: '" "',
+                                    width: pageMarkHeightPx,
+                                    aspectRatio: 1,
+                                    color: 'currentColor',
+                                    borderRadius: '50%',
+                                    border: '1px solid',
+                                    borderColor: 'currentColor',
+                                    opacity: 0.8,
+                                    cursor: 'pointer',
+                                    '&.active': {
+                                        backgroundColor: 'currentColor',
+                                    },
+                                }}
+                            />
+                        ))}
+                    </Box>
+
                     {/* Previous Button */}
                     <IconButton
                         onClick={() => {
+                            const scrollIndex = activeItems.findIndex((item) => item);
                             handleClickToMove(scrollIndex > 0 ? scrollIndex - 1 : scrollIndex);
                         }}
                         sx={[
@@ -281,6 +268,7 @@ export const PointPictureSlider = ({
                     {/* Next Button */}
                     <IconButton
                         onClick={() => {
+                            const scrollIndex = activeItems.findLastIndex((item) => item);
                             handleClickToMove(
                                 scrollIndex < itemsRef.current.length - 1
                                     ? scrollIndex + 1
