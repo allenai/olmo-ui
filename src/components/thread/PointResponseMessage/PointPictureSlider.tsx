@@ -45,24 +45,26 @@ export const PointPictureSlider = ({
         itemsRef.current = [...sliderEl.children] as HTMLLIElement[];
 
         const observer = new IntersectionObserver(
-            ([entry]) => {
-                const itemIndex = itemsRef.current.indexOf(entry.target as HTMLLIElement);
-                if (entry.isIntersecting) {
-                    setActiveItems((prev) => {
-                        prev[itemIndex] = true;
-                        return [...prev];
-                    });
-                } else {
-                    setActiveItems((prev) => {
-                        prev[itemIndex] = false;
-                        return [...prev];
-                    });
-                }
+            (entries) => {
+                entries.forEach((entry) => {
+                    const itemIndex = itemsRef.current.indexOf(entry.target as HTMLLIElement);
+                    if (entry.isIntersecting) {
+                        setActiveItems((prev) => {
+                            prev[itemIndex] = true;
+                            return [...prev];
+                        });
+                    } else {
+                        setActiveItems((prev) => {
+                            prev[itemIndex] = false;
+                            return [...prev];
+                        });
+                    }
+                });
             },
             {
                 root: sliderEl,
                 rootMargin: '1px',
-                threshold: 0.6,
+                threshold: 0.8,
             }
         );
 
@@ -266,7 +268,7 @@ export const PointPictureSlider = ({
                     {/* Next Button */}
                     <IconButton
                         onClick={() => {
-                            const scrollIndex = activeItems.findIndex((item) => item);
+                            const scrollIndex = activeItems.findLastIndex((item) => item);
                             handleClickToMove(
                                 scrollIndex < itemsRef.current.length - 1
                                     ? scrollIndex + 1
