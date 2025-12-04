@@ -121,7 +121,7 @@ export const QueryFormController = ({
     });
 
     useEffect(() => {
-        if (promptTemplate && !formContext.formState.isDirty) {
+        if (promptTemplate) {
             formContext.setValue('content', promptTemplate.content);
         }
     }, [formContext, promptTemplate]);

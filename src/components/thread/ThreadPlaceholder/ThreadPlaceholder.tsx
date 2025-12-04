@@ -8,12 +8,23 @@ import { useQueryContext } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';
 
 import { LegalNotice } from '../LegalNotice/LegalNotice';
+import { usePromptTemplates } from '../promptTemplates/usePromptTemplates';
+import { examplesList } from './examplesList';
+import { ModelExampleList } from './ModelExampleList';
 import { ThreadPlaceholderContentWrapper } from './ThreadPlaceholderContentWrapper';
 
 export const ThreadPlaceholder = () => {
     const { remoteState, getThreadViewModel } = useQueryContext();
     const selectedModel = getThreadViewModel();
     const isLoading = remoteState === RemoteState.Loading;
+
+    const modelExamples = examplesList.find((item) =>
+        selectedModel ? selectedModel.id.startsWith(item.prefix) : false
+    );
+    const { data: exampleTemplates } = usePromptTemplates({
+        select: (allTemplates) =>
+            allTemplates.filter((tmp) => modelExamples?.templateIds.includes(tmp.id)),
+    });
 
     return (
         <ThreadPlaceholderContentWrapper>
@@ -29,13 +40,21 @@ export const ThreadPlaceholder = () => {
                 gap={4}
                 flex={1}
                 gridColumn="1 / -1">
-                <ImageSpinner
-                    src="/ai2-monogram.svg"
-                    isAnimating={isLoading}
-                    width={70}
-                    height={70}
-                    alt=""
-                />
+                {isLoading || !selectedModel?.id || !modelExamples || !exampleTemplates.length ? (
+                    <ImageSpinner
+                        src="/ai2-monogram.svg"
+                        isAnimating={isLoading}
+                        width={70}
+                        height={70}
+                        alt=""
+                    />
+                ) : (
+                    <ModelExampleList
+                        modelId={selectedModel.id}
+                        introText={modelExamples.introText}
+                        promptTemplates={exampleTemplates}
+                    />
+                )}
                 <Box minHeight={40} textAlign="center">
                     {!!selectedModel?.information_url && (
                         <ButtonLink

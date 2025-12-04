@@ -23,6 +23,8 @@ export const useVideoThumbnail = ({
     useEffect(() => {
         const video = document.createElement('video');
         const canvas = document.createElement('canvas');
+        video.crossOrigin = 'anonymous';
+        video.preload = 'metadata';
 
         const handleLoadedMetadata = () => {
             canvas.width = video.videoWidth;

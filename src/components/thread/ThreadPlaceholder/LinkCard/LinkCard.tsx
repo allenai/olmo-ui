@@ -1,7 +1,10 @@
 import { css, cva } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
+import mime from 'mime/lite';
 import type { PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
+
+import { useVideoThumbnail } from '../../QueryForm/FileUploadThumbnails/useVideoThumbnail';
 
 const linkCard = cva({
     base: {
@@ -48,21 +51,26 @@ const imageClassName = css({
 
 export interface LinkCardProps extends PropsWithChildren {
     url: string;
-    image?: string;
+    mediaUrl?: string;
     alt?: string;
     className?: string;
 }
 
-export const LinkCard = ({ url, image, alt, className, children }: LinkCardProps) => {
-    const cardType = image ? 'image' : 'text';
+export const LinkCard = ({ url, mediaUrl, alt, className, children }: LinkCardProps) => {
+    const mimeType = mediaUrl ? mime.getType(mediaUrl) : '';
+    const thumbnail = useVideoThumbnail({ videoUrl: mediaUrl || '', offsetPercent: 0.1 });
+    const imageSrc = mimeType?.startsWith('video/')
+        ? thumbnail
+        : mimeType?.startsWith('image/')
+          ? mediaUrl
+          : '';
+    const cardType = imageSrc ? 'image' : 'text';
 
     return (
         <Link to={url} className={cx(linkCard({ cardType }), className)}>
-            {image ? (
-                <div className={imageContainer}>
-                    <img src={image} alt={alt} className={imageClassName} />
-                </div>
-            ) : null}
+            <div className={imageContainer}>
+                {!!imageSrc && <img src={imageSrc} alt={alt} className={imageClassName} />}
+            </div>
             <div>{children}</div>
         </Link>
     );
