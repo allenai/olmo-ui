@@ -39,7 +39,7 @@ export const PromptTemplateList = ({ agentId, promptTemplates }: PromptTemplateL
                             agentId,
                             templateId: id,
                         })}
-                        image={imageUrl}
+                        mediaUrl={imageUrl}
                         className={promptCardClassName}>
                         {content}
                     </LinkCard>

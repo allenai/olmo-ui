@@ -44,7 +44,7 @@ export const AgentCard = ({
     const imageUrl = agentImages[id];
 
     return (
-        <LinkCard url={url} image={imageUrl} alt={name} className={agentCardclassName}>
+        <LinkCard url={url} mediaUrl={imageUrl} alt={name} className={agentCardclassName}>
             <div className={css({ display: 'grid', gap: '3' })}>
                 <div className={cardTitle}>
                     <Typography variant="h3">{name}</Typography>

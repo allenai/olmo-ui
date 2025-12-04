@@ -3,6 +3,10 @@ import { cx } from '@allenai/varnish-ui';
 import type { PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
 
+import { useDetermineMimeType } from '@/utils/useDetermineFileType';
+
+import { useVideoThumbnail } from '../../QueryForm/FileUploadThumbnails/useVideoThumbnail';
+
 const linkCard = cva({
     base: {
         display: 'grid',
@@ -48,21 +52,26 @@ const imageClassName = css({
 
 export interface LinkCardProps extends PropsWithChildren {
     url: string;
-    image?: string;
+    mediaUrl?: string;
     alt?: string;
     className?: string;
 }
 
-export const LinkCard = ({ url, image, alt, className, children }: LinkCardProps) => {
-    const cardType = image ? 'image' : 'text';
+export const LinkCard = ({ url, mediaUrl, alt, className, children }: LinkCardProps) => {
+    const { mimeType } = useDetermineMimeType(mediaUrl);
+    const thumbnail = useVideoThumbnail({ videoUrl: mediaUrl || '', offsetPercent: 0.1 });
+    const imageSrc = mimeType?.startsWith('video/')
+        ? thumbnail
+        : mimeType?.startsWith('image/')
+          ? mediaUrl
+          : '';
+    const cardType = imageSrc ? 'image' : 'text';
 
     return (
         <Link to={url} className={cx(linkCard({ cardType }), className)}>
-            {image ? (
-                <div className={imageContainer}>
-                    <img src={image} alt={alt} className={imageClassName} />
-                </div>
-            ) : null}
+            <div className={imageContainer}>
+                {!!imageSrc && <img src={imageSrc} alt={alt} className={imageClassName} />}
+            </div>
             <div>{children}</div>
         </Link>
     );
