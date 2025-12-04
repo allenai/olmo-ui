@@ -73,6 +73,7 @@ export const PointPictureList = ({
                         imageLink={url}
                         imageAlt={`image ${index + 1}`} // llm response will often refer to images by number
                         pointsSets={pointsSets}
+                        imageMaxHeight={MAX_THREAD_IMAGE_HEIGHT_PX}
                     />
                 );
             })}
