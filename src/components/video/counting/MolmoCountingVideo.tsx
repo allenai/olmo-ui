@@ -62,6 +62,7 @@ export const MolmoCountingVideo = ({
                     fps={FPS}
                     initiallyMuted={true}
                     className={css({
+                        maxHeight: '[50dvh]',
                         borderTopRadius: 'sm',
                     })}
                     style={{ width: '100%', flex: 1 }}

@@ -242,7 +242,11 @@ export const QueryFormController = ({
                     formContext={formContext}
                     onSuccess={handleSubmitController}
                     FormProps={{
-                        style: { display: 'flex', flexDirection: 'column', width: '100%' }, // use className
+                        className: css({
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: '[100%]',
+                        }),
                     }}>
                     {showTrackingInput && (
                         <div

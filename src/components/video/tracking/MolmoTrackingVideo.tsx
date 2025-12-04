@@ -72,6 +72,7 @@ export function MolmoTrackingVideo({
                     fps={FPS}
                     style={{ width: '100%', flex: '1' }}
                     className={css({
+                        maxHeight: '[50dvh]',
                         borderTopRadius: 'sm',
                     })}
                     moveToBeginningWhenEnded={MOVE_TO_BEGINNING_WHEN_ENDED}
