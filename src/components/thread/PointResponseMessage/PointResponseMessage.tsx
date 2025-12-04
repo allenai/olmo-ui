@@ -61,23 +61,12 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                     <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
                 </Stack>
                 <MediaLightbox open={lightboxItem !== null} onClose={handleLightboxClose}>
-                    {currentFilesInThread.length > 1 ? (
-                        <PointPictureSlider
-                            imagePointsSets={imageLabelPoints}
-                            fileUrls={currentFilesInThread}
-                            showPerImageCaption={true}
-                            moveToItem={lightboxItem ?? undefined}
-                        />
-                    ) : (
-                        <Stack spacing={1}>
-                            <PointPictureList
-                                imagePointsSets={imageLabelPoints}
-                                fileUrls={currentFilesInThread}
-                                onClick={handleLightboxOpen}
-                            />
-                            <PointPictureListCaption pointsSets={imageLabelPoints} />
-                        </Stack>
-                    )}
+                    <PointPictureSlider
+                        imagePointsSets={imageLabelPoints}
+                        fileUrls={currentFilesInThread}
+                        showPerImageCaption={true}
+                        moveToItem={lightboxItem ?? undefined}
+                    />
                 </MediaLightbox>
             </>
         );
