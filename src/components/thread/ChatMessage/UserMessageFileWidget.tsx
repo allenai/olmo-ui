@@ -2,8 +2,9 @@ import mime from 'mime/lite';
 import { Box } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 
-import { FileThumbnails } from '../QueryForm/FileUploadThumbnails/FileThumbnailDisplay';
 import { MediaLightbox } from '../PointResponseMessage/MediaLightbox';
+import { PointPictureSlider } from '../PointResponseMessage/PointPictureSlider';
+import { FileThumbnails } from '../QueryForm/FileUploadThumbnails/FileThumbnailDisplay';
 
 interface UserMessageFileWidgetProps {
     fileUrls: string[];
@@ -53,16 +54,7 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
                 <FileThumbnails mediaType="image/" urls={fileUrls} onClick={handleThumbnailClick} />
                 <MediaLightbox open={lightboxIndex !== null} onClose={handleLightboxClose}>
                     {lightboxIndex !== null && (
-                        <Box
-                            component="img"
-                            src={fileUrls[lightboxIndex]}
-                            alt={`Image ${lightboxIndex + 1}`}
-                            sx={{
-                                maxWidth: '100%',
-                                maxHeight: '90vh',
-                                objectFit: 'contain',
-                            }}
-                        />
+                        <PointPictureSlider fileUrls={fileUrls} moveToItem={lightboxIndex} />
                     )}
                 </MediaLightbox>
             </>
