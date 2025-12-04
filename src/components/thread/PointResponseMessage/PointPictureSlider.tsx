@@ -200,52 +200,53 @@ export const PointPictureSlider = ({
                 })}
             </Box>
 
-            {/* Page Marks */}
-            <Box
-                sx={{
-                    height: 'auto',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    backgroundColor: 'inherit',
-                    gap: 1,
-                    padding: '0.5rem',
-
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    width: '100%',
-
-                    // extimated extra space for the scroll bar
-                    marginBottom: `${pageMarkHeightPx}px`,
-                }}>
-                {fileUrls.map((_, index) => (
-                    <Box
-                        key={index}
-                        component="button"
-                        onClick={() => {
-                            handleClickToMove(index);
-                        }}
-                        aria-label={`scroll to image ${index + 1}`}
-                        data-active-item={activeItems[index]}
-                        sx={{
-                            content: '" "',
-                            width: pageMarkHeightPx,
-                            aspectRatio: 1,
-                            color: 'currentColor',
-                            borderRadius: '50%',
-                            border: '1px solid',
-                            borderColor: 'currentColor',
-                            opacity: 0.8,
-                            cursor: 'pointer',
-                            '&[data-active-item="true"]': {
-                                backgroundColor: 'currentColor',
-                            },
-                        }}
-                    />
-                ))}
-            </Box>
             {!isSingleImageList && (
                 <>
+                    {/* Page Marks */}
+                    <Box
+                        sx={{
+                            height: 'auto',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            backgroundColor: 'inherit',
+                            gap: 1,
+                            padding: '0.5rem',
+
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            width: '100%',
+
+                            // extimated extra space for the scroll bar
+                            marginBottom: `${pageMarkHeightPx}px`,
+                        }}>
+                        {fileUrls.map((_, index) => (
+                            <Box
+                                key={index}
+                                component="button"
+                                onClick={() => {
+                                    handleClickToMove(index);
+                                }}
+                                aria-label={`scroll to image ${index + 1}`}
+                                data-active-item={activeItems[index]}
+                                sx={{
+                                    content: '" "',
+                                    width: pageMarkHeightPx,
+                                    aspectRatio: 1,
+                                    color: 'currentColor',
+                                    borderRadius: '50%',
+                                    border: '1px solid',
+                                    borderColor: 'currentColor',
+                                    opacity: 0.8,
+                                    cursor: 'pointer',
+                                    '&[data-active-item="true"]': {
+                                        backgroundColor: 'currentColor',
+                                    },
+                                }}
+                            />
+                        ))}
+                    </Box>
+
                     {/* Previous Button */}
                     <IconButton
                         onClick={() => {
