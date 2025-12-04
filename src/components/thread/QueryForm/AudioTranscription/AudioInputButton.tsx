@@ -115,7 +115,17 @@ export const AudioInputButton = ({
     }
 
     if (isProcessingAudio) {
-        return <DotIndicator />;
+        return (
+            <div
+                className={css({
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: '[2rem]',
+                    height: '[2rem]',
+                })}>
+                <DotIndicator />
+            </div>
+        );
     }
 
     return (

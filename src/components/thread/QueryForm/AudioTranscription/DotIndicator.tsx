@@ -13,6 +13,7 @@ export const DotIndicator = () => {
                     animation: 'color-pulse 1s infinite linear alternate',
                     animationDelay: '600ms',
                     margin: '0 6px',
+                    alignSelf: 'center',
                 },
                 '&::before,&::after': {
                     content: '""',
