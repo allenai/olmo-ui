@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { withMockQueryContext } from '@/utils/storybook/withMockQueryContext';
+import { withMockReactQuery } from '@/utils/storybook/withReactQuery';
 import { createMockModel } from '@/utils/test/createMockModel';
 
 import { ThreadPlaceholder } from './ThreadPlaceholder';
@@ -34,11 +35,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const PlaceholderWithTools: Story = {
-    decorators: [withMockQueryContext],
+    decorators: [withMockQueryContext, withMockReactQuery],
     parameters: { queryContext: toolCallModelContext },
 };
 
 export const PlaceholderWithoutTools: Story = {
-    decorators: [withMockQueryContext],
+    decorators: [withMockQueryContext, withMockReactQuery],
     parameters: { queryContext: noToolCallModelContext },
 };
