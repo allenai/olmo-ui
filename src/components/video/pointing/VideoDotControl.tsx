@@ -1,9 +1,9 @@
 import { css, cva } from '@allenai/varnish-panda-runtime/css';
-import { Button } from '@allenai/varnish-ui';
+import { Button, cx } from '@allenai/varnish-ui';
 import { Route } from '@mui/icons-material';
 import { Box } from '@mui/material';
-import { PlayerRef } from '@remotion/player';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { type PlayerRef } from '@remotion/player';
+import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 
 import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
 import { RemoveButton } from '@/components/thread/QueryForm/FileUploadThumbnails/Thumbnail';
@@ -15,6 +15,8 @@ export const VideoDotControl = ({
     userPoint,
     onRemoveFile,
     fps,
+    className,
+    style,
 }: {
     children: ReactNode;
     onPointSelect: (point: SchemaMolmo2PointPart | null) => void;
@@ -22,6 +24,8 @@ export const VideoDotControl = ({
     userPoint: SchemaMolmo2PointPart | null;
     onRemoveFile: () => void;
     fps: number;
+    className?: string;
+    style?: CSSProperties;
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -108,10 +112,11 @@ export const VideoDotControl = ({
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions
         <div
             ref={containerRef}
-            className={videoDotControlClassNames}
+            className={cx(videoDotControlClassNames, className)}
             onMouseLeave={handleMouseLeave}
             onPointerMove={onPointerMove}
-            onPointerUp={onPointerUp}>
+            onPointerUp={onPointerUp}
+            style={style}>
             {children}
             {!!dotX && !!dotY && (onSelectedFrame || state === 'placing') && (
                 <Box

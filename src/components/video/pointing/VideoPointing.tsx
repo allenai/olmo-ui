@@ -63,6 +63,7 @@ export function VideoPointingInput({
             <div
                 style={{
                     aspectRatio: width / height,
+                    visibility: 'visible',
                 }}
                 className={dotControlWrapper}>
                 <VideoDotControl
@@ -70,6 +71,11 @@ export function VideoPointingInput({
                     onRemoveFile={onRemoveFile}
                     userPoint={userPoint}
                     fps={FPS}
+                    className={css({ alignSelf: 'center' })}
+                    style={{
+                        width: isLandscape ? '100%' : 'fit-content',
+                        height: isLandscape ? 'fit-content' : '100%',
+                    }}
                     onPointSelect={setUserPoint}>
                     <Player
                         acknowledgeRemotionLicense
