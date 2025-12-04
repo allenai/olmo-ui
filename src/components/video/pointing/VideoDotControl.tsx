@@ -108,7 +108,7 @@ export const VideoDotControl = ({
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions
         <div
             ref={containerRef}
-            className={css({ position: 'relative', touchAction: 'none' })}
+            className={videoDotControlClassNames}
             onMouseLeave={handleMouseLeave}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}>
@@ -224,6 +224,16 @@ export const VideoDotControl = ({
         </div>
     );
 };
+
+const videoDotControlClassNames = css({
+    position: 'relative',
+    touchAction: 'none',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '[100%]',
+    height: '[100%]',
+    flexShrink: '1',
+});
 
 const svgWrapper = css({
     position: 'absolute',

@@ -3,6 +3,7 @@ import type { PropsWithChildren, ReactNode } from 'react';
 
 const queryFormStyledBox = cva({
     base: {
+        display: 'flex',
         borderRadius: '[{spacing.7}]',
         paddingBlock: '2',
         paddingInline: '4',
@@ -23,6 +24,7 @@ const queryFormStyledBox = cva({
                 position: 'absolute',
                 bottom: '[0]',
                 width: '[100%]',
+                maxHeight: '[70dvh]',
             },
         },
     },

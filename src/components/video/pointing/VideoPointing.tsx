@@ -13,10 +13,10 @@ import { SeekPrevious } from '../controls/SeekPrevious';
 import { TimeDisplay } from '../controls/TimeDisplay';
 import { VolumeControl } from '../controls/VolumeControl';
 import { useVideoMetaData } from '../useVideoMetaData';
+import { FPS } from '../videoConsts';
 import { VideoOverlayHelper } from '../VideoOverlayHelper';
 import { VideoPlayerWrapper } from '../VideoPlayerContainer';
 import { VideoDotControl } from './VideoDotControl';
-const FPS = 24;
 
 export function VideoPointingInput({
     videoUrl,
@@ -56,15 +56,15 @@ export function VideoPointingInput({
         return point;
     };
 
+    const isLandscape = width >= height;
+
     return (
-        <VideoPlayerWrapper>
+        <VideoPlayerWrapper className={pointingVideoWrapper}>
             <div
                 style={{
                     aspectRatio: width / height,
                 }}
-                className={css({
-                    maxHeight: '[60vh]',
-                })}>
+                className={dotControlWrapper}>
                 <VideoDotControl
                     playerRef={playerRef}
                     onRemoveFile={onRemoveFile}
@@ -84,7 +84,8 @@ export function VideoPointingInput({
                         compositionHeight={height}
                         fps={FPS}
                         style={{
-                            width: '100%',
+                            width: isLandscape ? '100%' : undefined,
+                            height: isLandscape ? undefined : '100%',
                         }}
                         className={css({
                             borderTopRadius: 'lg',
@@ -118,3 +119,21 @@ export function VideoPointingInput({
 const PointingInputVideo = ({ videoUrl }: { videoUrl: string }) => {
     return <VideoOverlayHelper videoUrl={videoUrl}></VideoOverlayHelper>;
 };
+
+// determine if this can move to the wrapper component
+// don't want to break everything
+const pointingVideoWrapper = css({
+    display: 'flex',
+    flexDirection: 'column',
+    flexShrink: '1',
+    width: '[100%]',
+    height: '[100%]',
+});
+
+const dotControlWrapper = css({
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '[0]',
+    flexShrink: '1',
+    minWidth: '[0]',
+});

@@ -1,8 +1,8 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
+import { cx } from '@allenai/varnish-ui';
 import { PropsWithChildren, type ReactNode } from 'react';
 
 const playerContainerClassName = css({
-    maxHeight: '[50svh]',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'start',
@@ -16,6 +16,9 @@ export const VideoPlayerContainer = ({ children }: PropsWithChildren): ReactNode
     return <div className={playerContainerClassName}>{children}</div>;
 };
 
-export const VideoPlayerWrapper = ({ children }: PropsWithChildren) => {
-    return <div className={wrapperClassName}>{children}</div>;
+export const VideoPlayerWrapper = ({
+    children,
+    className,
+}: PropsWithChildren<{ className?: string }>) => {
+    return <div className={cx(wrapperClassName, className)}>{children}</div>;
 };
