@@ -30,7 +30,7 @@ export const PointPictureSlider = ({
 }: PointPictureSliderProps): ReactNode => {
     const sliderRef = useRef<HTMLUListElement | null>(null);
     const itemsRef = useRef<HTMLLIElement[]>([]);
-    const [activeItems, setActiveItems] = useState(
+    const [activeItems, setActiveItems] = useState<Array<boolean>>(
         fileUrls.map((_, index) => index === moveToItem)
     );
 
@@ -47,7 +47,7 @@ export const PointPictureSlider = ({
         const observer = new IntersectionObserver(
             ([entry]) => {
                 const itemIndex = itemsRef.current.indexOf(entry.target as HTMLLIElement);
-                if (entry.intersectionRatio === 1) {
+                if (entry.isIntersecting) {
                     entry.target.setAttribute('data-active-item', 'true');
                     setActiveItems((prev) => {
                         prev[itemIndex] = true;
@@ -64,7 +64,7 @@ export const PointPictureSlider = ({
             {
                 root: sliderEl,
                 rootMargin: '0px',
-                threshold: 0.5,
+                threshold: 0.6,
             }
         );
 
@@ -90,15 +90,10 @@ export const PointPictureSlider = ({
     // use moveToItem and onItemChange for controlled movement
     useEffect(() => {
         if (moveToItem !== 0) {
-            const to = setTimeout(() => {
-                itemsRef.current[moveToItem]?.scrollIntoView({
-                    behavior: 'instant',
-                    inline: 'center',
-                });
-            }, 50);
-            return () => {
-                clearTimeout(to);
-            };
+            itemsRef.current[moveToItem]?.scrollIntoView({
+                behavior: 'instant',
+                inline: 'center',
+            });
         }
     }, [moveToItem]);
 
