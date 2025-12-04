@@ -21,10 +21,10 @@ export const ThreadPlaceholder = () => {
     const modelExamples = examplesList.find((item) =>
         selectedModel ? selectedModel.id.startsWith(item.prefix) : false
     );
-    const { data: allTemplates } = usePromptTemplates();
-    const exampleTemplates = allTemplates.filter((tmp) =>
-        modelExamples?.templateIds.includes(tmp.id)
-    );
+    const { data: exampleTemplates } = usePromptTemplates({
+        select: (allTemplates) =>
+            allTemplates.filter((tmp) => modelExamples?.templateIds.includes(tmp.id)),
+    });
 
     return (
         <ThreadPlaceholderContentWrapper>

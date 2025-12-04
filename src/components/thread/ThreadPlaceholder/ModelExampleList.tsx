@@ -36,24 +36,28 @@ export const ModelExampleList = ({
         <div>
             <p>{introText}</p>
             <LinkCardList className={css({ width: '[100%]', marginTop: '[40px]' })}>
-                {promptTemplates.map(({ id, content, fileUrls }) => {
-                    const searchParams = createSearchParams({
-                        [PARAM_SELECTED_TEMPLATE]: id,
-                        [PARAM_SELECTED_MODEL]: modelId,
-                    });
-                    const link = `${links.playground}?${searchParams}`;
-
-                    return (
-                        <LinkCard
-                            key={id}
-                            url={link}
-                            mediaUrl={fileUrls?.[0]}
-                            className={promptCardClassName}>
-                            {content}
-                        </LinkCard>
-                    );
-                })}
+                {promptTemplates.map((template) => (
+                    <ExampleCard key={template.id} {...template} modelId={modelId} />
+                ))}
             </LinkCardList>
         </div>
+    );
+};
+
+interface ExampleCardProps extends PromptTemplate {
+    modelId: string;
+}
+
+const ExampleCard = ({ id, modelId, content, fileUrls }: ExampleCardProps) => {
+    const searchParams = createSearchParams({
+        [PARAM_SELECTED_TEMPLATE]: id,
+        [PARAM_SELECTED_MODEL]: modelId,
+    });
+    const link = `${links.playground}?${searchParams}`;
+
+    return (
+        <LinkCard key={id} url={link} mediaUrl={fileUrls?.[0]} className={promptCardClassName}>
+            {content}
+        </LinkCard>
     );
 };
