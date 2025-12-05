@@ -1,4 +1,5 @@
 import { css, cva } from '@allenai/varnish-panda-runtime/css';
+import type { RecipeVariantProps } from '@allenai/varnish-panda-runtime/types';
 import { cx } from '@allenai/varnish-ui';
 import mime from 'mime/lite';
 import type { PropsWithChildren } from 'react';
@@ -24,6 +25,7 @@ const linkCard = cva({
         alignContent: 'start',
     },
     variants: {
+        // internal variant
         cardType: {
             text: {}, // defaults
             image: {
@@ -33,10 +35,27 @@ const linkCard = cva({
                 },
                 gridTemplateRows: {
                     base: '1fr',
-                    md: '120px auto',
+                    md: 'auto 1fr',
                 },
             },
         },
+        variant: {
+            list: {
+                gridTemplateColumns: {
+                    base: '35cqw 1fr',
+                    md: '35cqw 1fr',
+                },
+            },
+        },
+        color: {
+            default: {},
+            fade: {
+                backgroundColor: 'background.opacity-4',
+            },
+        },
+    },
+    defaultVariants: {
+        color: 'default',
     },
 });
 
@@ -46,21 +65,36 @@ const imageContainer = css({
     maxHeight: '[7.5em]', // default
 });
 
-const imageClassName = css({
+const imageClassNameInternal = css({
     width: '[100%]',
     height: '[100%]',
     objectFit: 'cover',
     objectPosition: 'center',
 });
 
-export interface LinkCardProps extends PropsWithChildren {
+type LinkCardVariants = Exclude<RecipeVariantProps<typeof linkCard>, undefined>;
+
+export interface LinkCardProps extends PropsWithChildren, LinkCardVariants {
     url: string;
     mediaUrl?: string;
     alt?: string;
     className?: string;
+    imageContainerClassName?: string;
+    variant?: 'list';
+    color?: 'default' | 'fade';
 }
 
-export const LinkCard = ({ url, mediaUrl, alt, className, children }: LinkCardProps) => {
+export const LinkCard = ({
+    url,
+    mediaUrl,
+    alt,
+    color,
+    variant,
+    cardType,
+    className,
+    imageClassName,
+    children,
+}: LinkCardProps) => {
     const mimeType = mediaUrl ? mime.getType(mediaUrl) : '';
     const thumbnail = useVideoThumbnail({ videoUrl: mediaUrl || '', offsetPercent: 0.1 });
     const imageSrc = mimeType?.startsWith('video/')
@@ -68,13 +102,24 @@ export const LinkCard = ({ url, mediaUrl, alt, className, children }: LinkCardPr
         : mimeType?.startsWith('image/')
           ? mediaUrl
           : '';
-    const cardType = imageSrc ? 'image' : 'text';
+    // internal variant
+    const cardTypeVariant = cardType ?? imageSrc ? 'image' : 'text';
 
     return (
-        <Link to={url} className={cx(linkCard({ cardType }), className)}>
-            <div className={imageContainer}>
-                {!!imageSrc && <img src={imageSrc} alt={alt} className={imageClassName} />}
-            </div>
+        <Link
+            to={url}
+            className={cx(linkCard({ cardType: cardTypeVariant, color, variant }), className)}>
+            {cardTypeVariant === 'image' ? (
+                <div className={imageContainer}>
+                    {imageSrc ? (
+                        <img
+                            src={imageSrc}
+                            alt={alt}
+                            className={cx(imageClassNameInternal, imageClassName)}
+                        />
+                    ) : null}
+                </div>
+            ) : null}
             <div>{children}</div>
         </Link>
     );

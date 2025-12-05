@@ -4,7 +4,7 @@ import { Typography } from '@mui/material';
 import { generatePath } from 'react-router-dom';
 
 import placeholderImage from '@/assets/dolma-research.jpg';
-import { LinkCard } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCard';
+import { LinkCard, type LinkCardProps } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCard';
 import { links } from '@/Links';
 
 const cardTitle = css({
@@ -19,15 +19,11 @@ type ModelCardProps = {
     name: string;
     description: string;
     informationUrl?: string | null;
-    imageUrl?: string;
+    imageUrl?: string | null | false;
+    className?: string;
+    variant?: LinkCardProps['variant'];
+    color?: LinkCardProps['color'];
 };
-
-const modelCardClassName = css({
-    height: {
-        base: '[125px]',
-        md: 'auto',
-    },
-});
 
 export const ModelCard = ({
     id,
@@ -36,6 +32,9 @@ export const ModelCard = ({
     description,
     informationUrl,
     imageUrl = placeholderImage,
+    className,
+    variant,
+    color,
 }: ModelCardProps) => {
     const isExternal = type === 'link';
     const url = isExternal
@@ -43,10 +42,18 @@ export const ModelCard = ({
         : generatePath(links.playground) + '?' + new URLSearchParams({ model: id }).toString();
 
     return (
-        <LinkCard url={url} image={imageUrl} alt={name} className={modelCardClassName}>
+        <LinkCard
+            url={url}
+            image={imageUrl}
+            alt={name}
+            color={color}
+            variant={variant}
+            className={className}>
             <div className={css({ display: 'grid', gap: '3' })}>
                 <div className={cardTitle}>
-                    <Typography variant="h3">{name}</Typography>
+                    <Typography variant={imageUrl ? 'h3' : 'h4'} component="h4">
+                        {name}
+                    </Typography>
                     {isExternal ? <ArrowOutward /> : null}
                 </div>
                 <p>{description}</p>
