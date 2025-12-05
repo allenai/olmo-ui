@@ -1,6 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { DevTool } from '@hookform/devtools';
 import { Stack, Typography } from '@mui/material';
+import mime from 'mime/lite';
 import { KeyboardEvent, UIEvent, useEffect, useRef, useState } from 'react';
 import { DropZone } from 'react-aria-components';
 import {
@@ -96,6 +97,8 @@ export const QueryFormController = ({
 
     const [tempPlaceholder, setTempPlaceholder] = useState('');
 
+    const [mineTypes, setMineTypes] = useState<null | string[]>(null);
+    const [loadingMedia, setLoadingMedia] = useState(false);
     const isSelectedThreadLoading = remoteState === RemoteState.Loading;
 
     // Autofocus the input if we're on a new thread
@@ -127,22 +130,46 @@ export const QueryFormController = ({
     }, [formContext, promptTemplate]);
 
     useEffect(() => {
-        if (!areFilesAllowed) {
-            formContext.setValue('files', undefined);
-        } else if (promptTemplate?.fileUrls && promptTemplate.fileUrls.length) {
-            fetchFilesByUrls([...promptTemplate.fileUrls])
-                .then((downloadedFiles) => {
+        const loadFiles = async () => {
+            if (!areFilesAllowed) {
+                formContext.setValue('files', undefined);
+            } else if (promptTemplate?.fileUrls && promptTemplate.fileUrls.length) {
+                setLoadingMedia(true);
+                const quickMimeTypes = promptTemplate.fileUrls
+                    .map((m) => mime.getType(m))
+                    .filter((x: string | null): x is string => x !== null);
+
+                setMineTypes(quickMimeTypes);
+                try {
+                    const downloadedFiles = await fetchFilesByUrls([...promptTemplate.fileUrls]);
                     const dataTransfer = new DataTransfer();
                     downloadedFiles.forEach((file) => {
                         dataTransfer.items.add(file);
                     });
                     formContext.setValue('files', dataTransfer.files);
-                })
-                .catch(() => undefined);
-        }
+                } catch {
+                    // Silently handle error
+                }
+                setLoadingMedia(false);
+            }
+        };
+
+        loadFiles();
     }, [formContext, areFilesAllowed, promptTemplate?.fileUrls]);
 
     const files = useWatch({ control: formContext.control, name: 'files' });
+
+    useEffect(() => {
+        if (files) {
+            const fileMimeTypes = [];
+            for (const file of files) {
+                fileMimeTypes.push(file.type);
+            }
+            setMineTypes(fileMimeTypes);
+        } else {
+            setMineTypes(null);
+        }
+    }, [files]);
 
     // Validation function for file uploads
     const validateFilesWithOptions: Validate<FileList | undefined, QueryFormValues> = (
@@ -203,10 +230,7 @@ export const QueryFormController = ({
     };
 
     const showTrackingInput =
-        files &&
-        files.length === 1 &&
-        files[0].type.startsWith('video') &&
-        modelSupportsPointingInput;
+        mineTypes?.length === 1 && mineTypes[0].startsWith('video') && modelSupportsPointingInput;
 
     const handleFileSelect = (newFiles: FileList | undefined) => {
         const currentFiles = formContext.getValues('files');
@@ -272,9 +296,15 @@ export const QueryFormController = ({
                                     return (
                                         <VideoPointingInput
                                             onRemoveFile={() => {
-                                                handleRemoveFile(files[0]);
+                                                if (files) {
+                                                    handleRemoveFile(files[0]);
+                                                }
                                             }}
-                                            videoUrl={getObjectUrl(files[0])}
+                                            videoUrl={
+                                                files && files.length > 0
+                                                    ? getObjectUrl(files[0])
+                                                    : null
+                                            }
                                             userPoint={value ? value[0] : null}
                                             setUserPoint={(point) => {
                                                 onChange(point ? [point] : []);
@@ -341,7 +371,8 @@ export const QueryFormController = ({
                                         isLimitReached ||
                                         isTranscribing ||
                                         isProcessingAudio ||
-                                        !canEditThread
+                                        !canEditThread ||
+                                        loadingMedia
                                     }
                                 />
                             }>
