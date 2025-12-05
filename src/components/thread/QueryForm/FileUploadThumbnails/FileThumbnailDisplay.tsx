@@ -74,7 +74,7 @@ export const FileThumbnails = ({ urls, mediaType, onClick }: ThumbnailDisplayPro
     const files: { mediaType: string; name: string; src: string }[] = urls.map((u) => ({
         mediaType,
         src: u,
-        name: 'hello',
+        name: u,
     }));
 
     return (
