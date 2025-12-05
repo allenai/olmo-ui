@@ -219,7 +219,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         id: 'test-multi-modal-model-16',
         internal: false,
         maxFilesPerMessage: null,
-        maxTotalFileSize: null,
+        maxTotalFileSize: 5_242_880,
         modelIdOnHost: 'test-multi-modal-model-id',
         modelType: 'chat',
         name: 'model made for testing',

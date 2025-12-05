@@ -72,6 +72,7 @@ const fakeModelsResponse = [
         temperature_default: 0,
         max_tokens_default: 1024,
         max_tokens_upper: 4096,
+        max_total_file_size: 5_242_880,
     },
     {
         description: 'Molmo 2',
@@ -91,6 +92,7 @@ const fakeModelsResponse = [
         max_tokens_default: 1024,
         max_tokens_upper: 4096,
         max_files_per_message: 10,
+        max_total_file_size: 5_242_880,
     },
     {
         accepted_file_types: ['image/*', 'video/*'],
@@ -245,7 +247,7 @@ const fakeAdminModelsResponse = [
         id: 'test-multi-modal-model-16',
         internal: false,
         maxFilesPerMessage: null,
-        maxTotalFileSize: null,
+        maxTotalFileSize: 5_242_880,
         modelIdOnHost: 'test-multi-modal-model-id',
         modelType: 'chat',
         name: 'model made for testing',
