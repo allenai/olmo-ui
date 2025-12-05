@@ -47,20 +47,32 @@ interface ThumbnailProps {
     filename: string;
     type: string;
     src: string;
-    onPressRemove: () => void;
+    onPressRemove?: () => void;
+    onClick?: () => void;
 }
 
-export const Thumbnail = ({ filename, type, src, onPressRemove }: ThumbnailProps): ReactNode => {
+export const Thumbnail = ({
+    filename,
+    type,
+    src,
+    onPressRemove,
+    onClick,
+}: ThumbnailProps): ReactNode => {
     const alt = `User file ${filename}`;
+
+    const Wrapper = onClick ? Button : 'div';
     return (
-        <div className={thumbnailContainer}>
+        <Wrapper
+            className={thumbnailContainer}
+            onClick={onClick}
+            style={onClick ? { cursor: 'pointer' } : undefined}>
             {type.startsWith('image/') ? (
                 <ThumbnailImage alt={alt} src={src} title={filename} />
             ) : (
                 <VideoThumbnail videoUrl={src} alt={alt} title={filename} />
             )}
-            <RemoveButton filename={filename} onPressRemove={onPressRemove} />
-        </div>
+            {onPressRemove && <RemoveButton filename={filename} onPressRemove={onPressRemove} />}
+        </Wrapper>
     );
 };
 
