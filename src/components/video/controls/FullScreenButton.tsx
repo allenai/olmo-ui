@@ -4,9 +4,14 @@ import { memo, useCallback, useEffect, useState } from 'react';
 import { useControls } from './context/ControlsContext';
 import { ControlButton } from './ControlButton';
 
-// https://www.remotion.dev/docs/player/custom-controls#fullscreen-button
+interface FullScreenButtonProps {
+    onChange?: (isFullScreen: boolean) => void;
+}
 
-export const FullScreenButton = memo(function FullScreenButton() {
+// https://www.remotion.dev/docs/player/custom-controls#fullscreen-button
+export const FullScreenButton = memo(function FullScreenButton({
+    onChange,
+}: FullScreenButtonProps) {
     const { playerRef } = useControls();
     const [supportsFullscreen, setSupportsFullscreen] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -19,7 +24,9 @@ export const FullScreenButton = memo(function FullScreenButton() {
         }
 
         const onFullscreenChange = () => {
-            setIsFullscreen(document.fullscreenElement !== null);
+            const documentIsFullscreen = document.fullscreenElement !== null;
+            setIsFullscreen(documentIsFullscreen);
+            onChange?.(documentIsFullscreen);
         };
 
         player.addEventListener('fullscreenchange', onFullscreenChange);
@@ -27,7 +34,7 @@ export const FullScreenButton = memo(function FullScreenButton() {
         return () => {
             player.removeEventListener('fullscreenchange', onFullscreenChange);
         };
-    }, [playerRef]);
+    }, [playerRef, onChange]);
 
     useEffect(() => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
