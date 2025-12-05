@@ -1,14 +1,15 @@
-import mime from 'mime/lite';
 import { css } from '@allenai/varnish-panda-runtime/css';
+import mime from 'mime/lite';
 import { ReactNode, useEffect, useState } from 'react';
 
 import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
 import type { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+import { MolmoCountingVideo } from '@/components/video/counting/MolmoCountingVideo';
+import { MolmoTrackingVideo } from '@/components/video/tracking/MolmoTrackingVideo';
+
 import { MediaLightbox } from '../PointResponseMessage/MediaLightbox';
 import { PointPictureSlider } from '../PointResponseMessage/PointPictureSlider';
 import { FileThumbnails } from '../QueryForm/FileUploadThumbnails/FileThumbnailDisplay';
-import { MolmoCountingVideo } from '@/components/video/counting/MolmoCountingVideo';
-import { MolmoTrackingVideo } from '@/components/video/tracking/MolmoTrackingVideo';
 
 interface UserMessageFileWidgetProps {
     fileUrls: string[];
@@ -16,30 +17,10 @@ interface UserMessageFileWidgetProps {
 
 export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps): ReactNode => {
     const mimeType = mime.getType(fileUrls[0]);
-    const [fileType, setFileType] = useState<FileType | null>(null);
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
     const isPending = fileType === null;
 
     if (fileUrls.length === 0) return null;
-
-                const headers = response.headers;
-                const contentType = headers.get('Content-Type');
-
-                if (contentType?.startsWith('image/')) {
-                    setFileType('image');
-                } else if (contentType?.startsWith('video/')) {
-                    setFileType('video');
-                } else {
-                    setFileType('file');
-                }
-            } catch (error) {
-                console.error('Error fetching fileUrl headers:', error);
-                setFileType('file');
-            }
-        };
-
-        void determineFileType(fileUrls[0]);
-    }, [fileUrls]);
 
     const handleThumbnailClick = (index: number) => {
         setLightboxIndex(index);
@@ -51,7 +32,7 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
 
     if (isPending || fileUrls.length === 0) return null;
 
-    if (fileType === 'image') {
+    if (mimeType === 'image') {
         return (
             <div className={css({ paddingBottom: '2' })}>
                 <FileThumbnails mediaType="image/" urls={fileUrls} onClick={handleThumbnailClick} />
@@ -63,7 +44,7 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
             </div>
         );
     }
-    if (fileType === 'video') {
+    if (mimeType === 'video') {
         const mapPointToData = (userPoint: SchemaMolmo2PointPart | null) => {
             // TODO refactor seekbar to generic type
             const point: VideoTrackingPoints = {
