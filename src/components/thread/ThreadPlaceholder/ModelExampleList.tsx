@@ -21,10 +21,6 @@ export type ModelExampleListProps = {
 
 const promptCardClassName = css({
     minHeight: '[100px]',
-    height: {
-        base: '[100px]',
-        md: 'auto',
-    },
 });
 
 export const ModelExampleList = ({
