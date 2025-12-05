@@ -1,10 +1,14 @@
 import mime from 'mime/lite';
-import { Box } from '@mui/material';
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { ReactNode, useEffect, useState } from 'react';
 
+import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
+import type { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 import { MediaLightbox } from '../PointResponseMessage/MediaLightbox';
 import { PointPictureSlider } from '../PointResponseMessage/PointPictureSlider';
 import { FileThumbnails } from '../QueryForm/FileUploadThumbnails/FileThumbnailDisplay';
+import { MolmoCountingVideo } from '@/components/video/counting/MolmoCountingVideo';
+import { MolmoTrackingVideo } from '@/components/video/tracking/MolmoTrackingVideo';
 
 interface UserMessageFileWidgetProps {
     fileUrls: string[];
@@ -47,37 +51,50 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
 
     if (isPending || fileUrls.length === 0) return null;
 
-    // todo here...
     if (fileType === 'image') {
         return (
-            <>
+            <div className={css({ paddingBottom: '2' })}>
                 <FileThumbnails mediaType="image/" urls={fileUrls} onClick={handleThumbnailClick} />
                 <MediaLightbox open={lightboxIndex !== null} onClose={handleLightboxClose}>
                     {lightboxIndex !== null && (
                         <PointPictureSlider fileUrls={fileUrls} moveToItem={lightboxIndex} />
                     )}
                 </MediaLightbox>
-            </>
+            </div>
         );
     }
     if (fileType === 'video') {
+        const mapPointToData = (userPoint: SchemaMolmo2PointPart | null) => {
+            // TODO refactor seekbar to generic type
+            const point: VideoTrackingPoints = {
+                label: '1',
+                type: 'track-points',
+                frameList: [],
+            };
+            return point;
+        };
+
         return (
-            <>
+            <div className={css({ paddingBottom: '3' })}>
                 <FileThumbnails mediaType="video" urls={fileUrls} onClick={handleThumbnailClick} />
                 <MediaLightbox open={lightboxIndex !== null} onClose={handleLightboxClose}>
                     {lightboxIndex !== null && (
-                        <Box
-                            component="video"
-                            src={fileUrls[lightboxIndex]}
-                            controls
-                            sx={{
-                                maxWidth: '100%',
-                                maxHeight: '90vh',
-                            }}
-                        />
+                        <div
+                            className={css({
+                                backgroundColor: 'background',
+                                position: 'relative',
+                                maxWidth: '[80dvw]',
+                                maxHeight: '[90dvw]',
+                                width: '[1000px]',
+                            })}>
+                            <MolmoTrackingVideo
+                                videoUrl={fileUrls[0]}
+                                videoTrackingPoints={mapPointToData(null)}
+                            />
+                        </div>
                     )}
                 </MediaLightbox>
-            </>
+            </div>
         );
     }
 
