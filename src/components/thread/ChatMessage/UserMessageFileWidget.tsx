@@ -1,10 +1,9 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import mime from 'mime/lite';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
 import type { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
-import { MolmoCountingVideo } from '@/components/video/counting/MolmoCountingVideo';
 import { MolmoTrackingVideo } from '@/components/video/tracking/MolmoTrackingVideo';
 
 import { MediaLightbox } from '../PointResponseMessage/MediaLightbox';
@@ -18,7 +17,7 @@ interface UserMessageFileWidgetProps {
 export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps): ReactNode => {
     const mimeType = mime.getType(fileUrls[0]);
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-    const isPending = fileType === null;
+    const isPending = mimeType === null;
 
     if (fileUrls.length === 0) return null;
 
@@ -32,7 +31,7 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
 
     if (isPending || fileUrls.length === 0) return null;
 
-    if (mimeType === 'image') {
+    if (mimeType.startsWith('image/')) {
         return (
             <div className={css({ paddingBottom: '2' })}>
                 <FileThumbnails mediaType="image/" urls={fileUrls} onClick={handleThumbnailClick} />
@@ -45,7 +44,7 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
         );
     }
     if (mimeType === 'video') {
-        const mapPointToData = (userPoint: SchemaMolmo2PointPart | null) => {
+        const mapPointToData = (_userPoint: SchemaMolmo2PointPart | null) => {
             // TODO refactor seekbar to generic type
             const point: VideoTrackingPoints = {
                 label: '1',
