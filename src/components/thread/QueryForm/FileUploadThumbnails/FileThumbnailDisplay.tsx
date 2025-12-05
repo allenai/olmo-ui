@@ -85,7 +85,13 @@ export const FileThumbnails = ({ urls, mediaType, onClick }: ThumbnailDisplayPro
                     type={file.mediaType}
                     filename={file.name}
                     src={file.src}
-                    onClick={onClick ? () => onClick(i) : undefined}
+                    onClick={
+                        onClick
+                            ? () => {
+                                  onClick(i);
+                              }
+                            : undefined
+                    }
                 />
             ))}
         </ThumbnailContainer>

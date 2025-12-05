@@ -59,8 +59,10 @@ export const Thumbnail = ({
     onClick,
 }: ThumbnailProps): ReactNode => {
     const alt = `User file ${filename}`;
+
+    const Wrapper = onClick ? Button : 'div';
     return (
-        <div
+        <Wrapper
             className={thumbnailContainer}
             onClick={onClick}
             style={onClick ? { cursor: 'pointer' } : undefined}>
@@ -70,7 +72,7 @@ export const Thumbnail = ({
                 <VideoThumbnail videoUrl={src} alt={alt} title={filename} />
             )}
             {onPressRemove && <RemoveButton filename={filename} onPressRemove={onPressRemove} />}
-        </div>
+        </Wrapper>
     );
 };
 
