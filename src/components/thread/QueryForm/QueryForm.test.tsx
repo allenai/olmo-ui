@@ -188,6 +188,7 @@ describe('QueryForm', () => {
                 acceptedFileTypes: [],
                 acceptsMultiple: false,
                 allowFilesInFollowups: false,
+                maxTotalFileSize: 0,
             },
         };
 

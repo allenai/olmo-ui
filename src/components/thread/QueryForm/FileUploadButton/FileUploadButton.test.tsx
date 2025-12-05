@@ -16,6 +16,7 @@ const defaultFileUploadProps: FileuploadPropsBase = {
     acceptedFileTypes: ['image/png'],
     acceptsMultiple: false,
     allowFilesInFollowups: true,
+    maxTotalFileSize: 5_242_880,
 };
 
 const defaultModel: Model = {

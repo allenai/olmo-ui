@@ -46,6 +46,7 @@ export const FakeQueryContextProvider = ({
             acceptedFileTypes: [],
             acceptsMultiple: false,
             allowFilesInFollowups: false,
+            maxTotalFileSize: 0,
         },
         onModelChange: () => {},
         getThreadViewModel: () => selectedModel as Model | undefined,
