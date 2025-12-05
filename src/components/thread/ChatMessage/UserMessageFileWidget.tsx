@@ -43,7 +43,7 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
             </div>
         );
     }
-    if (mimeType === 'video') {
+    if (mimeType.startsWith('video/')) {
         const mapPointToData = (_userPoint: SchemaMolmo2PointPart | null) => {
             // TODO refactor seekbar to generic type
             const point: VideoTrackingPoints = {
