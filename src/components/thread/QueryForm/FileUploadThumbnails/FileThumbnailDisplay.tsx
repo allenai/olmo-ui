@@ -71,10 +71,10 @@ export const FileThumbnails = ({ urls, mediaType, onClick }: ThumbnailDisplayPro
         return null;
     }
 
-    const files: { mediaType: string; name: string; src: string }[] = urls.map((u) => ({
+    const files: { mediaType: string; name: string; src: string }[] = urls.map((u, index) => ({
         mediaType,
         src: u,
-        name: u,
+        name: `${index + 1}`,
     }));
 
     return (
