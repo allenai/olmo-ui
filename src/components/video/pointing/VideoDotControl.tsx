@@ -37,6 +37,7 @@ export const VideoDotControl = ({
     useEffect(() => {
         const { current } = playerRef;
         if (!current || !userPoint) {
+            setState('idle');
             return;
         }
 

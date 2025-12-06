@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { DevTool } from '@hookform/devtools';
-import { Stack, Typography } from '@mui/material';
+import { Chip, Stack, Typography } from '@mui/material';
 import { KeyboardEvent, UIEvent, useEffect, useRef, useState } from 'react';
 import { DropZone } from 'react-aria-components';
 import {
@@ -143,6 +143,7 @@ export const QueryFormController = ({
     }, [formContext, areFilesAllowed, promptTemplate?.fileUrls]);
 
     const files = useWatch({ control: formContext.control, name: 'files' });
+    const inputParts = useWatch({ control: formContext.control, name: 'inputParts' });
 
     // Validation function for file uploads
     const validateFilesWithOptions: Validate<FileList | undefined, QueryFormValues> = (
@@ -170,6 +171,14 @@ export const QueryFormController = ({
         }
 
         formContext.setValue('files', dataTransfer.files, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+        });
+    };
+
+    const handleRemoveInputPart = () => {
+        formContext.setValue('inputParts', undefined, {
             shouldDirty: true,
             shouldTouch: true,
             shouldValidate: true,
@@ -333,17 +342,35 @@ export const QueryFormController = ({
                                 </>
                             }
                             endAdornment={
-                                <SubmitPauseAdornment
-                                    canPause={canPauseThread}
-                                    onPause={onAbort}
-                                    isSubmitDisabled={
-                                        isSelectedThreadLoading ||
-                                        isLimitReached ||
-                                        isTranscribing ||
-                                        isProcessingAudio ||
-                                        !canEditThread
-                                    }
-                                />
+                                <>
+                                    {inputParts && inputParts.length > 0 && (
+                                        <Chip
+                                            label="Point"
+                                            color="secondary"
+                                            onDelete={handleRemoveInputPart}
+                                            sx={{
+                                                '& .MuiChip-label': {
+                                                    color: 'white',
+                                                    fontWeight: 'bold',
+                                                },
+                                                '& .MuiChip-deleteIcon': {
+                                                    color: 'white',
+                                                },
+                                            }}
+                                        />
+                                    )}
+                                    <SubmitPauseAdornment
+                                        canPause={canPauseThread}
+                                        onPause={onAbort}
+                                        isSubmitDisabled={
+                                            isSelectedThreadLoading ||
+                                            isLimitReached ||
+                                            isTranscribing ||
+                                            isProcessingAudio ||
+                                            !canEditThread
+                                        }
+                                    />
+                                </>
                             }>
                             <Controller
                                 control={formContext.control}
