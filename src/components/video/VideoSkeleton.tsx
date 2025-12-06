@@ -1,17 +1,39 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { type ReactNode } from 'react';
 
+import { ImageSpinner } from '@/components/ImageSpinner';
+
 import { LoadingFrame } from './filmStrip/LoadingFrame';
 
 const videoPlayerStyle = css({
     backgroundColor: 'cream.4',
     width: '[100%]',
     aspectRatio: '16/9',
-    borderRadius: 'sm',
+    borderTopRadius: 'sm',
 });
 
 export const VideoPlayerSkeleton = (): ReactNode => {
-    return <div className={videoPlayerStyle} />;
+    return (
+        <div className={videoPlayerStyle}>
+            <div
+                className={css({
+                    display: 'flex',
+                    flex: '1',
+                    height: '[100%]',
+                    justifyContent: 'center',
+                })}>
+                <ImageSpinner
+                    src="/ai2-monogram.svg"
+                    isAnimating={true}
+                    width={70}
+                    height={70}
+                    marginTop={40}
+                    alt=""
+                    marginBlock="auto" // maybe
+                />
+            </div>
+        </div>
+    );
 };
 
 const filmstripContainer = css({
@@ -37,15 +59,28 @@ export const FilmStripSkeleton = ({
 
 const seekbarContainer = css({
     display: 'flex',
-    alignItems: 'center',
+    height: '[56px]',
     gap: '2',
+
+    backgroundColor: {
+        base: 'white',
+        _dark: 'cream.10',
+    },
+    borderBottomRadius: 'sm',
+
+    paddingInline: '3',
+    paddingBlockStart: '2',
+    paddingBlockEnd: '1',
 });
 
 const seekbarBarStyle = css({
-    backgroundColor: 'cream.4',
     flex: '1',
-    height: '[25px]',
-    borderRadius: 'sm',
+    height: '[12px]',
+    borderRadius: 'full',
+    backgroundColor: {
+        base: 'cream.50',
+        _dark: 'cream.4',
+    },
 });
 
 export const SeekBarSkeleton = (): ReactNode => {
