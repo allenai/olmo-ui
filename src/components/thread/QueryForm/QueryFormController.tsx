@@ -97,7 +97,7 @@ export const QueryFormController = ({
 
     const [tempPlaceholder, setTempPlaceholder] = useState('');
 
-    const [mimeTypes, setMimeTypes] = useState<null | string[]>(null);
+    const [fileMimeTypes, setFileMimeTypes] = useState<null | string[]>(null);
     const [loadingMedia, setLoadingMedia] = useState(false);
     const isSelectedThreadLoading = remoteState === RemoteState.Loading;
 
@@ -129,17 +129,26 @@ export const QueryFormController = ({
         }
     }, [formContext, promptTemplate]);
 
+    const setMimeFromFiles = (files: FileList) => {
+        const types: string[] = [];
+        for (const file of files) {
+            types.push(file.type);
+        }
+        setFileMimeTypes(types);
+    };
+
     useEffect(() => {
         const loadFiles = async () => {
             if (!areFilesAllowed) {
                 formContext.setValue('files', undefined);
             } else if (promptTemplate?.fileUrls && promptTemplate.fileUrls.length) {
                 setLoadingMedia(true);
+                formContext.setValue('files', undefined);
                 const quickMimeTypes = promptTemplate.fileUrls
                     .map((m) => mime.getType(m))
                     .filter((x: string | null): x is string => x !== null);
 
-                setMimeTypes(quickMimeTypes);
+                setFileMimeTypes(quickMimeTypes);
                 try {
                     const downloadedFiles = await fetchFilesByUrls([...promptTemplate.fileUrls]);
                     const dataTransfer = new DataTransfer();
@@ -158,18 +167,6 @@ export const QueryFormController = ({
     }, [formContext, areFilesAllowed, promptTemplate?.fileUrls]);
 
     const files = useWatch({ control: formContext.control, name: 'files' });
-
-    useEffect(() => {
-        if (files) {
-            const fileMimeTypes = [];
-            for (const file of files) {
-                fileMimeTypes.push(file.type);
-            }
-            setMimeTypes(fileMimeTypes);
-        } else {
-            setMimeTypes(null);
-        }
-    }, [files]);
 
     // Validation function for file uploads
     const validateFilesWithOptions: Validate<FileList | undefined, QueryFormValues> = (
@@ -196,6 +193,7 @@ export const QueryFormController = ({
             }
         }
 
+        setMimeFromFiles(dataTransfer.files);
         formContext.setValue('files', dataTransfer.files, {
             shouldDirty: true,
             shouldTouch: true,
@@ -229,8 +227,10 @@ export const QueryFormController = ({
         inputRef.current?.click();
     };
 
-    const showTrackingInput =
-        mimeTypes?.length === 1 && mimeTypes[0].startsWith('video') && modelSupportsPointingInput;
+    const showVideoUi =
+        fileMimeTypes?.length === 1 &&
+        fileMimeTypes[0].startsWith('video') &&
+        modelSupportsPointingInput;
 
     const handleFileSelect = (newFiles: FileList | undefined) => {
         const currentFiles = formContext.getValues('files');
@@ -249,6 +249,7 @@ export const QueryFormController = ({
             }
         }
 
+        setMimeFromFiles(dataTransfer.files);
         formContext.setValue('files', dataTransfer.files, {
             shouldValidate: true,
             shouldDirty: true,
@@ -268,7 +269,7 @@ export const QueryFormController = ({
                 // return copy/cancel
                 return 'cancel';
             }}>
-            <QueryFormStyledBox isModal={showTrackingInput}>
+            <QueryFormStyledBox isModal={showVideoUi}>
                 <FormContainer
                     formContext={formContext}
                     onSuccess={handleSubmitController}
@@ -279,7 +280,7 @@ export const QueryFormController = ({
                             width: '[100%]',
                         }),
                     }}>
-                    {showTrackingInput && (
+                    {showVideoUi && (
                         <div
                             className={css({
                                 paddingTop: '1',
@@ -316,7 +317,7 @@ export const QueryFormController = ({
                         </div>
                     )}
                     <Stack gap={1} alignItems="flex-start" width={1} position="relative">
-                        {!showTrackingInput && (
+                        {!showVideoUi && (
                             <FileUploadThumbnails
                                 files={files}
                                 onRemoveFile={handleRemoveFile}

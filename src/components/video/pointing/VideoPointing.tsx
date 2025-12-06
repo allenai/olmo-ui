@@ -32,7 +32,7 @@ export function VideoPointingInput({
 }) {
     const playerRef = useRef<PlayerRef>(null);
 
-    const { durationInFrames, width, height, isLoading } = useVideoMetaData(videoUrl || '', FPS);
+    const { durationInFrames, width, height, isLoading } = useVideoMetaData(videoUrl, FPS);
 
     if (isLoading || videoUrl === null) {
         return (
