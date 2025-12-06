@@ -10,6 +10,7 @@ import { PARAM_SELECTED_MODEL, PARAM_SELECTED_TEMPLATE } from '@/pages/queryPara
 export type PromptTemplate = {
     id: string;
     content: string;
+    name: string;
     fileUrls?: string[] | null;
 };
 
@@ -44,7 +45,7 @@ interface ExampleCardProps extends PromptTemplate {
     modelId: string;
 }
 
-const ExampleCard = ({ id, modelId, content, fileUrls }: ExampleCardProps) => {
+const ExampleCard = ({ id, modelId, content, name, fileUrls }: ExampleCardProps) => {
     const searchParams = createSearchParams({
         [PARAM_SELECTED_TEMPLATE]: id,
         [PARAM_SELECTED_MODEL]: modelId,
@@ -53,7 +54,7 @@ const ExampleCard = ({ id, modelId, content, fileUrls }: ExampleCardProps) => {
 
     return (
         <LinkCard key={id} url={link} mediaUrl={fileUrls?.[0]} className={promptCardClassName}>
-            {content}
+            {name || content}
         </LinkCard>
     );
 };

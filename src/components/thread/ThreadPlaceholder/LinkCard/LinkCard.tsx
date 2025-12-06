@@ -9,9 +9,13 @@ import { useVideoThumbnail } from '../../QueryForm/FileUploadThumbnails/useVideo
 const linkCard = cva({
     base: {
         display: 'grid',
+        alignItems: 'start',
         gap: '4',
         appearance: 'none',
-        backgroundColor: 'elements.overlay.background',
+        backgroundColor: {
+            base: 'white',
+            _dark: 'dark-teal.100',
+        },
         padding: '4',
         borderRadius: 'lg',
         textAlign: 'left',
@@ -29,7 +33,7 @@ const linkCard = cva({
                 },
                 gridTemplateRows: {
                     base: '1fr',
-                    md: '1fr auto',
+                    md: '120px auto',
                 },
             },
         },
