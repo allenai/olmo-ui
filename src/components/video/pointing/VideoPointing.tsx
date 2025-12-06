@@ -36,7 +36,10 @@ export function VideoPointingInput({
 
     if (isLoading || videoUrl === null) {
         return (
-            <VideoPlayerWrapper>
+            <VideoPlayerWrapper
+                className={css({
+                    borderTopRadius: 'lg',
+                })}>
                 <div
                     className={cx(
                         dotControlWrapper,
@@ -45,7 +48,11 @@ export function VideoPointingInput({
                             visibility: 'visible',
                         })
                     )}>
-                    <VideoPlayerSkeleton />
+                    <VideoPlayerSkeleton
+                        className={css({
+                            borderTopRadius: 'lg',
+                        })}
+                    />
                 </div>
                 <SeekBarSkeleton />
             </VideoPlayerWrapper>
@@ -78,7 +85,13 @@ export function VideoPointingInput({
     const isLandscape = width >= height;
 
     return (
-        <VideoPlayerWrapper className={pointingVideoWrapper}>
+        <VideoPlayerWrapper
+            className={cx(
+                pointingVideoWrapper,
+                css({
+                    borderTopRadius: 'lg',
+                })
+            )}>
             <div
                 className={cx(
                     dotControlWrapper,

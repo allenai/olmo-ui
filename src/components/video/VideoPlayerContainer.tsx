@@ -11,6 +11,10 @@ const playerContainerClassName = css({
 const wrapperClassName = css({
     display: 'grid',
     background: 'background',
+    backgroundColor: {
+        base: 'background',
+        _dark: 'transparent',
+    },
     borderRadius: 'sm',
 });
 
