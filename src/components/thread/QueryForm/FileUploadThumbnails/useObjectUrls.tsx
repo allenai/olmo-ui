@@ -20,7 +20,7 @@ export const useObjectUrls = () => {
     return function getObjectUrl(file: File) {
         const map = mapRef.current;
         if (!map) {
-            return '';
+            return null;
         }
         if (!map.has(file)) {
             const url = URL.createObjectURL(file);

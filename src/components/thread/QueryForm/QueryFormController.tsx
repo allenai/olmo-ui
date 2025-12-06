@@ -97,7 +97,7 @@ export const QueryFormController = ({
 
     const [tempPlaceholder, setTempPlaceholder] = useState('');
 
-    const [mineTypes, setMineTypes] = useState<null | string[]>(null);
+    const [mimeTypes, setMimeTypes] = useState<null | string[]>(null);
     const [loadingMedia, setLoadingMedia] = useState(false);
     const isSelectedThreadLoading = remoteState === RemoteState.Loading;
 
@@ -139,7 +139,7 @@ export const QueryFormController = ({
                     .map((m) => mime.getType(m))
                     .filter((x: string | null): x is string => x !== null);
 
-                setMineTypes(quickMimeTypes);
+                setMimeTypes(quickMimeTypes);
                 try {
                     const downloadedFiles = await fetchFilesByUrls([...promptTemplate.fileUrls]);
                     const dataTransfer = new DataTransfer();
@@ -165,9 +165,9 @@ export const QueryFormController = ({
             for (const file of files) {
                 fileMimeTypes.push(file.type);
             }
-            setMineTypes(fileMimeTypes);
+            setMimeTypes(fileMimeTypes);
         } else {
-            setMineTypes(null);
+            setMimeTypes(null);
         }
     }, [files]);
 
@@ -230,7 +230,7 @@ export const QueryFormController = ({
     };
 
     const showTrackingInput =
-        mineTypes?.length === 1 && mineTypes[0].startsWith('video') && modelSupportsPointingInput;
+        mimeTypes?.length === 1 && mimeTypes[0].startsWith('video') && modelSupportsPointingInput;
 
     const handleFileSelect = (newFiles: FileList | undefined) => {
         const currentFiles = formContext.getValues('files');
