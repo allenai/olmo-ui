@@ -1,9 +1,8 @@
 import {
-    DetailedHTMLProps,
-    ForwardedRef,
+    type DetailedHTMLProps,
+    type ForwardedRef,
     forwardRef,
-    InputHTMLAttributes,
-    RefObject,
+    type InputHTMLAttributes,
     useImperativeHandle,
     useRef,
 } from 'react';
