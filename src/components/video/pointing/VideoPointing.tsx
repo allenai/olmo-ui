@@ -1,4 +1,4 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
+import { css, cx } from '@allenai/varnish-panda-runtime/css';
 import { Player, PlayerRef } from '@remotion/player';
 import { useRef } from 'react';
 
@@ -16,6 +16,7 @@ import { useVideoMetaData } from '../useVideoMetaData';
 import { FPS } from '../videoConsts';
 import { VideoOverlayHelper } from '../VideoOverlayHelper';
 import { VideoPlayerWrapper } from '../VideoPlayerContainer';
+import { SeekBarSkeleton, VideoPlayerSkeleton } from '../VideoSkeleton';
 import { VideoDotControl } from './VideoDotControl';
 
 export function VideoPointingInput({
@@ -24,14 +25,39 @@ export function VideoPointingInput({
     userPoint,
     setUserPoint,
 }: {
-    videoUrl: string;
+    videoUrl: string | null;
     onRemoveFile: () => void;
     userPoint: SchemaMolmo2PointPart | null;
     setUserPoint: (value: SchemaMolmo2PointPart | null) => void;
 }) {
     const playerRef = useRef<PlayerRef>(null);
 
-    const { durationInFrames, width, height } = useVideoMetaData(videoUrl, FPS);
+    const { durationInFrames, width, height, isLoading } = useVideoMetaData(videoUrl, FPS);
+
+    if (isLoading || videoUrl === null) {
+        return (
+            <VideoPlayerWrapper
+                className={css({
+                    borderTopRadius: 'lg',
+                })}>
+                <div
+                    className={cx(
+                        dotControlWrapper,
+                        css({
+                            aspectRatio: 16 / 9,
+                            visibility: 'visible',
+                        })
+                    )}>
+                    <VideoPlayerSkeleton
+                        className={css({
+                            borderTopRadius: 'lg',
+                        })}
+                    />
+                </div>
+                <SeekBarSkeleton />
+            </VideoPlayerWrapper>
+        );
+    }
 
     const mapPointToData = (userPoint: SchemaMolmo2PointPart | null) => {
         // TODO refactor seekbar to generic type
@@ -59,13 +85,21 @@ export function VideoPointingInput({
     const isLandscape = width >= height;
 
     return (
-        <VideoPlayerWrapper className={pointingVideoWrapper}>
+        <VideoPlayerWrapper
+            className={cx(
+                pointingVideoWrapper,
+                css({
+                    borderTopRadius: 'lg',
+                })
+            )}>
             <div
-                style={{
-                    aspectRatio: width / height,
-                    visibility: 'visible',
-                }}
-                className={dotControlWrapper}>
+                className={cx(
+                    dotControlWrapper,
+                    css({
+                        aspectRatio: 16 / 9,
+                        visibility: 'visible',
+                    })
+                )}>
                 <VideoDotControl
                     playerRef={playerRef}
                     onRemoveFile={onRemoveFile}

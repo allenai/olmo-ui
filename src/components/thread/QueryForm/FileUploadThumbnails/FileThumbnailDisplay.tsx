@@ -45,17 +45,23 @@ export const FileUploadThumbnails = ({
 
     return (
         <ThumbnailContainer>
-            {allowedFiles.map((file, i) => (
-                <Thumbnail
-                    key={i}
-                    type={file.type}
-                    filename={file.name}
-                    src={getObjectUrl(file)}
-                    onPressRemove={() => {
-                        onRemoveFile(file);
-                    }}
-                />
-            ))}
+            {allowedFiles.map((file, i) => {
+                const url = getObjectUrl(file);
+                if (!url) {
+                    return null;
+                }
+                return (
+                    <Thumbnail
+                        key={i}
+                        type={file.type}
+                        filename={file.name}
+                        src={url}
+                        onPressRemove={() => {
+                            onRemoveFile(file);
+                        }}
+                    />
+                );
+            })}
         </ThumbnailContainer>
     );
 };

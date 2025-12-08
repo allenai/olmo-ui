@@ -7,7 +7,7 @@ type VideoMetaData = {
     isLoading: boolean;
 };
 
-export const useVideoMetaData = (videoUrl: string, fps: number): VideoMetaData => {
+export const useVideoMetaData = (videoUrl: string | null, fps: number): VideoMetaData => {
     const [metaData, setMetaData] = useState<VideoMetaData>({
         durationInFrames: 1,
         width: 1,
@@ -16,6 +16,9 @@ export const useVideoMetaData = (videoUrl: string, fps: number): VideoMetaData =
     });
 
     useEffect(() => {
+        if (!videoUrl) {
+            return;
+        }
         // guard state changes on unmounted component
         let disposed = false;
 
