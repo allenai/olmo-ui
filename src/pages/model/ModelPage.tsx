@@ -100,7 +100,6 @@ export const ModelPage = () => {
                                         name={model.name}
                                         description={model.description}
                                         informationUrl={model.information_url}
-                                        variant="list"
                                         color="faded"
                                     />
                                 ))}

@@ -23,7 +23,6 @@ type ModelCardProps = {
     informationUrl?: string | null;
     imageUrl?: string;
     className?: string;
-    variant?: LinkCardProps['variant'];
     color?: LinkCardProps['color'];
 };
 
@@ -35,7 +34,6 @@ export const ModelCard = ({
     informationUrl,
     imageUrl,
     className,
-    variant,
     color,
 }: ModelCardProps) => {
     const isExternal = type === 'link';
@@ -49,7 +47,6 @@ export const ModelCard = ({
             mediaUrl={imageUrl}
             alt={name}
             color={color}
-            variant={variant}
             className={className}>
             <div className={css({ display: 'grid', gap: '3' })}>
                 <div className={cardTitle}>

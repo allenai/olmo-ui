@@ -39,14 +39,6 @@ const linkCard = cva({
                 },
             },
         },
-        variant: {
-            list: {
-                gridTemplateColumns: {
-                    base: '35cqw 1fr',
-                    md: '35cqw 1fr',
-                },
-            },
-        },
         color: {
             default: {},
             faded: {
@@ -87,7 +79,6 @@ export const LinkCard = ({
     mediaUrl,
     alt,
     color,
-    variant,
     cardType,
     className,
     imageClassName,
@@ -106,7 +97,7 @@ export const LinkCard = ({
     return (
         <Link
             to={url}
-            className={cx(linkCard({ cardType: cardTypeVariant, color, variant }), className)}>
+            className={cx(linkCard({ cardType: cardTypeVariant, color }), className)}>
             {cardTypeVariant === 'image' ? (
                 <div className={imageContainer}>
                     {imageSrc ? (
