@@ -128,6 +128,7 @@ export const QueryFormController = ({
         if (inputRef.current) {
             inputRef.current.value = '';
         }
+        setMimeFromFiles(null);
         formContext.reset();
     });
 
@@ -137,7 +138,11 @@ export const QueryFormController = ({
         }
     }, [formContext, promptTemplate]);
 
-    const setMimeFromFiles = (files: FileList) => {
+    const setMimeFromFiles = (files: FileList | null) => {
+        if (!files) {
+            setFileMimeTypes([]);
+            return;
+        }
         const types: string[] = [];
         for (const file of files) {
             types.push(file.type);
