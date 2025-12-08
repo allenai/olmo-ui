@@ -34,6 +34,7 @@ const defaultFileUploadProps = {
     acceptsMultiple: true,
     allowFilesInFollowups: true,
     maxFilesPerMessage: 10,
+    maxTotalFileSize: 5_242_880,
 };
 
 const defaultProps = {

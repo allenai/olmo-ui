@@ -25,6 +25,7 @@ const queryFormStyledBox = cva({
                 bottom: '[0]',
                 width: '[100%]',
                 maxHeight: '[70dvh]',
+                boxShadow: '[0 -8px 8px 0px rgba(0, 0, 0, 0.2)]',
             },
         },
     },

@@ -1,13 +1,16 @@
-import { Validate, type ValidateResult } from 'react-hook-form-mui';
+import { type ValidateResult } from 'react-hook-form-mui';
+
+import { formatFileSize } from '@/utils/formatFileSize';
+import { pluralize } from '@/utils/pluralize';
 
 import { fileTypesToArray, typeMatchesAllowedTypes } from './FileUploadButton/fileTypeHelpers';
 import { mediaTypeList } from './FileUploadButton/fileUploadMediaConsts';
-import { QueryFormValues } from './QueryFormController';
 
 interface ValidateFilesOptions {
     acceptedFileTypes: string | string[] | Set<string>;
     maxFilesPerMessage?: number;
     canMixFileTypes: boolean;
+    maxTotalFileSize: number;
 }
 
 export const validateFiles = (
@@ -31,8 +34,11 @@ export const validateFiles = (
             );
 
             if (isMediaTypeAccepted) {
+                // save map of types of files -- so that we can validate independant values for
+                // each type (right now, just quantity)
                 if (typeMatchesAllowedTypes(file.type, mediaConfig.accept)) {
                     const existingFiles = filesByMediaType.get(mediaConfig.id);
+                    // add file to accepted mimetype list
                     if (existingFiles) {
                         existingFiles.push(file);
                     } else {
@@ -44,27 +50,31 @@ export const validateFiles = (
         }
     }
 
-    // error if not allowed to mix different types
+    // error if not allowed to mix different mimeType
     if (filesByMediaType.size > 1 && !options.canMixFileTypes) {
         return `Errors only one of "${acceptedFileTypes.join(', ')}" allowed in a single message.`;
     }
 
+    // check aginst mediaTypeList (mimeType configs, which currently includes hard coded values, but should come from config)
     for (const [mediaTypeId, files] of filesByMediaType) {
         const mediaConfig = mediaTypeList.find((mediaType) => mediaType.id === mediaTypeId);
 
         const maxFiles = mediaConfig?.maxFiles ?? options.maxFilesPerMessage;
 
+        // check if exceeds maximum for mimeType
         if (maxFiles !== undefined && files.length > maxFiles) {
             const label = `${mediaConfig?.label}${maxFiles > 1 ? 's' : ''}`;
             return `Maximum ${maxFiles} ${label} allowed.`;
         }
     }
 
-    return true;
-};
+    // last validate file sizes as well
+    const allFiles = Array.from(filesByMediaType.values()).flat();
+    const totalFileSize = allFiles.map((f) => f.size).reduce((a, c) => a + c);
 
-export const createValidateFunction = (
-    options: ValidateFilesOptions
-): Validate<FileList | undefined, QueryFormValues> => {
-    return (files: FileList | undefined) => validateFiles(files, options);
+    if (totalFileSize > options.maxTotalFileSize) {
+        return `Size of ${pluralize(allFiles.length, 'file')} (${formatFileSize(totalFileSize)}) exceeds maximum of ${formatFileSize(options.maxTotalFileSize)}`;
+    }
+
+    return true;
 };

@@ -25,6 +25,7 @@ export interface FileuploadPropsBase {
     maxFilesPerMessage?: number;
     // not currently used:
     requiredFileOption?: string; // this should be the union: SchemaMultiModalModel['require_file_to_prompt'] =/
+    maxTotalFileSize: number;
 }
 
 type InheritedInputProps = Omit<
