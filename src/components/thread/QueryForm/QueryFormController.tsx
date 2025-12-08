@@ -1,8 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { DevTool } from '@hookform/devtools';
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import mime from 'mime/lite';
-
 import {
     type KeyboardEvent,
     type ReactNode,
@@ -11,7 +10,6 @@ import {
     useRef,
     useState,
 } from 'react';
-
 import { DropZone } from 'react-aria-components';
 import {
     Controller,
@@ -238,7 +236,7 @@ export const QueryFormController = ({
         inputRef.current?.click();
     };
 
-    const showVideoUi =
+    const showTrackingInput =
         fileMimeTypes?.length === 1 &&
         fileMimeTypes[0].startsWith('video') &&
         modelSupportsPointingInput;
@@ -292,7 +290,7 @@ export const QueryFormController = ({
                 // return copy/cancel
                 return 'cancel';
             }}>
-            <QueryFormStyledBox isModal={showVideoUi}>
+            <QueryFormStyledBox isModal={showTrackingInput}>
                 <FormContainer
                     formContext={formContext}
                     onSuccess={handleSubmitController}
@@ -303,7 +301,7 @@ export const QueryFormController = ({
                             width: '[100%]',
                         }),
                     }}>
-                    {showVideoUi && (
+                    {showTrackingInput && (
                         <div
                             className={css({
                                 paddingTop: '1',
@@ -340,7 +338,7 @@ export const QueryFormController = ({
                         </div>
                     )}
                     <Stack gap={1} alignItems="flex-start" width={1} position="relative">
-                        {!showVideoUi && (
+                        {!showTrackingInput && (
                             <FileUploadThumbnails
                                 files={files}
                                 onRemoveFile={handleRemoveFile}
