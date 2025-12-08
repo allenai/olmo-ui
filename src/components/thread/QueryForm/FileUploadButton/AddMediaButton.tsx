@@ -20,11 +20,17 @@ const varnishPlaygroundButtonStyles = css({
 interface AddMediaButtonProps {
     isDisabled?: boolean;
     'aria-label'?: string;
+    onPress?: () => void;
 }
 
-export const AddMediaButton = ({ isDisabled, 'aria-label': ariaLabel }: AddMediaButtonProps) => {
+export const AddMediaButton = ({
+    onPress,
+    isDisabled,
+    'aria-label': ariaLabel,
+}: AddMediaButtonProps) => {
     return (
         <Button
+            onPress={onPress}
             isDisabled={isDisabled}
             className={varnishPlaygroundButtonStyles}
             aria-label={ariaLabel}

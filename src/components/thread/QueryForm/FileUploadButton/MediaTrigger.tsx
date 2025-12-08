@@ -1,11 +1,12 @@
-import type { RefObject } from 'react';
-import { FileTrigger } from 'react-aria-components';
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { type RefObject, useCallback } from 'react';
 
 import { AddMediaButton } from './AddMediaButton';
 import { MediaType } from './fileUploadMediaConsts';
 import { FileUploadMenu } from './FileUploadMenu';
 
 interface MediaTriggerProps {
+    name: string;
     acceptsMultiple: boolean;
     inputRef: RefObject<HTMLInputElement>;
     onSelect: (files?: FileList) => void;
@@ -17,6 +18,7 @@ interface MediaTriggerProps {
 
 export const MediaTrigger = ({
     inputRef,
+    name,
     mediaTypes,
     isDisabled,
     triggerFileInput,
@@ -24,37 +26,39 @@ export const MediaTrigger = ({
     acceptedFileTypes,
     acceptsMultiple,
 }: MediaTriggerProps) => {
-    if (mediaTypes.length > 1) {
-        return (
-            // FileTrigger (which holds the input), has to be a sibling instead of wrap the menu
-            // otherwise it will trigger on press and open the file chooser while opening the menu.
-            <>
+    const handlePress = useCallback(() => {
+        triggerFileInput(mediaTypes[0].accept);
+    }, [triggerFileInput, mediaTypes]);
+
+    return (
+        <>
+            <input
+                ref={inputRef}
+                type="file"
+                name={name}
+                disabled={isDisabled}
+                multiple={acceptsMultiple}
+                accept={acceptedFileTypes.join(',')}
+                onChange={(event) => {
+                    onSelect(event.target.files ?? undefined);
+                }}
+                className={css({
+                    display: 'none',
+                })}
+            />
+            {mediaTypes.length > 1 ? (
                 <FileUploadMenu
                     isDisabled={isDisabled}
                     mediaTypes={mediaTypes}
                     triggerFileInput={triggerFileInput}
                 />
-                <FileTrigger
-                    ref={inputRef}
-                    allowsMultiple={acceptsMultiple}
-                    acceptedFileTypes={acceptedFileTypes}
-                    onSelect={(files) => {
-                        onSelect(files ?? undefined);
-                    }}
+            ) : (
+                <AddMediaButton
+                    onPress={handlePress}
+                    isDisabled={isDisabled}
+                    aria-label="Select files"
                 />
-            </>
-        );
-    }
-
-    return (
-        <FileTrigger
-            ref={inputRef}
-            allowsMultiple={acceptsMultiple}
-            acceptedFileTypes={acceptedFileTypes}
-            onSelect={(files) => {
-                onSelect(files ?? undefined);
-            }}>
-            <AddMediaButton isDisabled={isDisabled} aria-label="Select files" />
-        </FileTrigger>
+            )}
+        </>
     );
 };

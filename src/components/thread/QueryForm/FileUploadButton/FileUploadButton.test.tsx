@@ -63,7 +63,7 @@ const renderFileUploadButton = (
 
     return render(
         <FakeAppContextProvider initialState={initialStates}>
-            <FileUploadButton {...props} />
+            <FileUploadButton name="files" {...props} />
         </FakeAppContextProvider>,
         {
             wrapperProps: {
