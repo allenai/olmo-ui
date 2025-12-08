@@ -83,6 +83,10 @@ export function VideoPointingInput({
     };
 
     const isLandscape = width >= height;
+    const sizeStyles = {
+        width: isLandscape ? '100%' : undefined,
+        height: isLandscape ? undefined : '100%',
+    };
 
     return (
         <VideoPlayerWrapper
@@ -106,10 +110,7 @@ export function VideoPointingInput({
                     userPoint={userPoint}
                     fps={FPS}
                     className={css({ alignSelf: 'center' })}
-                    style={{
-                        width: isLandscape ? '100%' : 'fit-content',
-                        height: isLandscape ? 'fit-content' : '100%',
-                    }}
+                    style={sizeStyles}
                     onPointSelect={setUserPoint}>
                     <Player
                         acknowledgeRemotionLicense
@@ -123,10 +124,7 @@ export function VideoPointingInput({
                         compositionWidth={width}
                         compositionHeight={height}
                         fps={FPS}
-                        style={{
-                            width: isLandscape ? '100%' : undefined,
-                            height: isLandscape ? undefined : '100%',
-                        }}
+                        style={sizeStyles}
                         className={css({
                             borderTopRadius: 'lg',
                         })}
