@@ -95,9 +95,7 @@ export const LinkCard = ({
     const cardTypeVariant = cardType ?? imageSrc ? 'image' : 'text';
 
     return (
-        <Link
-            to={url}
-            className={cx(linkCard({ cardType: cardTypeVariant, color }), className)}>
+        <Link to={url} className={cx(linkCard({ cardType: cardTypeVariant, color }), className)}>
             {cardTypeVariant === 'image' ? (
                 <div className={imageContainer}>
                     {imageSrc ? (

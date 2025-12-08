@@ -42,12 +42,7 @@ export const ModelCard = ({
         : generatePath(links.playground) + '?' + new URLSearchParams({ model: id }).toString();
 
     return (
-        <LinkCard
-            url={url}
-            mediaUrl={imageUrl}
-            alt={name}
-            color={color}
-            className={className}>
+        <LinkCard url={url} mediaUrl={imageUrl} alt={name} color={color} className={className}>
             <div className={css({ display: 'grid', gap: '3' })}>
                 <div className={cardTitle}>
                     <Typography variant={imageUrl ? 'h3' : 'h4'} component="h4">
