@@ -75,10 +75,10 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
 
     if (isFileUploadDisabled && !acceptsMultiple) {
         tooltipContent =
-            'This model only supports files on initial message. Start a new chat to submit a new file.';
+            'This model only supports sending files in the first message. Start a new chat to submit a new file.';
     } else if (isFileUploadDisabled && acceptsMultiple) {
         tooltipContent =
-            'This model only supports files on initial message. Start a new chat to submit new files.';
+            'This model only supports sending files in the first message. Start a new chat to submit new files.';
     }
 
     return (
