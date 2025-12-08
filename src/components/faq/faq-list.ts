@@ -55,12 +55,12 @@ export const faqs: FAQCategory[] = [
         questions: [
             {
                 question: 'How accurate and reliable is generated content on the Playground?',
-                answer: 'Playground-generated content is built for research and educational purposes only. It is not intended to be accurate or reliable, but rather as a research tool and to help the general public better understand LLMs. Please do not rely on any Playground-generated content and always use your best judgment, fact-check important information, and consider the context when interpreting content generated on the Playground.',
+                answer: 'Playground-generated content is built for research and educational purposes only and is intended to be used as a research tool to demonstrate model performance and to help the general public better understand AI models. Please do not rely on any Playground-generated content for accuracy and fact-check important information. Always use your best judgment and consider the context when interpreting Playground results.',
             },
 
             {
                 question: 'Which models on the Playground are multimodal and how do I use them?',
-                answer: 'Models with the "Multimodal" label can handle non-text input. The "Molmo" models require a file to be send with the first message and don’t allow files to be sent with follow-up messages.',
+                answer: 'Models with the "Multimodal" label can handle non-text input. The "Molmo" models require an image or video file to be sent with the first message. Note that Molmo models don’t allow additional files to be sent with follow-up messages after a thread has been started. If you would like to query Molmo about another image or video, start a new thread.',
             },
         ],
     },
@@ -69,24 +69,29 @@ export const faqs: FAQCategory[] = [
         questions: [
             {
                 question: 'What data does Ai2 collect about me?',
-                answer: 'We collect data necessary to improve your experience and the performance of Olmo as described in our general [Terms and Conditions of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/). This includes interaction data with the model, such as queries and responses.\n\nPlease do not include PII (personally identifiable information) or any other sensitive information in model prompts or elsewhere in the Playground.',
+                answer: 'We collect data necessary to improve your experience and the performance of the AI models made available in the Playground,as described in our general [Terms and Conditions of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/). This data includes your text conversations  with models on the Playground and any content you upload to a multimodal model (e.g. images or videos)..\n\nPlease do not include personal (e.g. names, addresses), sensitive (e.g. health, financial), or confidential/proprietary information in your conversations or uploads on Playground.',
             },
             {
                 question: 'Will my data be used to train Ai2 models?',
-                answer: 'Text-based data that you submit will be used to train models after a process to remove identifying data. Your data will not be added to a public dataset unless you opt in through the "Data collection" menu in your user profile settings. Files such as images or video you submit will only be used to train Ai2 models if you opt in through the "Data collection" menu. Please see our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/) for more information.',
+                answer: 'Yes, your text inputs on and text outputs from models on the Playground will be used  to train AI models after a process to remove identifying data.  Files you upload to the Playground will only be used to train AI models if you opt-in to publishing your uploaded content in an open, public research dataset curated by Ai2 for research purposes. You may choose to contribute to open, public datasets when you accept the Terms of Use for the Playground during your first visit, and you may change your selection at any time through the "Data collection" menu. Please see our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/) for more information.',
             },
             {
                 question: 'How is my data used to improve the Playground website’s performance?',
-                answer: 'Your data helps us understand how users interact with the Playground and the models it serves. We use this interaction data to identify areas for improvement and to develop new features that advance the scientific and educational purposes of Ai2. We analyze aggregated data to inform updates and enhancements to ensure our models remain effective and relevant for scientific research and education in the public interest. Please see our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/) for more information.',
+                answer: 'Your data helps us understand how users interact with the Playground and the models available on the Playground. We use this interaction data to identify areas for improvement and to develop new features that advance the scientific and educational purposes of Ai2. We analyze aggregated data to inform updates and enhancements to ensure our models remain effective and relevant for scientific research and education in the public interest. Please see our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/) for more information.',
             },
             {
-                question: 'How can I opt out of Ai2 using my Playground data?',
-                answer: 'You can remove your thread from our database by deleting your prompt history within 30 days of its creation. Click the “Delete Thread” button to delete your prompt and the generated response. Please note that you will need to delete your prompt history every 30 days if you do not wish to share any prompt information with us. Any data you submit and do not delete can be used to train models as described in our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/). You can opt out of having your data shared in public datasets through the "Data collection" menu in your user profile settings.',
+                question: 'How can I remove my Playground conversations from future AI training?',
+                answer: 'Although you cannot opt out of sharing your Playground conversations and uploads with Ai2, you can delete past threads from your prompt history. If you delete your thread within 30 days of creation, the text will be removed from the database Ai2 uses to train future AI models. Click the “Delete Thread” button to delete your prompt and the generated response. Please note that any prompts you submit and do not delete within 30 days may be used for AI training as described in our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/).  Ai2 will not train future AI models on images or videos uploaded by users unless you opt-in to publishing your uploaded content in an open, public research dataset curated by Ai2 for research purposes.',
             },
             {
                 question: 'How can I request my prompt history be deleted?',
                 answer: 'You can use the “Delete Thread” button to delete your prompt and the generated response. Click the “History” button to view your historical prompts and use the “Delete Thread” button to delete threads (including image data when applicable) within the last 30 days. You can request that personal data be removed through our [Personal Data Removal Request form](https://docs.google.com/forms/d/1sTsGVb6TV5lXw2jH95u2nKGc0wQ3PqzFShJdzv8XgN0/edit?ts=68df4a57).',
                 shortId: 'request-prompt-history-delete',
+            },
+            {
+                question:
+                    'How can I change my consent to publish my Playground interactions in open, public datasets curated by Ai2 for scientific research? ',
+                answer: 'You can opt out of having your text conversations OR your uploaded content published in open, public research dataset, even after entering and using Playground. Navigate to the "Data collection" menu in your user profile settings, and then select _____ to change your publication consents. Your consent to publication will be applied on a going forward basis from the date of the change. Please note that revocation of consent to publication is not retroactive, and any conversations or uploads contributed before the change will remain in the open, public datasets curated by Ai2. ',
             },
             {
                 question:
@@ -157,21 +162,18 @@ export const corpusLinkFaqs: FAQCategory[] = [
                 answer: 'No. Upon receiving a user prompt, our model first generates a response on its own, and then OlmoTrace scans the model response and retrieves matching documents. This is different from RAG (retrieval-augmented generation) systems, where the model generates responses conditioning on retrieved documents as part of its input context.',
             },
             {
-                question: 'What do the different shades of the highlight color mean?',
+                question:
+                    'What do the different shades of the highlight color mean in OlmoTrace results?',
                 answer: 'The shades represent the level of relevance between the best document retrieved for a span and the overall model response. OlmoTrace computes a BM25 relevance score for each retrieved document, and buckets them into three levels: “high relevance”, “medium relevance”, and “low relevance”. A span’s shade is determined by the maximum relevance level achieved by the documents containing that span. Darker shade means higher maximum relevance level.',
             },
             {
-                question: 'Why are some documents repeated in the OlmoTrace result?',
-                answer: 'Because some documents are repeated in the training dataset of our models. OlmoTrace groups some repeated documents into the same card by matching the URL in their metadata, and you can inspect these repetitions by clicking “View all repeated documents” on the document card. However, there are documents with identical content but different URLs and they will show up as separate document cards.',
-            },
-            {
-                question: 'Why do some highlighted spans begin or end in the middle of a word?',
-                answer: 'OlmoTrace processes the model response in granularity of tokens. While it tries to avoid cutting off in the middle of words, there may be some uncaught corner cases.',
+                question: 'Why are some documents repeated in the OlmoTrace results?',
+                answer: 'Because some documents are repeated in the training dataset of our models. OlmoTrace groups some repeated documents into the same card by matching the URL in their metadata, and you can inspect these repetitions by clicking “View all repeated documents” on the document card. Documents with identical content but different URLs and will show up as separate document cards.',
             },
             {
                 question:
-                    'Where do the documents come from? In which training stage is each document used?',
-                answer: 'For each document retrieved, OlmoTrace shows its source (the dataset it comes from) and its usage in training. For example, our flagship model, [Olmo 2 32B Instruct](https://huggingface.co/allenai/Olmo-2-0325-32B-Instruct), was trained in 3 stages:\n&emsp;&emsp;1. Pre-training: the dataset is [olmo-mix-1124](https://huggingface.co/datasets/allenai/olmo-mix-1124). It contains mostly data from the web (the DCLM corpus), as well as other sources like wiki and arxiv.\n&emsp;&emsp;2. Mid-training: the dataset is [dolmino-mix-1124](https://huggingface.co/datasets/allenai/dolmino-mix-1124). It contains high-quality text data and a mixture of math-heavy data. Some documents in this dataset already appeared in the pretraining dataset, and we excluded them so as to reduce duplicates.\n&emsp;&emsp;3. Post-training: it has 3 sub-stages: \n&emsp;&emsp;&emsp;&emsp;a. Supervised fine-tuning (SFT): the dataset is [tulu-3-sft-olmo-2-mixture-0225](https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture-0225)\n&emsp;&emsp;&emsp;&emsp;b. Preference learning (DPO): the dataset is [olmo-2-0325-32b-preference-mix](https://huggingface.co/datasets/allenai/olmo-2-0325-32b-preference-mix)\n&emsp;&emsp;&emsp;&emsp;c. RL with verifiable rewards (RLVR): the dataset is [RLVR-GSM-MATH-IF-Mixed-Constraints](https://huggingface.co/datasets/allenai/RLVR-GSM-MATH-IF-Mixed-Constraints)\n\n We consider the union of all the above datasets as “training data” of the Olmo 2 32B Instruct model, and when matching model outputs with the training text we consider all these datasets.',
+                    'Why do some highlighted spans in OlmoTrace begin or end in the middle of a word?',
+                answer: 'OlmoTrace processes the model response based on tokens rather than words. While OlmoTrace tries to avoid cutting off spans in the middle of words, there may be some uncaught corner cases.',
             },
         ],
     },
