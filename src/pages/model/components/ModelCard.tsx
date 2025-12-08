@@ -26,6 +26,7 @@ type ModelCardProps = {
     className?: string;
     variant?: LinkCardProps['variant'];
     color?: LinkCardProps['color'];
+    cardType?: LinkCardProps['cardType'];
 };
 
 export const ModelCard = ({
@@ -38,6 +39,7 @@ export const ModelCard = ({
     className,
     variant,
     color,
+    cardType,
 }: ModelCardProps) => {
     const isExternal = type === 'link';
     const url = isExternal
@@ -51,6 +53,7 @@ export const ModelCard = ({
             alt={name}
             color={color}
             variant={variant}
+            cardType={cardType}
             className={className}>
             <div className={css({ display: 'grid', gap: '3' })}>
                 <div className={cardTitle}>

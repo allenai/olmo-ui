@@ -49,7 +49,7 @@ const linkCard = cva({
         },
         color: {
             default: {},
-            fade: {
+            faded: {
                 backgroundColor: 'background.opacity-4',
             },
         },
