@@ -2,14 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { DevTool } from '@hookform/devtools';
 import { Stack } from '@mui/material';
 import mime from 'mime/lite';
-import {
-    type KeyboardEvent,
-    type ReactNode,
-    type UIEvent,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import { type KeyboardEvent, type ReactNode, type UIEvent, useEffect, useState } from 'react';
 import { DropZone } from 'react-aria-components';
 import {
     Controller,

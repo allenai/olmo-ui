@@ -19,7 +19,7 @@ export interface AgentChatStreamMutationVariables {
         content: string;
         captchaToken?: string | null;
         parent?: string;
-        files?: FileList;
+        files?: FileList | null;
     };
     threadViewId: string;
     agent: Agent;

@@ -22,7 +22,7 @@ export interface StreamMessageRequest {
     content: string;
     captchaToken?: string | null;
     parent?: string;
-    files?: FileList;
+    files?: FileList | null;
     role?: SchemaCreateMessageRequest['role'];
     toolCallId?: SchemaToolCall['toolCallId'];
     inputParts?: SchemaCreateMessageRequest['inputParts'];
