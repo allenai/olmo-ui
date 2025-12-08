@@ -4,7 +4,10 @@ import { Typography } from '@mui/material';
 import { generatePath } from 'react-router-dom';
 
 import placeholderImage from '@/assets/dolma-research.jpg';
-import { LinkCard, type LinkCardProps } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCard';
+import {
+    LinkCard,
+    type LinkCardProps,
+} from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCard';
 import { links } from '@/Links';
 
 const cardTitle = css({
@@ -19,7 +22,7 @@ type ModelCardProps = {
     name: string;
     description: string;
     informationUrl?: string | null;
-    imageUrl?: string | null | false;
+    imageUrl?: string;
     className?: string;
     variant?: LinkCardProps['variant'];
     color?: LinkCardProps['color'];
@@ -44,7 +47,7 @@ export const ModelCard = ({
     return (
         <LinkCard
             url={url}
-            image={imageUrl}
+            mediaUrl={imageUrl}
             alt={name}
             color={color}
             variant={variant}

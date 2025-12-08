@@ -9,7 +9,6 @@ import { LinkCardList } from '@/components/thread/ThreadPlaceholder/LinkCard/Lin
 import { type ModelPageData } from '@/pages/model/modelPageLoader';
 
 import { ModelCard } from './components/ModelCard';
-import { selectFeaturedModels } from './selectFeaturedModels';
 
 const agentPageContentWrapper = css({
     display: 'flex',

@@ -79,9 +79,7 @@ export interface LinkCardProps extends PropsWithChildren, LinkCardVariants {
     mediaUrl?: string;
     alt?: string;
     className?: string;
-    imageContainerClassName?: string;
-    variant?: 'list';
-    color?: 'default' | 'fade';
+    imageClassName?: string;
 }
 
 export const LinkCard = ({
