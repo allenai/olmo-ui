@@ -223,7 +223,7 @@ export const QueryFormController = ({
     ): ValidateResult => {
         if (!inputParts || inputParts.length < 1) {
             if (!content || !content.match(/[^\s]+/)) {
-                return false; // no error message
+                return `A message ${showTrackingInput ? 'or a tracking point ' : ''}is required.`;
             }
         }
         return true;
