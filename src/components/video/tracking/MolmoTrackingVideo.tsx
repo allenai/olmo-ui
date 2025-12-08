@@ -34,6 +34,7 @@ export function MolmoTrackingVideo({
     const [showInterpolation, setShowInterpolation] = useState(!suppressInterpolation);
 
     const { durationInFrames, width, height, isLoading } = useVideoMetaData(videoUrl, FPS);
+    const [isFullScreen, setIsFullScreen] = useState(false);
 
     if (isLoading) {
         return (
@@ -64,6 +65,7 @@ export function MolmoTrackingVideo({
                         videoUrl,
                         videoTrackingPoints,
                         showInterpolation,
+                        setIsFullScreen,
                     }}
                     durationInFrames={durationInFrames}
                     compositionWidth={width}
@@ -76,6 +78,7 @@ export function MolmoTrackingVideo({
                         borderTopRadius: 'sm',
                     })}
                     moveToBeginningWhenEnded={MOVE_TO_BEGINNING_WHEN_ENDED}
+                    controls={isFullScreen}
                 />
             </VideoPlayerContainer>
             <Controls
@@ -104,7 +107,7 @@ export function MolmoTrackingVideo({
                                 },
                             ]}
                         />
-                        <FullScreenButton />
+                        <FullScreenButton onChange={setIsFullScreen} />
                     </ControlsGroup>
                 </SplitControls>
             </Controls>

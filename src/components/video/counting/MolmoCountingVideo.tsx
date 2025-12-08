@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Player, type PlayerRef } from '@remotion/player';
-import { type ReactNode, useRef } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 
 import type { VideoFramePoints } from '@/components/thread/points/pointsDataTypes';
 
@@ -32,6 +32,8 @@ export const MolmoCountingVideo = ({
     const playerRef = useRef<PlayerRef>(null);
 
     const { durationInFrames, width, height, isLoading } = useVideoMetaData(videoUrl, FPS);
+
+    const [isFullScreen, setIsFullScreen] = useState(false);
 
     if (isLoading) {
         return (
@@ -67,6 +69,7 @@ export const MolmoCountingVideo = ({
                     })}
                     style={{ width: '100%', flex: 1 }}
                     moveToBeginningWhenEnded={MOVE_TO_BEGINNING_WHEN_ENDED}
+                    controls={isFullScreen}
                 />
             </VideoPlayerContainer>
             <FilmStrip
@@ -93,7 +96,7 @@ export const MolmoCountingVideo = ({
                     <ControlsGroup>
                         <TimeDisplay />
                         <VolumeControl />
-                        <FullScreenButton />
+                        <FullScreenButton onChange={setIsFullScreen} />
                     </ControlsGroup>
                 </SplitControls>
             </Controls>
