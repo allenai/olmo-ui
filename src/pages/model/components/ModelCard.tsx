@@ -3,7 +3,6 @@ import { ArrowOutward } from '@mui/icons-material';
 import { Typography } from '@mui/material';
 import { generatePath } from 'react-router-dom';
 
-import placeholderImage from '@/assets/dolma-research.jpg';
 import {
     LinkCard,
     type LinkCardProps,
@@ -26,7 +25,6 @@ type ModelCardProps = {
     className?: string;
     variant?: LinkCardProps['variant'];
     color?: LinkCardProps['color'];
-    cardType?: LinkCardProps['cardType'];
 };
 
 export const ModelCard = ({
@@ -35,11 +33,10 @@ export const ModelCard = ({
     name,
     description,
     informationUrl,
-    imageUrl = placeholderImage,
+    imageUrl,
     className,
     variant,
     color,
-    cardType,
 }: ModelCardProps) => {
     const isExternal = type === 'link';
     const url = isExternal
@@ -53,7 +50,6 @@ export const ModelCard = ({
             alt={name}
             color={color}
             variant={variant}
-            cardType={cardType}
             className={className}>
             <div className={css({ display: 'grid', gap: '3' })}>
                 <div className={cardTitle}>

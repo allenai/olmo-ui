@@ -2,6 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Typography } from '@mui/material';
 import { useLoaderData } from 'react-router-dom';
 
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
 import { PageContainer } from '@/components/PageContainer';
@@ -9,6 +10,7 @@ import { LinkCardList } from '@/components/thread/ThreadPlaceholder/LinkCard/Lin
 import { type ModelPageData } from '@/pages/model/modelPageLoader';
 
 import { ModelCard } from './components/ModelCard';
+import { FEATURED_MODELS } from './featuredModels';
 
 const agentPageContentWrapper = css({
     display: 'flex',
@@ -35,14 +37,21 @@ const agentCardListClassName = css({
 export const ModelPage = () => {
     const modelPageData = useLoaderData() as ModelPageData;
 
-    const featuredModels = ['molmo-2', 'olmo-3-32b-think', 'olmo-3-7b-instruct']
-        .map((modelId) =>
-            modelPageData.models.find((model) => model.id.toLocaleLowerCase().startsWith(modelId))
-        )
-        .filter((i) => !!i);
+    const featuredModels = FEATURED_MODELS.map(({ id, image }) => {
+        const model = modelPageData.models.find((model) =>
+            model.id.toLocaleLowerCase().startsWith(id)
+        );
+        // return both or neither
+        return model
+            ? {
+                  model,
+                  image,
+              }
+            : undefined;
+    }).filter((m) => !!m);
 
     const nonFeaturedModels = modelPageData.models.filter(
-        (model) => !!featuredModels.find((featuredModel) => featuredModel.id !== model.id)
+        (model) => !!featuredModels.find((featuredModel) => featuredModel.model.id !== model.id)
     );
 
     return (
@@ -64,10 +73,11 @@ export const ModelPage = () => {
                             Our featured models
                         </Typography>
                         <LinkCardList className={agentCardListClassName}>
-                            {featuredModels.map((model) => (
+                            {featuredModels.map(({ model, image }) => (
                                 <ModelCard
                                     key={model.name}
                                     type="playground"
+                                    imageUrl={image}
                                     id={model.id}
                                     name={model.name}
                                     description={model.description}
@@ -87,7 +97,6 @@ export const ModelPage = () => {
                                     <ModelCard
                                         key={model.name}
                                         type="playground"
-                                        imageUrl={false}
                                         id={model.id}
                                         name={model.name}
                                         description={model.description}
