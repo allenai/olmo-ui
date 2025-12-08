@@ -49,7 +49,7 @@ import { validateFiles } from './validateFiles';
 export interface QueryFormValues {
     content: string;
     private: boolean;
-    files?: FileList;
+    files?: FileList | null;
     // This isn't part of the form data explicitly, but is added in the submit handler
     captchaToken?: string | null;
     role?: SchemaCreateMessageRequest['role'];
@@ -89,8 +89,6 @@ export const QueryFormController = ({
     const navigation = useNavigation();
     const getObjectUrl = useObjectUrls();
 
-    const inputRef = useRef<HTMLInputElement | null>(null);
-
     const isTranscribing = useAppContext((state) => state.isTranscribing);
     const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
 
@@ -99,7 +97,7 @@ export const QueryFormController = ({
         defaultValues: {
             content: '',
             private: false,
-            files: undefined,
+            files: null,
         },
     });
 
@@ -125,9 +123,7 @@ export const QueryFormController = ({
 
     useStreamEvent('onFirstMessage', () => {
         // Clear the file input element to prevent iOS Safari from holding stale references
-        if (inputRef.current) {
-            inputRef.current.value = '';
-        }
+        formContext.setValue('files', null);
         setMimeFromFiles(null);
         formContext.reset();
     });
@@ -153,10 +149,10 @@ export const QueryFormController = ({
     useEffect(() => {
         const loadFiles = async () => {
             if (!areFilesAllowed) {
-                formContext.setValue('files', undefined);
+                formContext.setValue('files', null);
             } else if (promptTemplate?.fileUrls && promptTemplate.fileUrls.length) {
                 setLoadingMedia(true);
-                formContext.setValue('files', undefined);
+                formContext.setValue('files', null);
                 const quickMimeTypes = promptTemplate.fileUrls
                     .map((m) => mime.getType(m))
                     .filter((x: string | null): x is string => x !== null);
@@ -176,14 +172,14 @@ export const QueryFormController = ({
             }
         };
 
-        loadFiles();
+        void loadFiles();
     }, [formContext, areFilesAllowed, promptTemplate?.fileUrls]);
 
     const files = useWatch({ control: formContext.control, name: 'files' });
 
     // Validation function for file uploads
-    const validateFilesWithOptions: Validate<FileList | undefined, QueryFormValues> = (
-        fileList: FileList | undefined
+    const validateFilesWithOptions: Validate<FileList | undefined | null, QueryFormValues> = (
+        fileList: FileList | undefined | null
     ): ValidateResult => {
         return validateFiles(fileList, {
             acceptedFileTypes: fileUploadProps.acceptedFileTypes,
@@ -238,7 +234,7 @@ export const QueryFormController = ({
 
     const _triggerFileSelection = () => {
         // To be used if we have an add another image button
-        inputRef.current?.click();
+        void formContext.trigger('files');
     };
 
     const showTrackingInput =
@@ -295,7 +291,7 @@ export const QueryFormController = ({
                 // return copy/cancel
                 return 'cancel';
             }}>
-            <QueryFormStyledBox isModal={showTrackingInput}>
+            <QueryFormStyledBox isModal={Boolean(showTrackingInput)}>
                 <FormContainer
                     formContext={formContext}
                     onSuccess={handleSubmitController}
@@ -359,11 +355,12 @@ export const QueryFormController = ({
                                         rules={{
                                             validate: validateFilesWithOptions,
                                         }}
-                                        render={({ field: { onBlur } }) => (
+                                        render={({ field: { name, onBlur, ref } }) => (
                                             <FileUploadButton
-                                                ref={inputRef}
+                                                ref={ref}
                                                 onBlur={onBlur}
                                                 onSelect={handleFileSelect}
+                                                name={name}
                                                 {...fileUploadProps}
                                             />
                                         )}

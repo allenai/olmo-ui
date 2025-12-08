@@ -3,6 +3,7 @@ import {
     ForwardedRef,
     forwardRef,
     InputHTMLAttributes,
+    RefObject,
     useImperativeHandle,
     useRef,
 } from 'react';
@@ -30,16 +31,18 @@ export interface FileuploadPropsBase {
 
 type InheritedInputProps = Omit<
     DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
-    'type' | 'onSelect'
+    'type' | 'onSelect' | 'value'
 >;
 
 export type FileUploadButtonProps = FileuploadPropsBase &
     InheritedInputProps & {
         onSelect?: (files: FileList | undefined) => void;
+        name: string;
     };
 
 export const FileUploadButton = forwardRef(function FileUploadButton(
     {
+        name,
         isFileUploadDisabled,
         isSendingPrompt,
         acceptsFileUpload,
@@ -89,6 +92,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
             placement="top">
             <MediaTrigger
                 inputRef={inputRef}
+                name={name}
                 acceptsMultiple={acceptsMultiple}
                 isDisabled={isFileUploadDisabled || isSendingPrompt}
                 mediaTypes={mediaTypes}

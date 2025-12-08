@@ -22,7 +22,7 @@ const ThumbnailContainer = ({ children }: PropsWithChildren): ReactNode => {
 };
 
 interface FileThumbnailDisplayProps {
-    files?: FileList;
+    files?: FileList | null;
     onRemoveFile: (fileToRemove: File) => void;
     acceptedFileTypes?: string | string[] | Set<string>;
 }

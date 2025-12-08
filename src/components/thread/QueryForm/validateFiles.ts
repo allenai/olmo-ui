@@ -14,7 +14,7 @@ interface ValidateFilesOptions {
 }
 
 export const validateFiles = (
-    fileList: FileList | undefined,
+    fileList: FileList | undefined | null,
     options: ValidateFilesOptions
 ): ValidateResult => {
     // this is currently validated on the API
