@@ -2,7 +2,6 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Typography } from '@mui/material';
 import { useLoaderData } from 'react-router-dom';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
 import { PageContainer } from '@/components/PageContainer';
