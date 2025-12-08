@@ -620,8 +620,11 @@ export type components = {
              * @default null
              */
             host?: string | null;
-            /** Inputparts */
-            inputParts?: components['schemas']['Molmo2PointPart'][];
+            /**
+             * Inputparts
+             * @default null
+             */
+            inputParts?: string[] | null;
             /**
              * Logprobs
              * @default null
@@ -1091,6 +1094,11 @@ export type components = {
             harmful?: boolean | null;
             /** Id */
             id: string;
+            /**
+             * Inputparts
+             * @default null
+             */
+            inputParts?: components['schemas']['Molmo2PointPart'][] | null;
             /** Islimitreached */
             readonly isLimitReached: boolean;
             /** Isolderthan30Days */
