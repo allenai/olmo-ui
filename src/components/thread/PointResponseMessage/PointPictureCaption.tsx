@@ -1,4 +1,4 @@
-import { styled, Typography } from '@mui/material';
+import { Box, styled, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { ReactNode } from 'react';
 
@@ -40,7 +40,6 @@ export const PointPictureListCaption = ({
                         (acc, image) => acc + image.points.length,
                         0
                     )}
-                    imageCount={set.imageList.length}
                 />
             ))}
         </Stack>
@@ -59,7 +58,7 @@ interface PointLabelProps {
 const PointLabel = ({ pointColor, text, pointCount }: PointLabelProps): ReactNode => {
     const pointCountText = pointCount ? ` (${pointCount})` : '';
     return (
-        <Stack gap="0.5ch" useFlexGap direction="row" alignItems="center">
+        <Box display="grid" gridTemplateColumns="20px auto" alignItems="center">
             <PointLabelSvg
                 viewBox="0 0 20 20"
                 height="1em"
@@ -68,7 +67,7 @@ const PointLabel = ({ pointColor, text, pointCount }: PointLabelProps): ReactNod
                 sx={{ color: pointColor }}>
                 <PointCircle cx={50} cy={50} />
             </PointLabelSvg>
-            <Typography>{`${text}${pointCountText}`}</Typography>
-        </Stack>
+            <Typography component="span">{`${text}${pointCountText}`}</Typography>
+        </Box>
     );
 };

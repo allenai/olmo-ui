@@ -47,6 +47,7 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
         acceptedFileTypes: [],
         acceptsMultiple: false,
         allowFilesInFollowups: false,
+        maxTotalFileSize: 0,
     },
     availableModels: [
         {

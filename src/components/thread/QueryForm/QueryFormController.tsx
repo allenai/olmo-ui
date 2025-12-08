@@ -2,7 +2,16 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { DevTool } from '@hookform/devtools';
 import { Stack, Typography } from '@mui/material';
 import mime from 'mime/lite';
-import { KeyboardEvent, UIEvent, useEffect, useRef, useState } from 'react';
+
+import {
+    type KeyboardEvent,
+    type ReactNode,
+    type UIEvent,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
+
 import { DropZone } from 'react-aria-components';
 import {
     Controller,
@@ -34,6 +43,7 @@ import { useObjectUrls } from './FileUploadThumbnails/useObjectUrls';
 import { handleFormSubmitException } from './handleFormSubmitException';
 import { PromptContainer } from './PromptContainer';
 import { PromptInput } from './PromptInput';
+import { QueryFormError } from './QueryFormError';
 import { QueryFormStyledBox } from './QueryFormStyledBox';
 import { SubmitPauseAdornment } from './SubmitPauseAdornment';
 import { validateFiles } from './validateFiles';
@@ -77,7 +87,7 @@ export const QueryFormController = ({
     remoteState,
     fileUploadProps,
     modelSupportsPointingInput = true,
-}: QueryFormControllerProps) => {
+}: QueryFormControllerProps): ReactNode => {
     const navigation = useNavigation();
     const getObjectUrl = useObjectUrls();
 
@@ -87,7 +97,7 @@ export const QueryFormController = ({
     const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
 
     const formContext = useForm<QueryFormValues>({
-        mode: 'onChange',
+        mode: 'onSubmit',
         defaultValues: {
             content: '',
             private: false,
@@ -176,6 +186,7 @@ export const QueryFormController = ({
             acceptedFileTypes: fileUploadProps.acceptedFileTypes,
             maxFilesPerMessage: fileUploadProps.maxFilesPerMessage,
             canMixFileTypes: false, // shouldn't be static
+            maxTotalFileSize: fileUploadProps.maxTotalFileSize,
         });
     };
 
@@ -231,6 +242,18 @@ export const QueryFormController = ({
         fileMimeTypes?.length === 1 &&
         fileMimeTypes[0].startsWith('video') &&
         modelSupportsPointingInput;
+
+    const validateContentAndTrackingInput: Validate<string | undefined, QueryFormValues> = (
+        content,
+        { inputParts }
+    ): ValidateResult => {
+        if (!inputParts || inputParts.length < 1) {
+            if (!content || !content.match(/[^\s]+/)) {
+                return `A message ${showTrackingInput ? 'or a tracking point ' : ''}is required.`;
+            }
+        }
+        return true;
+    };
 
     const handleFileSelect = (newFiles: FileList | undefined) => {
         const currentFiles = formContext.getValues('files');
@@ -381,8 +404,7 @@ export const QueryFormController = ({
                                 control={formContext.control}
                                 name="content"
                                 rules={{
-                                    required: true,
-                                    pattern: /[^\s]+/,
+                                    validate: validateContentAndTrackingInput,
                                 }}
                                 render={({
                                     field: { onChange, value, ref, name },
@@ -403,31 +425,25 @@ export const QueryFormController = ({
                             />
                         </PromptContainer>
                         {!!formContext.formState.errors.files?.message && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
+                            <QueryFormError>
                                 {formContext.formState.errors.files.message}
-                            </Typography>
+                            </QueryFormError>
                         )}
                         {isLimitReached && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
+                            <QueryFormError>
                                 You have reached maximum thread length. Please start a new thread.
-                            </Typography>
+                            </QueryFormError>
                         )}
                         {!canEditThread && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
+                            <QueryFormError>
                                 You cannot add a prompt because you are not the thread creator.
                                 Please submit your prompt in a new thread.
-                            </Typography>
-                        )}
-                        {process.env.NODE_ENV === 'development' && (
-                            <DevTool control={formContext.control} />
+                            </QueryFormError>
                         )}
                     </Stack>
+                    {process.env.NODE_ENV === 'development' && (
+                        <DevTool control={formContext.control} />
+                    )}
                 </FormContainer>
             </QueryFormStyledBox>
         </DropZone>

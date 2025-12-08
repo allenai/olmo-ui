@@ -150,7 +150,7 @@ export const PointPictureSlider = ({
                     display: 'grid',
                     gridAutoFlow: 'column',
                     gridAutoColumns: 'max-content',
-                    gridTemplateRows: `minmax(${MIN_THREAD_IMAGE_HEIGHT_PX}px, 50vmin)`,
+                    gridTemplateRows: `minmax(${MIN_THREAD_IMAGE_HEIGHT_PX}px, 60vmin)`,
                     gap: 1.5,
 
                     height: '100%',
@@ -185,13 +185,22 @@ export const PointPictureSlider = ({
                             caption={
                                 showPerImageCaption && (
                                     <Box
-                                        display="flex"
-                                        justifyContent="space-between"
-                                        alignItems="center"
+                                        display="grid"
+                                        gridTemplateColumns="repeat(auto-fit, minmax(10px, auto))"
+                                        alignItems="start"
+                                        gap={1}
                                         width="100%"
                                         padding={1}>
                                         <PointPictureCaption pointsSets={pointsSets} />
-                                        <span>{`Image ${index + 1}/${fileUrls.length}`}</span>
+                                        <Box justifySelf="end">
+                                            {/* removing on small to better avoid misaligning svg overlay */}
+                                            <Box
+                                                component="span"
+                                                sx={{ display: ['none', 'inline'] }}>
+                                                Image{' '}
+                                            </Box>
+                                            {`${index + 1}/${fileUrls.length}`}
+                                        </Box>
                                     </Box>
                                 )
                             }
