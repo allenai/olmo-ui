@@ -43,12 +43,7 @@ export const videoSampleToObjectURL = async ({
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = imageSmoothingQuality;
 
-    const videoFrame = sample.toVideoFrame();
-    try {
-        ctx.drawImage(videoFrame, 0, 0, Math.round(width), Math.round(height));
-        const blob = await canvas.convertToBlob({ type: imageType, quality });
-        return URL.createObjectURL(blob);
-    } finally {
-        videoFrame.close();
-    }
+    sample.draw(ctx, 0, 0, Math.round(width), Math.round(height));
+    const blob = await canvas.convertToBlob({ type: imageType, quality });
+    return URL.createObjectURL(blob);
 };
