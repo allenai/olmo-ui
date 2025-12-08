@@ -30,10 +30,10 @@ export const examplesList = [
         templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
     },
     // add entries like the one below to test in localdev
-    // {
-    //     prefix: 'molmo2-',
-    //     introText:
-    //         'Start with one of these sample prompts, or upload an image and ask a question below.',
-    //     templateIds: ['images_counting_1', 'video_tracking_4', 'video_tracking_5'],
-    // },
+    {
+        prefix: 'molmo2-',
+        introText:
+            'Start with one of these sample prompts, or upload an image and ask a question below.',
+        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
+    },
 ];
