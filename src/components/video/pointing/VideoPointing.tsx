@@ -25,12 +25,14 @@ export function VideoPointingInput({
     onRemoveFile,
     userPoint,
     setUserPoint,
+    isPointSelectDisabled,
 }: {
     videoUrl: string | null;
     videoUrlFallBack: string | null;
     onRemoveFile: () => void;
     userPoint: SchemaMolmo2PointPart | null;
     setUserPoint: (value: SchemaMolmo2PointPart | null) => void;
+    isPointSelectDisabled?: boolean;
 }) {
     const playerRef = useRef<PlayerRef>(null);
 
@@ -107,6 +109,7 @@ export function VideoPointingInput({
                     playerRef={playerRef}
                     onRemoveFile={onRemoveFile}
                     userPoint={userPoint}
+                    isDisabled={isPointSelectDisabled}
                     fps={FPS}
                     className={css({ alignSelf: 'center' })}
                     style={{

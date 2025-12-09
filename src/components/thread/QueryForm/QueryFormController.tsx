@@ -15,6 +15,7 @@ import {
 } from 'react-hook-form-mui';
 import { useNavigation } from 'react-router-dom';
 
+import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import {
     type SchemaCreateMessageRequest,
     SchemaPromptTemplateResponse,
@@ -83,6 +84,7 @@ export const QueryFormController = ({
     const navigation = useNavigation();
     const getDataUrl = useDataUrls();
     const getObjectUrls = useObjectUrls();
+    const authInfo = useUserAuthInfo();
 
     const isTranscribing = useAppContext((state) => state.isTranscribing);
     const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
@@ -232,6 +234,8 @@ export const QueryFormController = ({
         void formContext.trigger('files');
     };
 
+    const isInternalUser = authInfo.hasPermission(USER_PERMISSIONS.READ_INTERNAL_MODELS);
+
     const showTrackingInput =
         fileMimeTypes?.length === 1 &&
         fileMimeTypes[0].startsWith('video') &&
@@ -313,6 +317,7 @@ export const QueryFormController = ({
                                 render={({ field: { onChange, value } }) => {
                                     return (
                                         <VideoPointingInput
+                                            isPointSelectDisabled={!isInternalUser}
                                             onRemoveFile={() => {
                                                 if (files) {
                                                     handleRemoveFile(files[0]);
