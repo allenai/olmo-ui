@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { type RefObject, useCallback } from 'react';
+import { type RefObject } from 'react';
 
 import { AddMediaButton } from './AddMediaButton';
 import { MediaType } from './fileUploadMediaConsts';
@@ -26,10 +26,6 @@ export const MediaTrigger = ({
     acceptedFileTypes,
     acceptsMultiple,
 }: MediaTriggerProps) => {
-    const handlePress = useCallback(() => {
-        triggerFileInput(mediaTypes[0].accept);
-    }, [triggerFileInput, mediaTypes]);
-
     return (
         <>
             <input
@@ -54,7 +50,9 @@ export const MediaTrigger = ({
                 />
             ) : (
                 <AddMediaButton
-                    onPress={handlePress}
+                    onPress={() => {
+                        triggerFileInput('image');
+                    }}
                     isDisabled={isDisabled}
                     aria-label="Select files"
                 />
