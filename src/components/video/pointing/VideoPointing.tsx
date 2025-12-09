@@ -1,6 +1,6 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
 import { Player, PlayerRef } from '@remotion/player';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { AbsoluteFill, Html5Video } from 'remotion';
 
 import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
@@ -21,11 +21,13 @@ import { VideoDotControl } from './VideoDotControl';
 
 export function VideoPointingInput({
     videoUrl,
+    videoUrlFallBack,
     onRemoveFile,
     userPoint,
     setUserPoint,
 }: {
     videoUrl: string | null;
+    videoUrlFallBack: string | null;
     onRemoveFile: () => void;
     userPoint: SchemaMolmo2PointPart | null;
     setUserPoint: (value: SchemaMolmo2PointPart | null) => void;
@@ -118,6 +120,7 @@ export function VideoPointingInput({
                         component={PointingInputVideo}
                         inputProps={{
                             videoUrl,
+                            videoUrlFallBack,
                             fps: FPS,
                         }}
                         durationInFrames={durationInFrames + 1}
@@ -157,10 +160,25 @@ export function VideoPointingInput({
     );
 }
 
-const PointingInputVideo = ({ videoUrl }: { videoUrl: string }) => {
+const PointingInputVideo = ({
+    videoUrl,
+    videoUrlFallBack,
+}: {
+    videoUrl: string;
+    videoUrlFallBack: string | null;
+}) => {
+    const [error, setError] = useState(false);
+
     return (
         <AbsoluteFill>
-            <Html5Video src={videoUrl} />
+            <Html5Video
+                src={error ? videoUrlFallBack || '' : videoUrl}
+                onError={(e) => {
+                    console.log(e);
+                    console.log('set errored');
+                    setError(true);
+                }}
+            />
         </AbsoluteFill>
     );
 };

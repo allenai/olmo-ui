@@ -31,6 +31,7 @@ import { Waveform } from './AudioTranscription/Waveform';
 import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton/FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { useDataUrls } from './FileUploadThumbnails/useDataUrls';
+import { useObjectUrls } from './FileUploadThumbnails/useObjectUrls';
 import { handleFormSubmitException } from './handleFormSubmitException';
 import { PromptContainer } from './PromptContainer';
 import { PromptInput } from './PromptInput';
@@ -81,6 +82,7 @@ export const QueryFormController = ({
 }: QueryFormControllerProps): ReactNode => {
     const navigation = useNavigation();
     const getDataUrl = useDataUrls();
+    const getObjectUrls = useObjectUrls();
 
     const isTranscribing = useAppContext((state) => state.isTranscribing);
     const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
@@ -317,6 +319,11 @@ export const QueryFormController = ({
                                                 }
                                             }}
                                             videoUrl={
+                                                files && files.length > 0
+                                                    ? getObjectUrls(files[0])
+                                                    : null
+                                            }
+                                            videoUrlFallBack={
                                                 files && files.length > 0
                                                     ? getDataUrl(files[0])
                                                     : null
