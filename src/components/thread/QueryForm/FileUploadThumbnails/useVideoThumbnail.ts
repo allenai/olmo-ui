@@ -28,9 +28,8 @@ export const useVideoThumbnail = ({
         video.preload = 'metadata';
 
         const handleLoadedMetadata = () => {
-            const offsetPercentInTime = isFinite(video.duration) && offsetPercent
-                    ? video.duration * offsetPercent
-                    : 0;
+            const offsetPercentInTime =
+                isFinite(video.duration) && offsetPercent ? video.duration * offsetPercent : 0;
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             video.currentTime = offsetTime ?? offsetPercentInTime;

@@ -52,8 +52,7 @@ export const NavigationDrawer = ({
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const userAuthInfo = useUserAuthInfo();
-    const { isAgentPageEnabled, isComparisonPageInternalOnly } =
-        useFeatureToggles();
+    const { isAgentPageEnabled, isComparisonPageInternalOnly } = useFeatureToggles();
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 

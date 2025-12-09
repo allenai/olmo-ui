@@ -2,6 +2,8 @@ import '../osano.css';
 import '@allenai/varnish-theme/tokens.css';
 import '@/styled-system/styles.css';
 
+import { LinearProgress } from '@mui/material';
+import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { Analytics } from '@/analytics/Analytics';
@@ -10,8 +12,6 @@ import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
 import { AppLayout } from './AppLayout';
 import { TermsAndDataCollectionModal } from './TermsAndDataCollectionModal';
-import { Suspense } from 'react';
-import { LinearProgress } from '@mui/material';
 
 export const NewApp = () => {
     useTrackPageView();
