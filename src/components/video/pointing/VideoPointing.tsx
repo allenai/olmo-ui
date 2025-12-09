@@ -1,7 +1,6 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
 import { Player, PlayerRef } from '@remotion/player';
 import { useRef } from 'react';
-import { AbsoluteFill, Html5Video } from 'remotion';
 
 import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
@@ -15,6 +14,7 @@ import { TimeDisplay } from '../controls/TimeDisplay';
 import { VolumeControl } from '../controls/VolumeControl';
 import { useVideoMetaData } from '../useVideoMetaData';
 import { FPS } from '../videoConsts';
+import { VideoOverlayHelper } from '../VideoOverlayHelper';
 import { VideoPlayerWrapper } from '../VideoPlayerContainer';
 import { SeekBarSkeleton, VideoPlayerSkeleton } from '../VideoSkeleton';
 import { VideoDotControl } from './VideoDotControl';
@@ -82,8 +82,7 @@ export function VideoPointingInput({
         return point;
     };
 
-    const aspectRatio = width / height;
-    const isLandscape = aspectRatio >= 1.4;
+    const isLandscape = width >= height;
 
     return (
         <VideoPlayerWrapper
@@ -94,10 +93,10 @@ export function VideoPointingInput({
                 })
             )}>
             <div
-                style={{ aspectRatio }}
                 className={cx(
                     dotControlWrapper,
                     css({
+                        aspectRatio: 16 / 9,
                         visibility: 'visible',
                     })
                 )}>
@@ -158,11 +157,7 @@ export function VideoPointingInput({
 }
 
 const PointingInputVideo = ({ videoUrl }: { videoUrl: string }) => {
-    return (
-        <AbsoluteFill>
-            <Html5Video src={videoUrl} />
-        </AbsoluteFill>
-    );
+    return <VideoOverlayHelper videoUrl={videoUrl}></VideoOverlayHelper>;
 };
 
 // determine if this can move to the wrapper component
