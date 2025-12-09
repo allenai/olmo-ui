@@ -73,7 +73,7 @@ export const faqs: FAQCategory[] = [
             },
             {
                 question: 'Will my data be used to train Ai2 models?',
-                answer: 'Yes, your text inputs on and text outputs from models on the Playground will be used  to train AI models after a process to remove identifying data.  Files you upload to the Playground will only be used to train AI models if you opt-in to publishing your uploaded content in an open, public research dataset curated by Ai2 for research purposes. You may choose to contribute to open, public datasets when you accept the Terms of Use for the Playground during your first visit, and you may change your selection at any time through the "Data collection" menu. Please see our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/) for more information.',
+                answer: 'Yes, Ai2 may use your conversations and uploads to train, evaluate, and improve our AI models.',
             },
             {
                 question: 'How is my data used to improve the Playground website’s performance?',
@@ -81,12 +81,22 @@ export const faqs: FAQCategory[] = [
             },
             {
                 question: 'How can I remove my Playground conversations from future AI training?',
-                answer: 'Although you cannot opt out of sharing your Playground conversations and uploads with Ai2, you can delete past threads from your prompt history. If you delete your thread within 30 days of creation, the text will be removed from the database Ai2 uses to train future AI models. Click the “Delete Thread” button to delete your prompt and the generated response. Please note that any prompts you submit and do not delete within 30 days may be used for AI training as described in our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/).  Ai2 will not train future AI models on images or videos uploaded by users unless you opt-in to publishing your uploaded content in an open, public research dataset curated by Ai2 for research purposes.',
+                answer: 'Although you cannot opt out of sharing your Playground conversations and uploads with Ai2, you can delete past threads from your prompt history. Click the “Delete Thread” button to delete your prompt and the generated response. Please note that any prompts you submit and do not delete within 30 days may be used for AI training as described in our [Terms of Use](https://allenai.org/terms/) and [Privacy Policy](https://allenai.org/privacy-policy/).',
             },
             {
                 question: 'How can I request my prompt history be deleted?',
                 answer: 'You can use the “Delete Thread” button to delete your prompt and the generated response. Click the “History” button to view your historical prompts and use the “Delete Thread” button to delete threads (including image data when applicable) within the last 30 days. You can request that personal data be removed through our [Personal Data Removal Request form](https://docs.google.com/forms/d/1sTsGVb6TV5lXw2jH95u2nKGc0wQ3PqzFShJdzv8XgN0/edit?ts=68df4a57).',
                 shortId: 'request-prompt-history-delete',
+            },
+            {
+                question:
+                    'What happens if I contribute my conversations to publication in open science datasets?',
+                answer: 'You may choose to contribute your conversations to open, public datasets when you accept the Terms of Use for the Playground during your first visit. When you contribute your conversations, your text inputs and outputs from models on the Playground will be published in datasets curated by Ai2 for research purposes. Text-based research datasets will be de-identified prior to publication. Any conversations contributed by users may be used to train, evaluate, and improve AI models.',
+            },
+            {
+                question:
+                    'What happens if I contribute my uploads to publication in open science datasets?',
+                answer: 'You may choose to contribute your uploads to open, public datasets when you accept the Terms of Use for the Playground during your first visit. When you contribute your uploads, your images and videos submitted to multimodal models on the Playground will be published in datasets curated by Ai2 for research purposes. Users must affirm they possess all necessary rights to consent to the publication of uploaded images and videos. Any uploads contributed by users may be used to train, evaluate, and improve AI models.',
             },
             {
                 question:
