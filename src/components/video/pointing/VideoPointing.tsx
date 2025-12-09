@@ -173,9 +173,7 @@ const PointingInputVideo = ({
         <AbsoluteFill>
             <Html5Video
                 src={error ? videoUrlFallBack || '' : videoUrl}
-                onError={(e) => {
-                    console.log(e);
-                    console.log('set errored');
+                onError={() => {
                     setError(true);
                 }}
             />
