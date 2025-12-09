@@ -16,6 +16,7 @@ type Story = StoryObj<typeof meta>;
 export const Tracking: Story = {
     args: {
         videoUrl: COUNTING_VIDEO,
+        videoUrlFallBack: COUNTING_VIDEO,
         onRemoveFile: () => {},
         userPoint: null,
         setUserPoint: () => {},

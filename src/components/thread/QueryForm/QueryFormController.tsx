@@ -30,6 +30,7 @@ import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { Waveform } from './AudioTranscription/Waveform';
 import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton/FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
+import { useDataUrls } from './FileUploadThumbnails/useDataUrls';
 import { useObjectUrls } from './FileUploadThumbnails/useObjectUrls';
 import { handleFormSubmitException } from './handleFormSubmitException';
 import { PromptContainer } from './PromptContainer';
@@ -80,7 +81,8 @@ export const QueryFormController = ({
     modelSupportsPointingInput = true,
 }: QueryFormControllerProps): ReactNode => {
     const navigation = useNavigation();
-    const getObjectUrl = useObjectUrls();
+    const getDataUrl = useDataUrls();
+    const getObjectUrls = useObjectUrls();
 
     const isTranscribing = useAppContext((state) => state.isTranscribing);
     const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
@@ -318,7 +320,12 @@ export const QueryFormController = ({
                                             }}
                                             videoUrl={
                                                 files && files.length > 0
-                                                    ? getObjectUrl(files[0])
+                                                    ? getObjectUrls(files[0])
+                                                    : null
+                                            }
+                                            videoUrlFallBack={
+                                                files && files.length > 0
+                                                    ? getDataUrl(files[0])
                                                     : null
                                             }
                                             userPoint={value ? value[0] : null}
