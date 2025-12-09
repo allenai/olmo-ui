@@ -28,6 +28,7 @@ export const NewApp = () => {
                         userAuthInfo.userInfo?.hasAcceptedTermsAndConditions
                     }
                     initialDataCollectionValue={userAuthInfo.userInfo?.hasAcceptedDataCollection}
+                    initialMediaCollectionValue={userAuthInfo.userInfo?.hasAcceptedMediaCollection}
                 />
             )}
             <Outlet />
