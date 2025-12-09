@@ -85,7 +85,7 @@ export const ModelPage = () => {
                             ))}
                         </LinkCardList>
                         <Typography variant="h3" sx={{ marginTop: 3 }}>
-                            All our models
+                            Explore more
                         </Typography>
                         <LinkCardList columns="two" className={agentCardListClassName}>
                             {nonFeaturedModels

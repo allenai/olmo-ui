@@ -10,6 +10,8 @@ import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
 import { AppLayout } from './AppLayout';
 import { TermsAndDataCollectionModal } from './TermsAndDataCollectionModal';
+import { Suspense } from 'react';
+import { LinearProgress } from '@mui/material';
 
 export const NewApp = () => {
     useTrackPageView();
@@ -30,7 +32,9 @@ export const NewApp = () => {
                     initialDataCollectionValue={userAuthInfo.userInfo?.hasAcceptedDataCollection}
                 />
             )}
-            <Outlet />
+            <Suspense fallback={<LinearProgress />}>
+                <Outlet />
+            </Suspense>
         </AppLayout>
     );
 };

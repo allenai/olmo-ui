@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 type UseVideoThumbnailProps = {
+    enabled?: boolean;
     videoUrl: string;
 } & (
     | {
@@ -27,9 +28,12 @@ export const useVideoThumbnail = ({
         video.preload = 'metadata';
 
         const handleLoadedMetadata = () => {
+            const offsetPercentInTime = isFinite(video.duration) && offsetPercent
+                    ? video.duration * offsetPercent
+                    : 0;
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            video.currentTime = offsetTime ?? video.duration * offsetPercent;
+            video.currentTime = offsetTime ?? offsetPercentInTime;
         };
 
         const handleSeeked = () => {
