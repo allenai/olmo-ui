@@ -160,31 +160,43 @@ export function VideoPointingInput({
     );
 }
 
-const PointingInputVideo = ({
-    videoUrl,
-    videoUrlFallBack,
-}: {
+type PointingInputVideoProps = {
     videoUrl: string;
     videoUrlFallBack: string | null;
-}) => {
+};
+
+const PointingInputVideo = ({ videoUrl, videoUrlFallBack }: PointingInputVideoProps) => {
+    return (
+        <>
+            <AbsoluteFill>
+                <VideoPlayerSkeleton />
+            </AbsoluteFill>
+            <AbsoluteFill>
+                <PointingInputVideoWithFallback
+                    videoUrl={videoUrl}
+                    videoUrlFallBack={videoUrlFallBack}
+                />
+            </AbsoluteFill>
+        </>
+    );
+};
+
+const PointingInputVideoWithFallback = ({
+    videoUrl,
+    videoUrlFallBack,
+}: PointingInputVideoProps) => {
     const [error, setError] = useState(false);
 
     if (error && videoUrlFallBack) {
-        return (
-            <AbsoluteFill>
-                <Html5Video src={videoUrlFallBack} />
-            </AbsoluteFill>
-        );
+        return <Html5Video src={videoUrlFallBack} />;
     }
     return (
-        <AbsoluteFill>
-            <OffthreadVideo
-                src={videoUrl}
-                onError={() => {
-                    setError(true);
-                }}
-            />
-        </AbsoluteFill>
+        <OffthreadVideo
+            src={videoUrl}
+            onError={() => {
+                setError(true);
+            }}
+        />
     );
 };
 
