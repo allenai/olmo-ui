@@ -39,6 +39,8 @@ export const PromptTemplateList = ({ agentId, promptTemplates }: PromptTemplateL
                             agentId,
                             templateId: id,
                         })}
+                        cardType="image"
+                        imageClassName={css({ height: '[120px]' })}
                         mediaUrl={imageUrl}
                         className={promptCardClassName}>
                         {content}
