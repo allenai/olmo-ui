@@ -82,7 +82,8 @@ export function VideoPointingInput({
         return point;
     };
 
-    const isLandscape = width >= height;
+    const aspectRatio = width / height;
+    const isLandscape = aspectRatio >= 1.4; // estimated, may need fine tuning
 
     return (
         <VideoPlayerWrapper
@@ -93,10 +94,10 @@ export function VideoPointingInput({
                 })
             )}>
             <div
+                style={{ aspectRatio }}
                 className={cx(
                     dotControlWrapper,
                     css({
-                        aspectRatio: 16 / 9,
                         visibility: 'visible',
                     })
                 )}>
