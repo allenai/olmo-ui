@@ -52,7 +52,8 @@ export const NavigationDrawer = ({
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const userAuthInfo = useUserAuthInfo();
-    const { isAgentPageEnabled, isComparisonPageInternalOnly } = useFeatureToggles();
+    const { isModelPageEnabled, isAgentPageEnabled, isComparisonPageInternalOnly } =
+        useFeatureToggles();
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
@@ -81,11 +82,13 @@ export const NavigationDrawer = ({
                     }}>
                     <Stack component="ul" padding="0" margin="0" gap={1}>
                         <NewChatButton />
-                        <NavigationLink
-                            selected={curriedDoesMatchPath(links.model.root)}
-                            href={links.model.root}>
-                            Models
-                        </NavigationLink>
+                        {isModelPageEnabled ? (
+                            <NavigationLink
+                                selected={curriedDoesMatchPath(links.model.root)}
+                                href={links.model.root}>
+                                Models
+                            </NavigationLink>
+                        ) : null}
                         <NavigationLink
                             onClick={() => {
                                 toggleDrawer(HISTORY_DRAWER_ID);
