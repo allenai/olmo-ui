@@ -1,4 +1,4 @@
-import { ArrowForwardIosOutlined, StickyNote2Outlined } from '@mui/icons-material';
+import { ArrowForwardIosOutlined, HelpOutline } from '@mui/icons-material';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import ScienceIcon from '@mui/icons-material/Science';
@@ -16,6 +16,7 @@ import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { AgentIcon } from '../assets/AgentIcon';
+import { ModelIcon } from '../assets/ModelIcon';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { NavigationFooter } from './Footer/NavigationFooter';
@@ -84,6 +85,7 @@ export const NavigationDrawer = ({
                         <NewChatButton />
                         {isModelPageEnabled ? (
                             <NavigationLink
+                                icon={<ModelIcon />}
                                 selected={curriedDoesMatchPath(links.model.root)}
                                 href={links.model.root}>
                                 Models
@@ -119,7 +121,7 @@ export const NavigationDrawer = ({
                             </NavigationLink>
                         )}
                         <NavigationLink
-                            icon={<StickyNote2Outlined />}
+                            icon={<HelpOutline />}
                             selected={curriedDoesMatchPath(links.faqs)}
                             href={links.faqs}
                             variant="footer">
