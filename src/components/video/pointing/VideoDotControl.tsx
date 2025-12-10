@@ -13,6 +13,7 @@ export const VideoDotControl = ({
     onPointSelect,
     playerRef,
     userPoint,
+    isDisabled,
     onRemoveFile,
     fps,
     className,
@@ -22,6 +23,7 @@ export const VideoDotControl = ({
     onPointSelect: (point: SchemaMolmo2PointPart | null) => void;
     playerRef: React.RefObject<PlayerRef | null>;
     userPoint: SchemaMolmo2PointPart | null;
+    isDisabled?: boolean;
     onRemoveFile: () => void;
     fps: number;
     className?: string;
@@ -107,6 +109,24 @@ export const VideoDotControl = ({
     const dotYValue = state === 'placing' ? mousePosition?.y : (userPoint?.y || 0) / 1000;
     const dotX = dotXValue ? `${dotXValue * 100}%` : undefined;
     const dotY = dotYValue ? `${dotYValue * 100}%` : undefined;
+
+    if (isDisabled) {
+        return (
+            <div
+                ref={containerRef}
+                className={cx(videoDotControlClassNames, className)}
+                style={style}>
+                {children}
+                <RemoveButton
+                    filename="video"
+                    onPressRemove={() => {
+                        clearPoint();
+                        onRemoveFile();
+                    }}
+                />
+            </div>
+        );
+    }
 
     return (
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions

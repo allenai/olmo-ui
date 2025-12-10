@@ -6,12 +6,14 @@ import userEvent from '@testing-library/user-event';
 import { useParams } from 'react-router-dom';
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import * as authLoaders from '@/api/auth/auth-loaders';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { useStreamMessage } from '@/contexts/streamMessage/useStreamMessage';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
+import { getFakeUseUserAuthInfo } from '@/utils/FakeAuthLoaders';
 import {
     createMockUser,
     createStreamMessageMock,
@@ -53,6 +55,11 @@ const mockUseStreamMessage = vi.mocked(useStreamMessage);
 beforeEach(() => {
     vi.clearAllMocks();
     mockUseStreamMessage.mockReturnValue(createStreamMessageMock());
+    vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(
+        getFakeUseUserAuthInfo({
+            hasPermission: () => true,
+        })
+    );
 });
 
 const renderWithProvider = (
