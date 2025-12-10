@@ -146,7 +146,7 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
 
     const isStreaming = remoteState === RemoteState.Loading && streamingMessageId === messageId;
 
-    const waitingForFirstToken = isStreaming && content === '';
+    const waitingForFirstToken = isStreaming && content === '' && !message?.thinking;
 
     return (
         <Box
