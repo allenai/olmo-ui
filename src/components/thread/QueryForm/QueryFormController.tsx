@@ -19,6 +19,7 @@ import {
     type SchemaCreateMessageRequest,
     SchemaPromptTemplateResponse,
     SchemaToolCall,
+    SchemaMolmo2PointPart,
 } from '@/api/playgroundApi/playgroundApiSchema';
 import { useAppContext } from '@/AppContext';
 import { VideoPointingInput } from '@/components/video/pointing/VideoPointing';
@@ -48,7 +49,7 @@ export interface QueryFormValues {
     captchaToken?: string | null;
     role?: SchemaCreateMessageRequest['role'];
     toolCallId?: SchemaToolCall['toolCallId'];
-    inputParts?: SchemaCreateMessageRequest['inputParts'];
+    inputParts?: SchemaMolmo2PointPart[]; // SchemaCreateMessageRequest['inputParts'];
 }
 
 interface QueryFormControllerProps {
