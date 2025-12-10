@@ -1,6 +1,9 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { Alert, Spark } from '@allenai/varnish-ui';
 import { Stack } from '@mui/material';
 import { ReactNode, useState } from 'react';
 
+import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useMessage, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { MolmoCountingVideo } from '@/components/video/counting/MolmoCountingVideo';
@@ -17,7 +20,10 @@ import { PointPictureListCaption } from './PointPictureCaption';
 import { PointPictureList } from './PointPictureList';
 import { PointPictureSlider } from './PointPictureSlider';
 
+const TRACKING_UNAVAILABLE_MESSAGE = 'Tracking is not currently available.';
+
 export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => {
+    const authInfo = useUserAuthInfo();
     const [lightboxItem, setLightboxItem] = useState<number | null>(null);
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
@@ -26,6 +32,9 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
             .filter((message) => message.role === Role.User && message.fileUrls?.length)
             .at(-1)?.fileUrls;
     });
+
+    const isInternalUser = authInfo.hasPermission(USER_PERMISSIONS.READ_INTERNAL_MODELS);
+
     if (!message) {
         return null; // this shouldn't happen
     }
@@ -76,8 +85,26 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
 
         return (
             <Stack gap={2}>
-                <MolmoTrackingVideo videoTrackingPoints={videoTrackingPoints} videoUrl={videoUrl} />
-                <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
+                {isInternalUser ? (
+                    <>
+                        <MolmoTrackingVideo
+                            videoTrackingPoints={videoTrackingPoints}
+                            videoUrl={videoUrl}
+                        />
+                        <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
+                    </>
+                ) : (
+                    <Alert
+                        severity="info"
+                        icon={<Spark />}
+                        className={css({
+                            backgroundColor: 'background.reversed',
+                            color: 'text.primary.reversed',
+                            marginBlock: '8',
+                        })}>
+                        {TRACKING_UNAVAILABLE_MESSAGE}
+                    </Alert>
+                )}
             </Stack>
         );
     } else if (allLabelPoints?.[0].type === 'frame-points') {
