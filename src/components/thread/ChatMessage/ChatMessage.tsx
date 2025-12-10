@@ -34,7 +34,7 @@ const escapeForDisplay = (content: string): string => {
 };
 
 const cleanWrap = css({
-    whiteSpace: 'pre',
+    whiteSpace: 'pre-wrap',
     textWrap: '[auto]',
     fontFamily: 'monospace',
     fontSize: 'sm',
