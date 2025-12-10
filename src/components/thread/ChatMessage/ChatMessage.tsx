@@ -1,8 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Alert, Box, Typography } from '@mui/material';
+import { Alert, Box, CircularProgress, Typography } from '@mui/material';
 import { PropsWithChildren, type ReactNode, useState } from 'react';
 
-import { CircularProgress } from '@mui/material';
 import { Label } from '@/api/Label';
 import { MessageId, useMessage } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
