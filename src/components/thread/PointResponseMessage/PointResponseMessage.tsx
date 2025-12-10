@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Alert, Spark } from '@allenai/varnish-ui';
+import { Alert } from '@allenai/varnish-ui';
 import { Stack } from '@mui/material';
 import { ReactNode, useState } from 'react';
 
@@ -96,10 +96,10 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                 ) : (
                     <Alert
                         severity="info"
-                        icon={<Spark />}
+                        icon={false}
                         className={css({
-                            backgroundColor: 'background.reversed',
-                            color: 'text.primary.reversed',
+                            backgroundColor: 'background.opacity-10',
+                            color: 'text.primary',
                             marginBlock: '8',
                         })}>
                         {TRACKING_UNAVAILABLE_MESSAGE}
