@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Alert, Box, Typography } from '@mui/material';
+import { Alert, Box, CircularProgress, Typography } from '@mui/material';
 import { PropsWithChildren, type ReactNode, useState } from 'react';
 
 import { Label } from '@/api/Label';
@@ -146,6 +146,8 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
 
     const isStreaming = remoteState === RemoteState.Loading && streamingMessageId === messageId;
 
+    const waitingForFirstToken = isStreaming && content === '' && !message?.thinking;
+
     return (
         <Box
             data-messageid={messageId}
@@ -160,6 +162,14 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
             </Box>
             <Box>
                 <MessageThinking messageId={messageId} />
+                {waitingForFirstToken && (
+                    <div
+                        className={css({
+                            paddingBlock: '1',
+                        })}>
+                        <CircularProgress size="1em" sx={{ color: 'var(--vui-colors-icon)' }} />
+                    </div>
+                )}
                 <MessageComponent messageId={messageId}>
                     <MessageContent
                         messageId={messageId}
