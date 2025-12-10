@@ -17,6 +17,7 @@ describe('AvatarMenuBase', () => {
                     client: 'test-client-id',
                     hasAcceptedTermsAndConditions: true,
                     hasAcceptedDataCollection: true,
+                    hasAcceptedMediaCollection: true,
                 },
                 userAuthInfo: {
                     email: 'test@example.com',
