@@ -2,6 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Alert, Box, Typography } from '@mui/material';
 import { PropsWithChildren, type ReactNode, useState } from 'react';
 
+import { CircularProgress } from '@mui/material';
 import { Label } from '@/api/Label';
 import { MessageId, useMessage } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
@@ -146,6 +147,8 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
 
     const isStreaming = remoteState === RemoteState.Loading && streamingMessageId === messageId;
 
+    const waitingForFirstToken = isStreaming && content === '';
+
     return (
         <Box
             data-messageid={messageId}
@@ -160,6 +163,14 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
             </Box>
             <Box>
                 <MessageThinking messageId={messageId} />
+                {waitingForFirstToken && (
+                    <div
+                        className={css({
+                            paddingBlock: '1',
+                        })}>
+                        <CircularProgress size="1em" sx={{ color: 'var(--vui-colors-icon)' }} />
+                    </div>
+                )}
                 <MessageComponent messageId={messageId}>
                     <MessageContent
                         messageId={messageId}
