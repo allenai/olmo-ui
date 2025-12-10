@@ -1,5 +1,6 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
 import { type ReactNode } from 'react';
+import { useCurrentScale } from 'remotion';
 
 import { ImageSpinner } from '@/components/ImageSpinner';
 
@@ -12,9 +13,15 @@ const videoPlayerStyle = css({
 });
 
 export const VideoPlayerSkeleton = ({ className }: { className?: string }): ReactNode => {
+    const scale = useCurrentScale({
+        dontThrowIfOutsideOfRemotion: true, // will return 1 outside of remotion
+    });
     return (
         <div className={cx(videoPlayerStyle, className)}>
             <div
+                style={{
+                    scale: `${1 / scale}`,
+                }}
                 className={css({
                     display: 'flex',
                     flex: '1',
