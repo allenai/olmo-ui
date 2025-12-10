@@ -5,6 +5,7 @@ import {
     type InputHTMLAttributes,
     useImperativeHandle,
     useRef,
+    useState,
 } from 'react';
 
 import { StyledTooltip } from '@/components/StyledTooltip';
@@ -54,6 +55,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     ref: ForwardedRef<HTMLInputElement>
 ) {
     const inputRef = useRef<HTMLInputElement>(null);
+    const [forceTipOpen, setForceTipOpen] = useState(false);
 
     useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
@@ -85,22 +87,33 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
 
     return (
         <StyledTooltip
+            isOpen={forceTipOpen || undefined}
             isDisabled={!tooltipContent}
             wrapChildrenWithFocus={isFileUploadDisabled}
             content={tooltipContent}
             placement="top">
-            <MediaTrigger
-                inputRef={inputRef}
-                name={name}
-                acceptsMultiple={acceptsMultiple}
-                isDisabled={isFileUploadDisabled || isSendingPrompt}
-                mediaTypes={mediaTypes}
-                triggerFileInput={triggerFileInput}
-                acceptedFileTypes={fileTypes}
-                onSelect={(files) => {
-                    onSelect?.(files ?? undefined);
+            <div
+                onTouchStart={() => {
+                    if (tooltipContent) setForceTipOpen(true);
                 }}
-            />
+                onTouchEnd={() => {
+                    setTimeout(() => {
+                        setForceTipOpen(false);
+                    }, 1000);
+                }}>
+                <MediaTrigger
+                    inputRef={inputRef}
+                    name={name}
+                    acceptsMultiple={acceptsMultiple}
+                    isDisabled={isFileUploadDisabled || isSendingPrompt}
+                    mediaTypes={mediaTypes}
+                    triggerFileInput={triggerFileInput}
+                    acceptedFileTypes={fileTypes}
+                    onSelect={(files) => {
+                        onSelect?.(files ?? undefined);
+                    }}
+                />
+            </div>
         </StyledTooltip>
     );
 });
