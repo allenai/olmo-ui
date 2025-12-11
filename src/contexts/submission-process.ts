@@ -10,7 +10,7 @@ import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFo
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
-import { ABORT_ERROR_MESSAGE } from '@/slices/ThreadUpdateSlice';
+import { createModelAbortErrorMessage } from '@/slices/ThreadUpdateSlice';
 
 import type { ExtraParameters } from './QueryContext';
 import {
@@ -214,7 +214,7 @@ export const handleSubmissionError = (
         );
     } else if (error instanceof Error) {
         if (error.name === 'AbortError') {
-            snackMessage = ABORT_ERROR_MESSAGE;
+            snackMessage = createModelAbortErrorMessage(modelId);
         }
     }
 
