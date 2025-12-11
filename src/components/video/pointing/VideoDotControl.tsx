@@ -18,6 +18,7 @@ export const VideoDotControl = ({
     fps,
     className,
     style,
+    isPointSelectDisabled,
 }: {
     children: ReactNode;
     onPointSelect: (point: SchemaMolmo2PointPart | null) => void;
@@ -28,6 +29,7 @@ export const VideoDotControl = ({
     fps: number;
     className?: string;
     style?: CSSProperties;
+    isPointSelectDisabled?: boolean;
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -110,7 +112,7 @@ export const VideoDotControl = ({
     const dotX = dotXValue ? `${dotXValue * 100}%` : undefined;
     const dotY = dotYValue ? `${dotYValue * 100}%` : undefined;
 
-    if (isDisabled) {
+    if (isPointSelectDisabled) {
         return (
             <div
                 ref={containerRef}
@@ -118,6 +120,7 @@ export const VideoDotControl = ({
                 style={style}>
                 {children}
                 <RemoveButton
+                    isDisabled={isDisabled}
                     filename="video"
                     onPressRemove={() => {
                         clearPoint();
@@ -215,6 +218,7 @@ export const VideoDotControl = ({
             )}
             {state !== 'placing' && (
                 <RemoveButton
+                    isDisabled={isDisabled}
                     filename="video"
                     onPressRemove={() => {
                         clearPoint();
@@ -225,6 +229,7 @@ export const VideoDotControl = ({
             {state === 'placed' && (
                 <Button
                     variant="outlined"
+                    isDisabled={isDisabled}
                     size="small"
                     className={onScreenButtonRecipe({ position: 'left' })}
                     onClick={() => {
@@ -237,6 +242,7 @@ export const VideoDotControl = ({
             {state === 'idle' && (
                 <Button
                     variant="outlined"
+                    isDisabled={isDisabled}
                     size="small"
                     className={onScreenButtonRecipe({ position: 'right' })}
                     onClick={() => {
@@ -308,8 +314,16 @@ const onScreenButtonRecipe = cva({
         cursor: 'pointer',
         bottom: '5',
         _hover: {
-            borderColor: 'cream.50!',
-            outline: 'none',
+            _notDisabled: {
+                borderColor: 'cream.50!',
+                outline: 'none',
+            },
+        },
+        _disabled: {
+            backgroundColor: 'extra-dark-teal.100',
+            borderColor: 'icon.disabled/60',
+            color: 'icon.disabled',
+            cursor: 'auto',
         },
     },
     variants: {

@@ -14,6 +14,7 @@ import {
     type SliderTrackRenderProps as AriaSliderTrackRenderProps,
 } from 'react-aria-components';
 
+import { useControls } from './context/ControlsContext';
 import { useVolume } from './context/useVolume';
 import { ControlButton } from './ControlButton';
 
@@ -30,6 +31,7 @@ const volumePopover = css({
 });
 
 export const VolumeControl = memo(function VolumeControl() {
+    const { isDisabled } = useControls();
     const { volume, isMuted, setVolume, unMute } = useVolume();
 
     const handleChange = useCallback(
@@ -45,7 +47,7 @@ export const VolumeControl = memo(function VolumeControl() {
 
     return (
         <DialogTrigger>
-            <ControlButton>
+            <ControlButton isDisabled={isDisabled}>
                 <VolumeUpRounded />
             </ControlButton>
             <Popover offset={2} className={volumePopover} placement="top">

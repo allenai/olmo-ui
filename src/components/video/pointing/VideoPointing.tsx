@@ -25,6 +25,7 @@ export function VideoPointingInput({
     onRemoveFile,
     userPoint,
     setUserPoint,
+    isDisabled,
     isPointSelectDisabled,
 }: {
     videoUrl: string | null;
@@ -32,6 +33,7 @@ export function VideoPointingInput({
     onRemoveFile: () => void;
     userPoint: SchemaMolmo2PointPart | null;
     setUserPoint: (value: SchemaMolmo2PointPart | null) => void;
+    isDisabled?: boolean;
     isPointSelectDisabled?: boolean;
 }) {
     const playerRef = useRef<PlayerRef>(null);
@@ -107,9 +109,10 @@ export function VideoPointingInput({
                 )}>
                 <VideoDotControl
                     playerRef={playerRef}
+                    isDisabled={isDisabled}
+                    isPointSelectDisabled={isPointSelectDisabled}
                     onRemoveFile={onRemoveFile}
                     userPoint={userPoint}
-                    isDisabled={isPointSelectDisabled}
                     fps={FPS}
                     className={css({ alignSelf: 'center' })}
                     style={{
@@ -142,6 +145,7 @@ export function VideoPointingInput({
                 </VideoDotControl>
             </div>
             <Controls
+                isDisabled={isDisabled}
                 playerRef={playerRef}
                 framePoints={mapPointToData(userPoint)}
                 fps={FPS}

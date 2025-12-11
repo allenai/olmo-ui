@@ -11,6 +11,7 @@ type ControlsContextValue = {
     durationInFrames: number;
     fps: number;
     framePoints?: VideoTrackingPoints | VideoFramePoints;
+    isDisabled?: boolean;
 };
 
 const ControlsContext = createContext<ControlsContextValue | null>(null);
@@ -20,6 +21,7 @@ type ControlsProviderProps = {
     fps: number;
     durationInFrames: number;
     framePoints?: VideoTrackingPoints | VideoFramePoints;
+    isDisabled?: boolean;
     children: ReactNode;
 };
 
@@ -28,6 +30,7 @@ export const ControlsProvider = ({
     fps,
     durationInFrames,
     framePoints,
+    isDisabled,
     children,
 }: ControlsProviderProps) => {
     const value = useMemo<ControlsContextValue>(
@@ -36,8 +39,9 @@ export const ControlsProvider = ({
             fps,
             durationInFrames,
             framePoints,
+            isDisabled,
         }),
-        [playerRef, fps, durationInFrames, framePoints]
+        [playerRef, fps, durationInFrames, framePoints, isDisabled]
     );
 
     return <ControlsContext.Provider value={value}>{children}</ControlsContext.Provider>;

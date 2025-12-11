@@ -15,6 +15,7 @@ type ControlsProps = {
     framePoints: VideoTrackingPoints | VideoFramePoints;
     fps: number;
     durationInFrames: number;
+    isDisabled?: boolean;
 };
 
 // Adapted from https://www.remotion.dev/docs/player/custom-controls#seek-bar
@@ -24,13 +25,15 @@ export const Controls = memo(function Controls({
     fps,
     durationInFrames,
     children,
+    isDisabled,
 }: PropsWithChildren<ControlsProps>) {
     return (
         <ControlsProvider
             playerRef={playerRef}
             fps={fps}
             durationInFrames={durationInFrames}
-            framePoints={framePoints}>
+            framePoints={framePoints}
+            isDisabled={isDisabled}>
             <div className={controlsContainer}>{children}</div>
         </ControlsProvider>
     );

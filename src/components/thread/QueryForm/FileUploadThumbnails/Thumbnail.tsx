@@ -47,6 +47,7 @@ interface ThumbnailProps {
     filename: string;
     type: string;
     src: string;
+    isDisabled?: boolean;
     onPressRemove?: () => void;
     onClick?: () => void;
 }
@@ -55,36 +56,51 @@ export const Thumbnail = ({
     filename,
     type,
     src,
+    isDisabled,
     onPressRemove,
     onClick,
 }: ThumbnailProps): ReactNode => {
     const alt = `User file ${filename}`;
 
+    const computedOnClick = !isDisabled ? onClick : undefined;
+
     const Wrapper = onClick ? Button : 'div';
     return (
         <Wrapper
             className={thumbnailContainer}
-            onClick={onClick}
-            style={onClick ? { cursor: 'pointer' } : undefined}>
+            onClick={computedOnClick}
+            style={computedOnClick ? { cursor: 'pointer' } : undefined}>
             {type.startsWith('image/') ? (
                 <ThumbnailImage alt={alt} src={src} title={filename} />
             ) : (
                 <VideoThumbnail videoUrl={src} alt={alt} title={filename} />
             )}
-            {onPressRemove && <RemoveButton filename={filename} onPressRemove={onPressRemove} />}
+            {onPressRemove && (
+                <RemoveButton
+                    isDisabled={isDisabled}
+                    filename={filename}
+                    onPressRemove={onPressRemove}
+                />
+            )}
         </Wrapper>
     );
 };
 
 type RemoveButtonProps = {
     filename: string;
+    isDisabled?: boolean;
     onPressRemove: () => void;
 };
 
-export const RemoveButton = ({ filename, onPressRemove }: RemoveButtonProps): ReactNode => {
+export const RemoveButton = ({
+    filename,
+    isDisabled,
+    onPressRemove,
+}: RemoveButtonProps): ReactNode => {
     return (
         <Button
             className={removeButton}
+            isDisabled={isDisabled}
             onPress={onPressRemove}
             aria-label={`Remove ${filename} from files to upload`}>
             <Close fontSize="inherit" />
