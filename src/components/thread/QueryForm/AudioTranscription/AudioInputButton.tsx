@@ -17,6 +17,7 @@ const iconClassName = css({
 });
 
 interface AudioInputButtonProps {
+    isDisabled?: boolean;
     onRecordingBegin?: () => void;
     onRecordingEnd?: () => void;
     onTranscriptionBegin?: () => void;
@@ -25,6 +26,7 @@ interface AudioInputButtonProps {
 }
 
 export const AudioInputButton = ({
+    isDisabled,
     onRecordingBegin,
     onRecordingEnd,
     onTranscriptionBegin,
@@ -129,7 +131,7 @@ export const AudioInputButton = ({
     }
 
     return (
-        <PromptButton onClick={handleAudioClick} disableRipple={true} color="secondary">
+        <PromptButton isDisabled={isDisabled} onClick={handleAudioClick}>
             <MicRounded className={iconClassName} />
         </PromptButton>
     );

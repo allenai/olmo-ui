@@ -1,24 +1,30 @@
-import { IconButton, styled, SxProps } from '@mui/material';
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { cx } from '@allenai/varnish-ui';
+import { type ForwardedRef, forwardRef } from 'react';
+import { Button, type ButtonProps } from 'react-aria-components';
 
-export const promptButtonStyles: SxProps = {
-    // TODO Share
-    cursor: 'pointer',
-    borderRadius: 'var(--radii-full, 9999px)',
-    padding: 4,
+const promptButtonStyles = css({
     display: 'flex',
-    color: 'var(--palette-light-accent-secondary)',
+    cursor: 'pointer',
+    padding: '1',
+    borderRadius: 'full',
+    color: 'accent.secondary',
+    _hover: {
+        _notDisabled: {
+            color: 'teal.100',
+        },
+    },
+    _focusVisible: { outline: '1px solid' },
+    _disabled: { cursor: 'auto', color: 'icon.disabled' },
+});
 
-    ':hover': {
-        color: 'var(--color-teal-100)',
-    },
-    ':has(:focus-visible)': {
-        outline: '1px solid',
-        borderRadius: 'var(--radii-full, 9999px)',
-    },
-    '@supports not (selector(:focus-visible) or selector(:has(*)))': {
-        outline: '1px solid',
-        borderRadius: 'var(--radii-full, 9999px)',
-    },
-};
-
-export const PromptButton = styled(IconButton)(promptButtonStyles);
+export const PromptButton = forwardRef(function PromptButton(
+    { className, children, ...props }: ButtonProps & { className?: string },
+    ref: ForwardedRef<HTMLButtonElement>
+) {
+    return (
+        <Button ref={ref} className={cx(promptButtonStyles, className)} {...props}>
+            {children}
+        </Button>
+    );
+});

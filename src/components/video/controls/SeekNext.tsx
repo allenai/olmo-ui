@@ -25,6 +25,7 @@ export const SeekNext = memo(function SeekNext() {
             delay={600}
             content={tooltipLabel}
             placement="top"
+            isDisabled={isDisabled}
             wrapChildrenWithFocus={isButtonDisabled}>
             <ControlButton
                 isDisabled={isButtonDisabled}

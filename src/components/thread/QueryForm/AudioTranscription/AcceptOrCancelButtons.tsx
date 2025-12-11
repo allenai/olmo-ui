@@ -14,27 +14,10 @@ export const AcceptOrCancelButtons = ({
 }: AcceptOrCancelButtonsProps) => {
     return (
         <>
-            <PromptButton
-                onClick={() => {
-                    cancelRecording();
-                }}
-                disableRipple={true}
-                color="default"
-                size="small"
-                sx={(theme) => ({
-                    color: theme.palette.text.primary,
-                    ':hover': {
-                        color: theme.palette.secondary.main,
-                    },
-                })}>
+            <PromptButton onPress={cancelRecording}>
                 <CloseIcon fontSize="small" sx={{ margin: 0.25 }} />
             </PromptButton>
-            <PromptButton
-                onClick={() => {
-                    stopRecording();
-                }}
-                disableRipple={true}
-                size="large">
+            <PromptButton onPress={stopRecording}>
                 <CheckIcon fontSize="small" sx={{ margin: 0.25 }} />
             </PromptButton>
         </>
