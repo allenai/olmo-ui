@@ -1,32 +1,33 @@
-import { Stack } from '@mui/material';
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { cx } from '@allenai/varnish-ui';
+import type { PropsWithChildren, ReactNode } from 'react';
 
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+const contentContainer = css({
+    display: 'flex',
+    flexDirection: 'column',
+    containerName: 'thread-page',
+    containerType: 'inline-size',
 
-export const ContentContainer = ({ children }: React.PropsWithChildren) => {
-    return (
-        <Stack
-            gap={0}
-            sx={(theme) => ({
-                containerName: 'thread-page',
-                containerType: 'inline-size',
+    backgroundColor: 'transparent',
+    height: '[100%]',
+    paddingBlockEnd: '4',
+    paddingBlockStart: '4',
 
-                backgroundColor: 'transparent',
-                height: 1,
-                paddingBlockEnd: 2,
-                paddingBlockStart: 2,
+    position: 'relative',
+    overflow: 'hidden',
 
-                position: 'relative',
-                overflow: 'hidden',
+    lg: {
+        gridArea: 'main-content',
+        paddingBlockStart: '[48px]',
+        // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
+        minHeight: '[0]',
+        minWidth: '[0]',
+    },
+});
 
-                [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                    gridArea: 'main-content',
-                    paddingBlockStart: 6,
-                    // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
-                    minHeight: 0,
-                    minWidth: 0,
-                },
-            })}>
-            {children}
-        </Stack>
-    );
-};
+export const ContentContainer = ({
+    className,
+    children,
+}: PropsWithChildren<{ className?: string }>): ReactNode => (
+    <div className={cx(contentContainer, className)}>{children}</div>
+);

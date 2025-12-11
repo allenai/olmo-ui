@@ -22,7 +22,7 @@ const buttonClassName = cva({
 
         // vertically center absolutely positioned
         top: '[50%]',
-        transform: '[translateY(-50%)',
+        transform: '[translateY(-50%)]',
         padding: '2',
         fontSize: '[1rem]',
     },

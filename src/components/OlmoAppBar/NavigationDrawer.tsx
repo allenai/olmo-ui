@@ -1,4 +1,4 @@
-import { ArrowForwardIosOutlined, StickyNote2Outlined } from '@mui/icons-material';
+import { ArrowForwardIosOutlined, HelpOutline } from '@mui/icons-material';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import ScienceIcon from '@mui/icons-material/Science';
@@ -16,6 +16,7 @@ import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { AgentIcon } from '../assets/AgentIcon';
+import { ModelIcon } from '../assets/ModelIcon';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { NavigationFooter } from './Footer/NavigationFooter';
@@ -52,7 +53,8 @@ export const NavigationDrawer = ({
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const userAuthInfo = useUserAuthInfo();
-    const { isAgentPageEnabled, isComparisonPageInternalOnly } = useFeatureToggles();
+    const { isModelPageEnabled, isAgentPageEnabled, isComparisonPageInternalOnly } =
+        useFeatureToggles();
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
@@ -81,6 +83,14 @@ export const NavigationDrawer = ({
                     }}>
                     <Stack component="ul" padding="0" margin="0" gap={1}>
                         <NewChatButton />
+                        {isModelPageEnabled ? (
+                            <NavigationLink
+                                icon={<ModelIcon />}
+                                selected={curriedDoesMatchPath(links.model.root)}
+                                href={links.model.root}>
+                                Models
+                            </NavigationLink>
+                        ) : null}
                         <NavigationLink
                             onClick={() => {
                                 toggleDrawer(HISTORY_DRAWER_ID);
@@ -111,7 +121,7 @@ export const NavigationDrawer = ({
                             </NavigationLink>
                         )}
                         <NavigationLink
-                            icon={<StickyNote2Outlined />}
+                            icon={<HelpOutline />}
                             selected={curriedDoesMatchPath(links.faqs)}
                             href={links.faqs}
                             variant="footer">

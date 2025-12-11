@@ -2,6 +2,8 @@ import '../osano.css';
 import '@allenai/varnish-theme/tokens.css';
 import '@/styled-system/styles.css';
 
+import { LinearProgress } from '@mui/material';
+import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { Analytics } from '@/analytics/Analytics';
@@ -30,7 +32,9 @@ export const NewApp = () => {
                     initialDataCollectionValue={userAuthInfo.userInfo?.hasAcceptedDataCollection}
                 />
             )}
-            <Outlet />
+            <Suspense fallback={<LinearProgress />}>
+                <Outlet />
+            </Suspense>
         </AppLayout>
     );
 };

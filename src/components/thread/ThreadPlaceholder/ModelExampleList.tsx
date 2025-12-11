@@ -53,7 +53,13 @@ const ExampleCard = ({ id, modelId, content, name, fileUrls }: ExampleCardProps)
     const link = `${links.playground}?${searchParams}`;
 
     return (
-        <LinkCard key={id} url={link} mediaUrl={fileUrls?.[0]} className={promptCardClassName}>
+        <LinkCard
+            key={id}
+            url={link}
+            cardType="image"
+            mediaUrl={fileUrls?.[0]}
+            imageClassName={css({ height: '[120px]' })}
+            className={promptCardClassName}>
             {name || content}
         </LinkCard>
     );
