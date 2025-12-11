@@ -10,7 +10,10 @@ import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFo
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
-import { createModelAbortErrorMessage } from '@/slices/ThreadUpdateSlice';
+import {
+    createAgentAbortErrorMessage,
+    createModelAbortErrorMessage,
+} from '@/slices/ThreadUpdateSlice';
 
 import type { ExtraParameters } from './QueryContext';
 import {
@@ -168,11 +171,28 @@ export const updateCacheWithMessagePart = async (
     return currentThreadId;
 };
 
-export const handleSubmissionError = (
-    error: unknown,
-    modelId: string,
-    addSnackMessage: (message: SnackMessage) => void
-): null => {
+interface SubmissionErrorParams {
+    error: unknown;
+    addSnackMessage: (message: SnackMessage) => void;
+}
+interface AgentSubmissionErrorParams extends SubmissionErrorParams {
+    type: 'agent';
+    agent: Agent;
+    model?: never;
+}
+interface ModelSubmissionErrorParams extends SubmissionErrorParams {
+    type: 'model';
+    agent?: never;
+    model: Model;
+}
+
+export const handleSubmissionError = ({
+    type,
+    error,
+    model,
+    agent,
+    addSnackMessage,
+}: AgentSubmissionErrorParams | ModelSubmissionErrorParams): null => {
     // Re-throw form-specific errors so they reach the form's try-catch block
     if (isInappropriateFormError(error)) {
         throw error;
@@ -198,7 +218,7 @@ export const handleSubmissionError = (
         }
 
         if (error.finishReason === MessageStreamErrorReason.MODEL_OVERLOADED) {
-            analyticsClient.trackModelOverloadedError(modelId);
+            analyticsClient.trackModelOverloadedError(type === 'agent' ? agent.id : model.id);
 
             snackMessage = errorToAlert(
                 `create-message-${new Date().getTime()}`.toLowerCase(),
@@ -214,7 +234,10 @@ export const handleSubmissionError = (
         );
     } else if (error instanceof Error) {
         if (error.name === 'AbortError') {
-            snackMessage = createModelAbortErrorMessage(modelId);
+            snackMessage =
+                type === 'agent'
+                    ? createAgentAbortErrorMessage()
+                    : createModelAbortErrorMessage(model);
         }
     }
 
@@ -324,7 +347,7 @@ export const processSingleModelSubmission = async ({
         state.setStreamError(threadViewId, error);
 
         if (addSnackMessage) {
-            return handleSubmissionError(error, model.id, addSnackMessage);
+            return handleSubmissionError({ type: 'model', error, model, addSnackMessage });
         } else {
             throw error;
         }
@@ -397,7 +420,7 @@ export const processSingleAgentSubmission = async ({
         state.setStreamError(threadViewId, error);
 
         if (addSnackMessage) {
-            return handleSubmissionError(error, agent.id, addSnackMessage);
+            return handleSubmissionError({ type: 'agent', error, agent, addSnackMessage });
         } else {
             throw error;
         }

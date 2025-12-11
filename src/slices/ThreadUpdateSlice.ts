@@ -1,27 +1,28 @@
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { getModelFamilyNameFromId } from '@/util';
 
 import { AlertMessageSeverity, SnackMessage, SnackMessageType } from './SnackMessageSlice';
 
-export const createModelAbortErrorMessage = (modelId: string): SnackMessage => {
-    const lowerCaseModelId = modelId.toLocaleLowerCase();
-    // TODO: using lower case modelId until familyName is consistently set
-    let modelText = 'Olmo';
-    if (lowerCaseModelId.includes('molmo') || lowerCaseModelId.includes('mm-olmo')) {
-        modelText = 'Molmo';
-    }
-    if (lowerCaseModelId.includes('qwen3')) {
-        modelText = 'Qwen3';
-    }
-    if (lowerCaseModelId.includes('tulu')) {
-        modelText = 'Tülu';
-    }
+export const createModelAbortErrorMessage = (model: Model): SnackMessage => {
+    const modelFamilyName = model.family_name ?? getModelFamilyNameFromId(model.id) ?? 'the model';
 
     return {
         type: SnackMessageType.Alert,
         id: `abort-message-${new Date().getTime()}`.toLowerCase(),
         title: 'Response was aborted',
-        message: `You stopped ${modelText} from generating answers to your query`,
+        message: `You stopped ${modelFamilyName} from generating answers to your query`,
+        severity: AlertMessageSeverity.Warning,
+    } as const;
+};
+
+export const createAgentAbortErrorMessage = (): SnackMessage => {
+    return {
+        type: SnackMessageType.Alert,
+        id: `abort-message-${new Date().getTime()}`.toLowerCase(),
+        title: 'Response was aborted',
+        message: `You stopped the agent from generating answers to your query`,
         severity: AlertMessageSeverity.Warning,
     } as const;
 };
