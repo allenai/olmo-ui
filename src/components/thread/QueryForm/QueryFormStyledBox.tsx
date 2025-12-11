@@ -3,10 +3,14 @@ import type { PropsWithChildren, ReactNode } from 'react';
 
 const queryFormStyledBox = cva({
     base: {
+        '--dropshadow-color': {
+            base: 'rgba(0, 0, 0, 0.15)',
+            _dark: 'rgba(0, 0, 0, 0.2)', // little darker in dark mode
+        },
         display: 'flex',
         borderRadius: '[{spacing.7}]',
         paddingBlock: '2',
-        paddingInline: '4',
+        paddingInline: '2',
         background: 'elements.overrides.form.input.fill',
         border: '2px solid transparent',
         '&:has(:focus-visible)': {
@@ -25,7 +29,7 @@ const queryFormStyledBox = cva({
                 bottom: '[0]',
                 width: '[100%]',
                 maxHeight: '[70dvh]',
-                boxShadow: '[0 -8px 8px 0px rgba(0, 0, 0, 0.2)]',
+                filter: '[drop-shadow(0px -2px 2px var(--dropshadow-color))]',
             },
         },
     },

@@ -37,11 +37,15 @@ export const SubmitPauseAdornment = ({
 
     return (
         <QueryFormButton
-            sx={{ color: 'secondary.main' }}
+            sx={{
+                backgroundColor: 'secondary.main',
+                color: 'var(--vui-colors-extra-dark-teal-100)',
+                padding: 0.75,
+            }}
             type="submit"
             aria-label="Submit prompt"
             disabled={isSubmitDisabled}>
-            <Send />
+            <Send fontSize="small" sx={{ translate: '1px' }} />
         </QueryFormButton>
     );
 };

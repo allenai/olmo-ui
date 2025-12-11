@@ -108,6 +108,9 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                                 '&::-moz-placeholder': placeholderStyles, // Firefox 19+
                                 '&::-ms-input-placeholder': placeholderStyles, // Edge
                                 // end styles stolen from MUI
+                                '&[disabled]': {
+                                    color: 'var(--vui-colors-text-disabled)',
+                                },
                             };
                         }}
                         value={value}
