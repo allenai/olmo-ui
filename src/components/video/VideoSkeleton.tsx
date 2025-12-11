@@ -1,8 +1,7 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
+import { CircularProgress } from '@mui/material';
 import { type ReactNode } from 'react';
 import { useCurrentScale } from 'remotion';
-
-import { ImageSpinner } from '@/components/ImageSpinner';
 
 import { LoadingFrame } from './filmStrip/LoadingFrame';
 
@@ -28,14 +27,11 @@ export const VideoPlayerSkeleton = ({ className }: { className?: string }): Reac
                     height: '[100%]',
                     justifyContent: 'center',
                 })}>
-                <ImageSpinner
-                    src="/ai2-monogram.svg"
-                    isAnimating={true}
-                    width={70}
-                    height={70}
-                    marginTop={40}
-                    alt=""
-                    marginBlock="auto" // maybe
+                <CircularProgress
+                    size={70}
+                    sx={{
+                        marginBlock: 'auto',
+                    }}
                 />
             </div>
         </div>
