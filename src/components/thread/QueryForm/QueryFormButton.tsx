@@ -26,7 +26,7 @@ export const QueryFormButton = ({
             edge="end"
             disableRipple
             sx={[
-                (theme) => ({
+                {
                     // override MUI style
                     padding: 0.5,
                     marginRight: 0,
@@ -40,10 +40,11 @@ export const QueryFormButton = ({
                         color: 'var(--vui-colors-cream-100)',
                     },
                     '&[disabled]': {
-                        color: theme.color['extra-dark-teal-100'].hex,
+                        color: 'var(--vui-colors-background-opacity-100)',
                         backgroundColor: 'var(--vui-colors-green-80)',
                     },
-                }),
+                    color: 'var(--vui-colors-background-100)',
+                },
                 // Array.isArray doesn't preserve Sx's array type
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 ...(Array.isArray(sx) ? sx : [sx]),

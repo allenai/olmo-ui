@@ -30,7 +30,7 @@ export const SubmitPauseAdornment = ({
                 onClick={(event) => {
                     onPause(event);
                 }}>
-                <StopCircleOutlinedIcon />
+                <StopCircleOutlinedIcon color="inherit" />
             </QueryFormButton>
         );
     }
@@ -39,13 +39,13 @@ export const SubmitPauseAdornment = ({
         <QueryFormButton
             sx={{
                 backgroundColor: 'secondary.main',
-                color: 'var(--vui-colors-extra-dark-teal-100)',
+                color: 'var(--vui-colors-elements-overrides-form-input-fill)',
                 padding: 0.75,
             }}
             type="submit"
             aria-label="Submit prompt"
             disabled={isSubmitDisabled}>
-            <Send fontSize="small" sx={{ translate: '1px' }} />
+            <Send fontSize="small" sx={{ translate: '1px' }} color="inherit" />
         </QueryFormButton>
     );
 };

@@ -1,4 +1,4 @@
-import { AddOutlined } from '@mui/icons-material';
+import { Add } from '@mui/icons-material';
 
 import { PromptButton } from '../PromptButton';
 
@@ -19,7 +19,7 @@ export const AddMediaButton = ({
             isDisabled={isDisabled}
             aria-label={ariaLabel}
             data-testid="file-upload-btn">
-            <AddOutlined color="inherit" />
+            <Add color="inherit" />
         </PromptButton>
     );
 };
