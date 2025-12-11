@@ -17,9 +17,12 @@ export const useAbortStreamOnNavigation = ({
             const targetPath = navigation.location.pathname;
 
             // Abort any active streams when user goes to "New chat"
-            if (targetPath === '/') {
+            if (targetPath !== window.location.pathname) {
                 abortStreams();
             }
         }
+        return () => {
+            console.debug('unmouinting useAbortStreamOnNavigation hook');
+        };
     }, [abortStreams, navigation]);
 };
