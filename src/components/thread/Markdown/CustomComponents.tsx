@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
-import { alpha, Divider, Link, styled } from '@mui/material';
+import { alpha, Divider, Link } from '@mui/material';
 import { AnchorHTMLAttributes, HTMLAttributes } from 'react';
 import { ExtraProps } from 'react-markdown';
 

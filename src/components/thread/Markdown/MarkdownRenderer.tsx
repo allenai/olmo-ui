@@ -18,20 +18,22 @@ const markdownStyles = css({
     wordBreak: 'normal',
 
     '& ul, & ol': {
+        // UA styles are pretty reasonible for Markdown
         margin: '[revert]',
         padding: '[revert]',
         listStyle: '[revert]',
     },
-    '& h1, & h2, & h3, & h4, & h5, & h6': {
+    '& :is(h1,h2,h3,h4,h5,h6)': {
         // UA styles are pretty reasonible for Markdown
         fontWeight: '[revert]',
         fontSize: '[revert]',
         margin: '[revert]',
     },
     '& p': {
+        // UA styles are pretty reasonible for Markdown
         margin: '[revert]',
     },
-    '& > p': {
+    '& > :is(p,h1,h2,h3,h4,h5,h6,ul,ol)': {
         _first: {
             marginBlockStart: '0',
         },
