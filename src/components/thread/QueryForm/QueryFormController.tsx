@@ -16,6 +16,7 @@ import {
 import { useNavigation } from 'react-router-dom';
 
 import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import {
     type SchemaCreateMessageRequest,
     SchemaPromptTemplateResponse,
@@ -61,7 +62,7 @@ interface QueryFormControllerProps {
     autofocus: boolean;
     areFilesAllowed: boolean;
     onAbort: (e: UIEvent) => void;
-    getThreadViewModel: () => { id: string } | undefined;
+    getThreadViewModel: (threadViewId?: string) => Model | undefined;
     canPauseThread: boolean;
     isLimitReached: boolean;
     remoteState?: RemoteState;
@@ -89,7 +90,8 @@ export const QueryFormController = ({
     const getObjectUrls = useObjectUrls();
     const authInfo = useUserAuthInfo();
 
-    const selectedModelId = getThreadViewModel()?.id;
+    const selectedModel = getThreadViewModel();
+    const selectedModelId = selectedModel?.id;
 
     const isTranscribing = useAppContext((state) => state.isTranscribing);
     const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);

@@ -43,6 +43,7 @@ const defaultProps = {
     placeholderText: 'Enter your prompt',
     autofocus: false,
     areFilesAllowed: true,
+    getThreadViewModel: () => undefined,
     onAbort: vi.fn(),
     canPauseThread: false,
     isLimitReached: false,
