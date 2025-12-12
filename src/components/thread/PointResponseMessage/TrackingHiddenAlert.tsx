@@ -3,7 +3,6 @@ import { Alert, ButtonLink } from '@allenai/varnish-ui';
 
 import { links } from '@/Links';
 
-const TRACKING_UNAVAILABLE_MESSAGE = 'Tracking is not currently available.';
 /**
  * This is a flag to hide the tracking message for external users.
  * An array of objects that specify which modelsIds to hide the display of tracking components.
@@ -19,13 +18,13 @@ export const HIDE_TRACKING_MESSAGES_CONFIG: {
     // remove this 'all' entry to start showing tracking for specific model IDs
     {
         modelId: 'all',
-        message: TRACKING_UNAVAILABLE_MESSAGE,
+        message: 'Tracking is not currently available.',
     },
 
     // Example of hiding tracking message for a specific model ID
     {
         modelId: 'molmo2-4b-general',
-        message: 'Tracking is not currently available for this model.',
+        message: 'Playground does not support tracking with this model variant.',
         alternativeModelId: 'molmo2-8b-general',
         actionText: 'Try Molmo2 8B',
     },
