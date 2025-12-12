@@ -35,9 +35,6 @@ const markdownStyles = css({
         _first: {
             marginBlockStart: '0',
         },
-        _last: {
-            marginBlockEnd: '0',
-        },
     },
 });
 
