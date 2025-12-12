@@ -71,6 +71,7 @@ export interface LinkCardProps extends PropsWithChildren, LinkCardVariants {
     mediaUrl?: string;
     alt?: string;
     className?: string;
+    imageContainerClassName?: string;
     imageClassName?: string;
 }
 
@@ -81,6 +82,7 @@ export const LinkCard = ({
     color,
     cardType,
     className,
+    imageContainerClassName,
     imageClassName,
     children,
 }: LinkCardProps) => {
@@ -97,7 +99,7 @@ export const LinkCard = ({
     return (
         <Link to={url} className={cx(linkCard({ cardType: cardTypeVariant, color }), className)}>
             {cardTypeVariant === 'image' ? (
-                <div className={imageContainer}>
+                <div className={cx(imageContainer, imageContainerClassName)}>
                     {imageSrc ? (
                         <img
                             src={imageSrc}

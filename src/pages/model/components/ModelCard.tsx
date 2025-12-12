@@ -13,6 +13,7 @@ const cardTitle = css({
     fontFamily: 'heading',
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'top',
 });
 
 type ModelCardProps = {

@@ -23,11 +23,6 @@ export const CustomDivider = ({
     />
 );
 
-export const CustomParagraph = styled('p')({
-    margin: 0,
-    marginBlockEnd: '1em',
-});
-
 export const CustomLink = ({
     node: _node,
     ...props

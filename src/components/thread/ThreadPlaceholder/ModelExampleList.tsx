@@ -58,7 +58,7 @@ const ExampleCard = ({ id, modelId, content, name, fileUrls }: ExampleCardProps)
             url={link}
             cardType="image"
             mediaUrl={fileUrls?.[0]}
-            imageClassName={css({ height: '[120px]' })}
+            imageContainerClassName={css({ height: '[120px]' })}
             className={promptCardClassName}>
             {name || content}
         </LinkCard>
