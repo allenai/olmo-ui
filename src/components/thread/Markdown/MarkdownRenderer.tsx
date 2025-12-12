@@ -11,14 +11,32 @@ import { AttributionHighlight } from '@/components/thread/attribution/Attributio
 import { DeepResearchCite } from '@/components/thread/DeepResearch/DeepResearchMessage';
 
 import { CodeBlock } from '../CodeBlock';
-import { CustomDivider, CustomLink, CustomParagraph, CustomPre } from './CustomComponents';
+import { CustomDivider, CustomLink, CustomPre } from './CustomComponents';
 import { SANITIZED_ID_PREFIX } from './MarkdownRenderConstants';
 
 const markdownStyles = css({
+    wordBreak: 'normal',
+
     '& ul, & ol': {
+        // UA styles are pretty reasonible for Markdown
         margin: '[revert]',
         padding: '[revert]',
         listStyle: '[revert]',
+    },
+    '& :is(h1,h2,h3,h4,h5,h6)': {
+        // UA styles are pretty reasonible for Markdown
+        fontWeight: '[revert]',
+        fontSize: '[revert]',
+        margin: '[revert]',
+    },
+    '& p': {
+        // UA styles are pretty reasonible for Markdown
+        margin: '[revert]',
+    },
+    '& > :is(p,h1,h2,h3,h4,h5,h6,ul,ol)': {
+        _first: {
+            marginBlockStart: '0',
+        },
     },
 });
 
@@ -56,7 +74,6 @@ export const MarkdownRenderer = ({ className, children: markdown }: MarkdownRend
             components={{
                 pre: CustomPre,
                 code: CodeBlock,
-                p: CustomParagraph,
                 hr: CustomDivider,
                 a: CustomLink,
                 'attribution-highlight': AttributionHighlight,
