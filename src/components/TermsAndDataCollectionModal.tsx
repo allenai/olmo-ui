@@ -139,48 +139,40 @@ export const TermsAndDataCollectionModal = ({
                                     // The combo of this start padding + the title margin made it look like there was too much space between them
                                     paddingBlockStart: 0,
                                 }}>
-                                <p>
-                                    By using Playground, you agree to Your Responsibilities below
-                                    and Ai2’s
-                                    <TermAndConditionsLink link={links.terms}>
-                                        Terms of Use
-                                    </TermAndConditionsLink>
-                                    ,{` `}
-                                    <TermAndConditionsLink link={links.responsibleUseGuidelines}>
-                                        Responsible Use Guidelines
-                                    </TermAndConditionsLink>
-                                    {` `}
-                                    and acknowledge Ai2’s{` `}
-                                    <TermAndConditionsLink link={links.privacyPolicy}>
-                                        Privacy Policy
-                                    </TermAndConditionsLink>
-                                    .
-                                </p>
+                                <p>By using Playground, you agree:</p>
                                 <div>
-                                    <h3 className={termsHeading3}>Your Responsibilities:</h3>
                                     <ul className={termsAndConditionsListClass}>
                                         <li>
-                                            <strong>No Sensitive Data:</strong> Do not upload
-                                            personal (e.g. names, addresses), sensitive (e.g.
-                                            health, financial), or confidential/proprietary
-                                            information to Playground.
+                                            to Ai2’s{' '}
+                                            <TermAndConditionsLink link={links.terms}>
+                                                Terms of Use
+                                            </TermAndConditionsLink>
+                                            ,{` `}
+                                            <TermAndConditionsLink
+                                                link={links.responsibleUseGuidelines}>
+                                                Responsible Use Guidelines
+                                            </TermAndConditionsLink>
+                                            {` `}
+                                            and acknowledge Ai2’s{` `}
+                                            <TermAndConditionsLink link={links.privacyPolicy}>
+                                                Privacy Policy
+                                            </TermAndConditionsLink>
+                                            .
                                         </li>
                                         <li>
-                                            <strong>Rights & Authority:</strong> You confirm you
-                                            possess all necessary rights to upload your content to
-                                            Playground and have the authority to grant the
-                                            permissions described here.{' '}
+                                            not to upload personal (e.g. names, addresses),
+                                            sensitive (e.g. health, financial), or
+                                            confidential/proprietary information to Playground.
                                         </li>
                                         <li>
-                                            <strong>No Infringement:</strong> Your uploads to
-                                            Playground may not violate any third-party intellectual
-                                            property or privacy rights.
+                                            you possess all necessary rights to upload your content
+                                            to Playground and have the authority to grant the
+                                            permissions described here.
                                         </li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h3 className={termsHeading3}>AI Training Notice:</h3>
-                                    <ul className={termsAndConditionsListClass}>
+                                        <li>
+                                            uploads to Playground may not violate any third-party
+                                            intellectual property or privacy rights.
+                                        </li>
                                         <li>
                                             Ai2 may use your conversations and uploads to train,
                                             evaluate, and improve our AI models.
@@ -188,13 +180,11 @@ export const TermsAndDataCollectionModal = ({
                                     </ul>
                                 </div>
                                 <div>
-                                    <h3 className={termsHeading3}>
-                                        Optional Consents: Contribute to Open Science!
-                                    </h3>
                                     <p>
-                                        Help the scientific community by allowing us to publish your
-                                        Playground interactions in open, public datasets curated by
-                                        Ai2 for scientific research.
+                                        <strong>Optional Consent:</strong> Help the scientific
+                                        community by allowing us to publish your Playground
+                                        interactions in open, public datasets curated by Ai2 for
+                                        scientific research.
                                     </p>
                                 </div>
                                 <Controller
@@ -210,8 +200,7 @@ export const TermsAndDataCollectionModal = ({
                                             <p>
                                                 <strong>Yes, I contribute my conversations.</strong>{' '}
                                                 I consent to having my de-identified text
-                                                conversations published in an open, public research
-                                                dataset.
+                                                conversations published.
                                             </p>
                                         </Checkbox>
                                     )}
@@ -228,10 +217,7 @@ export const TermsAndDataCollectionModal = ({
                                             onChange={onChange}>
                                             <p>
                                                 <strong>Yes, I contribute my uploads.</strong> I
-                                                consent to having my uploaded content published in
-                                                an open, public research dataset. I affirm I possess
-                                                all necessary rights to consent to the publication
-                                                of this content.
+                                                consent to having my uploaded content published.
                                             </p>
                                         </Checkbox>
                                     )}
