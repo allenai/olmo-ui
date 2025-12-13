@@ -15,18 +15,18 @@ export const HIDE_TRACKING_MESSAGES_CONFIG: {
     alternativeModelId?: string;
     actionText?: string;
 }[] = [
-    // remove this 'all' entry to start showing tracking for specific model IDs
-    {
-        modelId: 'all',
-        message: 'Tracking is not currently available.',
-    },
-
     // Example of hiding tracking message for a specific model ID
     {
-        modelId: 'molmo2-4b-general',
+        modelId: 'molmo2-4b',
         message: 'Playground does not support tracking with this model variant.',
-        alternativeModelId: 'molmo2-8b-general',
-        actionText: 'Try Molmo2 8B',
+        alternativeModelId: 'molmo2-4b-track',
+        actionText: 'Try Molmo2 4B Track',
+    },
+    {
+        modelId: 'molmo2-8b',
+        message: 'Playground does not support tracking with this model variant.',
+        alternativeModelId: 'molmo2-8b-track',
+        actionText: 'Try Molmo2 8B Track',
     },
 ];
 
