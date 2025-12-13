@@ -1,0 +1,76 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { Alert, ButtonLink } from '@allenai/varnish-ui';
+
+import { links } from '@/Links';
+
+/**
+ * This is a flag to hide the tracking message for external users.
+ * An array of objects that specify which modelsIds to hide the display of tracking components.
+ * Use modelId 'all' to hide tracking messages for all models.
+ * Empty array means no models are hidden.
+ */
+export const HIDE_TRACKING_MESSAGES_CONFIG: {
+    modelId: string;
+    message: string;
+    alternativeModelId?: string;
+    actionText?: string;
+}[] = [
+    // Example of hiding tracking message for a specific model ID
+    {
+        modelId: 'molmo2-4b',
+        message: 'Playground does not support tracking with this model variant.',
+        alternativeModelId: 'molmo2-4b-track',
+        actionText: 'Try Molmo2 4B Track',
+    },
+    {
+        modelId: 'molmo2-8b',
+        message: 'Playground does not support tracking with this model variant.',
+        alternativeModelId: 'molmo2-8b-track',
+        actionText: 'Try Molmo2 8B Track',
+    },
+];
+
+export const getTrackingHiddenInfo = (selectedModelId: string | undefined) =>
+    HIDE_TRACKING_MESSAGES_CONFIG.find(
+        (info) => selectedModelId === info.modelId || info.modelId === 'all'
+    );
+
+/**
+ * This component is used to display an alert when the tracking message is hidden for external users.
+ * @param message - The message to display in the alert.
+ * @param alternativeModelId - The model ID to link to in the alert if provided.
+ * @returns ReactNode
+ */
+export const TrackingHiddenAlert = ({
+    message,
+    alternativeModelId,
+    actionText,
+}: Omit<(typeof HIDE_TRACKING_MESSAGES_CONFIG)[number], 'modelPrefix'>) => {
+    return (
+        <Alert
+            severity="info"
+            icon={false}
+            action={
+                alternativeModelId ? (
+                    <ButtonLink
+                        className={css({
+                            whiteSpace: 'nowrap',
+                        })}
+                        size="small"
+                        href={`${links.playground}?model=${alternativeModelId}`}>
+                        {actionText ?? 'Go to Model'}
+                    </ButtonLink>
+                ) : undefined
+            }
+            className={css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4',
+                backgroundColor: 'background.opacity-10',
+                color: 'text.primary',
+                marginBlock: '8',
+            })}>
+            {message}
+        </Alert>
+    );
+};

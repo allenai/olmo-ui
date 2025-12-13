@@ -1,5 +1,3 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
-import { Alert } from '@allenai/varnish-ui';
 import { Stack } from '@mui/material';
 import { ReactNode, useState } from 'react';
 
@@ -19,19 +17,20 @@ import { MediaLightbox } from './MediaLightbox';
 import { PointPictureListCaption } from './PointPictureCaption';
 import { PointPictureList } from './PointPictureList';
 import { PointPictureSlider } from './PointPictureSlider';
-
-const TRACKING_UNAVAILABLE_MESSAGE = 'Tracking is not currently available.';
+import { getTrackingHiddenInfo, TrackingHiddenAlert } from './TrackingHiddenAlert';
 
 export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => {
     const authInfo = useUserAuthInfo();
     const [lightboxItem, setLightboxItem] = useState<number | null>(null);
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
-    const { data: currentFilesInThread } = useThread(threadId, (thread) => {
+    const { data: threadData } = useThread(threadId, (thread) => {
         return thread.messages
             .filter((message) => message.role === Role.User && message.fileUrls?.length)
-            .at(-1)?.fileUrls;
+            .at(-1);
     });
+    const currentFilesInThread = threadData?.fileUrls;
+    const selectedModelId = threadData?.modelId;
 
     const isInternalUser = authInfo.hasPermission(USER_PERMISSIONS.READ_INTERNAL_MODELS);
 
@@ -82,10 +81,13 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     } else if (allLabelPoints?.[0].type === 'track-points') {
         const videoTrackingPoints = allLabelPoints.filter((set) => set.type === 'track-points')[0];
         const videoUrl = currentFilesInThread[0];
+        const trackingHiddenInfo = getTrackingHiddenInfo(selectedModelId);
 
         return (
             <Stack gap={2}>
-                {isInternalUser ? (
+                {!isInternalUser && trackingHiddenInfo ? (
+                    <TrackingHiddenAlert {...trackingHiddenInfo} />
+                ) : (
                     <>
                         <MolmoTrackingVideo
                             videoTrackingPoints={videoTrackingPoints}
@@ -93,17 +95,6 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                         />
                         <MarkdownRenderer>{markdownContent}</MarkdownRenderer>
                     </>
-                ) : (
-                    <Alert
-                        severity="info"
-                        icon={false}
-                        className={css({
-                            backgroundColor: 'background.opacity-10',
-                            color: 'text.primary',
-                            marginBlock: '8',
-                        })}>
-                        {TRACKING_UNAVAILABLE_MESSAGE}
-                    </Alert>
                 )}
             </Stack>
         );

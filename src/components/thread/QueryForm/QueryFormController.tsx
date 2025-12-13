@@ -16,6 +16,7 @@ import {
 import { useNavigation } from 'react-router-dom';
 
 import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import {
     type SchemaCreateMessageRequest,
     SchemaPromptTemplateResponse,
@@ -27,6 +28,7 @@ import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
 import { fetchFilesByUrls } from '@/utils/fetchFilesByUrl';
 
+import { getTrackingHiddenInfo } from '../PointResponseMessage/TrackingHiddenAlert';
 import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { Waveform } from './AudioTranscription/Waveform';
 import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton/FileUploadButton';
@@ -60,6 +62,7 @@ interface QueryFormControllerProps {
     autofocus: boolean;
     areFilesAllowed: boolean;
     onAbort: (e: UIEvent) => void;
+    getThreadViewModel: (threadViewId?: string) => Model | undefined;
     canPauseThread: boolean;
     isLimitReached: boolean;
     remoteState?: RemoteState;
@@ -75,6 +78,7 @@ export const QueryFormController = ({
     autofocus,
     areFilesAllowed,
     onAbort,
+    getThreadViewModel,
     canPauseThread,
     isLimitReached,
     remoteState,
@@ -85,6 +89,9 @@ export const QueryFormController = ({
     const getDataUrl = useDataUrls();
     const getObjectUrls = useObjectUrls();
     const authInfo = useUserAuthInfo();
+
+    const selectedModel = getThreadViewModel();
+    const selectedModelId = selectedModel?.id;
 
     const isTranscribing = useAppContext((state) => state.isTranscribing);
     const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
@@ -317,7 +324,10 @@ export const QueryFormController = ({
                                 render={({ field: { onChange, value } }) => {
                                     return (
                                         <VideoPointingInput
-                                            isPointSelectDisabled={!isInternalUser}
+                                            isPointSelectDisabled={
+                                                !isInternalUser &&
+                                                !!getTrackingHiddenInfo(selectedModelId)
+                                            }
                                             onRemoveFile={() => {
                                                 if (files) {
                                                     handleRemoveFile(files[0]);
