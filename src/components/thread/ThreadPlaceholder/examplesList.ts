@@ -29,11 +29,23 @@ export const examplesList = [
             'Start with one of these sample prompts, or upload an image and ask a question below.',
         templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
     },
+    {
+        prefix: 'molmo2-8b-track',
+        introText:
+            'Start with one of these sample prompts, or upload an image and ask a question below.',
+        templateIds: ['video_tracking_4', 'video_tracking_5', 'skier_track'],
+    },
+    {
+        prefix: 'molmo2-4b-track',
+        introText:
+            'Start with one of these sample prompts, or upload an image and ask a question below.',
+        templateIds: ['video_tracking_4', 'video_tracking_5', 'skier_track'],
+    },
     // add entries like the one below to test in localdev
     {
         prefix: 'molmo2-',
         introText:
             'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
+        templateIds: ['images_counting_1', 'backflip_count', 'video_demse_captioning_5'],
     },
 ];
