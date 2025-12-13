@@ -12,6 +12,7 @@ export enum FeatureToggle {
     isOlmoASREnabled = 'isOlmoASREnabled',
     isAgentPageEnabled = 'isAgentPageEnabled',
     isModelPageEnabled = 'isModelPageEnabled',
+    isAnnouncementEnabled = 'isAnnouncementEnabled',
     isComparisonPageInternalOnly = 'isComparisonPageInternalOnly',
 }
 
@@ -29,6 +30,7 @@ export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.isOlmoASREnabled]: false,
     [FeatureToggle.isAgentPageEnabled]: false,
     [FeatureToggle.isModelPageEnabled]: false,
+    [FeatureToggle.isAnnouncementEnabled]: false,
     [FeatureToggle.isComparisonPageInternalOnly]: true,
 };
 
@@ -92,6 +94,7 @@ function createToggles(initialToggles = defaultFeatureToggles) {
         isOlmoASREnabled: process.env.VITE_IS_OLMO_ASR_ENABLED,
         isAgentPageEnabled: process.env.VITE_IS_AGENT_PAGE_ENABLED,
         isModelPageEnabled: process.env.VITE_IS_MODEL_PAGE_ENABLED,
+        isAnnouncementEnabled: process.env.VITE_IS_ANNOUNCEMENT_ENABLED,
         isComparisonPageInternalOnly: process.env.VITE_IS_COMPARISON_PAGE_INTERNAL_ONLY,
     });
 

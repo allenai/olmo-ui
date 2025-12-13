@@ -10,6 +10,7 @@ import {
     styled,
 } from '@mui/material';
 import { type ReactNode, useId } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 
@@ -34,7 +35,10 @@ export const ModelSelect = ({
     const selectId = id ?? fallbackId;
     const labelId = selectId + '-label';
 
-    const selectedModelId = maybeSelectedModel ?? models[0]?.id;
+    const [searchParams] = useSearchParams();
+    const searchParamsModelId = searchParams.get('model');
+
+    const selectedModelId = searchParamsModelId ?? maybeSelectedModel ?? models[0]?.id;
 
     return (
         <Box paddingInline={2} paddingBlockEnd={2}>
