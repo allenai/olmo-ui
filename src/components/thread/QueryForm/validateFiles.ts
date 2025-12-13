@@ -70,7 +70,7 @@ export const validateFiles = (
 
     // last validate file sizes as well
     const allFiles = Array.from(filesByMediaType.values()).flat();
-    const totalFileSize = allFiles.map((f) => f.size).reduce((a, c) => a + c);
+    const totalFileSize = allFiles.map((f) => f.size).reduce((a, c) => a + c, 0);
 
     if (totalFileSize > options.maxTotalFileSize) {
         return `Size of ${pluralize(allFiles.length, 'file')} (${formatFileSize(totalFileSize)}) exceeds maximum of ${formatFileSize(options.maxTotalFileSize)}`;
