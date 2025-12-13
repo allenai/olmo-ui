@@ -13,6 +13,21 @@ interface ValidateFilesOptions {
     maxTotalFileSize: number;
 }
 
+const matchesMediaTypeId = (file: File, acceptedFileTypes: string[]): string | false => {
+    for (const mediaConfig of mediaTypeList) {
+        // check if this config is in our accepted type list from model config
+        const isMediaTypeAccepted = typeMatchesAllowedTypes(mediaConfig.accept, acceptedFileTypes);
+
+        if (isMediaTypeAccepted) {
+            // return the type mediaConfig id if its valid;
+            if (typeMatchesAllowedTypes(file.type, mediaConfig.accept)) {
+                return mediaConfig.id;
+            }
+        }
+    }
+    return false;
+};
+
 export const validateFiles = (
     fileList: FileList | undefined | null,
     options: ValidateFilesOptions
@@ -26,33 +41,30 @@ export const validateFiles = (
 
     const filesByMediaType = new Map<string, File[]>();
 
-    for (const file of fileList) {
-        for (const mediaConfig of mediaTypeList) {
-            const isMediaTypeAccepted = typeMatchesAllowedTypes(
-                mediaConfig.accept,
-                acceptedFileTypes
-            );
+    const disallowedFileTypes: string[] = [];
 
-            if (isMediaTypeAccepted) {
-                // save map of types of files -- so that we can validate independant values for
-                // each type (right now, just quantity)
-                if (typeMatchesAllowedTypes(file.type, mediaConfig.accept)) {
-                    const existingFiles = filesByMediaType.get(mediaConfig.id);
-                    // add file to accepted mimetype list
-                    if (existingFiles) {
-                        existingFiles.push(file);
-                    } else {
-                        filesByMediaType.set(mediaConfig.id, [file]);
-                    }
-                    break;
-                }
+    for (const file of fileList) {
+        const mediaTypeId = matchesMediaTypeId(file, acceptedFileTypes);
+        if (mediaTypeId) {
+            const existingFiles = filesByMediaType.get(mediaTypeId);
+            // add file to accepted mimetype list
+            if (existingFiles) {
+                existingFiles.push(file);
+            } else {
+                filesByMediaType.set(mediaTypeId, [file]);
             }
+        } else {
+            disallowedFileTypes.push(file.type);
         }
+    }
+
+    if (disallowedFileTypes.length) {
+        return `Unsupported file ${pluralize(disallowedFileTypes.length, 'type')} ${disallowedFileTypes.join(',')}.`;
     }
 
     // error if not allowed to mix different mimeType
     if (filesByMediaType.size > 1 && !options.canMixFileTypes) {
-        return `Errors only one of "${acceptedFileTypes.join(', ')}" allowed in a single message.`;
+        return `Only one of "${acceptedFileTypes.join(', ')}" allowed in a single message.`;
     }
 
     // check aginst mediaTypeList (mimeType configs, which currently includes hard coded values, but should come from config)
