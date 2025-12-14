@@ -24,11 +24,17 @@ export const isModelVisible = (model: Model) => model.is_visible;
 
 export const isModelAvailable = (model: Model) => model.is_visible && !model.is_deprecated;
 
+export const isModelPubliclyAvailable = (model: Model): boolean =>
+    model.is_visible && !model.is_deprecated && !model.internal;
+
 export const modelById = (modelId: string | undefined) => (model: Model) => model.id === modelId;
 
 export const selectAvailableModels = (models: readonly Model[]) => {
     return models.filter(isModelAvailable);
 };
+
+export const selectPubliclyAvailable = (models: readonly Model[]): Model[] =>
+    models.filter(isModelPubliclyAvailable);
 
 export const selectModelById =
     (modelId: string | undefined, availableOnly: boolean = true) =>
