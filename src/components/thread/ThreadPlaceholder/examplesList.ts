@@ -1,51 +1,26 @@
 export const examplesList = [
     {
-        prefix: 'molmo2-4b-track-count-v4-point-pretrain',
-        introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
-    },
-    {
-        prefix: 'molmo-2-4b-general-checkpoint',
-        introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
-    },
-    {
-        prefix: 'molmo2-4b-point-sft-v5',
-        introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
-    },
-    {
-        prefix: 'molmo2-4b-joint-sft-v5',
-        introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
-    },
-    {
-        prefix: 'molmo2-8b-joint-sft-v5',
-        introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
-    },
-    {
         prefix: 'molmo2-8b-track',
         introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['video_tracking_4', 'video_tracking_5', 'skier_track'],
+            'Start with one of these sample prompts, or upload a video and ask Molmo to track it below. 8fps works best for video tracking - to try all other capabilities, choose 2fps from the dropdown',
+        templateIds: ['video_tracking_7', 'video_tracking_8', 'skier_track'],
     },
     {
         prefix: 'molmo2-4b-track',
         introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['video_tracking_4', 'video_tracking_5', 'skier_track'],
+            'Start with one of these sample prompts, or upload a video and ask Molmo to track it below. 8fps works best for video tracking - to try all other capabilities, choose 2fps from the dropdown',
+        templateIds: ['video_tracking_7', 'video_tracking_8', 'skier_track'],
     },
-    // add entries like the one below to test in localdev
     {
-        prefix: 'molmo2-',
+        prefix: 'molmo2-8b',
         introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
+            'Start with one of these sample prompts, or upload an image/ video and ask a question below. 2fps is best for all features other than video tracking. To try video tracking, choose 8fps from the dropdown',
+        templateIds: ['images_counting_1', 'backflip_count', 'video_demse_captioning_5'],
+    },
+    {
+        prefix: 'molmo2-4b',
+        introText:
+            'Start with one of these sample prompts, or upload an image/ video and ask a question below. 2fps is best for all features other than video tracking. To try video tracking, choose 8fps from the dropdown',
         templateIds: ['images_counting_1', 'backflip_count', 'video_demse_captioning_5'],
     },
 ];
