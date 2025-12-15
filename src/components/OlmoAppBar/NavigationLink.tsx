@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { SvgIconComponent } from '@mui/icons-material';
 import {
     ListItem,
@@ -8,7 +9,7 @@ import {
     SxProps,
     Theme,
 } from '@mui/material';
-import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
+import type { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 import { Focusable } from 'react-aria-components';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
@@ -30,26 +31,39 @@ export const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof L
     />
 );
 
+type HrefOrOnClick =
+    | {
+          href?: never;
+          onClick?: MouseEventHandler<HTMLElement>;
+      }
+    | { href: string; onClick?: never };
+
+type DisclosureIconOrText =
+    | {
+          DisclosureIcon: SvgIconComponent;
+          experimental?: boolean;
+          disclosureText?: never;
+      }
+    | {
+          DisclosureIcon?: never;
+          experimental?: never;
+          disclosureText?: string;
+      };
+
 type NavigationLinkProps = PropsWithChildren & {
     buttonId?: string;
     icon?: ReactNode;
     selected?: boolean;
     isExternalLink?: boolean;
     variant?: 'default' | 'footer';
-    DisclosureIcon?: SvgIconComponent;
     experimental?: boolean;
     inset?: boolean;
     dense?: boolean;
     linkProps?: Partial<ListItemButtonProps>;
     sx?: SxProps<Theme>;
     textSx?: SxProps<Theme>;
-} & (
-        | {
-              href?: never;
-              onClick?: MouseEventHandler<HTMLElement>;
-          }
-        | { href: string; onClick?: never }
-    );
+} & HrefOrOnClick &
+    DisclosureIconOrText;
 
 export const NavigationLink = ({
     icon,
@@ -59,12 +73,13 @@ export const NavigationLink = ({
     selected,
     variant = 'default',
     DisclosureIcon,
-    experimental = false,
+    experimental,
+    disclosureText,
     inset,
     linkProps = {},
     sx,
     textSx,
-}: NavigationLinkProps) => {
+}: NavigationLinkProps): ReactNode => {
     const isInternalLink = href != null && href.startsWith('/');
 
     const linkPropsMerged = {
@@ -73,7 +88,7 @@ export const NavigationLink = ({
             ? {}
             : {
                   href,
-                  target: href == null ? undefined : isInternalLink ? '_self' : '_blank',
+                  target: isInternalLink ? '_self' : '_blank',
               }),
     };
 
@@ -146,8 +161,8 @@ export const NavigationLink = ({
                 }}>
                 {children}
             </ListItemText>
-            <NavigationListItemIcon>
-                {DisclosureIcon ? (
+            {DisclosureIcon ? (
+                <NavigationListItemIcon>
                     <DisclosureIcon
                         data-experimental={experimental || undefined}
                         sx={{
@@ -160,8 +175,9 @@ export const NavigationLink = ({
                             },
                         }}
                     />
-                ) : null}
-            </NavigationListItemIcon>
+                </NavigationListItemIcon>
+            ) : null}
+            {disclosureText ? <DisclosureChip>{disclosureText}</DisclosureChip> : null}
         </ListItemButton>
     );
 
@@ -179,4 +195,22 @@ export const NavigationLink = ({
             )}
         </ListItem>
     );
+};
+
+const disclosureChipStyles = css({
+    display: 'flex', // inline-block
+    textTransform: 'uppercase',
+    fontSize: '[0.75rem]',
+    lineHeight: '1.1',
+    paddingBlock: '1',
+    paddingInline: '2',
+    borderRadius: 'full',
+    border: '1px solid',
+    borderColor: 'accent.secondary',
+    color: 'accent.secondary',
+    fontWeight: 'bold',
+});
+
+const DisclosureChip = ({ children }: PropsWithChildren): ReactNode => {
+    return <span className={disclosureChipStyles}>{children}</span>;
 };

@@ -8,5 +8,16 @@ export const FEATURED_MODELS = [
         image: roundedShapes,
     },
     { id: 'olmo-3.1-32b-think', image: cubes },
-    { id: 'olmo-3-7b-instruct', image: waves },
+    { id: 'olmo-3.1-32b-instruct', image: waves },
+];
+
+export const FEATURED_FAMILIES = [
+    {
+        firstModelWith: 'molmo2-8b',
+        name: 'Molmo 2',
+    },
+    {
+        firstModelWith: 'olmo-3',
+        name: 'Olmo 3.1',
+    },
 ];

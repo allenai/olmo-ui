@@ -87,7 +87,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const { data: promptTemplate } = usePromptTemplateById(initialState?.promptTemplateId);
 
     const navigate = useNavigate();
-    const [_, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
 
     useSetShareableForSingleThread(threadId);
@@ -214,6 +214,15 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const closeModelSwitchWarning = useCallback(() => {
         setShouldShowModelSwitchWarning(false);
     }, []);
+
+    useEffect(() => {
+        const queryStringModelId = searchParams.get('model');
+        if (queryStringModelId && selectedModelId !== queryStringModelId) {
+            if (allModels.some(({ id }) => id === queryStringModelId)) {
+                selectModel(queryStringModelId);
+            }
+        }
+    }, [allModels, searchParams, selectModel, selectedModelId]);
 
     const { executeRecaptcha } = useReCaptcha();
 

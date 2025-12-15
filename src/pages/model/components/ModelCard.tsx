@@ -1,7 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { ArrowOutward } from '@mui/icons-material';
 import { Typography } from '@mui/material';
-import { generatePath } from 'react-router-dom';
 
 import {
     LinkCard,
@@ -40,7 +39,7 @@ export const ModelCard = ({
     const isExternal = type === 'link';
     const url = isExternal
         ? informationUrl ?? '/' // we probably shouldn't be showing a card without an informationUrl, but it _is_ optional
-        : generatePath(links.playground) + '?' + new URLSearchParams({ model: id }).toString();
+        : links.selectModel(id);
 
     return (
         <LinkCard url={url} mediaUrl={imageUrl} alt={name} color={color} className={className}>

@@ -18,6 +18,8 @@ export const links = {
     deleteModel: (modelId: string) => `/admin/models/${modelId}`,
     home: '/',
     playground: '/',
+    selectModel: (model?: string) =>
+        model != null ? `${links.playground}?${new URLSearchParams({ model })}` : links.playground,
     comparison: '/comparison',
     thread: (threadId: string) => `/thread/${threadId}`,
     faqs: '/faqs',

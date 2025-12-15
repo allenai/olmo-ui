@@ -5,6 +5,7 @@ import { useLoaderData } from 'react-router-dom';
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
 import { PageContainer } from '@/components/PageContainer';
+import { isModelPubliclyAvailable } from '@/components/thread/ModelSelect/useModels';
 import { LinkCardList } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCardList';
 import { type ModelPageData } from '@/pages/model/modelPageLoader';
 
@@ -35,9 +36,7 @@ const agentCardListClassName = css({
 
 export const ModelPage = () => {
     const modelPageData = useLoaderData() as ModelPageData;
-    const publicModels = modelPageData.models.filter((model) => {
-        return !model.internal;
-    });
+    const publicModels = modelPageData.models.filter(isModelPubliclyAvailable);
 
     const featuredModels = FEATURED_MODELS.map(({ id, image }) => {
         const model = publicModels.find((model) => model.id.toLocaleLowerCase() === id);
@@ -69,7 +68,7 @@ export const ModelPage = () => {
                         <Typography variant="h1" component="h2" sx={{ textAlign: 'center' }}>
                             Models
                         </Typography>
-                        {featuredModels.length ? (
+                        {featuredModels.length > 0 ? (
                             <>
                                 <Typography variant="h3" component="p">
                                     Our featured models
@@ -87,28 +86,24 @@ export const ModelPage = () => {
                                         />
                                     ))}
                                 </LinkCardList>
+                                <Typography variant="h3" sx={{ marginTop: 3 }}>
+                                    Explore more
+                                </Typography>
                             </>
                         ) : null}
-                        {featuredModels.length && nonFeaturedModels.length ? (
-                            <Typography variant="h3" sx={{ marginTop: 3 }}>
-                                Explore more
-                            </Typography>
-                        ) : null}
-                        {nonFeaturedModels.length ? (
-                            <LinkCardList columns="two" className={agentCardListClassName}>
-                                {nonFeaturedModels.map((model) => (
-                                    <ModelCard
-                                        key={model.name}
-                                        type="playground"
-                                        id={model.id}
-                                        name={model.name}
-                                        description={model.description}
-                                        informationUrl={model.information_url}
-                                        color="faded"
-                                    />
-                                ))}
-                            </LinkCardList>
-                        ) : null}
+                        <LinkCardList columns="two" className={agentCardListClassName}>
+                            {nonFeaturedModels.map((model) => (
+                                <ModelCard
+                                    key={model.name}
+                                    type="playground"
+                                    id={model.id}
+                                    name={model.name}
+                                    description={model.description}
+                                    informationUrl={model.information_url}
+                                    color="faded"
+                                />
+                            ))}
+                        </LinkCardList>
                     </div>
                 </ContentContainer>
             </PageContainer>

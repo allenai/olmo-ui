@@ -6,17 +6,24 @@ import { ImageSpinner } from '@/components/ImageSpinner';
 import { ToolCallDisplay } from '@/components/toolCalling/ToolCallDisplay';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 
 import { LegalNotice } from '../LegalNotice/LegalNotice';
 import { usePromptTemplates } from '../promptTemplates/usePromptTemplates';
+import { Announcement } from './Announcement';
 import { examplesList } from './examplesList';
 import { ModelExampleList } from './ModelExampleList';
 import { ThreadPlaceholderContentWrapper } from './ThreadPlaceholderContentWrapper';
+
+const ANNOUNCEMENT_ID = 'molmo2-8b';
+const ANNOUNCEMENT_NAME = 'Molmo 2';
 
 export const ThreadPlaceholder = () => {
     const { remoteState, getThreadViewModel } = useQueryContext();
     const selectedModel = getThreadViewModel();
     const isLoading = remoteState === RemoteState.Loading;
+
+    const { isAnnouncementEnabled } = useFeatureToggles();
 
     const modelExamples = examplesList.find((item) =>
         selectedModel ? selectedModel.id.startsWith(item.prefix) : false
@@ -30,6 +37,9 @@ export const ThreadPlaceholder = () => {
         <ThreadPlaceholderContentWrapper>
             <Box gridColumn="1/-1">
                 <LegalNotice />
+                {isAnnouncementEnabled ? (
+                    <Announcement modelId={ANNOUNCEMENT_ID} modelName={ANNOUNCEMENT_NAME} />
+                ) : null}
             </Box>
             <Box
                 display="flex"
@@ -55,8 +65,8 @@ export const ThreadPlaceholder = () => {
                         promptTemplates={exampleTemplates}
                     />
                 )}
-                <Box minHeight={40} textAlign="center">
-                    {!!selectedModel?.information_url && (
+                {!!selectedModel?.information_url && (
+                    <Box minHeight={40} textAlign="center">
                         <ButtonLink
                             variant="text"
                             color="primary"
@@ -67,8 +77,8 @@ export const ThreadPlaceholder = () => {
                             endIcon={<ArrowOutwardOutlined />}>
                             {`Read more about ${selectedModel.name}`}
                         </ButtonLink>
-                    )}
-                </Box>
+                    </Box>
+                )}
                 <ToolCallDisplay />
             </Box>
             <Typography variant="body1">

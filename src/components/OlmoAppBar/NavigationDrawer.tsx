@@ -16,11 +16,11 @@ import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { AgentIcon } from '../assets/AgentIcon';
-import { ModelIcon } from '../assets/ModelIcon';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { NavigationFooter } from './Footer/NavigationFooter';
 import { HomeLink } from './HomeLink';
+import { ModelNavigation } from './ModelNavigation';
 import { NavigationLink } from './NavigationLink';
 import { NewChatButton } from './NewChatButton';
 
@@ -53,8 +53,7 @@ export const NavigationDrawer = ({
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const userAuthInfo = useUserAuthInfo();
-    const { isModelPageEnabled, isAgentPageEnabled, isComparisonPageInternalOnly } =
-        useFeatureToggles();
+    const { isAgentPageEnabled, isComparisonPageInternalOnly } = useFeatureToggles();
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
@@ -83,22 +82,10 @@ export const NavigationDrawer = ({
                     }}>
                     <Stack component="ul" padding="0" margin="0" gap={1}>
                         <NewChatButton />
-                        {isModelPageEnabled ? (
-                            <NavigationLink
-                                icon={<ModelIcon />}
-                                selected={curriedDoesMatchPath(links.model.root)}
-                                href={links.model.root}>
-                                Models
-                            </NavigationLink>
-                        ) : null}
-                        <NavigationLink
-                            onClick={() => {
-                                toggleDrawer(HISTORY_DRAWER_ID);
-                            }}
-                            icon={<SortIcon />}
-                            DisclosureIcon={ArrowForwardIosOutlined}>
-                            Thread history
-                        </NavigationLink>
+                        <ModelNavigation
+                            doesMatchPath={curriedDoesMatchPath}
+                            showFeaturedFamilies
+                        />
                         {isAgentPageEnabled ? (
                             <NavigationLink
                                 icon={<AgentIcon />}
@@ -120,6 +107,14 @@ export const NavigationDrawer = ({
                                 Compare models
                             </NavigationLink>
                         )}
+                        <NavigationLink
+                            onClick={() => {
+                                toggleDrawer(HISTORY_DRAWER_ID);
+                            }}
+                            icon={<SortIcon />}
+                            DisclosureIcon={ArrowForwardIosOutlined}>
+                            Thread history
+                        </NavigationLink>
                         <NavigationLink
                             icon={<HelpOutline />}
                             selected={curriedDoesMatchPath(links.faqs)}
