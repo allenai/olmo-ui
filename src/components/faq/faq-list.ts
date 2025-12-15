@@ -60,7 +60,7 @@ export const faqs: FAQCategory[] = [
 
             {
                 question: 'Which models on the Playground are multimodal and how do I use them?',
-                answer: 'Models with the "Multimodal" label can handle non-text input. The "Molmo" models require an image or video file to be sent with the first message. Note that Molmo models don’t allow additional files to be sent with follow-up messages after a thread has been started. If you would like to query Molmo about another image or video, start a new thread.',
+                answer: 'Models with the "Multimodal" label can handle non-text input. The original "Molmo" model requires an image or video file to be sent with the first message. Note that Molmo models don’t allow additional files to be sent with follow-up messages after a thread has been started. If you would like to query a Molmo model about another image or video, start a new thread.',
             },
         ],
     },
