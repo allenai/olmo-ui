@@ -160,8 +160,8 @@ export const TermsAndDataCollectionModal = ({
                                             ;
                                         </li>
                                         <li>
-                                            you will not upload personal, sensitive, confidential,
-                                            or proprietary information to Playground;
+                                            you will not submit or upload personal, sensitive,
+                                            confidential, or proprietary information to Playground;
                                         </li>
                                         <li>
                                             you possess all necessary rights and authority to upload
