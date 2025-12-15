@@ -14,6 +14,7 @@ export const ControlButton = styled(Button, {
             },
         },
         _disabled: {
+            cursor: 'auto',
             color: 'elements.disabled.fill',
         },
     },

@@ -3,6 +3,7 @@ import { Close } from '@mui/icons-material';
 import type { ReactNode } from 'react';
 import { Button } from 'react-aria-components';
 
+import { PromptButton } from '../PromptButton';
 import { ThumbnailImage } from './ThumbnailImage';
 import { VideoThumbnail } from './VideoThumbnail';
 
@@ -20,7 +21,7 @@ const thumbnailContainer = css({
 
 const removeButton = css({
     position: 'absolute',
-    display: 'flex',
+
     zIndex: '[1]',
     top: '[0.5rem]',
     right: '[0.5rem]',
@@ -29,24 +30,30 @@ const removeButton = css({
     background: 'dark-teal.100', // always green
     border: '[2px solid]',
     borderColor: 'cream.50',
-    borderRadius: 'full',
-    aspectRatio: '1',
-    cursor: 'pointer',
 
     _focusVisible: {
-        borderColor: 'cream.100',
+        outline: 'none', // using border instead
+        borderColor: 'green.100',
     },
 
-    color: 'elements.primary.contrast',
     fontSize: '[1rem]',
+    color: 'elements.primary.contrast',
 
-    _icon: {}, // > svg
+    _disabled: {
+        borderColor: '[currentColor/80]',
+    },
+    _hover: {
+        _notDisabled: {
+            color: 'cream.60',
+        },
+    },
 });
 
 interface ThumbnailProps {
     filename: string;
     type: string;
     src: string;
+    isDisabled?: boolean;
     onPressRemove?: () => void;
     onClick?: () => void;
 }
@@ -55,39 +62,54 @@ export const Thumbnail = ({
     filename,
     type,
     src,
+    isDisabled,
     onPressRemove,
     onClick,
 }: ThumbnailProps): ReactNode => {
     const alt = `User file ${filename}`;
 
+    const computedOnClick = !isDisabled ? onClick : undefined;
+
     const Wrapper = onClick ? Button : 'div';
     return (
         <Wrapper
             className={thumbnailContainer}
-            onClick={onClick}
-            style={onClick ? { cursor: 'pointer' } : undefined}>
+            onClick={computedOnClick}
+            style={computedOnClick ? { cursor: 'pointer' } : undefined}>
             {type.startsWith('image/') ? (
                 <ThumbnailImage alt={alt} src={src} title={filename} />
             ) : (
                 <VideoThumbnail videoUrl={src} alt={alt} title={filename} />
             )}
-            {onPressRemove && <RemoveButton filename={filename} onPressRemove={onPressRemove} />}
+            {onPressRemove && (
+                <RemoveButton
+                    isDisabled={isDisabled}
+                    filename={filename}
+                    onPressRemove={onPressRemove}
+                />
+            )}
         </Wrapper>
     );
 };
 
 type RemoveButtonProps = {
     filename: string;
+    isDisabled?: boolean;
     onPressRemove: () => void;
 };
 
-export const RemoveButton = ({ filename, onPressRemove }: RemoveButtonProps): ReactNode => {
+export const RemoveButton = ({
+    filename,
+    isDisabled,
+    onPressRemove,
+}: RemoveButtonProps): ReactNode => {
     return (
-        <Button
+        <PromptButton
             className={removeButton}
+            isDisabled={isDisabled}
             onPress={onPressRemove}
             aria-label={`Remove ${filename} from files to upload`}>
             <Close fontSize="inherit" />
-        </Button>
+        </PromptButton>
     );
 };

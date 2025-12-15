@@ -324,6 +324,7 @@ export const QueryFormController = ({
                                 render={({ field: { onChange, value } }) => {
                                     return (
                                         <VideoPointingInput
+                                            isDisabled={isSelectedThreadLoading}
                                             isPointSelectDisabled={
                                                 !isInternalUser &&
                                                 !!getTrackingHiddenInfo(selectedModelId)
@@ -359,6 +360,7 @@ export const QueryFormController = ({
                                 files={files}
                                 onRemoveFile={handleRemoveFile}
                                 acceptedFileTypes={fileUploadProps.acceptedFileTypes}
+                                isDisabled={isSelectedThreadLoading}
                             />
                         )}
                         <PromptContainer
@@ -382,6 +384,7 @@ export const QueryFormController = ({
                                     />
                                     {isTranscribing ? <Waveform /> : null}
                                     <AudioInputButton
+                                        isDisabled={isSelectedThreadLoading}
                                         onTranscriptionBegin={() => {
                                             setTempPlaceholder('Transcribing...');
                                         }}
@@ -434,7 +437,11 @@ export const QueryFormController = ({
                                         onKeyDown={handleKeyDown}
                                         aria-label={placeholderText}
                                         placeholder={tempPlaceholder || placeholderText}
-                                        isDisabled={isTranscribing || isProcessingAudio}
+                                        isDisabled={
+                                            isSelectedThreadLoading ||
+                                            isTranscribing ||
+                                            isProcessingAudio
+                                        }
                                     />
                                 )}
                             />

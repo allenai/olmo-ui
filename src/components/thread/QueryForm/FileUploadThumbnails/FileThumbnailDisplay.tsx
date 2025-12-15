@@ -25,12 +25,14 @@ interface FileThumbnailDisplayProps {
     files?: FileList | null;
     onRemoveFile: (fileToRemove: File) => void;
     acceptedFileTypes?: string | string[] | Set<string>;
+    isDisabled?: boolean;
 }
 
 export const FileUploadThumbnails = ({
     files,
     onRemoveFile,
     acceptedFileTypes = [],
+    isDisabled,
 }: FileThumbnailDisplayProps): ReactNode => {
     const getObjectUrl = useObjectUrls();
 
@@ -56,6 +58,7 @@ export const FileUploadThumbnails = ({
                         type={file.type}
                         filename={file.name}
                         src={url}
+                        isDisabled={isDisabled}
                         onPressRemove={() => {
                             onRemoveFile(file);
                         }}

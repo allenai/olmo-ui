@@ -159,8 +159,8 @@ describe('QueryForm', () => {
         const textfield = screen.getByRole('textbox', { name: 'Message Tülu' });
 
         expect(textfield).toBeVisible();
-        // Text field should be enabled during streaming to allow typing during generation
-        expect(textfield).toBeEnabled();
+        // input should be disabled while submitting.
+        expect(textfield).toBeDisabled();
 
         // Verify the stop button appears when canPause is true
         await waitFor(() => {

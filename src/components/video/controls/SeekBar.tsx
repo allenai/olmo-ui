@@ -15,7 +15,7 @@ interface SeekBarProps {
 }
 
 export const SeekBar = memo(function SeekBar({ frameStyle }: SeekBarProps) {
-    const { framePoints } = useControls();
+    const { framePoints, isDisabled } = useControls();
     const frame = useCurrentFrame();
     const { fps, durationInFrames, handleKeyDown } = useTimeline();
     const { containerRef, dragging, handlePointerDown } = useSeekBarDrag();
@@ -61,6 +61,7 @@ export const SeekBar = memo(function SeekBar({ frameStyle }: SeekBarProps) {
                 ) : null}
                 <Button
                     id="knob"
+                    isDisabled={isDisabled}
                     onPointerDown={handlePointerDown}
                     className={cx(seekBarClassName.knob, seekBarClassName.knobRing)}
                     data-dragging={String(dragging)}

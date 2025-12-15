@@ -1,21 +1,6 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
-import { AddCircleRounded } from '@mui/icons-material';
-import { Button } from 'react-aria-components';
+import { Add } from '@mui/icons-material';
 
-const varnishPlaygroundButtonStyles = css({
-    display: 'flex',
-    cursor: 'pointer',
-    padding: '1',
-    borderRadius: 'full',
-    color: 'accent.secondary',
-    _hover: {
-        _notDisabled: {
-            color: 'teal.100',
-        },
-    },
-    _focusVisible: { outline: '1px solid' },
-    _disabled: { color: 'elements.disabled.fill' },
-});
+import { PromptButton } from '../PromptButton';
 
 interface AddMediaButtonProps {
     isDisabled?: boolean;
@@ -29,13 +14,12 @@ export const AddMediaButton = ({
     'aria-label': ariaLabel,
 }: AddMediaButtonProps) => {
     return (
-        <Button
+        <PromptButton
             onPress={onPress}
             isDisabled={isDisabled}
-            className={varnishPlaygroundButtonStyles}
             aria-label={ariaLabel}
             data-testid="file-upload-btn">
-            <AddCircleRounded color="inherit" />
-        </Button>
+            <Add color="inherit" />
+        </PromptButton>
     );
 };
