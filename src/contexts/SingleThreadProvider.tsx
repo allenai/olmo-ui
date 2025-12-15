@@ -23,6 +23,7 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 import { links } from '@/Links';
 import { PlaygroundLoaderData } from '@/pages/playgroundLoader';
 import { PARAM_SELECTED_MODEL } from '@/pages/queryParameterConsts';
+import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
 import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
 import { StreamEventRegistryProvider } from './StreamEventRegistry';
@@ -44,7 +45,6 @@ import { useCanSubmitThread } from './util/hooks/useCanSubmit';
 import { useChatStreamMessage } from './util/hooks/useChatStreamMessage';
 import { useOnSingleChatSubmit } from './util/hooks/useOnSingleChatSubmit';
 import { useSetShareableForSingleThread } from './util/hooks/useSetShareableForSingleThread';
-import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
 type SingleThreadProviderProps = PropsWithChildren<{
     initialState?: PlaygroundLoaderData;
@@ -97,6 +97,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     // abort stream on navigation
     useAbortStreamOnNavigation({
+        basePath: links.thread(''),
+        threadId,
         abortStreams: streamMessage.abortAllStreams,
     });
 
