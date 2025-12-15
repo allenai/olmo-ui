@@ -68,7 +68,7 @@ export const ModelPage = () => {
                         <Typography variant="h1" component="h2" sx={{ textAlign: 'center' }}>
                             Models
                         </Typography>
-                        {featuredModels.length ? (
+                        {featuredModels.length > 0 ? (
                             <>
                                 <Typography variant="h3" component="p">
                                     Our featured models
@@ -86,28 +86,24 @@ export const ModelPage = () => {
                                         />
                                     ))}
                                 </LinkCardList>
-                            </>
-                        ) : null}
-                        {featuredModels.length > 0 && nonFeaturedModels.length ? (
-                            <>
                                 <Typography variant="h3" sx={{ marginTop: 3 }}>
                                     Explore more
                                 </Typography>
-                                <LinkCardList columns="two" className={agentCardListClassName}>
-                                    {nonFeaturedModels.map((model) => (
-                                        <ModelCard
-                                            key={model.name}
-                                            type="playground"
-                                            id={model.id}
-                                            name={model.name}
-                                            description={model.description}
-                                            informationUrl={model.information_url}
-                                            color="faded"
-                                        />
-                                    ))}
-                                </LinkCardList>
                             </>
                         ) : null}
+                        <LinkCardList columns="two" className={agentCardListClassName}>
+                            {nonFeaturedModels.map((model) => (
+                                <ModelCard
+                                    key={model.name}
+                                    type="playground"
+                                    id={model.id}
+                                    name={model.name}
+                                    description={model.description}
+                                    informationUrl={model.information_url}
+                                    color="faded"
+                                />
+                            ))}
+                        </LinkCardList>
                     </div>
                 </ContentContainer>
             </PageContainer>
