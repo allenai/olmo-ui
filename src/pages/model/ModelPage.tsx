@@ -40,7 +40,7 @@ export const ModelPage = () => {
     });
 
     const featuredModels = FEATURED_MODELS.map(({ id, image }) => {
-        const model = publicModels.find((model) => model.id.toLocaleLowerCase().startsWith(id));
+        const model = publicModels.find((model) => model.id.toLocaleLowerCase() === id);
         // return both or neither
         return model
             ? {
