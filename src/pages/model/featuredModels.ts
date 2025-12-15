@@ -13,7 +13,7 @@ export const FEATURED_MODELS = [
 
 export const FEATURED_FAMILIES = [
     {
-        firstModelWith: 'molmo-2',
+        firstModelWith: 'molmo2-8b',
         name: 'Molmo 2',
     },
     {
