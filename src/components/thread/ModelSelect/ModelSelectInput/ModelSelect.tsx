@@ -16,7 +16,7 @@ import type { Model } from '@/api/playgroundApi/additionalTypes';
 
 import { ModelSelectMenuItem } from './ModelSelectMenuItem';
 
-const NEW_MODELS_LIST: string[] = ['olmo-3', 'molmo2'];
+const NEW_MODELS_LIST: string[] = ['olmo-3.1', 'molmo2'];
 
 export interface ModelSelectProps extends Pick<SelectProps<string>, 'defaultOpen'> {
     models: readonly Model[];
