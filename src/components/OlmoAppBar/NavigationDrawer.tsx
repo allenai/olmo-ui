@@ -82,7 +82,10 @@ export const NavigationDrawer = ({
                     }}>
                     <Stack component="ul" padding="0" margin="0" gap={1}>
                         <NewChatButton />
-                        <ModelNavigation doesMatchPath={curriedDoesMatchPath} />
+                        <ModelNavigation
+                            doesMatchPath={curriedDoesMatchPath}
+                            showFeaturedFamilies
+                        />
                         {isAgentPageEnabled ? (
                             <NavigationLink
                                 icon={<AgentIcon />}

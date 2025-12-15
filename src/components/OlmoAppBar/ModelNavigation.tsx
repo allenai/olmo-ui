@@ -9,9 +9,10 @@ import { NavigationLink } from './NavigationLink';
 
 interface ModelNavigationProps {
     doesMatchPath: (...paths: string[]) => boolean;
+    showFeaturedFamilies?: boolean;
 }
 
-export const ModelNavigation = ({ doesMatchPath }: ModelNavigationProps) => {
+export const ModelNavigation = ({ doesMatchPath, showFeaturedFamilies }: ModelNavigationProps) => {
     const { isModelPageEnabled } = useFeatureToggles();
     const models = useModels({
         select: selectAvailableModels,
@@ -34,19 +35,20 @@ export const ModelNavigation = ({ doesMatchPath }: ModelNavigationProps) => {
                 href={links.model.root}>
                 Models
             </NavigationLink>
-            {modelsToShow.map(({ modelId, name }) => (
-                <NavigationLink
-                    key={modelId}
-                    href={links.selectModel(modelId)}
-                    disclosureText="New"
-                    sx={(theme) => ({
-                        [theme.breakpoints.down(MEDIUM_LAYOUT_BREAKPOINT)]: {
-                            display: 'none',
-                        },
-                    })}>
-                    {name}
-                </NavigationLink>
-            ))}
+            {showFeaturedFamilies &&
+                modelsToShow.map(({ modelId, name }) => (
+                    <NavigationLink
+                        key={modelId}
+                        href={links.selectModel(modelId)}
+                        disclosureText="New"
+                        sx={(theme) => ({
+                            [theme.breakpoints.down(MEDIUM_LAYOUT_BREAKPOINT)]: {
+                                display: 'none',
+                            },
+                        })}>
+                        {name}
+                    </NavigationLink>
+                ))}
         </>
     );
 };

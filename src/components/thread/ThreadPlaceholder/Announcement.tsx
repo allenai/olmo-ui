@@ -15,13 +15,19 @@ const announcementClassName = css({
         _dark: 'dark-teal.100',
     },
     boxShadow: '[0 2px 2px rgba(0, 0, 0, 0.15)]',
-    paddingInline: '8',
-    paddingBlock: '4',
+    paddingInline: {
+        base: '4',
+        sm: '8',
+    },
+    paddingBlock: {
+        base: '2',
+        sm: '4',
+    },
     borderRadius: 'lg',
     display: 'grid',
     gap: '2',
     justifySelf: 'start',
-    fontSize: 'lg',
+    fontSize: 'md',
     height: '[min-content]',
     gridColumn: '1/-1',
     textAlign: 'center',
@@ -48,7 +54,7 @@ export const Announcement = ({ modelName, modelId }: AnnouncementProps) => {
                     {modelName}
                 </Link>{' '}
                 our new multimodal model.{` `}
-                Checkout out all our{` `}
+                And check out our other{` `}
                 <Link to={links.model.root} className={linkClassName}>
                     models
                 </Link>
