@@ -26,7 +26,7 @@ export const ThreadPlaceholder = () => {
     const { isAnnouncementEnabled } = useFeatureToggles();
 
     const modelExamples = examplesList.find((item) =>
-        selectedModel ? selectedModel.id.startsWith(item.prefix) : false
+        selectedModel ? selectedModel.id === item.modelId : false
     );
     const { data: exampleTemplates } = usePromptTemplates({
         select: (allTemplates) =>

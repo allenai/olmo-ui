@@ -1,51 +1,26 @@
 export const examplesList = [
     {
-        prefix: 'molmo2-4b-track-count-v4-point-pretrain',
+        modelId: 'molmo2-8b-track',
         introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
+            'Start with one of these sample prompts, or upload a video and ask Molmo to track it below. 8fps interpolation works best for video tracking - to try all other capabilities, choose the standard option from the model dropdown',
+        templateIds: ['video_tracking_7', 'video_tracking_8', 'skier_track'],
     },
     {
-        prefix: 'molmo-2-4b-general-checkpoint',
+        modelId: 'molmo2-4b-track',
         introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
+            'Start with one of these sample prompts, or upload a video and ask Molmo to track it below. 8fps interpolation works best for video tracking - to try all other capabilities, choose the standard option from the model dropdown',
+        templateIds: ['video_tracking_7', 'video_tracking_8', 'skier_track'],
     },
     {
-        prefix: 'molmo2-4b-point-sft-v5',
+        modelId: 'molmo2-8b',
         introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
+            'Start with one of these sample prompts, or upload an image/ video and ask a question below. 8fps interpolation works best for video tracking. To try video tracking, choose the faster frame rate from the model dropdown',
+        templateIds: ['images_counting_1', 'backflip_count', 'video_demse_captioning_5'],
     },
     {
-        prefix: 'molmo2-4b-joint-sft-v5',
+        modelId: 'molmo2-4b',
         introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
-    },
-    {
-        prefix: 'molmo2-8b-joint-sft-v5',
-        introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['images_counting_1', 'video_tracking_5', 'video_demse_captioning_5'],
-    },
-    {
-        prefix: 'molmo2-8b-track',
-        introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['video_tracking_4', 'video_tracking_5', 'skier_track'],
-    },
-    {
-        prefix: 'molmo2-4b-track',
-        introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
-        templateIds: ['video_tracking_4', 'video_tracking_5', 'skier_track'],
-    },
-    // add entries like the one below to test in localdev
-    {
-        prefix: 'molmo2-',
-        introText:
-            'Start with one of these sample prompts, or upload an image and ask a question below.',
+            'Start with one of these sample prompts, or upload an image/ video and ask a question below. 8fps interpolation works best for video tracking. To try video tracking, choose the faster frame rate from the model dropdown',
         templateIds: ['images_counting_1', 'backflip_count', 'video_demse_captioning_5'],
     },
 ];
