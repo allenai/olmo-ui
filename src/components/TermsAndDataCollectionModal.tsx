@@ -157,34 +157,31 @@ export const TermsAndDataCollectionModal = ({
                                             <TermAndConditionsLink link={links.privacyPolicy}>
                                                 Privacy Policy
                                             </TermAndConditionsLink>
-                                            .
+                                            ;
                                         </li>
                                         <li>
-                                            not to upload personal (e.g. names, addresses),
-                                            sensitive (e.g. health, financial), or
-                                            confidential/proprietary information to Playground.
+                                            you will not upload personal, sensitive, confidential,
+                                            or proprietary information to Playground;
                                         </li>
                                         <li>
-                                            you possess all necessary rights to upload your content
-                                            to Playground and have the authority to grant the
-                                            permissions described here.
+                                            you possess all necessary rights and authority to upload
+                                            content to Playground;
                                         </li>
                                         <li>
-                                            uploads to Playground may not violate any third-party
-                                            intellectual property or privacy rights.
+                                            none of your uploaded content will violate any
+                                            third-party intellectual property or privacy rights; and
                                         </li>
                                         <li>
-                                            Ai2 may use your conversations and uploads to train,
-                                            evaluate, and improve our AI models.
+                                            Ai2 may use your conversations and uploaded content to
+                                            train, evaluate, and improve AI models.
                                         </li>
                                     </ul>
                                 </div>
                                 <div>
                                     <p>
-                                        <strong>Optional Consent:</strong> Help the scientific
-                                        community by allowing us to publish your Playground
-                                        interactions in open, public datasets curated by Ai2 for
-                                        scientific research.
+                                        <strong>Optional Consents:</strong> Help the community by
+                                        allowing Ai2 to publish your Playground interactions in
+                                        open, public datasets curated for scientific research.
                                     </p>
                                 </div>
                                 <Controller
@@ -200,7 +197,8 @@ export const TermsAndDataCollectionModal = ({
                                             <p>
                                                 <strong>Yes, I contribute my conversations.</strong>{' '}
                                                 I consent to having my de-identified text
-                                                conversations published.
+                                                conversations with Playground published in an open,
+                                                public research dataset.
                                             </p>
                                         </Checkbox>
                                     )}
@@ -217,7 +215,11 @@ export const TermsAndDataCollectionModal = ({
                                             onChange={onChange}>
                                             <p>
                                                 <strong>Yes, I contribute my uploads.</strong> I
-                                                consent to having my uploaded content published.
+                                                consent to having content I upload to Playground
+                                                published in an open, public research dataset. I
+                                                affirm that I possess all necessary rights and
+                                                authority to consent to the publication of this
+                                                uploaded content.
                                             </p>
                                         </Checkbox>
                                     )}
@@ -312,10 +314,4 @@ const noWrapClass = css({
 const termsAndConditionsListClass = css({
     padding: '[revert]',
     listStyle: '[revert]',
-});
-
-const termsHeading3 = css({
-    fontSize: 'md',
-    fontWeight: 'bold',
-    margin: '[0]',
 });
