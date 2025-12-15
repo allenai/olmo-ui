@@ -101,7 +101,7 @@ export const faqs: FAQCategory[] = [
             {
                 question:
                     'How can I change my consent to publish my Playground interactions in open, public datasets curated by Ai2 for scientific research? ',
-                answer: 'You can opt out of having your text conversations OR your uploaded content published in open, public research dataset, even after entering and using Playground. Navigate to the "Data collection" menu in your user profile settings, and then select _____ to change your publication consents. Your consent to publication will be applied on a going forward basis from the date of the change. Please note that revocation of consent to publication is not retroactive, and any conversations or uploads contributed before the change will remain in the open, public datasets curated by Ai2. ',
+                answer: 'You can opt out of having your text conversations OR your uploaded content published in open, public research dataset, even after entering and using Playground. Navigate to the "Data collection" menu in your user profile settings, and then select the corresponding option to change your publication consents. Your consent to publication will be applied on a going forward basis from the date of the change. Please note that revocation of consent to publication is not retroactive, and any conversations or uploads contributed before the change will remain in the open, public datasets curated by Ai2. ',
             },
             {
                 question:
