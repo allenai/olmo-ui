@@ -14,18 +14,21 @@ import { FadeOverflowContent } from './widgets/FadeOverflowContent';
 type FormValues = {
     termsAccepted: boolean;
     dataCollectionAccepted: boolean;
+    mediaCollectionAccepted: boolean;
 };
 
 interface TermsAndDataCollectionModalProps {
     onClose?: () => void;
     initialTermsAndConditionsValue?: boolean;
     initialDataCollectionValue?: boolean;
+    initialMediaCollectionValue?: boolean;
 }
 
 export const TermsAndDataCollectionModal = ({
     onClose,
     initialTermsAndConditionsValue,
     initialDataCollectionValue,
+    initialMediaCollectionValue,
 }: TermsAndDataCollectionModalProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
@@ -36,6 +39,7 @@ export const TermsAndDataCollectionModal = ({
     const formContext = useForm<FormValues>({
         defaultValues: {
             dataCollectionAccepted: initialDataCollectionValue,
+            mediaCollectionAccepted: initialMediaCollectionValue,
         },
     });
 
@@ -47,6 +51,10 @@ export const TermsAndDataCollectionModal = ({
             hasAcceptedDataCollection:
                 formValues.dataCollectionAccepted !== initialDataCollectionValue
                     ? formValues.dataCollectionAccepted
+                    : undefined,
+            hasAcceptedMediaCollection:
+                formValues.mediaCollectionAccepted !== initialMediaCollectionValue
+                    ? formValues.mediaCollectionAccepted
                     : undefined,
         } satisfies UpdateUserTermsAndDataCollectionPayload;
 
@@ -118,55 +126,77 @@ export const TermsAndDataCollectionModal = ({
                         Terms of Use & Data Consent
                     </DialogTitle>
                     <FadeOverflowContent>
-                        <DialogContent
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: 2,
-                                paddingInline: {
-                                    xs: 2,
-                                    md: 0,
-                                },
-                                // The combo of this start padding + the title margin made it look like there was too much space between them
-                                paddingBlockStart: 0,
-                            }}>
-                            <p>
-                                By using Playground, you agree:
-                                <ul className={termsAndConditionsListClass}>
-                                    <li>
-                                        to Ai2&apos;s full{' '}
-                                        <TermAndConditionsLink link={links.terms}>
-                                            Terms of Use
-                                        </TermAndConditionsLink>{' '}
-                                        and{' '}
-                                        <TermAndConditionsLink
-                                            link={links.responsibleUseGuidelines}>
-                                            Responsible Use Guidelines
-                                        </TermAndConditionsLink>{' '}
-                                        and acknowledge Ai2&apos;s{' '}
-                                        <TermAndConditionsLink link={links.privacyPolicy}>
-                                            Privacy Policy
-                                        </TermAndConditionsLink>
-                                    </li>
-                                    <li>
-                                        not to{' '}
-                                        <strong>
-                                            submit any personal, sensitive, proprietary, or
-                                            confidential information
-                                        </strong>
-                                    </li>
-                                    <li>
-                                        Ai2 may use your conversations to train or evaluate AI
-                                        systems.
-                                    </li>
-                                </ul>
-                            </p>
-                            <p>
-                                <strong>Optional Consent</strong>: If you choose, you may also
-                                contribute your Playground conversations to a public dataset curated
-                                by Ai2 for scientific research.
-                            </p>
-                            <form id={formId} onSubmit={formContext.handleSubmit(handleSubmit)}>
+                        <form id={formId} onSubmit={formContext.handleSubmit(handleSubmit)}>
+                            <DialogContent
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 2,
+                                    paddingInline: {
+                                        xs: 2,
+                                        md: 0,
+                                    },
+                                    // The combo of this start padding + the title margin made it look like there was too much space between them
+                                    paddingBlockStart: 0,
+                                }}>
+                                <p>
+                                    By using Playground, you agree to Your Responsibilities below
+                                    and Ai2’s
+                                    <TermAndConditionsLink link={links.terms}>
+                                        Terms of Use
+                                    </TermAndConditionsLink>
+                                    ,{` `}
+                                    <TermAndConditionsLink link={links.responsibleUseGuidelines}>
+                                        Responsible Use Guidelines
+                                    </TermAndConditionsLink>
+                                    {` `}
+                                    and acknowledge Ai2’s{` `}
+                                    <TermAndConditionsLink link={links.privacyPolicy}>
+                                        Privacy Policy
+                                    </TermAndConditionsLink>
+                                    .
+                                </p>
+                                <div>
+                                    <h3 className={termsHeading3}>Your Responsibilities:</h3>
+                                    <ul className={termsAndConditionsListClass}>
+                                        <li>
+                                            <strong>No Sensitive Data:</strong> Do not upload
+                                            personal (e.g. names, addresses), sensitive (e.g.
+                                            health, financial), or confidential/proprietary
+                                            information to Playground.
+                                        </li>
+                                        <li>
+                                            <strong>Rights & Authority:</strong> You confirm you
+                                            possess all necessary rights to upload your content to
+                                            Playground and have the authority to grant the
+                                            permissions described here.{' '}
+                                        </li>
+                                        <li>
+                                            <strong>No Infringement:</strong> Your uploads to
+                                            Playground may not violate any third-party intellectual
+                                            property or privacy rights.
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 className={termsHeading3}>AI Training Notice:</h3>
+                                    <ul className={termsAndConditionsListClass}>
+                                        <li>
+                                            Ai2 may use your conversations and uploads to train,
+                                            evaluate, and improve our AI models.
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 className={termsHeading3}>
+                                        Optional Consents: Contribute to Open Science!
+                                    </h3>
+                                    <p>
+                                        Help the scientific community by allowing us to publish your
+                                        Playground interactions in open, public datasets curated by
+                                        Ai2 for scientific research.
+                                    </p>
+                                </div>
                                 <Controller
                                     name="dataCollectionAccepted"
                                     control={formContext.control}
@@ -178,15 +208,36 @@ export const TermsAndDataCollectionModal = ({
                                             isSelected={Boolean(value)}
                                             onChange={onChange}>
                                             <p>
-                                                Yes, I consent to including my conversations in a{' '}
-                                                <strong>de-identified</strong> public research
+                                                <strong>Yes, I contribute my conversations.</strong>{' '}
+                                                I consent to having my de-identified text
+                                                conversations published in an open, public research
                                                 dataset.
                                             </p>
                                         </Checkbox>
                                     )}
                                 />
-                            </form>
-                        </DialogContent>
+                                <Controller
+                                    name="mediaCollectionAccepted"
+                                    control={formContext.control}
+                                    render={({ field: { onChange, value } }) => (
+                                        <Checkbox
+                                            className={checkboxClass}
+                                            color="default"
+                                            size="large"
+                                            isSelected={Boolean(value)}
+                                            onChange={onChange}>
+                                            <p>
+                                                <strong>Yes, I contribute my uploads.</strong> I
+                                                consent to having my uploaded content published in
+                                                an open, public research dataset. I affirm I possess
+                                                all necessary rights to consent to the publication
+                                                of this content.
+                                            </p>
+                                        </Checkbox>
+                                    )}
+                                />
+                            </DialogContent>
+                        </form>
                     </FadeOverflowContent>
 
                     <DialogActions className={modalActionsClass}>
@@ -275,4 +326,10 @@ const noWrapClass = css({
 const termsAndConditionsListClass = css({
     padding: '[revert]',
     listStyle: '[revert]',
+});
+
+const termsHeading3 = css({
+    fontSize: 'md',
+    fontWeight: 'bold',
+    margin: '[0]',
 });

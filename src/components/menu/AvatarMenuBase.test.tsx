@@ -17,6 +17,7 @@ describe('AvatarMenuBase', () => {
                     client: 'test-client-id',
                     hasAcceptedTermsAndConditions: true,
                     hasAcceptedDataCollection: true,
+                    hasAcceptedMediaCollection: false,
                 },
                 userAuthInfo: {
                     email: 'test@example.com',
@@ -84,12 +85,21 @@ describe('AvatarMenuBase', () => {
 
         await user.click(screen.getByText('Data Collection'));
 
-        const isOptInChecked = screen.getByRole('checkbox', {
+        // this is checked if we set in the mock above to hasAcceptedDataCollection: true
+        const isConversationOptInChecked = screen.getByRole('checkbox', {
+            name: /Yes, I contribute my conversations/,
             checked: true,
         });
 
-        // this will exist if we set in the mock above to hasAcceptedDataCollection: true
-        expect(isOptInChecked).toBeInTheDocument();
+        expect(isConversationOptInChecked).toBeInTheDocument();
+
+        // this will not be checked, because we set `hasAcceptedMediaCollection` to `false` in the mock above
+        const isMediaOptInChecked = screen.getByRole('checkbox', {
+            name: /Yes, I contribute my uploads/,
+            checked: false,
+        });
+
+        expect(isMediaOptInChecked).toBeInTheDocument();
     });
 
     it('conditionally renders Privacy Settings link when VITE_IS_ANALYTICS_ENABLED is true', () => {

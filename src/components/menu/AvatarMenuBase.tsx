@@ -31,6 +31,7 @@ export const AvatarMenuBase = ({
     const { userAuthInfo, userInfo } = useUserAuthInfo();
     const hasAcceptedTermsAndConditions = userInfo?.hasAcceptedTermsAndConditions === true;
     const hasAcceptedDataCollection = userInfo?.hasAcceptedDataCollection === true;
+    const hasAcceptedMediaCollection = userInfo?.hasAcceptedMediaCollection === true;
 
     const content = (
         <Box
@@ -119,6 +120,7 @@ export const AvatarMenuBase = ({
                     }}
                     initialTermsAndConditionsValue={hasAcceptedTermsAndConditions}
                     initialDataCollectionValue={hasAcceptedDataCollection}
+                    initialMediaCollectionValue={hasAcceptedMediaCollection}
                 />
             ) : null}
         </>

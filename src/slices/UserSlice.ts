@@ -12,6 +12,7 @@ import { errorToAlert } from './SnackMessageSlice';
 export interface UpdateUserTermsAndDataCollectionPayload {
     hasAcceptedTermsAndConditions?: boolean;
     hasAcceptedDataCollection?: boolean;
+    hasAcceptedMediaCollection?: boolean;
 }
 
 export interface UserSlice {
@@ -79,6 +80,7 @@ export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
         await userClient.updateUserTermsAndDataCollection({
             termsAccepted: payload.hasAcceptedTermsAndConditions,
             dataCollectionAccepted: payload.hasAcceptedDataCollection,
+            mediaCollectionAccepted: payload.hasAcceptedMediaCollection,
         });
         set((state) => {
             if (state.userInfo) {
@@ -88,6 +90,9 @@ export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
                 }
                 if (payload.hasAcceptedDataCollection !== undefined) {
                     state.userInfo.hasAcceptedDataCollection = payload.hasAcceptedDataCollection;
+                }
+                if (payload.hasAcceptedMediaCollection !== undefined) {
+                    state.userInfo.hasAcceptedMediaCollection = payload.hasAcceptedMediaCollection;
                 }
             }
         });

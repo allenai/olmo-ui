@@ -544,6 +544,8 @@ export type components = {
             client: string;
             /** Hasaccepteddatacollection */
             hasAcceptedDataCollection: boolean;
+            /** Hasacceptedmediacollection */
+            hasAcceptedMediaCollection: boolean;
             /** Hasacceptedtermsandconditions */
             hasAcceptedTermsAndConditions: boolean;
             /**
@@ -599,6 +601,7 @@ export type components = {
             captchaToken?: string | null;
             /** Content */
             content: string;
+
             /**
              * Enabletoolcalling
              * @default false
@@ -622,6 +625,7 @@ export type components = {
             host?: string | null;
             /** Inputparts */
             inputParts?: components['schemas']['Molmo2PointPart'][];
+
             /**
              * Logprobs
              * @default null
@@ -1091,6 +1095,7 @@ export type components = {
             harmful?: boolean | null;
             /** Id */
             id: string;
+
             /** Islimitreached */
             readonly isLimitReached: boolean;
             /** Isolderthan30Days */

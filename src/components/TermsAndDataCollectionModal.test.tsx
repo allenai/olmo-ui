@@ -23,11 +23,17 @@ describe('TermsAndDataCollectionModal', () => {
 
         const modalHeading = screen.getByText('Terms of Use & Data Consent');
         const closeButtons = screen.queryByRole('button', { name: 'Cancel' });
-        const checkbox = screen.getByRole('checkbox');
+        const dataCollectionCheckbox = screen.getByRole('checkbox', {
+            name: /Yes, I contribute my conversations/,
+        });
+        const isMediaOptInCheckbox = screen.getByRole('checkbox', {
+            name: /Yes, I contribute my uploads/,
+        });
 
         expect(modalHeading).toBeVisible();
         expect(closeButtons).not.toBeInTheDocument();
-        expect(checkbox).not.toBeChecked();
+        expect(dataCollectionCheckbox).not.toBeChecked();
+        expect(isMediaOptInCheckbox).not.toBeChecked();
     });
 
     it('has cancel button when reopened after opting in to terms and data collection', () => {

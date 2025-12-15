@@ -22,9 +22,11 @@ export class UserClient extends ClientBase {
     updateUserTermsAndDataCollection = async ({
         termsAccepted,
         dataCollectionAccepted,
+        mediaCollectionAccepted,
     }: {
         termsAccepted?: boolean;
         dataCollectionAccepted?: boolean;
+        mediaCollectionAccepted?: boolean;
     }) => {
         try {
             const url = this.createURL(UpdateUserUrl);
@@ -33,6 +35,10 @@ export class UserClient extends ClientBase {
                 ...(dataCollectionAccepted === true && { dataCollectionAcceptedDate: dateTime }),
                 ...(dataCollectionAccepted === false && {
                     dataCollectionAcceptanceRevokedDate: dateTime,
+                }),
+                ...(mediaCollectionAccepted === true && { mediaCollectionAcceptedDate: dateTime }),
+                ...(mediaCollectionAccepted === false && {
+                    mediaCollectionAcceptanceRevokedDate: dateTime,
                 }),
                 ...(termsAccepted === true && { termsAcceptedDate: dateTime }),
                 ...(termsAccepted === false && { termsAcceptanceRevokedDate: dateTime }),
