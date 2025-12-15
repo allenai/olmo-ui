@@ -222,7 +222,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 selectModel(queryStringModelId);
             }
         }
-    }, [searchParams]);
+    }, [allModels, searchParams, selectModel, selectedModelId]);
 
     const { executeRecaptcha } = useReCaptcha();
 
