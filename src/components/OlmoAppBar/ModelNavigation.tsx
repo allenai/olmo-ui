@@ -4,7 +4,7 @@ import { links } from '@/Links';
 import { FEATURED_FAMILIES } from '@/pages/model/featuredModels';
 
 import { ModelIcon } from '../assets/ModelIcon';
-import { useModels } from '../thread/ModelSelect/useModels';
+import { selectAvailableModels, useModels } from '../thread/ModelSelect/useModels';
 import { NavigationLink } from './NavigationLink';
 
 interface ModelNavigationProps {
@@ -15,7 +15,7 @@ interface ModelNavigationProps {
 export const ModelNavigation = ({ doesMatchPath, showFeaturedFamilies }: ModelNavigationProps) => {
     const { isModelPageEnabled } = useFeatureToggles();
     const models = useModels({
-        // select: selectAvailableModels,
+        select: selectAvailableModels,
     });
 
     if (!isModelPageEnabled) {
