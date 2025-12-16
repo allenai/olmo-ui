@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { links } from '@/Links';
 
-import { selectPubliclyAvailable, useModels } from '../ModelSelect/useModels';
+import { selectAvailableModels, useModels } from '../ModelSelect/useModels';
 
 const linkClassName = css({ color: 'links', fontWeight: 'semiBold' });
 
@@ -41,8 +41,9 @@ interface AnnouncementProps {
 export const Announcement = ({ modelName, modelId }: AnnouncementProps) => {
     const model =
         useModels({
-            select: selectPubliclyAvailable,
+            select: selectAvailableModels,
         }).find((m) => m.id === modelId) != null;
+
     if (!modelId || !model) {
         return null;
     }
