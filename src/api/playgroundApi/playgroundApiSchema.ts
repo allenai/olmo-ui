@@ -1095,7 +1095,11 @@ export type components = {
             harmful?: boolean | null;
             /** Id */
             id: string;
-
+            /**
+             * Inputparts
+             * @default null
+             */
+            inputParts?: components['schemas']['Molmo2PointPart'][] | null;
             /** Islimitreached */
             readonly isLimitReached: boolean;
             /** Isolderthan30Days */
@@ -1438,7 +1442,8 @@ export type components = {
             | 'cirrascale_backend'
             | 'cirrascale'
             | 'modal_openai'
-            | 'test_backend';
+            | 'test_backend'
+            | 'ai2_model_hub';
         /** ModelOrder */
         ModelOrder: {
             /** Id */
@@ -2543,6 +2548,7 @@ export const modelHostValues: ReadonlyArray<components['schemas']['ModelHost']> 
     'cirrascale',
     'modal_openai',
     'test_backend',
+    'ai2_model_hub',
 ];
 export const modelTypeValues: ReadonlyArray<components['schemas']['ModelType']> = ['base', 'chat'];
 export const multiModalModelPrompt_typeValues: ReadonlyArray<
