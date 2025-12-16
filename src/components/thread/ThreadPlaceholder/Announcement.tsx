@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { links } from '@/Links';
 
-import { useModels } from '../ModelSelect/useModels';
+import { selectAvailableModels, useModels } from '../ModelSelect/useModels';
 
 const linkClassName = css({ color: 'links', fontWeight: 'semiBold' });
 
@@ -39,7 +39,11 @@ interface AnnouncementProps {
 }
 
 export const Announcement = ({ modelName, modelId }: AnnouncementProps) => {
-    const model = useModels().find((m) => m.id === modelId) != null;
+    const model =
+        useModels({
+            select: selectAvailableModels,
+        }).find((m) => m.id === modelId) != null;
+
     if (!modelId || !model) {
         return null;
     }
