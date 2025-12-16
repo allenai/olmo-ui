@@ -3,13 +3,13 @@ export const examplesList = [
         modelId: 'molmo2-8b-track',
         introText:
             'Start with one of these sample prompts, or upload a video and ask Molmo to track it below. 8fps interpolation works best for video tracking - to try all other capabilities, choose the standard option from the model dropdown',
-        templateIds: ['video_tracking_7', 'video_tracking_8', 'skier_track'],
+        templateIds: ['video_tracking_6', 'video_tracking_8', 'skier_track'],
     },
     {
         modelId: 'molmo2-4b-track',
         introText:
             'Start with one of these sample prompts, or upload a video and ask Molmo to track it below. 8fps interpolation works best for video tracking - to try all other capabilities, choose the standard option from the model dropdown',
-        templateIds: ['video_tracking_7', 'video_tracking_8', 'skier_track'],
+        templateIds: ['video_tracking_6', 'video_tracking_8', 'skier_track'],
     },
     {
         modelId: 'molmo2-8b',
