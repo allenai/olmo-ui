@@ -67,7 +67,6 @@ interface QueryFormControllerProps {
     isLimitReached: boolean;
     remoteState?: RemoteState;
     fileUploadProps: FileuploadPropsBase;
-    modelSupportsPointingInput?: boolean;
 }
 
 export const QueryFormController = ({
@@ -83,7 +82,6 @@ export const QueryFormController = ({
     isLimitReached,
     remoteState,
     fileUploadProps,
-    modelSupportsPointingInput = true,
 }: QueryFormControllerProps): ReactNode => {
     const navigation = useNavigation();
     const getDataUrl = useDataUrls();
@@ -244,9 +242,9 @@ export const QueryFormController = ({
     const isInternalUser = authInfo.hasPermission(USER_PERMISSIONS.READ_INTERNAL_MODELS);
 
     const showTrackingInput =
+        fileUploadProps.acceptsFileUpload &&
         fileMimeTypes?.length === 1 &&
-        fileMimeTypes[0].startsWith('video') &&
-        modelSupportsPointingInput;
+        fileMimeTypes[0].startsWith('video');
 
     const validateContentAndTrackingInput: Validate<string | undefined, QueryFormValues> = (
         content,

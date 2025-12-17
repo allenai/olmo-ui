@@ -23,6 +23,7 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 import { links } from '@/Links';
 import { PlaygroundLoaderData } from '@/pages/playgroundLoader';
 import { PARAM_SELECTED_MODEL } from '@/pages/queryParameterConsts';
+import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
 import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
 import { StreamEventRegistryProvider } from './StreamEventRegistry';
@@ -93,6 +94,13 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     useSetShareableForSingleThread(threadId);
 
     const streamMessage = useChatStreamMessage(threadId);
+
+    // abort stream on navigation
+    useAbortStreamOnNavigation({
+        basePath: links.thread(''),
+        threadId,
+        abortStreams: streamMessage.abortAllStreams,
+    });
 
     const selectedModel = useMemo(() => {
         const firstAvailable = availableModels.at(0);
