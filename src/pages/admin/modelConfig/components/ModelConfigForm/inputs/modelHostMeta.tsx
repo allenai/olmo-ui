@@ -64,6 +64,23 @@ export const modelHostMeta: Record<SchemaModelHost, ModelHostMeta> = {
             label: 'Modal app URL',
         },
     },
+    ai2_model_hub: {
+        friendlyName: 'Ai2 Model Hub',
+        hostIdMeta: {
+            label: 'Model Id',
+            description: (
+                <>
+                    Use <strong>Model Name</strong> from{` `}
+                    <Link
+                        href="https://ai2-model-hub.allen.ai/ui/model_hub_table"
+                        target="_blank"
+                        rel="noopener">
+                        Model Hub listing
+                    </Link>
+                </>
+            ),
+        },
+    },
     test_backend: {
         friendlyName: 'Fake model, do not use',
         hostIdMeta: {
