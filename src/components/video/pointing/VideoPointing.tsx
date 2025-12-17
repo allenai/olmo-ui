@@ -89,7 +89,6 @@ export function VideoPointingInput({
     };
 
     const aspectRatio = width / height;
-    const isLandscape = aspectRatio >= 1.4;
 
     return (
         <VideoPlayerWrapper
@@ -116,8 +115,8 @@ export function VideoPointingInput({
                     fps={FPS}
                     className={css({ alignSelf: 'center' })}
                     style={{
-                        width: isLandscape ? '100%' : 'fit-content',
-                        height: isLandscape ? 'fit-content' : '100%',
+                        width: 'fit-content',
+                        height: '100%',
                     }}
                     onPointSelect={setUserPoint}>
                     <Player
@@ -134,8 +133,7 @@ export function VideoPointingInput({
                         compositionHeight={height}
                         fps={FPS}
                         style={{
-                            width: isLandscape ? '100%' : undefined,
-                            height: isLandscape ? undefined : '100%',
+                            height: '100%',
                         }}
                         className={css({
                             borderTopRadius: 'lg',
