@@ -7,6 +7,8 @@ jobs:
   build:
     name: Create Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,9 +19,20 @@ jobs:
         id: get-date
         run: echo "DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
 
+      - name: Make tag name
+        id: make-tag-name
+        run: echo "TAG_NAME=release${{ steps.get-date.outputs.DATE }}" >> $GITHUB_OUTPUT
+
+      - name: Create Tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "${{ steps.make-tag-name.outputs.TAG_NAME }}" -m "Release v${{ steps.get-date.outputs.DATE }}
+          git push origin "${{ steps.make-tag-name.outputs.TAG_NAME }}"
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           name: "Release: ${{ steps.get-date.outputs.DATE }}"
           generate_release_notes: true
-          tag_name: "release-${{ steps.get-date.outputs.DATE }}"
+          tag_name: ${{ steps.make-tag-name.outputs.tag_name }}
