@@ -7,6 +7,8 @@ jobs:
   build:
     name: Create Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,3 +25,4 @@ jobs:
           name: "Release: ${{ steps.get-date.outputs.DATE }}"
           generate_release_notes: true
           tag_name: "release-${{ steps.get-date.outputs.DATE }}"
+          make_latest: true
