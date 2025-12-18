@@ -27,7 +27,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git tag -a "${{ steps.make-tag-name.outputs.TAG_NAME }}" -m "Release v${{ steps.get-date.outputs.DATE }}
+          git tag -a "${{ steps.make-tag-name.outputs.TAG_NAME }}" -m "Release ${{ steps.get-date.outputs.DATE }}"
           git push origin "${{ steps.make-tag-name.outputs.TAG_NAME }}"
 
       - name: Create release
