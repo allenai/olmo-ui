@@ -1,0 +1,25 @@
+on:
+  workflow_dispatch:
+
+name: Deploy to Prod
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Get current date
+        id: get-date
+        run: echo "DATE=$(date '+%B %-d, %Y (%H:%M:%S)')" >> $GITHUB_OUTPUT
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Release: ${{ steps.get-date.outputs.DATE }}"
+          generate_release_notes: true
+          tag_name: "release-${{ steps.get-date.outputs.DATE }}"
