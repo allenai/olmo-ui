@@ -71,6 +71,7 @@ class Auth0Client {
         await client.loginWithRedirect({
             authorizationParams: {
                 scope: JOINED_SCOPE,
+                prompt: 'select_account',
                 redirect_uri:
                     window.location.origin +
                     '/login-result?' +
