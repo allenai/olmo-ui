@@ -14,6 +14,41 @@ interface ModelHostMeta {
 }
 
 export const modelHostMeta: Record<SchemaModelHost, ModelHostMeta> = {
+    beaker_queues: {
+        friendlyName: 'Beaker Queues',
+        hostIdMeta: {
+            label: 'Queue ID',
+        },
+    },
+    cirrascale: {
+        friendlyName: 'Cirrascale',
+        hostIdMeta: {
+            label: 'Model name',
+        },
+    },
+    modal_openai: {
+        friendlyName: 'Modal (OpenAI-compatible)',
+        hostIdMeta: {
+            label: 'Modal app URL',
+        },
+    },
+    ai2_model_hub: {
+        friendlyName: 'Ai2 Model Hub',
+        hostIdMeta: {
+            label: 'Model Id',
+            description: (
+                <>
+                    Use <strong>Model Name</strong> from{` `}
+                    <Link
+                        href="https://ai2-model-hub.allen.ai/ui/model_hub_table"
+                        target="_blank"
+                        rel="noopener">
+                        Model Hub listing
+                    </Link>
+                </>
+            ),
+        },
+    },
     modal: {
         friendlyName: 'Modal',
         hostIdMeta: {
@@ -28,18 +63,6 @@ export const modelHostMeta: Record<SchemaModelHost, ModelHostMeta> = {
             ),
         },
     },
-    inferd: {
-        friendlyName: 'InferD',
-        hostIdMeta: {
-            label: 'Compute Source ID',
-        },
-    },
-    beaker_queues: {
-        friendlyName: 'Beaker Queues',
-        hostIdMeta: {
-            label: 'Queue ID',
-        },
-    },
     cirrascale_backend: {
         friendlyName: 'Cirrascale (Backend)',
         hostIdMeta: {
@@ -52,16 +75,10 @@ export const modelHostMeta: Record<SchemaModelHost, ModelHostMeta> = {
             ),
         },
     },
-    cirrascale: {
-        friendlyName: 'Cirrascale',
+    inferd: {
+        friendlyName: 'InferD',
         hostIdMeta: {
-            label: 'Model name',
-        },
-    },
-    modal_openai: {
-        friendlyName: 'Modal (OpenAI-compatible)',
-        hostIdMeta: {
-            label: 'Modal app URL',
+            label: 'Compute Source ID',
         },
     },
     test_backend: {
