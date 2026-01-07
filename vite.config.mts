@@ -92,6 +92,11 @@ export default defineConfig(({ mode }) => {
                     secure: false,
                     changeOrigin: true
                 },
+                '/v5': {
+                    target: env.LOCAL_PLAYGROUND_FASTAPI_URL,
+                    secure: false,
+                    changeOrigin: true
+                },
                 '/api': {
                     target: env.LOCAL_DOLMA_API_URL,
                     secure: false,
