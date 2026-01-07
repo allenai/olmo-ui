@@ -26,17 +26,19 @@ export type PromptMessageDetails = {
     threadId: string;
 };
 
+type AnalyticsEventDetails = PromptMessageDetails | Record<string, unknown>;
+
 export interface AnalyticsEvent {
     type: EventType;
     occurred: Date;
-    details?: PromptMessageDetails | Record<string, unknown>;
+    details?: AnalyticsEventDetails;
 }
 
-const generatePlausibleEvent = (et: EventType, details?: object): AnalyticsEvent => {
+const generatePlausibleEvent = (et: EventType, details?: AnalyticsEventDetails): AnalyticsEvent => {
     return {
         type: et,
         occurred: new Date(),
-        ...(details || {}),
+        details: details ?? {},
     };
 };
 
@@ -47,7 +49,7 @@ export class AnalyticsClient {
      * Rather it enqueues the request for eventual, background delivery by the browser.
      * See https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API
      */
-    track(et: EventType, details?: object): boolean {
+    track(et: EventType, details?: AnalyticsEventDetails): boolean {
         try {
             if (process.env.VITE_IS_ANALYTICS_ENABLED === 'true') {
                 if (window.heap?.track != null) {
@@ -58,7 +60,7 @@ export class AnalyticsClient {
                 plausibleTrackEvent(event);
 
                 const data = new Blob([JSON.stringify(event)], { type: 'application/json' });
-                return navigator.sendBeacon('/api/v1/event', data);
+                return navigator.sendBeacon('/v5/event', data);
             } else {
                 console.log('Track event', details);
                 return true;
