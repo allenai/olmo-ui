@@ -89,13 +89,17 @@ export const InlineAlertMessage = ({ messageId }: MessageProps): ReactNode => {
 };
 
 export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
-    const contentWithMarks = useSpanHighlighting(messageId);
+    const { content, attributionSpans } = useSpanHighlighting(messageId);
 
-    if (contentWithMarks === '') {
+    if (content === '') {
         return null;
     }
 
-    return <MarkdownRenderer className={messageMargin}>{contentWithMarks}</MarkdownRenderer>;
+    return (
+        <MarkdownRenderer className={messageMargin} attributionSpans={attributionSpans}>
+            {content}
+        </MarkdownRenderer>
+    );
 };
 
 interface MessageContentProps {
