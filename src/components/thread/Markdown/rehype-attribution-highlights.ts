@@ -25,7 +25,7 @@ type Parent = Element | Root;
  * ];
  * rehypePlugins={[[rehypeAttributionHighlights, spans]]}
  */
-export function rehypeAttributionHighlights(spans: AttributionSpan[]) {
+export function rehypeAttributionHighlights(spans: AttributionSpan[] = []) {
     return (tree: Root) => {
         if (spans.length === 0) {
             return;

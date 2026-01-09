@@ -1,7 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
 import { Box } from '@mui/material';
-import { useMemo } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -51,14 +50,6 @@ export const MarkdownRenderer = ({
     children: markdown,
     attributionSpans = [],
 }: MarkdownRendererProps) => {
-    const rehypePlugins = useMemo(() => {
-        // Add attribution highlights if present
-        if (attributionSpans.length > 0) {
-            return [[rehypeAttributionHighlights, attributionSpans]];
-        }
-        return [];
-    }, [attributionSpans]);
-
     return (
         <Box
             component={Markdown}
@@ -69,7 +60,7 @@ export const MarkdownRenderer = ({
                 [customRemarkMath, { singleDollarTextMath: false }],
                 remarkHtmlToText, // Convert HTML nodes to text nodes so HTML displays literally
             ]}
-            rehypePlugins={rehypePlugins}
+            rehypePlugins={[[rehypeAttributionHighlights, attributionSpans]]}
             components={{
                 pre: CustomPre,
                 code: CodeBlock,
