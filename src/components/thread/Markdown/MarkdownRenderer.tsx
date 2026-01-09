@@ -60,7 +60,7 @@ export const MarkdownRenderer = ({
                 [customRemarkMath, { singleDollarTextMath: false }],
                 remarkHtmlToText, // Convert HTML nodes to text nodes so HTML displays literally
             ]}
-            rehypePlugins={[rehypeAttributionHighlights, attributionSpans]}
+            rehypePlugins={[[rehypeAttributionHighlights, attributionSpans]]}
             components={{
                 pre: CustomPre,
                 code: CodeBlock,
