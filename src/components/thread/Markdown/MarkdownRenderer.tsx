@@ -12,6 +12,7 @@ import { DeepResearchCite } from '@/components/thread/DeepResearch/DeepResearchM
 import { CodeBlock } from '../CodeBlock';
 import { CustomDivider, CustomLink, CustomPre } from './CustomComponents';
 import { AttributionSpan, rehypeAttributionHighlights } from './rehype-attribution-highlights';
+import { remarkHtmlToText } from './remark-html-to-text';
 
 const markdownStyles = css({
     wordBreak: 'normal',
@@ -58,18 +59,16 @@ export const MarkdownRenderer = ({
         return [];
     }, [attributionSpans]);
 
-    // Escape HTML tags so they render as literal text instead of being processed
-    // This prevents <b> from rendering as bold, showing "<b>" instead
-    const escapedMarkdown = useMemo(() => {
-        return markdown.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }, [markdown]);
-
     return (
         <Box
             component={Markdown}
             className={cx(markdownStyles, className)}
             // @ts-expect-error - Markdown component props not typed by Box
-            remarkPlugins={[remarkGfm, [customRemarkMath, { singleDollarTextMath: false }]]}
+            remarkPlugins={[
+                remarkGfm,
+                [customRemarkMath, { singleDollarTextMath: false }],
+                remarkHtmlToText, // Convert HTML nodes to text nodes so HTML displays literally
+            ]}
             rehypePlugins={rehypePlugins}
             components={{
                 pre: CustomPre,
@@ -79,7 +78,7 @@ export const MarkdownRenderer = ({
                 'attribution-highlight': AttributionHighlight,
                 cite: DeepResearchCite,
             }}>
-            {escapedMarkdown}
+            {markdown}
         </Box>
     );
 };
