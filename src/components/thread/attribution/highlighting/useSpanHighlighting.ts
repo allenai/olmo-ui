@@ -11,32 +11,28 @@ export const useSpanHighlighting = (messageId: string) => {
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
 
-    // this shouldn't happen
     const content = message?.content || '';
 
-    const spans = useAppContext(
-        (state) => state.attribution.attributionsByMessageId[messageId]?.spans ?? {}
-    );
+    const attributionSpans = useAppContext((state): AttributionSpan[] => {
+        if (!isCorpusLinkEnabled || state.attribution.selectedMessageId !== messageId) {
+            return [];
+        }
 
-    const isMessageSelected = useAppContext(
-        (state) => state.attribution.selectedMessageId === messageId
-    );
+        const spans = state.attribution.attributionsByMessageId[messageId]?.spans ?? {};
 
-    const attributionSpans: AttributionSpan[] =
-        isCorpusLinkEnabled && isMessageSelected
-            ? Object.entries(spans)
-                  .map(([spanKey, span]) => {
-                      if (!span?.text) return null;
-                      return {
-                          spanKey,
-                          span: {
-                              ...span,
-                              text: removeMarkdownCharactersFromStartAndEndOfSpan(span.text),
-                          },
-                      };
-                  })
-                  .filter((s): s is AttributionSpan => s !== null)
-            : [];
+        return Object.entries(spans)
+            .map(([spanKey, span]) => {
+                if (!span?.text) return null;
+                return {
+                    spanKey,
+                    span: {
+                        ...span,
+                        text: removeMarkdownCharactersFromStartAndEndOfSpan(span.text),
+                    },
+                };
+            })
+            .filter((s): s is AttributionSpan => s !== null);
+    });
 
     return { content, attributionSpans };
 };
