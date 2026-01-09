@@ -5,15 +5,18 @@ import { PropsWithChildren, type ReactNode, useState } from 'react';
 import { Label } from '@/api/Label';
 import { MessageId, useMessage } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
+import { useAppContext } from '@/AppContext';
 import { Ai2Avatar } from '@/components/avatars/Ai2Avatar';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 
-import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
+import { removeMarkdownCharactersFromStartAndEndOfSpan } from '../attribution/highlighting/escape-markdown-in-span';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
+import { AttributionSpan } from '../Markdown/rehype-attribution-highlights';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
@@ -89,7 +92,32 @@ export const InlineAlertMessage = ({ messageId }: MessageProps): ReactNode => {
 };
 
 export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
-    const { content, attributionSpans } = useSpanHighlighting(messageId);
+    const { isCorpusLinkEnabled } = useFeatureToggles();
+    const { threadId } = useThreadView();
+    const { message } = useMessage(threadId, messageId);
+
+    const content = message?.content || '';
+
+    const attributionSpans = useAppContext((state): AttributionSpan[] => {
+        if (!isCorpusLinkEnabled || state.attribution.selectedMessageId !== messageId) {
+            return [];
+        }
+
+        const spans = state.attribution.attributionsByMessageId[messageId]?.spans ?? {};
+
+        return Object.entries(spans)
+            .map(([spanKey, span]) => {
+                if (!span?.text) return null;
+                return {
+                    spanKey,
+                    span: {
+                        ...span,
+                        text: removeMarkdownCharactersFromStartAndEndOfSpan(span.text),
+                    },
+                };
+            })
+            .filter((s): s is AttributionSpan => s !== null);
+    });
 
     if (content === '') {
         return null;
