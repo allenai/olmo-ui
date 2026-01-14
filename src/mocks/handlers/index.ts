@@ -12,7 +12,7 @@ import { v4ModelsHandlers } from './v4ModelsHandlers';
 import { v4PromptTemplatesHandlers } from './v4PromptTemplatesHandlers';
 import { v4ThreadHandlers } from './v4ThreadHandlers';
 import { v4TranscriptionHandlers } from './v4TranscriptionHandlers';
-import { v5ModelHandlers } from './v5ModelHandlers';
+import { v5ModelsHandlers } from './v5ModelsHandlers';
 
 export const handlers = [
     ...messageStreamHandlers,
@@ -22,7 +22,7 @@ export const handlers = [
     ...v4ModelsHandlers,
     ...v4TranscriptionHandlers,
     ...v4PromptTemplatesHandlers,
-    ...v5ModelHandlers,
+    ...v5ModelsHandlers,
     ...agentHandlers,
 
     http.get(`${process.env.VITE_API_URL}${WhoamiApiUrl}`, () => {

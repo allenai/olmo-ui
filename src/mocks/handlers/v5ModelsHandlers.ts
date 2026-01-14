@@ -132,4 +132,4 @@ const adminModelsHandler = v5TypedHttp.get('/v5/admin/models/', ({ response }) =
     return response(200).json(fakeAdminModelsResponse);
 });
 
-export const v5ModelHandlers = [adminModelsHandler];
+export const v5ModelsHandlers = [adminModelsHandler];
