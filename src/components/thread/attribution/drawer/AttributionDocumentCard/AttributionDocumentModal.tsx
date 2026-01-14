@@ -47,7 +47,12 @@ export const AttributionDocumentModal = ({
                     <Typography variant="body1" component="span" pt={1}>
                         <Typography component="span">URL:&nbsp;</Typography>
                         <Link
-                            href={document.url}
+                            href={
+                                // Add https to document url if it doesn't exist
+                                document.url.includes('://')
+                                    ? document.url
+                                    : `https://${document.url}`
+                            }
                             target="_blank"
                             color="primary"
                             sx={{ wordBreak: 'break-word' }}>
