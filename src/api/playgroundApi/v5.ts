@@ -12,4 +12,4 @@ export const fetchClient = createFetchClient<paths>({
 });
 fetchClient.use(authMiddleware);
 
-export const queryClient = createClient(fetchClient);
+export const apiQueryClient = createClient(fetchClient);

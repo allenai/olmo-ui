@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
-import { queryClient } from '@/api/playgroundApi/v5';
+import { apiQueryClient } from '@/api/playgroundApi/v5';
 
-export const getAdminModelsQueryOptions = queryClient.queryOptions('get', '/v5/admin/models/');
+export const getAdminModelsQueryOptions = apiQueryClient.queryOptions('get', '/v5/admin/models/');
 
 export const useAdminModels = () => {
     const { data, error, status, isFetching } = useSuspenseQuery(getAdminModelsQueryOptions);
