@@ -12,6 +12,7 @@ import { v4ModelsHandlers } from './v4ModelsHandlers';
 import { v4PromptTemplatesHandlers } from './v4PromptTemplatesHandlers';
 import { v4ThreadHandlers } from './v4ThreadHandlers';
 import { v4TranscriptionHandlers } from './v4TranscriptionHandlers';
+import { v5ModelHandlers } from './v5ModelHandlers';
 
 export const handlers = [
     ...messageStreamHandlers,
@@ -21,6 +22,7 @@ export const handlers = [
     ...v4ModelsHandlers,
     ...v4TranscriptionHandlers,
     ...v4PromptTemplatesHandlers,
+    ...v5ModelHandlers,
     ...agentHandlers,
 
     http.get(`${process.env.VITE_API_URL}${WhoamiApiUrl}`, () => {

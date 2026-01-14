@@ -1,124 +1,16 @@
-import type { Model } from '@/api/playgroundApi/additionalTypes';
-import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
+import { SchemaModelConfigListResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
 
-import {
-    defaultInferenceConstraintsCamel,
-    defaultInferenceConstraintsSnake,
-} from './defaultInferenceConstraints';
-import { typedHttp } from './typedHttp';
+import { defaultInferenceConstraintsCamel } from './defaultInferenceConstraints';
+import { v5TypedHttp } from './v5TypedHttp';
 
-export const fakeModelsResponse = [
-    {
-        description: "AI2's 7B model trained on the Dolma dataset and fine-tuned for chat.",
-        id: 'olmo-7b-chat',
-        model_type: 'chat',
-        host: 'modal',
-        name: 'Olmo 7B - Chat',
-        information_url: 'https://allenai.org',
-        is_deprecated: true,
-        family_id: 'olmo',
-        family_name: 'Olmo',
-        is_visible: false,
-        prompt_type: 'text_only',
-        internal: false,
-        infini_gram_index: 'olmoe-0125-1b-7b',
-        ...defaultInferenceConstraintsSnake,
-    },
-    {
-        description: 'A 70B parameter model that is a fine-tuned version of Llama 2.',
-        id: 'tulu2',
-        model_type: 'chat',
-        host: 'inferd',
-        name: 'Tulu2.5',
-        is_deprecated: false,
-        family_id: 'tulu',
-        family_name: 'Tülu',
-        is_visible: true,
-        prompt_type: 'text_only',
-        internal: false,
-        infini_gram_index: 'olmoe-0125-1b-7b',
-        ...defaultInferenceConstraintsSnake,
-    },
-    {
-        description: "AI2's 7B model following the 'peteish' thread of improvements.",
-        host: 'modal',
-        id: 'Olmo-peteish-dpo-preview',
-        is_deprecated: false,
-        model_type: 'chat',
-        name: 'Olmo-peteish-dpo-preview',
-        information_url: 'https://allenai.org',
-        is_visible: true,
-        prompt_type: 'text_only',
-        internal: false,
-        infini_gram_index: 'olmoe-0125-1b-7b',
-        ...defaultInferenceConstraintsSnake,
-    },
-    {
-        description: 'Molmo',
-        id: 'molmo',
-        model_type: 'chat',
-        host: 'inferd',
-        name: 'Molmo',
-        is_deprecated: false,
-        accepts_files: true,
-        accepted_file_types: ['image/*'],
-        is_visible: true,
-        prompt_type: 'multi_modal',
-        internal: false,
-        infini_gram_index: 'olmoe-0125-1b-7b',
-        ...defaultInferenceConstraintsSnake,
-        // inference test overrides below
-        temperature_default: 0,
-        max_tokens_default: 1024,
-        max_tokens_upper: 4096,
-    },
-    {
-        description: 'A fake model with thinking',
-        id: 'thinking-model',
-        model_type: 'chat',
-        host: 'test_backend',
-        name: 'Thinking fake model',
-        is_deprecated: false,
-        is_visible: true,
-        prompt_type: 'text_only',
-        internal: false,
-        can_think: true,
-    },
-    {
-        description: 'A fake model with tool calling',
-        id: 'tool-calling-model',
-        model_type: 'chat',
-        host: 'test_backend',
-        name: 'Tool calling fake model',
-        is_deprecated: false,
-        is_visible: true,
-        prompt_type: 'text_only',
-        internal: false,
-        can_think: false,
-        can_call_tools: true,
-    },
-    {
-        description: 'A fake model with thinking and tool calling',
-        id: 'thinking-and-tool-calling-model',
-        model_type: 'chat',
-        host: 'test_backend',
-        name: 'Thinking and tool calling fake model',
-        is_deprecated: false,
-        is_visible: true,
-        prompt_type: 'text_only',
-        internal: false,
-        can_think: true,
-        can_call_tools: true,
-    },
-] satisfies Array<Model>;
-
-const fakeAdminModelsResponse: SchemaResponseModel[] = [
+const fakeAdminModelsResponse = [
     {
         availableTime: null,
         createdTime: '2025-04-29T17:03:50.726370+00:00',
         defaultSystemPrompt: null,
         deprecationTime: null,
         description: 'description',
+        informationUrl: 'https://allenai.org',
         familyId: null,
         familyName: null,
         host: 'modal',
@@ -213,6 +105,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         defaultSystemPrompt: null,
         deprecationTime: null,
         description: 'This model is made for testing',
+        informationUrl: 'https://allenai.org',
         familyId: null,
         familyName: null,
         host: 'inferd',
@@ -233,14 +126,10 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         infiniGramIndex: 'olmoe-0125-1b-7b',
         ...defaultInferenceConstraintsCamel,
     },
-];
+] satisfies SchemaModelConfigListResponse;
 
-const v4ModelsHandler = typedHttp.get('/v4/models/', ({ response }) => {
-    return response(200).json(fakeModelsResponse);
-});
-
-const adminModelsHandler = typedHttp.get('/v4/admin/models/', ({ response }) => {
+const adminModelsHandler = v5TypedHttp.get('/v5/admin/models/', ({ response }) => {
     return response(200).json(fakeAdminModelsResponse);
 });
 
-export const modelHandlers = [v4ModelsHandler, adminModelsHandler];
+export const v5ModelHandlers = [adminModelsHandler];

@@ -599,9 +599,11 @@ export type components = {
              * @default null
              */
             captchaToken?: string | null;
-            /** Content */
-            content: string;
-
+            /**
+             * Content
+             * @default null
+             */
+            content?: string | null;
             /**
              * Enabletoolcalling
              * @default false
@@ -623,9 +625,11 @@ export type components = {
              * @default null
              */
             host?: string | null;
-            /** Inputparts */
-            inputParts?: components['schemas']['Molmo2PointPart'][];
-
+            /**
+             * Inputparts
+             * @default null
+             */
+            inputParts?: string[] | null;
             /**
              * Logprobs
              * @default null
