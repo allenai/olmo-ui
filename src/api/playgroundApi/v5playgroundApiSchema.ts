@@ -43,23 +43,6 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    '/v5/prompt-templates/': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Prompt Templates */
-        get: operations['get_prompt_templates_v5_prompt_templates__get'];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     '/v5/admin/models/': {
         parameters: {
             query?: never;
@@ -69,10 +52,29 @@ export type paths = {
         };
         /** Get Admin Models */
         get: operations['get_admin_models_v5_admin_models__get'];
-        put?: never;
+        /** Sort Admin Model */
+        put: operations['sort_admin_model_v5_admin_models__put'];
         /** Create Admin Model */
         post: operations['create_admin_model_v5_admin_models__post'];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/v5/admin/models/{model_id}': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Admin Model */
+        put: operations['update_admin_model_v5_admin_models__model_id__put'];
+        post?: never;
+        /** Delete Admin Model */
+        delete: operations['delete_admin_model_v5_admin_models__model_id__delete'];
         options?: never;
         head?: never;
         patch?: never;
@@ -280,24 +282,6 @@ export type components = {
             status: number;
             errors: components['schemas']['ValidationError'][];
         };
-        /** InferenceOptionsResponse */
-        InferenceOptionsResponse: {
-            /** Maxtokens */
-            maxTokens?: number | null;
-            /** Temperature */
-            temperature?: number | null;
-            /** Topp */
-            topP?: number | null;
-            /** Stop */
-            stop?: string[] | null;
-            /**
-             * N
-             * @default 1
-             */
-            n?: number;
-            /** Logprobs */
-            logprobs?: number | null;
-        };
         /**
          * ModelAvailability
          * @enum {string}
@@ -322,6 +306,13 @@ export type components = {
             | 'modal_openai'
             | 'test_backend'
             | 'ai2_model_hub';
+        /** ModelOrder */
+        ModelOrder: {
+            /** Id */
+            id: string;
+            /** Order */
+            order: number;
+        };
         /**
          * ModelType
          * @enum {string}
@@ -412,43 +403,19 @@ export type components = {
             allowFilesInFollowups?: boolean | null;
             readonly availability: components['schemas']['ModelAvailability'];
         };
-        /** PromptTemplateResponse */
-        PromptTemplateResponse: {
-            /** Id */
-            id: string;
-            /** Name */
-            name: string;
-            /** Content */
-            content: string;
-            /** Creator */
-            creator: string;
-            /**
-             * Created
-             * Format: date-time
-             */
-            created: string;
-            /**
-             * Updated
-             * Format: date-time
-             */
-            updated: string;
-            opts: components['schemas']['InferenceOptionsResponse'];
-            modelType: components['schemas']['ModelType'];
-            /** Fileurls */
-            fileUrls: string[] | null;
-            /** Tooldefinitions */
-            toolDefinitions: components['schemas']['ToolDefinition'][];
-            /** Extraparameters */
-            extraParameters?: {
-                [key: string]: unknown;
-            } | null;
+        /** ReorderModelConfigRequest */
+        ReorderModelConfigRequest: {
+            /** Orderedmodels */
+            orderedModels: components['schemas']['ModelOrder'][];
         };
-        /** PromptTemplateResponseList */
-        PromptTemplateResponseList: components['schemas']['PromptTemplateResponse'][];
         /** RootCreateModelConfigRequest */
         RootCreateModelConfigRequest:
             | components['schemas']['CreateTextOnlyModelConfigRequest']
             | components['schemas']['CreateMultiModalModelConfigRequest'];
+        /** RootUpdateModelConfigRequest */
+        RootUpdateModelConfigRequest:
+            | components['schemas']['UpdateTextOnlyModelConfigRequest']
+            | components['schemas']['UpdateMultiModalModelConfigRequest'];
         /** TextOnlyModelConfigResponse */
         TextOnlyModelConfigResponse: {
             /** Id */
@@ -525,23 +492,155 @@ export type components = {
             promptType: 'text_only';
             readonly availability: components['schemas']['ModelAvailability'];
         };
-        /** ToolDefinition */
-        ToolDefinition: {
+        /** UpdateMultiModalModelConfigRequest */
+        UpdateMultiModalModelConfigRequest: {
             /** Name */
             name: string;
+            host: components['schemas']['ModelHost'];
+            /** Informationurl */
+            informationUrl?: string | null;
             /** Description */
             description: string;
-            /** Parameters */
-            parameters?: {
-                [key: string]: unknown;
-            } | null;
-            toolSource: components['schemas']['ToolSource'];
+            modelType: components['schemas']['ModelType'];
+            /** Modelidonhost */
+            modelIdOnHost: string;
+            /**
+             * Internal
+             * @default true
+             */
+            internal?: boolean;
+            /** Defaultsystemprompt */
+            defaultSystemPrompt?: string | null;
+            /** Familyid */
+            familyId?: string | null;
+            /** Familyname */
+            familyName?: string | null;
+            /** Availabletime */
+            availableTime?: string | null;
+            /** Deprecationtime */
+            deprecationTime?: string | null;
+            /**
+             * Cancalltools
+             * @default false
+             */
+            canCallTools?: boolean;
+            /**
+             * Canthink
+             * @default false
+             */
+            canThink?: boolean;
+            infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
+            /** Temperaturedefault */
+            temperatureDefault?: number | null;
+            /** Temperatureupper */
+            temperatureUpper?: number | null;
+            /** Temperaturelower */
+            temperatureLower?: number | null;
+            /** Temperaturestep */
+            temperatureStep?: number | null;
+            /** Toppdefault */
+            topPDefault?: number | null;
+            /** Toppupper */
+            topPUpper?: number | null;
+            /** Topplower */
+            topPLower?: number | null;
+            /** Toppstep */
+            topPStep?: number | null;
+            /** Maxtokensdefault */
+            maxTokensDefault?: number | null;
+            /** Maxtokensupper */
+            maxTokensUpper?: number | null;
+            /** Maxtokenslower */
+            maxTokensLower?: number | null;
+            /** Maxtokensstep */
+            maxTokensStep?: number | null;
+            /** Stopdefault */
+            stopDefault?: string[] | null;
+            /**
+             * Prompttype
+             * @enum {string}
+             */
+            promptType: 'multi_modal' | 'files_only';
+            /** Acceptedfiletypes */
+            acceptedFileTypes: string[];
+            /** Maxfilespermessage */
+            maxFilesPerMessage?: number | null;
+            requireFileToPrompt?: components['schemas']['FileRequiredToPromptOption'] | null;
+            /** Maxtotalfilesize */
+            maxTotalFileSize?: string | number | null;
+            /** Allowfilesinfollowups */
+            allowFilesInFollowups?: boolean | null;
         };
-        /**
-         * ToolSource
-         * @enum {string}
-         */
-        ToolSource: 'internal' | 'user_defined' | 'model_context_protocol';
+        /** UpdateTextOnlyModelConfigRequest */
+        UpdateTextOnlyModelConfigRequest: {
+            /** Name */
+            name: string;
+            host: components['schemas']['ModelHost'];
+            /** Informationurl */
+            informationUrl?: string | null;
+            /** Description */
+            description: string;
+            modelType: components['schemas']['ModelType'];
+            /** Modelidonhost */
+            modelIdOnHost: string;
+            /**
+             * Internal
+             * @default true
+             */
+            internal?: boolean;
+            /** Defaultsystemprompt */
+            defaultSystemPrompt?: string | null;
+            /** Familyid */
+            familyId?: string | null;
+            /** Familyname */
+            familyName?: string | null;
+            /** Availabletime */
+            availableTime?: string | null;
+            /** Deprecationtime */
+            deprecationTime?: string | null;
+            /**
+             * Cancalltools
+             * @default false
+             */
+            canCallTools?: boolean;
+            /**
+             * Canthink
+             * @default false
+             */
+            canThink?: boolean;
+            infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
+            /** Temperaturedefault */
+            temperatureDefault?: number | null;
+            /** Temperatureupper */
+            temperatureUpper?: number | null;
+            /** Temperaturelower */
+            temperatureLower?: number | null;
+            /** Temperaturestep */
+            temperatureStep?: number | null;
+            /** Toppdefault */
+            topPDefault?: number | null;
+            /** Toppupper */
+            topPUpper?: number | null;
+            /** Topplower */
+            topPLower?: number | null;
+            /** Toppstep */
+            topPStep?: number | null;
+            /** Maxtokensdefault */
+            maxTokensDefault?: number | null;
+            /** Maxtokensupper */
+            maxTokensUpper?: number | null;
+            /** Maxtokenslower */
+            maxTokensLower?: number | null;
+            /** Maxtokensstep */
+            maxTokensStep?: number | null;
+            /** Stopdefault */
+            stopDefault?: string[] | null;
+            /**
+             * Prompttype
+             * @constant
+             */
+            promptType: 'text_only';
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -577,22 +676,25 @@ export type SchemaCreateTextOnlyModelConfigRequest =
 export type SchemaEvent = components['schemas']['Event'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
-export type SchemaInferenceOptionsResponse = components['schemas']['InferenceOptionsResponse'];
 export type SchemaModelAvailability = components['schemas']['ModelAvailability'];
 export type SchemaModelConfigListResponse = components['schemas']['ModelConfigListResponse'];
 export type SchemaModelConfigResponse = components['schemas']['ModelConfigResponse'];
 export type SchemaModelHost = components['schemas']['ModelHost'];
+export type SchemaModelOrder = components['schemas']['ModelOrder'];
 export type SchemaModelType = components['schemas']['ModelType'];
 export type SchemaMultiModalModelConfigResponse =
     components['schemas']['MultiModalModelConfigResponse'];
-export type SchemaPromptTemplateResponse = components['schemas']['PromptTemplateResponse'];
-export type SchemaPromptTemplateResponseList = components['schemas']['PromptTemplateResponseList'];
+export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
 export type SchemaRootCreateModelConfigRequest =
     components['schemas']['RootCreateModelConfigRequest'];
+export type SchemaRootUpdateModelConfigRequest =
+    components['schemas']['RootUpdateModelConfigRequest'];
 export type SchemaTextOnlyModelConfigResponse =
     components['schemas']['TextOnlyModelConfigResponse'];
-export type SchemaToolDefinition = components['schemas']['ToolDefinition'];
-export type SchemaToolSource = components['schemas']['ToolSource'];
+export type SchemaUpdateMultiModalModelConfigRequest =
+    components['schemas']['UpdateMultiModalModelConfigRequest'];
+export type SchemaUpdateTextOnlyModelConfigRequest =
+    components['schemas']['UpdateTextOnlyModelConfigRequest'];
 export type SchemaValidationError = components['schemas']['ValidationError'];
 export type SchemaProblem = components['schemas']['Problem'];
 export type $defs = Record<string, never>;
@@ -700,10 +802,13 @@ export interface operations {
             };
         };
     };
-    get_prompt_templates_v5_prompt_templates__get: {
+    get_admin_models_v5_admin_models__get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                Authorization?: string | null;
+                'X-Anonymous-User-ID'?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -715,7 +820,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['PromptTemplateResponseList'];
+                    'application/json': components['schemas']['ModelConfigListResponse'];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['HTTPValidationError'];
                 };
             };
             /** @description Client Error */
@@ -738,7 +852,7 @@ export interface operations {
             };
         };
     };
-    get_admin_models_v5_admin_models__get: {
+    sort_admin_model_v5_admin_models__put: {
         parameters: {
             query?: never;
             header?: {
@@ -748,16 +862,18 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['ReorderModelConfigRequest'];
+            };
+        };
         responses: {
             /** @description Successful Response */
-            200: {
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    'application/json': components['schemas']['ModelConfigListResponse'];
-                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {
@@ -842,6 +958,112 @@ export interface operations {
             };
         };
     };
+    update_admin_model_v5_admin_models__model_id__put: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                'X-Anonymous-User-ID'?: string | null;
+            };
+            path: {
+                model_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['RootUpdateModelConfigRequest'];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['ModelConfigResponse'] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['HTTPValidationError'];
+                };
+            };
+            /** @description Client Error */
+            '4XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+            /** @description Server Error */
+            '5XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+        };
+    };
+    delete_admin_model_v5_admin_models__model_id__delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                'X-Anonymous-User-ID'?: string | null;
+            };
+            path: {
+                model_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['HTTPValidationError'];
+                };
+            };
+            /** @description Client Error */
+            '4XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+            /** @description Server Error */
+            '5XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+        };
+    };
 }
 type ReadonlyArray<T> = [Exclude<T, undefined>] extends [any[]]
     ? Readonly<Exclude<T, undefined>>
@@ -889,8 +1111,6 @@ export const multiModalModelConfigResponsePromptTypeValues: ReadonlyArray<
 export const textOnlyModelConfigResponsePromptTypeValues: ReadonlyArray<
     components['schemas']['TextOnlyModelConfigResponse']['promptType']
 > = ['text_only'];
-export const toolSourceValues: ReadonlyArray<components['schemas']['ToolSource']> = [
-    'internal',
-    'user_defined',
-    'model_context_protocol',
-];
+export const updateMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
+    components['schemas']['UpdateMultiModalModelConfigRequest']['promptType']
+> = ['multi_modal', 'files_only'];
