@@ -1,8 +1,8 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { type ActionFunction, redirect } from 'react-router-dom';
 
-import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import { fetchClient } from '@/api/playgroundApi/v5';
 import { links } from '@/Links';
 
 import { getAdminModelsQueryOptions } from '../useGetAdminModels';
@@ -10,7 +10,7 @@ import { getAdminModelsQueryOptions } from '../useGetAdminModels';
 export const createModelAction =
     (queryClient: QueryClient): ActionFunction =>
     async ({ request }) => {
-        const response = await playgroundApiClient.POST('/v4/admin/models/', {
+        const response = await fetchClient.POST('/v5/admin/models/', {
             body: (await request.json()) as SchemaRootCreateModelConfigRequest,
         });
 
@@ -18,7 +18,7 @@ export const createModelAction =
         if (response.error) {
             // @ts-expect-error - Our error responses aren't typed correctly
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-            return response.error?.error ?? response.error;
+            return response.error.error ?? response.error;
         }
 
         await queryClient.invalidateQueries({

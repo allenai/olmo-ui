@@ -12,6 +12,7 @@ import { v4ModelsHandlers } from './v4ModelsHandlers';
 import { v4PromptTemplatesHandlers } from './v4PromptTemplatesHandlers';
 import { v4ThreadHandlers } from './v4ThreadHandlers';
 import { v4TranscriptionHandlers } from './v4TranscriptionHandlers';
+import { v5ModelsHandlers } from './v5ModelsHandlers';
 
 export const handlers = [
     ...messageStreamHandlers,
@@ -21,6 +22,7 @@ export const handlers = [
     ...v4ModelsHandlers,
     ...v4TranscriptionHandlers,
     ...v4PromptTemplatesHandlers,
+    ...v5ModelsHandlers,
     ...agentHandlers,
 
     http.get(`${process.env.VITE_API_URL}${WhoamiApiUrl}`, () => {
@@ -51,7 +53,7 @@ export const handlers = [
         return passthrough();
     }),
 
-    http.post(`${process.env.VITE_DOLMA_API_URL}/v1/event`, () => {
+    http.post(`${process.env.VITE_DOLMA_API_URL}/v5/event`, () => {
         return new HttpResponse(undefined, { status: 200 });
     }),
 

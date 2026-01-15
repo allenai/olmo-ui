@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { useArgs } from 'storybook/preview-api';
 import { fn } from 'storybook/test';
 
-import { fakeModelsResponse } from '@/mocks/handlers/modelHandlers';
+import { fakeModelsResponse } from '@/mocks/handlers/v4ModelsHandlers';
 
 import { ModelSelect } from './ModelSelect';
 
