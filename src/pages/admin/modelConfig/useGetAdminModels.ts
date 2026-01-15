@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 
-import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { apiQueryClient } from '@/api/playgroundApi/v5';
+import type { SchemaModelConfigResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 export const getAdminModelsQueryOptions = apiQueryClient.queryOptions('get', '/v5/admin/models/');
 
@@ -10,7 +10,7 @@ export const useAdminModels = () => {
 
     // There's no way for OpenAPI specs to tie a query param to a specific response so we need to force the type here
     // We, the devs, know that the admin query param will always return this model!
-    return { data: data as SchemaResponseModel[] | undefined, error, isFetching, status };
+    return { data: data as SchemaModelConfigResponse[] | undefined, error, isFetching, status };
 };
 
 export const useAdminModelById = (modelId: string) => {

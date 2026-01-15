@@ -1,8 +1,8 @@
 import { QueryClient } from '@tanstack/react-query';
-import { ActionFunction, redirect } from 'react-router-dom';
+import { type ActionFunction, redirect } from 'react-router-dom';
 
-import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
-import { type SchemaRootUpdateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import { fetchClient } from '@/api/playgroundApi/v5';
+import { type SchemaRootUpdateModelConfigRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { links } from '@/Links';
 
 import { getAdminModelsQueryOptions } from '../useGetAdminModels';
@@ -15,7 +15,7 @@ export const updateModelAction =
             throw Error('Model Id is required!');
         }
 
-        const response = await playgroundApiClient.PUT('/v4/admin/models/{model_id}', {
+        const response = await fetchClient.PUT('/v5/admin/models/{model_id}', {
             params: {
                 path: { model_id: modelId },
             },
@@ -26,7 +26,7 @@ export const updateModelAction =
         if (response.error) {
             // @ts-expect-error - Our error responses aren't typed correctly
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-            return response.error?.error ?? response.error;
+            return response.error.error ?? response.error;
         }
 
         await queryClient.invalidateQueries({
