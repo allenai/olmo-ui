@@ -2,7 +2,7 @@ import type { SchemaPromptTemplateResponseList } from '@/api/playgroundApi/playg
 
 import { typedHttp } from './typedHttp';
 
-const facePromptTemplatesResponse = [
+const fakePromptTemplatesResponse = [
     {
         id: 'p_tpl_12345',
         name: 'test prompt template',
@@ -54,7 +54,7 @@ const facePromptTemplatesResponse = [
 ] satisfies SchemaPromptTemplateResponseList;
 
 const v4PromptTemplatesHandler = typedHttp.get('/v4/prompt-templates/', ({ response }) => {
-    return response(200).json(facePromptTemplatesResponse);
+    return response(200).json(fakePromptTemplatesResponse);
 });
 
 export const v4PromptTemplatesHandlers = [v4PromptTemplatesHandler];
