@@ -1,6 +1,6 @@
 import type { SchemaPromptTemplateResponseList } from '@/api/playgroundApi/playgroundApiSchema';
 
-import { typedHttp } from './typedHttp';
+import { v5TypedHttp } from './v5TypedHttp';
 
 const fakePromptTemplatesResponse = [
     {
@@ -53,8 +53,8 @@ const fakePromptTemplatesResponse = [
     },
 ] satisfies SchemaPromptTemplateResponseList;
 
-const v4PromptTemplatesHandler = typedHttp.get('/v4/prompt-templates/', ({ response }) => {
+const v5PromptTemplatesHandler = v5TypedHttp.get('/v5/prompt-templates/', ({ response }) => {
     return response(200).json(fakePromptTemplatesResponse);
 });
 
-export const v4PromptTemplatesHandlers = [v4PromptTemplatesHandler];
+export const v5PromptTemplatesHandlers = [v5PromptTemplatesHandler];
