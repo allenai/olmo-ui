@@ -21,28 +21,6 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    '/v5/whoami': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Whoami
-         * @description Stub of whoami for e2e testing
-         *
-         *     TODO: Update with full whoami including database lookup
-         */
-        get: operations['whoami_v5_whoami_get'];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     '/v5/prompt-templates/': {
         parameters: {
             query?: never;
@@ -52,6 +30,29 @@ export type paths = {
         };
         /** Get Prompt Templates */
         get: operations['get_prompt_templates_v5_prompt_templates__get'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/v5/user/whoami': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get User
+         * @description Get information for the current authenticated user.
+         *
+         *     Previously known as /whoami in the Flask API.
+         *     Returns user authentication status, terms acceptance, and permissions.
+         */
+        get: operations['get_user_v5_user_whoami_get'];
         put?: never;
         post?: never;
         delete?: never;
@@ -101,6 +102,21 @@ export type paths = {
 export type webhooks = Record<string, never>;
 export type components = {
     schemas: {
+        /** AuthenticatedClient */
+        AuthenticatedClient: {
+            /** Id */
+            id?: string | null;
+            /** Client */
+            client: string;
+            /** Hasacceptedtermsandconditions */
+            hasAcceptedTermsAndConditions: boolean;
+            /** Hasaccepteddatacollection */
+            hasAcceptedDataCollection: boolean;
+            /** Hasacceptedmediacollection */
+            hasAcceptedMediaCollection: boolean;
+            /** Permissions */
+            permissions?: string[];
+        };
         /**
          * AvailableInfiniGramIndexId
          * @enum {string}
@@ -753,6 +769,7 @@ export type components = {
     headers: never;
     pathItems: never;
 };
+export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
 export type SchemaAvailableInfiniGramIndexId = components['schemas']['AvailableInfiniGramIndexId'];
 export type SchemaCreateMultiModalModelConfigRequest =
     components['schemas']['CreateMultiModalModelConfigRequest'];
@@ -840,13 +857,10 @@ export interface operations {
             };
         };
     };
-    whoami_v5_whoami_get: {
+    get_prompt_templates_v5_prompt_templates__get: {
         parameters: {
             query?: never;
-            header?: {
-                Authorization?: string | null;
-                'X-Anonymous-User-ID'?: string | null;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -858,18 +872,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        [key: string]: unknown;
-                    };
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/problem+json': components['schemas']['HTTPValidationError'];
+                    'application/json': components['schemas']['PromptTemplateResponseList'];
                 };
             };
             /** @description Client Error */
@@ -892,10 +895,13 @@ export interface operations {
             };
         };
     };
-    get_prompt_templates_v5_prompt_templates__get: {
+    get_user_v5_user_whoami_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                Authorization?: string | null;
+                'X-Anonymous-User-ID'?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -907,7 +913,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['PromptTemplateResponseList'];
+                    'application/json': components['schemas']['AuthenticatedClient'];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['HTTPValidationError'];
                 };
             };
             /** @description Client Error */
