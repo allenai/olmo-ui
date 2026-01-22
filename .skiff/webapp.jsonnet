@@ -140,6 +140,7 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
             }
         },
         spec: {
+            ingressClassName: 'nginx-node-port',
             tls: [ allenAITLS.spec + { hosts: allenAIHosts } ],
             rules: [
                 {
