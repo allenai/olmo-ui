@@ -108,11 +108,11 @@ export type components = {
             id?: string | null;
             /** Client */
             client: string;
-            /** Hasacceptedtermsandconditions */
+            /** Has Accepted Terms and Conditions */
             hasAcceptedTermsAndConditions: boolean;
-            /** Hasaccepteddatacollection */
+            /** Has Accepted Data Collection */
             hasAcceptedDataCollection: boolean;
-            /** Hasacceptedmediacollection */
+            /** Has Accepted Media Collection */
             hasAcceptedMediaCollection: boolean;
             /** Permissions */
             permissions?: string[];
