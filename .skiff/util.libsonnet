@@ -31,7 +31,7 @@
         if env == 'prod' then
             [ config.appName + tld ]
         else
-            [ env + '.' + config.appName + tld ],
+            [ config.appName + '-' + env + tld ],
 
     /**
      * Returns a few TLS related constructs given the provided hosts. If the application is
