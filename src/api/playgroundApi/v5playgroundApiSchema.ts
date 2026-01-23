@@ -46,12 +46,12 @@ export type paths = {
             cookie?: never;
         };
         /**
-         * Get User
+         * Get Who Am I
          * @description Get information for the current authenticated user.
          *
          *     Returns user authentication status, terms acceptance, and permissions.
          */
-        get: operations['get_user_v5_user_whoami_get'];
+        get: operations['get_who_am_i_v5_user_whoami_get'];
         put?: never;
         post?: never;
         delete?: never;
@@ -894,7 +894,7 @@ export interface operations {
             };
         };
     };
-    get_user_v5_user_whoami_get: {
+    get_who_am_i_v5_user_whoami_get: {
         parameters: {
             query?: never;
             header?: {
