@@ -43,6 +43,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    '/v5/prompt-templates/': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Prompt Templates */
+        get: operations['get_prompt_templates_v5_prompt_templates__get'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/v5/admin/models/': {
         parameters: {
             query?: never;
@@ -282,6 +299,24 @@ export type components = {
             status: number;
             errors: components['schemas']['ValidationError'][];
         };
+        /** InferenceOptionsResponse */
+        InferenceOptionsResponse: {
+            /** Maxtokens */
+            maxTokens?: number | null;
+            /** Temperature */
+            temperature?: number | null;
+            /** Topp */
+            topP?: number | null;
+            /** Stop */
+            stop?: string[] | null;
+            /**
+             * N
+             * @default 1
+             */
+            n?: number;
+            /** Logprobs */
+            logprobs?: number | null;
+        };
         /**
          * ModelAvailability
          * @enum {string}
@@ -403,6 +438,39 @@ export type components = {
             allowFilesInFollowups?: boolean | null;
             readonly availability: components['schemas']['ModelAvailability'];
         };
+        /** PromptTemplateResponse */
+        PromptTemplateResponse: {
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Content */
+            content: string;
+            /** Creator */
+            creator: string;
+            /**
+             * Created
+             * Format: date-time
+             */
+            created: string;
+            /**
+             * Updated
+             * Format: date-time
+             */
+            updated: string;
+            opts: components['schemas']['InferenceOptionsResponse'];
+            modelType: components['schemas']['ModelType'];
+            /** Fileurls */
+            fileUrls: string[] | null;
+            /** Tooldefinitions */
+            toolDefinitions: components['schemas']['ToolDefinition'][];
+            /** Extraparameters */
+            extraParameters?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** PromptTemplateResponseList */
+        PromptTemplateResponseList: components['schemas']['PromptTemplateResponse'][];
         /** ReorderModelConfigRequest */
         ReorderModelConfigRequest: {
             /** Orderedmodels */
@@ -492,6 +560,23 @@ export type components = {
             promptType: 'text_only';
             readonly availability: components['schemas']['ModelAvailability'];
         };
+        /** ToolDefinition */
+        ToolDefinition: {
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
+            /** Parameters */
+            parameters?: {
+                [key: string]: unknown;
+            } | null;
+            toolSource: components['schemas']['ToolSource'];
+        };
+        /**
+         * ToolSource
+         * @enum {string}
+         */
+        ToolSource: 'internal' | 'user_defined' | 'model_context_protocol';
         /** UpdateMultiModalModelConfigRequest */
         UpdateMultiModalModelConfigRequest: {
             /** Name */
@@ -676,6 +761,7 @@ export type SchemaCreateTextOnlyModelConfigRequest =
 export type SchemaEvent = components['schemas']['Event'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
+export type SchemaInferenceOptionsResponse = components['schemas']['InferenceOptionsResponse'];
 export type SchemaModelAvailability = components['schemas']['ModelAvailability'];
 export type SchemaModelConfigListResponse = components['schemas']['ModelConfigListResponse'];
 export type SchemaModelConfigResponse = components['schemas']['ModelConfigResponse'];
@@ -684,6 +770,8 @@ export type SchemaModelOrder = components['schemas']['ModelOrder'];
 export type SchemaModelType = components['schemas']['ModelType'];
 export type SchemaMultiModalModelConfigResponse =
     components['schemas']['MultiModalModelConfigResponse'];
+export type SchemaPromptTemplateResponse = components['schemas']['PromptTemplateResponse'];
+export type SchemaPromptTemplateResponseList = components['schemas']['PromptTemplateResponseList'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
 export type SchemaRootCreateModelConfigRequest =
     components['schemas']['RootCreateModelConfigRequest'];
@@ -691,6 +779,8 @@ export type SchemaRootUpdateModelConfigRequest =
     components['schemas']['RootUpdateModelConfigRequest'];
 export type SchemaTextOnlyModelConfigResponse =
     components['schemas']['TextOnlyModelConfigResponse'];
+export type SchemaToolDefinition = components['schemas']['ToolDefinition'];
+export type SchemaToolSource = components['schemas']['ToolSource'];
 export type SchemaUpdateMultiModalModelConfigRequest =
     components['schemas']['UpdateMultiModalModelConfigRequest'];
 export type SchemaUpdateTextOnlyModelConfigRequest =
@@ -780,6 +870,44 @@ export interface operations {
                 };
                 content: {
                     'application/problem+json': components['schemas']['HTTPValidationError'];
+                };
+            };
+            /** @description Client Error */
+            '4XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+            /** @description Server Error */
+            '5XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+        };
+    };
+    get_prompt_templates_v5_prompt_templates__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['PromptTemplateResponseList'];
                 };
             };
             /** @description Client Error */
@@ -1111,6 +1239,11 @@ export const multiModalModelConfigResponsePromptTypeValues: ReadonlyArray<
 export const textOnlyModelConfigResponsePromptTypeValues: ReadonlyArray<
     components['schemas']['TextOnlyModelConfigResponse']['promptType']
 > = ['text_only'];
+export const toolSourceValues: ReadonlyArray<components['schemas']['ToolSource']> = [
+    'internal',
+    'user_defined',
+    'model_context_protocol',
+];
 export const updateMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
     components['schemas']['UpdateMultiModalModelConfigRequest']['promptType']
 > = ['multi_modal', 'files_only'];
