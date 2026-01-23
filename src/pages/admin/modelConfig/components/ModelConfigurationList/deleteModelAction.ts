@@ -1,7 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
-import { ActionFunction, redirect } from 'react-router-dom';
+import { type ActionFunction, redirect } from 'react-router-dom';
 
-import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
+import { fetchClient } from '@/api/playgroundApi/v5';
 import { links } from '@/Links';
 
 import { getAdminModelsQueryOptions } from '../../useGetAdminModels';
@@ -14,7 +14,7 @@ export const deleteModelAction =
             throw Error('Model Id is required!');
         }
 
-        await playgroundApiClient.DELETE('/v4/admin/models/{model_id}', {
+        await fetchClient.DELETE('/v5/admin/models/{model_id}', {
             params: {
                 path: { model_id: modelId },
             },

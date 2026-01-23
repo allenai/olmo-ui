@@ -1,8 +1,8 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { type ActionFunction, redirect } from 'react-router-dom';
 
-import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { fetchClient } from '@/api/playgroundApi/v5';
+import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { links } from '@/Links';
 
 import { getAdminModelsQueryOptions } from '../useGetAdminModels';
