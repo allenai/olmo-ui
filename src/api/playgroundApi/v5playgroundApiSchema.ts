@@ -49,7 +49,6 @@ export type paths = {
          * Get User
          * @description Get information for the current authenticated user.
          *
-         *     Previously known as /whoami in the Flask API.
          *     Returns user authentication status, terms acceptance, and permissions.
          */
         get: operations['get_user_v5_user_whoami_get'];
