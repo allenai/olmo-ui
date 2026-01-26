@@ -1,6 +1,6 @@
 import { ChatOutlined as ChatIcon } from '@mui/icons-material';
 import { Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { generatePath, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { links } from '../Links';
 import { formatDateForHistory } from '../utils/formatDateForHistory';
@@ -77,11 +77,7 @@ export const ThreadLink = ({
                     },
                 }}
                 component={Link}
-                href={
-                    agentId
-                        ? generatePath(links.agent.thread, { agentId, threadId })
-                        : links.thread(threadId)
-                }>
+                href={links.thread(threadId)}>
                 <ListItemIcon>
                     {agentId ? <AgentIcon fontSize="inherit" /> : <ChatIcon fontSize="inherit" />}
                 </ListItemIcon>

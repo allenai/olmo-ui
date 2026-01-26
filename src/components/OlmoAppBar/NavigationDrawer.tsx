@@ -86,16 +86,6 @@ export const NavigationDrawer = ({
                             doesMatchPath={curriedDoesMatchPath}
                             showFeaturedFamilies
                         />
-                        {isAgentPageEnabled ? (
-                            <NavigationLink
-                                icon={<AgentIcon />}
-                                selected={curriedDoesMatchPath(links.agent.root)}
-                                href={links.agent.root}
-                                DisclosureIcon={ScienceIcon}
-                                experimental>
-                                Agents
-                            </NavigationLink>
-                        ) : null}
                         {(!isComparisonPageInternalOnly ||
                             userAuthInfo.hasPermission(USER_PERMISSIONS.READ_INTERNAL_MODELS)) && (
                             <NavigationLink

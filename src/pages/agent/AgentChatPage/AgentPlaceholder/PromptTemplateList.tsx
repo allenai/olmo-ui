@@ -4,8 +4,6 @@ import { Agent } from '@/api/playgroundApi/additionalTypes';
 import { LinkCard } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCard';
 import { LinkCardList } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCardList';
 
-import { makeAgentTemplatePath } from './makeAgentTemplatePath';
-
 export type PromptTemplate = {
     id: string;
     content: string;
@@ -35,10 +33,7 @@ export const PromptTemplateList = ({ agentId, promptTemplates }: PromptTemplateL
                 {promptTemplates.map(({ id, content, imageUrl }) => (
                     <LinkCard
                         key={id}
-                        url={makeAgentTemplatePath({
-                            agentId,
-                            templateId: id,
-                        })}
+                        url={`#agentURL`}
                         cardType="image"
                         imageClassName={css({ height: '[120px]' })}
                         mediaUrl={imageUrl}
