@@ -12,7 +12,6 @@ export const videoTrackingStreamResponse = [
         id: VIDEO_TRACKING_ROOT_ID,
         messages: [
             {
-                agentId: null,
                 children: ['msg_H8T4Q3M3O0'],
                 completion: null,
                 content: 'track the car',
@@ -55,7 +54,6 @@ export const videoTrackingStreamResponse = [
                 toolDefinitions: [],
             },
             {
-                agentId: null,
                 children: [],
                 completion: null,
                 content: '',
@@ -1348,7 +1346,6 @@ export const videoTrackingStreamResponse = [
         id: VIDEO_TRACKING_ROOT_ID,
         messages: [
             {
-                agentId: null,
                 children: ['msg_H8T4Q3M3O0'],
                 completion: null,
                 content: 'track the car',
@@ -1391,7 +1388,6 @@ export const videoTrackingStreamResponse = [
                 toolDefinitions: [],
             },
             {
-                agentId: null,
                 children: [],
                 completion: 'cpl_H1O4S8A5F8',
                 content:
