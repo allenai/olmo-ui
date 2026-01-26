@@ -33,7 +33,7 @@ export const PromptTemplateList = ({ agentId, promptTemplates }: PromptTemplateL
                 {promptTemplates.map(({ id, content, imageUrl }) => (
                     <LinkCard
                         key={id}
-                        url={`#agentURL`}
+                        url={`#${agentId}`}
                         cardType="image"
                         imageClassName={css({ height: '[120px]' })}
                         mediaUrl={imageUrl}

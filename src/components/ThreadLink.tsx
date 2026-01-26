@@ -4,13 +4,11 @@ import { useParams } from 'react-router-dom';
 
 import { links } from '../Links';
 import { formatDateForHistory } from '../utils/formatDateForHistory';
-import { AgentIcon } from './assets/AgentIcon';
 import { ChevronIcon } from './assets/ChevronIcon';
 import { DeleteThreadIconButton } from './thread/DeleteThreadButton';
 
 export interface ThreadLinkProps {
     threadId: string;
-    agentId?: string;
     content?: string;
     creator: string;
     createdDate: Date;
@@ -19,7 +17,6 @@ export interface ThreadLinkProps {
 
 export const ThreadLink = ({
     threadId,
-    agentId,
     content = 'message...',
     creator,
     createdDate,
@@ -79,7 +76,7 @@ export const ThreadLink = ({
                 component={Link}
                 href={links.thread(threadId)}>
                 <ListItemIcon>
-                    {agentId ? <AgentIcon fontSize="inherit" /> : <ChatIcon fontSize="inherit" />}
+                    <ChatIcon fontSize="inherit" />
                 </ListItemIcon>
                 <ListItemText
                     primaryTypographyProps={{

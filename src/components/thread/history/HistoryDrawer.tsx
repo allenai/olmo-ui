@@ -68,7 +68,6 @@ export const HistoryDrawer = (): ReactNode => {
 
         return {
             threadId: thread.id,
-            agentId: firstMessage.agentId ?? undefined,
             content: firstUserMessage?.content,
             creator: firstMessage.creator,
             createdDate,

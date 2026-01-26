@@ -9,7 +9,6 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 import { RemoteState } from '@/contexts/util';
 
 import type {
-    AgentParameterConstraints,
     MessageInferenceParameters,
     ModelInferenceConstraints,
 } from './ThreadProviderHelpers';
@@ -53,8 +52,6 @@ interface QueryContextValue {
     inferenceConstraints?: ModelInferenceConstraints;
     inferenceOpts: MessageInferenceParameters;
     updateInferenceOpts: (newOptions: MessageInferenceParameters) => void;
-
-    agentParameterConstraints?: AgentParameterConstraints;
 
     submitToThreadView: (threadViewId: string, data: QueryFormValues) => Promise<string | null>;
     updateIsToolCallingEnabled: (enabled: boolean) => void;

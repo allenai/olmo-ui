@@ -1,6 +1,6 @@
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { MessageStreamError, MessageStreamErrorReason, StreamBadRequestError } from '@/api/Message';
-import { type Agent, Model } from '@/api/playgroundApi/additionalTypes';
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { CreateMessageRequest, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
@@ -10,10 +10,7 @@ import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFo
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
-import {
-    createAgentAbortErrorMessage,
-    createModelAbortErrorMessage,
-} from '@/slices/ThreadUpdateSlice';
+import { createModelAbortErrorMessage } from '@/slices/ThreadUpdateSlice';
 
 import type { ExtraParameters } from './QueryContext';
 import {
@@ -174,24 +171,16 @@ interface SubmissionErrorParams {
     error: unknown;
     addSnackMessage: (message: SnackMessage) => void;
 }
-interface AgentSubmissionErrorParams extends SubmissionErrorParams {
-    type: 'agent';
-    agent: Agent;
-    model?: never;
-}
 interface ModelSubmissionErrorParams extends SubmissionErrorParams {
     type: 'model';
-    agent?: never;
     model: Model;
 }
 
 export const handleSubmissionError = ({
-    type,
     error,
     model,
-    agent,
     addSnackMessage,
-}: AgentSubmissionErrorParams | ModelSubmissionErrorParams): null => {
+}: ModelSubmissionErrorParams): null => {
     // Re-throw form-specific errors so they reach the form's try-catch block
     if (isInappropriateFormError(error)) {
         throw error;
@@ -217,7 +206,7 @@ export const handleSubmissionError = ({
         }
 
         if (error.finishReason === MessageStreamErrorReason.MODEL_OVERLOADED) {
-            analyticsClient.trackModelOverloadedError(type === 'agent' ? agent.id : model.id);
+            analyticsClient.trackModelOverloadedError(model.id);
 
             snackMessage = errorToAlert(
                 `create-message-${new Date().getTime()}`.toLowerCase(),
@@ -233,10 +222,7 @@ export const handleSubmissionError = ({
         );
     } else if (error instanceof Error) {
         if (error.name === 'AbortError') {
-            snackMessage =
-                type === 'agent'
-                    ? createAgentAbortErrorMessage()
-                    : createModelAbortErrorMessage(model);
+            snackMessage = createModelAbortErrorMessage(model);
         }
     }
 
