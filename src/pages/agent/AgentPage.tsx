@@ -3,12 +3,17 @@ import { cx } from '@allenai/varnish-ui';
 import { Typography } from '@mui/material';
 import { useLoaderData } from 'react-router-dom';
 
+import type { Agent } from '@/api/playgroundApi/additionalTypes';
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
 import { PageContainer } from '@/components/PageContainer';
 import { LinkCardList } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCardList';
-import { type AgentLoaderData } from '@/pages/agent/agentPageLoader';
 import { AgentCard } from '@/pages/agent/components/AgentCard';
+
+type AgentLoaderData = {
+    agents: Agent[];
+    agentLinks: Agent[];
+};
 
 const agentPageContentWrapper = css({
     display: 'flex',

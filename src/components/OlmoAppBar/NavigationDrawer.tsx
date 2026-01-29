@@ -15,7 +15,6 @@ import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-import { AgentIcon } from '../assets/AgentIcon';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { NavigationFooter } from './Footer/NavigationFooter';
@@ -53,7 +52,7 @@ export const NavigationDrawer = ({
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const userAuthInfo = useUserAuthInfo();
-    const { isAgentPageEnabled, isComparisonPageInternalOnly } = useFeatureToggles();
+    const { isComparisonPageInternalOnly } = useFeatureToggles();
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
@@ -86,16 +85,6 @@ export const NavigationDrawer = ({
                             doesMatchPath={curriedDoesMatchPath}
                             showFeaturedFamilies
                         />
-                        {isAgentPageEnabled ? (
-                            <NavigationLink
-                                icon={<AgentIcon />}
-                                selected={curriedDoesMatchPath(links.agent.root)}
-                                href={links.agent.root}
-                                DisclosureIcon={ScienceIcon}
-                                experimental>
-                                Agents
-                            </NavigationLink>
-                        ) : null}
                         {(!isComparisonPageInternalOnly ||
                             userAuthInfo.hasPermission(USER_PERMISSIONS.READ_INTERNAL_MODELS)) && (
                             <NavigationLink

@@ -12,7 +12,7 @@ import { type ModelPageData } from '@/pages/model/modelPageLoader';
 import { ModelCard } from './components/ModelCard';
 import { FEATURED_MODELS } from './featuredModels';
 
-const agentPageContentWrapper = css({
+const pageContentWrapper = css({
     display: 'flex',
     flexDirection: 'column',
     gap: '8',
@@ -28,7 +28,7 @@ const agentPageContentWrapper = css({
     paddingBlockEnd: '8',
 });
 
-const agentCardListClassName = css({
+const cardListClassName = css({
     gap: '8',
     width: '[100%]',
     maxWidth: 'breakpoint-md',
@@ -64,7 +64,7 @@ export const ModelPage = () => {
                             lg: '0',
                         },
                     })}>
-                    <div className={agentPageContentWrapper}>
+                    <div className={pageContentWrapper}>
                         <Typography variant="h1" component="h2" sx={{ textAlign: 'center' }}>
                             Models
                         </Typography>
@@ -73,7 +73,7 @@ export const ModelPage = () => {
                                 <Typography variant="h3" component="p">
                                     Our featured models
                                 </Typography>
-                                <LinkCardList className={agentCardListClassName}>
+                                <LinkCardList className={cardListClassName}>
                                     {featuredModels.map(({ model, image }) => (
                                         <ModelCard
                                             key={model.name}
@@ -91,7 +91,7 @@ export const ModelPage = () => {
                                 </Typography>
                             </>
                         ) : null}
-                        <LinkCardList columns="two" className={agentCardListClassName}>
+                        <LinkCardList columns="two" className={cardListClassName}>
                             {nonFeaturedModels.map((model) => (
                                 <ModelCard
                                     key={model.name}

@@ -7,7 +7,6 @@ import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { StreamingThread } from '@/contexts/stream-types';
-import type { AgentChatStreamMutationVariables } from '@/contexts/streamMessage/useStreamAgentMessage';
 import {
     THREAD_STREAM_MUTATION_KEY,
     ThreadStreamMutationVariables,
@@ -65,10 +64,7 @@ export const ThreadViewProvider = ({
         // This is how to add types to output according to TKdodo
         select: (mutation) => ({
             status: mutation.state.status,
-            variables: mutation.state.variables as
-                | ThreadStreamMutationVariables
-                | AgentChatStreamMutationVariables
-                | undefined,
+            variables: mutation.state.variables as ThreadStreamMutationVariables | undefined,
         }),
     });
 

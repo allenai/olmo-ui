@@ -1,8 +1,7 @@
 import { useCallback, useMemo } from 'react';
-import { generatePath, type To, useNavigate } from 'react-router-dom';
+import { type To, useNavigate } from 'react-router-dom';
 
-import type { Agent } from '@/api/playgroundApi/additionalTypes';
-import { useStreamAgentMessage, useStreamMessage } from '@/contexts/streamMessage';
+import { useStreamMessage } from '@/contexts/streamMessage';
 import { links } from '@/Links';
 
 import { isFirstMessage, type StreamingMessageResponse } from '../../stream-types';
@@ -43,15 +42,6 @@ const useChatStreamMessageBase = (
 export const useChatStreamMessage = (threadId: string | undefined) => {
     const streamCallbacks = useChatStreamMessageBase(threadId, links.thread);
     const streamMessage = useStreamMessage(streamCallbacks);
-
-    return streamMessage;
-};
-
-export const useAgentChatStreamMessage = (threadId: string | undefined, selectedAgent: Agent) => {
-    const streamCallbacks = useChatStreamMessageBase(threadId, (messageId) =>
-        generatePath(links.agent.thread, { agentId: selectedAgent.id, threadId: messageId })
-    );
-    const streamMessage = useStreamAgentMessage(streamCallbacks);
 
     return streamMessage;
 };

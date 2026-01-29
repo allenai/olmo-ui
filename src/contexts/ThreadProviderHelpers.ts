@@ -125,13 +125,10 @@ export function areAllModelsCompatible(models: readonly Model[]): boolean {
     return true;
 }
 
-type AgentInferenceParameters = { maxTurns?: number };
-
 export type MessageInferenceParameters = Pick<
     SchemaCreateMessageRequest,
     'temperature' | 'topP' | 'maxTokens' | 'n' | 'logprobs' | 'stop'
-> &
-    AgentInferenceParameters;
+>;
 
 export const getInitialInferenceParameters = (
     model?: Model,
@@ -194,14 +191,6 @@ export type ModelInferenceConstraints = {
         step: number;
     };
     maxTokens: {
-        minValue: number;
-        maxValue: number;
-        step: number;
-    };
-};
-
-export type AgentParameterConstraints = {
-    maxTurns: {
         minValue: number;
         maxValue: number;
         step: number;

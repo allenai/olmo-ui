@@ -7,7 +7,6 @@ import type { Chunk, StreamingMessageResponse } from '@/contexts/stream-types';
 
 import { formatStreamMessage } from '../mockUtils';
 import highlightStressTestMessage from './responses/highlightStressTestMessage';
-import { agentThinkingAndToolCallsResponse } from './responses/v4/agent/agentThinkingAndToolCallsResponse';
 import documentWithMultipleSnippetsResponse from './responses/v4/documentWithMultipleSnippetsResponse';
 import duplicateDocumentsResponse from './responses/v4/duplicateDocumentMessageResponse';
 import { inappropriateContentErrorResponse } from './responses/v4/inappropriateContentErrorResponse';
@@ -303,7 +302,6 @@ const fakeGetAllThreadsResponse: MessagesResponseV4 = {
         documentWithMultipleSnippetsResponse,
         multiplePointerMessageResponse,
         overlappingSpansResponse,
-        agentThinkingAndToolCallsResponse,
     ],
     meta: { limit: 10, offset: 0, total: 5 },
 };

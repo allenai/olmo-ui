@@ -7,7 +7,6 @@ export const imagePointingMolmo2Response = {
     id: IMAGE_POINTING_ROOT_ID,
     messages: [
         {
-            agentId: null,
             children: ['msg_E7L3O7Z7W9'],
             completion: null,
             content: 'point to the cats ears, eyes and mouth',
@@ -52,7 +51,6 @@ export const imagePointingMolmo2Response = {
             toolDefinitions: [],
         },
         {
-            agentId: null,
             children: [],
             completion: 'cpl_U5T8O0E7R2',
             content:

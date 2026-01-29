@@ -9,7 +9,6 @@ export const videoDescriptionResponse = {
     id: VIDEO_DESCRIPTION_ROOT_ID,
     messages: [
         {
-            agentId: null,
             children: ['msg_Q8A1U6J3U8'],
             completion: null,
             content: 'what is this a video of?',
@@ -52,7 +51,6 @@ export const videoDescriptionResponse = {
             toolDefinitions: [],
         },
         {
-            agentId: null,
             children: [],
             completion: 'cpl_C1W4Q4Q1I8',
             content:

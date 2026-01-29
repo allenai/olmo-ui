@@ -9,7 +9,6 @@ export const videoTrackingResponse = {
     id: VIDEO_TRACKING_ROOT_ID,
     messages: [
         {
-            agentId: null,
             children: ['msg_H8T4Q3M3O0'],
             completion: null,
             content: 'track the car',
@@ -52,7 +51,6 @@ export const videoTrackingResponse = {
             toolDefinitions: [],
         },
         {
-            agentId: null,
             children: [],
             completion: 'cpl_H1O4S8A5F8',
             content:

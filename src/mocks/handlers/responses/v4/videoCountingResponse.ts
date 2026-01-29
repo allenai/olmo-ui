@@ -9,7 +9,6 @@ export const videoCountingResponse = {
     id: VIDEO_COUNTING_ROOT_ID,
     messages: [
         {
-            agentId: null,
             children: ['msg_O0K4A4R7V0'],
             completion: null,
             content: 'how many cars are there?',
@@ -52,7 +51,6 @@ export const videoCountingResponse = {
             toolDefinitions: [],
         },
         {
-            agentId: null,
             children: [],
             completion: 'cpl_T6Z5R2F1A6',
             content:

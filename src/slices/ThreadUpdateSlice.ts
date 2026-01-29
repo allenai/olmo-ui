@@ -17,16 +17,6 @@ export const createModelAbortErrorMessage = (model: Model): SnackMessage => {
     } as const;
 };
 
-export const createAgentAbortErrorMessage = (): SnackMessage => {
-    return {
-        type: SnackMessageType.Alert,
-        id: `abort-message-${new Date().getTime()}`.toLowerCase(),
-        title: 'Response was aborted',
-        message: `You stopped the agent from generating answers to your query`,
-        severity: AlertMessageSeverity.Warning,
-    } as const;
-};
-
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     streamingMessageId: string | null;

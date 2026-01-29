@@ -36,9 +36,6 @@ vi.mock('react-router-dom', () => ({
         state: undefined,
         key: 'thread-foo',
     }),
-    generatePath: vi.fn((_, { agentId, threadId }) =>
-        agentId ? `/agent/${agentId}/${threadId}` : `/thread/${threadId}`
-    ),
 }));
 
 beforeEach(() => {
@@ -109,26 +106,6 @@ describe('HistoryDrawer', () => {
 
             expect(linkButton).toBeInTheDocument();
             expect(linkButton).toHaveAttribute('href', '/thread/msg_G8D2Q9Y8Q3');
-        });
-    });
-
-    it('should link to a agent/ path if it is an agent thread', async () => {
-        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(
-            getFakeUseUserAuthInfo({ isAuthenticated: true })
-        );
-
-        renderWithProvider();
-
-        await waitFor(() => {
-            const linkButton = screen.getByRole('link', {
-                name: 'Combine the number 1000 and the unit KiB',
-            });
-
-            expect(linkButton).toBeInTheDocument();
-            expect(linkButton).toHaveAttribute(
-                'href',
-                '/agent/deep-research/msg_AGENT_THINKING_TOOLS'
-            );
         });
     });
 });

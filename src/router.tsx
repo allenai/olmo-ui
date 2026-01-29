@@ -30,12 +30,6 @@ import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
 import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelAction';
 import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
-import { AgentChatPage } from './pages/agent/AgentChatPage/AgentChatPage';
-import { AgentChatThreadContainer } from './pages/agent/AgentChatPage/AgentChatThreadContainer';
-import { AgentPlaceholder } from './pages/agent/AgentChatPage/AgentPlaceholder/AgentPlaceholder';
-import { AgentPage } from './pages/agent/AgentPage';
-import { agentPageLoader } from './pages/agent/agentPageLoader';
-import { AgentPageControls } from './pages/agent/components/AgentPageControls';
 import { CompareThreadDisplay } from './pages/comparison/CompareThreadDisplay';
 import { ComparisonPage } from './pages/comparison/ComparisonPage';
 import { comparisonPageLoader } from './pages/comparison/comparisonPageLoader';
@@ -110,33 +104,6 @@ export const routes: RouteObject[] = [
                                 path: links.model.root,
                                 loader: modelPageLoader(queryClient),
                                 element: <ModelPage />,
-                            },
-                        ],
-                    },
-                    {
-                        path: '/agent',
-                        handle: { pageControls: <AvatarMenuIconButton /> },
-                        children: [
-                            {
-                                path: links.agent.root,
-                                loader: agentPageLoader(queryClient),
-                                element: <AgentPage />,
-                            },
-                            {
-                                path: links.agent.agent,
-                                element: <AgentChatPage />,
-                                children: [
-                                    {
-                                        path: links.agent.agent,
-                                        element: <AgentPlaceholder />,
-                                        handle: { pageControls: <AgentPageControls /> },
-                                    },
-                                    {
-                                        path: links.agent.thread,
-                                        element: <AgentChatThreadContainer />,
-                                        handle: { pageControls: <AgentPageControls /> },
-                                    },
-                                ],
                             },
                         ],
                     },
