@@ -2,8 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 
 import { MessageApiUrl, MessageClient } from '@/api/Message';
 import { processPageMetadata } from '@/api/playgroundApi/pagination-utils';
-import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
 import { SchemaGetThreadsRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import { apiQueryClient } from '@/api/playgroundApi/v5';
 import { queryClient } from '@/api/query-client';
 
 const messageClient = new MessageClient();
@@ -15,9 +15,9 @@ const messageClient = new MessageClient();
 
 // export const getThreadsOptions = (initParams?: SchemaGetThreadsRequest) => {
 //     const { offset, ...rest } = initParams ?? {};
-//     return playgroundApiQueryClient.infiniteQueryOptions(
+//     return apiQueryClient.infiniteQueryOptions(
 //         'get',
-//         '/v4/threads/',
+//         '/v5/threads/',
 //         {
 //             params: {
 //                 query: rest,
@@ -44,9 +44,9 @@ const messageClient = new MessageClient();
 
 export const useThreads = (initParams?: SchemaGetThreadsRequest) => {
     const { offset, ...rest } = initParams ?? {};
-    return playgroundApiQueryClient.useInfiniteQuery(
+    return apiQueryClient.useInfiniteQuery(
         'get',
-        '/v4/threads/',
+        '/v5/threads/',
         {
             params: {
                 query: rest,
@@ -85,6 +85,6 @@ export const useDeleteThread = () => {
 
 export const invalidateThreadsCache = () => {
     void queryClient.invalidateQueries({
-        queryKey: ['get', '/v4/threads/'],
+        queryKey: ['get', '/v5/threads/'],
     });
 };

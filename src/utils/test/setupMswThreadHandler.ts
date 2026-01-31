@@ -44,7 +44,7 @@ export const setupMswThreadHandler = (
     }));
 
     server.use(
-        http.get(`*/v4/threads/${threadId}`, () => {
+        http.get(`*/v5/threads/${threadId}`, () => {
             return HttpResponse.json({
                 id: threadId,
                 messages: fullMessages,

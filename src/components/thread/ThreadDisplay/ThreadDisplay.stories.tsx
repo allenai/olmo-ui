@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
-import multiplePointerThreadResponse from '@/mocks/handlers/responses/v4/multiplePointerMessageResponse';
+import multiplePointerThreadResponse from '@/mocks/handlers/responses/v5/multiplePointerMessageResponse';
 import { withMockQueryContext } from '@/utils/storybook/withMockQueryContext';
 import { withMockThreadView } from '@/utils/storybook/withMockThreadView';
 import { withMockReactQuery } from '@/utils/storybook/withReactQuery';

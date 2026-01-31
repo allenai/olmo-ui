@@ -1,4 +1,4 @@
-import type { SchemaPromptTemplateResponseList } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaPromptTemplateResponseList } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 import { v5TypedHttp } from './v5TypedHttp';
 
