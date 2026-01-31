@@ -1,11 +1,14 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
-import { playgroundApiQueryClient } from './playgroundApiClient';
+import { apiQueryClient } from '@/api/playgroundApi/v5';
+
+// v4
+import type { SchemaCreateMessageRequest as CreateMessageRequest } from './playgroundApiSchema';
+// v5
 import type {
-    SchemaCreateMessageRequest as CreateMessageRequest,
     SchemaFlatMessage as FlatMessage,
     SchemaThread as Thread,
-} from './playgroundApiSchema';
+} from './v5playgroundApiSchema';
 
 export type { CreateMessageRequest, FlatMessage, Thread };
 export type ThreadId = Thread['id'];
@@ -24,18 +27,17 @@ const threadParams = (threadId: ThreadId) => ({
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 export const threadOptions = <R = Thread>(threadId: ThreadId, select?: (thread: Thread) => R) => {
-    return playgroundApiQueryClient.queryOptions(
-        'get',
-        '/v4/threads/{thread_id}',
-        threadParams(threadId),
-        { select, staleTime: Infinity }
-    );
+    return apiQueryClient.queryOptions('get', '/v5/threads/{thread_id}', threadParams(threadId), {
+        select,
+        staleTime: Infinity,
+    });
 };
 
 export function useThread(threadId: ThreadId): UseQueryResult<Thread>;
 export function useThread<R>(threadId: ThreadId, select: (thread: Thread) => R): UseQueryResult<R>;
-export function useThread<R>(threadId: ThreadId, select?: (thread: Thread) => R) {
-    const queryOptions = threadOptions<R>(threadId, select);
+// use unknown to let typescript infer -- it picks up the overloaded return types correctly
+export function useThread(threadId: ThreadId, select?: (thread: Thread) => unknown): unknown {
+    const queryOptions = threadOptions(threadId, select);
     return useQuery(queryOptions);
 }
 

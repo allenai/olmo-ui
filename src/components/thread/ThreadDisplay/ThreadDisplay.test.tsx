@@ -11,7 +11,7 @@ import * as appContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
-import { firstThreadMessageId } from '@/mocks/handlers/v4ThreadHandlers';
+import { firstThreadMessageId } from '@/mocks/handlers/v5ThreadHandlers';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { getFakeUseUserAuthInfo } from '@/utils/FakeAuthLoaders';
 import { setupMswThreadHandler } from '@/utils/test/setupMswThreadHandler';
