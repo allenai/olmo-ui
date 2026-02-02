@@ -1,7 +1,8 @@
-import { ClientBase } from './ClientBase';
-import type { SchemaAuthenticatedClient } from './playgroundApi/playgroundApiSchema';
+import type { SchemaAuthenticatedClient } from '@/api/playgroundApi/v5playgroundApiSchema';
 
-export const WhoamiApiUrl = `/v3/whoami`;
+import { ClientBase } from './ClientBase';
+
+export const WhoamiApiUrl = `/v5/user/whoami`;
 export const UpdateUserUrl = `/v3/user`;
 export const MigrateFromAnonymousUserUrl = '/v3/migrate-user';
 
