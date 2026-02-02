@@ -1,17 +1,18 @@
-import type { SchemaAuthenticatedClient } from '@/api/playgroundApi/v5playgroundApiSchema';
+import type {
+    SchemaAuthenticatedClient as AuthenticatedClient,
+    SchemaUpsertUserRequest as UpsertUserRequest,
+    SchemaUpsertUserResponse as UpsertUserResponse,
+    SchemaUserMigrationRequest as MigrationRequest,
+    SchemaUserMigrationResponse as MigrationResponse,
+} from '@/api/playgroundApi/v5playgroundApiSchema';
 
 import { ClientBase } from './ClientBase';
 
 export const WhoamiApiUrl = `/v5/user/whoami`;
-export const UpdateUserUrl = `/v3/user`;
-export const MigrateFromAnonymousUserUrl = '/v3/migrate-user';
+export const UpdateUserUrl = `/v5/user/`;
+export const MigrateFromAnonymousUserUrl = '/v5/user/migration';
 
-export type User = SchemaAuthenticatedClient;
-
-interface MigrationResponse {
-    updated_user?: User | null;
-    messages_updated_count: number;
-}
+export type User = AuthenticatedClient;
 
 export class UserClient extends ClientBase {
     whoAmI = () => {
@@ -32,7 +33,7 @@ export class UserClient extends ClientBase {
         try {
             const url = this.createURL(UpdateUserUrl);
             const dateTime = new Date().toISOString();
-            const request = {
+            const request: UpsertUserRequest = {
                 ...(dataCollectionAccepted === true && { dataCollectionAcceptedDate: dateTime }),
                 ...(dataCollectionAccepted === false && {
                     dataCollectionAcceptanceRevokedDate: dateTime,
@@ -45,7 +46,7 @@ export class UserClient extends ClientBase {
                 ...(termsAccepted === false && { termsAcceptanceRevokedDate: dateTime }),
             };
 
-            const response = await this.fetch(url, {
+            const response = await this.fetch<UpsertUserResponse>(url, {
                 method: 'PUT',
                 body: JSON.stringify(request),
                 headers: { 'Content-Type': 'application/json' },
@@ -58,12 +59,11 @@ export class UserClient extends ClientBase {
         }
     };
 
-    migrateFromAnonymousUser = async (authenticatedUserId: string) => {
+    migrateFromAnonymousUser = async () => {
         const url = this.createURL(MigrateFromAnonymousUserUrl);
 
-        const request = {
-            anonymous_user_id: this.anonymousUserId,
-            new_user_id: authenticatedUserId,
+        const request: MigrationRequest = {
+            anonymousUserId: this.anonymousUserId,
         };
 
         const response = await this.fetch<MigrationResponse>(url, {

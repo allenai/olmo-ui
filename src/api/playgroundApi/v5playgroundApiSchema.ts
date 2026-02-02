@@ -60,6 +60,51 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    '/v5/user/': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Upsert User
+         * @description Create or update a user record.
+         *
+         *     Accepts user info and creates or updates the user in the database.
+         *     For authenticated (non-anonymous) users, also creates a HubSpot contact.
+         */
+        put: operations['upsert_user_v5_user__put'];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/v5/user/migration': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Migrate User
+         * @description Migrates annonymous user data to the logged in user account.
+         *
+         *     Accepts an anonymous user ID.
+         */
+        put: operations['migrate_user_v5_user_migration_put'];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/v5/admin/models/': {
         parameters: {
             query?: never;
@@ -741,6 +786,75 @@ export type components = {
              */
             promptType: 'text_only';
         };
+        /** UpsertUserRequest */
+        UpsertUserRequest: {
+            /** Id */
+            id?: string | null;
+            /** Termsaccepteddate */
+            termsAcceptedDate?: string | null;
+            /** Acceptancerevokeddate */
+            acceptanceRevokedDate?: string | null;
+            /** Datacollectionaccepteddate */
+            dataCollectionAcceptedDate?: string | null;
+            /** Datacollectionacceptancerevokeddate */
+            dataCollectionAcceptanceRevokedDate?: string | null;
+            /** Mediacollectionaccepteddate */
+            mediaCollectionAcceptedDate?: string | null;
+            /** Mediacollectionacceptancerevokeddate */
+            mediaCollectionAcceptanceRevokedDate?: string | null;
+        };
+        /** UpsertUserResponse */
+        UpsertUserResponse: {
+            /** Id */
+            id: string;
+            /** Client */
+            client: string;
+            /** Termsaccepteddate */
+            termsAcceptedDate?: string | null;
+            /** Acceptancerevokeddate */
+            acceptanceRevokedDate?: string | null;
+            /** Datacollectionaccepteddate */
+            dataCollectionAcceptedDate?: string | null;
+            /** Datacollectionacceptancerevokeddate */
+            dataCollectionAcceptanceRevokedDate?: string | null;
+            /** Mediacollectionaccepteddate */
+            mediaCollectionAcceptedDate?: string | null;
+            /** Mediacollectionacceptancerevokeddate */
+            mediaCollectionAcceptanceRevokedDate?: string | null;
+        };
+        /** User */
+        User: {
+            /** Id */
+            id?: string;
+            /** Client */
+            client: string;
+            /**
+             * Termsaccepteddate
+             * Format: date-time
+             */
+            termsAcceptedDate: string;
+            /** Acceptancerevokeddate */
+            acceptanceRevokedDate: string | null;
+            /** Datacollectionaccepteddate */
+            dataCollectionAcceptedDate: string | null;
+            /** Datacollectionacceptancerevokeddate */
+            dataCollectionAcceptanceRevokedDate: string | null;
+            /** Mediacollectionaccepteddate */
+            mediaCollectionAcceptedDate: string | null;
+            /** Mediacollectionacceptancerevokeddate */
+            mediaCollectionAcceptanceRevokedDate: string | null;
+        };
+        /** UserMigrationRequest */
+        UserMigrationRequest: {
+            /** Anonymoususerid */
+            anonymousUserId: string;
+        };
+        /** UserMigrationResponse */
+        UserMigrationResponse: {
+            updatedUser: components['schemas']['User'] | null;
+            /** Messagesupdatedcount */
+            messagesUpdatedCount: number;
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -801,6 +915,11 @@ export type SchemaUpdateMultiModalModelConfigRequest =
     components['schemas']['UpdateMultiModalModelConfigRequest'];
 export type SchemaUpdateTextOnlyModelConfigRequest =
     components['schemas']['UpdateTextOnlyModelConfigRequest'];
+export type SchemaUpsertUserRequest = components['schemas']['UpsertUserRequest'];
+export type SchemaUpsertUserResponse = components['schemas']['UpsertUserResponse'];
+export type SchemaUser = components['schemas']['User'];
+export type SchemaUserMigrationRequest = components['schemas']['UserMigrationRequest'];
+export type SchemaUserMigrationResponse = components['schemas']['UserMigrationResponse'];
 export type SchemaValidationError = components['schemas']['ValidationError'];
 export type SchemaProblem = components['schemas']['Problem'];
 export type $defs = Record<string, never>;
@@ -913,6 +1032,114 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['AuthenticatedClient'];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['HTTPValidationError'];
+                };
+            };
+            /** @description Client Error */
+            '4XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+            /** @description Server Error */
+            '5XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+        };
+    };
+    upsert_user_v5_user__put: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                'X-Anonymous-User-ID'?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['UpsertUserRequest'];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['UpsertUserResponse'] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['HTTPValidationError'];
+                };
+            };
+            /** @description Client Error */
+            '4XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+            /** @description Server Error */
+            '5XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+        };
+    };
+    migrate_user_v5_user_migration_put: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                'X-Anonymous-User-ID'?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['UserMigrationRequest'];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['UserMigrationResponse'];
                 };
             };
             /** @description Validation Error */
