@@ -41,7 +41,13 @@ export const HistoryDrawer = (): ReactNode => {
     const [threadToDelete, setThreadToDelete] = useState<string>();
     const handleConfirmDelete = async () => {
         if (threadToDelete) {
-            await deleteThread(threadToDelete);
+            await deleteThread({
+                params: {
+                    path: {
+                        thread_id: threadToDelete,
+                    },
+                },
+            });
             setThreadToDelete(undefined);
             invalidateThreadsCache();
             nav(links.playground);

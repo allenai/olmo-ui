@@ -1,12 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
-
-import { MessageApiUrl, MessageClient } from '@/api/Message';
 import { processPageMetadata } from '@/api/playgroundApi/pagination-utils';
 import { SchemaGetThreadsRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { apiQueryClient } from '@/api/playgroundApi/v5';
 import { queryClient } from '@/api/query-client';
-
-const messageClient = new MessageClient();
 
 // NOTE: It looks like a new infiniteQueryOptions method has been introduced. If it's accepted
 // we can then create the options separately and pass to our installed Tanstack React-Query hooks.
@@ -77,10 +72,7 @@ export const useThreads = (initParams?: SchemaGetThreadsRequest) => {
 };
 
 export const useDeleteThread = () => {
-    return useMutation({
-        mutationKey: ['delete', MessageApiUrl],
-        mutationFn: (id: string) => messageClient.deleteThread(id),
-    });
+    return apiQueryClient.useMutation('delete', '/v5/threads/{thread_id}');
 };
 
 export const invalidateThreadsCache = () => {
