@@ -72,7 +72,18 @@ export const useThreads = (initParams?: SchemaGetThreadsRequest) => {
 };
 
 export const useDeleteThread = () => {
-    return apiQueryClient.useMutation('delete', '/v5/threads/{thread_id}');
+    const { mutateAsync } = apiQueryClient.useMutation('delete', '/v5/threads/{thread_id}');
+    return {
+        deleteThread: (threadId: string) => {
+            return mutateAsync({
+                params: {
+                    path: {
+                        thread_id: threadId,
+                    },
+                },
+            });
+        },
+    };
 };
 
 export const invalidateThreadsCache = () => {
