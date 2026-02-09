@@ -80,7 +80,7 @@ export const loginResultLoader = (queryClient: QueryClient): LoaderFunction => {
         if (isAuthenticated && !!authenticatedUserInfo?.sub) {
             const { getUserInfo } = appContext.getState();
 
-            await userClient.migrateFromAnonymousUser(authenticatedUserInfo.sub);
+            await userClient.migrateFromAnonymousUser();
 
             // Re-fetch user info after login
             await getUserInfo(queryClient);
