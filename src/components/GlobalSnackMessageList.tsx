@@ -28,7 +28,7 @@ export const GlobalSnackMessageList = () => {
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                     key={index}
                     open={isOpen}
-                    autoHideDuration={AUTO_HIDE_DURATION}
+                    autoHideDuration={msg.autoHideDuration ?? AUTO_HIDE_DURATION}
                     onClose={handleClose(msg.id)}>
                     {msg.type === SnackMessageType.Alert ? (
                         <Alert

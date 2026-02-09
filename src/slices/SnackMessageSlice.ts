@@ -15,6 +15,7 @@ export enum SnackMessageType {
 export type SnackMessage = {
     id: string;
     message: string;
+    autoHideDuration?: number;
 } & (
     | {
           type: SnackMessageType.Alert;

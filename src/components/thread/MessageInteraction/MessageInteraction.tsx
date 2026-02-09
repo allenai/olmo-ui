@@ -7,25 +7,30 @@ import {
     ThumbUp,
     ThumbUpOutlined,
 } from '@mui/icons-material';
-import { ButtonGroup, Snackbar, Stack } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { ButtonGroup, Stack } from '@mui/material';
+import { useCallback } from 'react';
 
-import { type Label, LabelRating } from '@/api/Label';
-import { FlatMessage, MessageId } from '@/api/playgroundApi/thread';
+import { ExclusiveRatings, LabelRating } from '@/api/Label';
+import {
+    type SchemaFlatMessage,
+    type SchemaLabelRequest,
+} from '@/api/playgroundApi/v5playgroundApiSchema';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { CHAT_MESSAGE_CLASS_NAME } from '../ChatMessage/ChatMessage';
 import { MessageInteractionIcon } from './MessageInteractionIcon';
 import { OlmoTraceButton } from './OlmoTraceButton';
 import { RawToggleButton } from './RawToggleButton';
+import { usePutLabels } from './usePutLabels';
 
 interface MessageInteractionProps {
-    role: FlatMessage['role'];
-    messageLabels: Label[];
-    content: FlatMessage['content'];
-    messageId: MessageId;
+    role: SchemaFlatMessage['role'];
+    messageLabels: SchemaFlatMessage['labels'];
+    content: SchemaFlatMessage['content'];
+    messageId: SchemaFlatMessage['id'];
     isLastMessage: boolean;
     isStreaming: boolean;
     isRawMode: boolean;
@@ -34,7 +39,7 @@ interface MessageInteractionProps {
 
 export const MessageInteraction = ({
     role,
-    messageLabels,
+    messageLabels = [],
     content,
     messageId,
     isLastMessage,
@@ -42,31 +47,56 @@ export const MessageInteraction = ({
     isRawMode,
     setRawMode,
 }: MessageInteractionProps): React.JSX.Element | null => {
-    const userInfo = useAppContext((state) => state.userInfo);
-    const updateLabel = useAppContext((state) => state.updateLabel);
-    // Filter out the label that was rated by the current login user then pop the first one
-    // A response should have at most 1 label from the current login user
-    const [currentLabel, setCurrentLabel] = useState<Label | undefined>(
-        messageLabels.filter((label) => label.creator === userInfo?.client).pop()
-    );
-    const [copySnackbarOpen, setCopySnackbarOpen] = useState(false);
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+    const putLabels = usePutLabels();
+    const currentLabels: SchemaLabelRequest[] = messageLabels.map(({ rating, comment }) => ({
+        rating,
+        comment,
+    }));
 
-    const GoodIcon = currentLabel?.rating === LabelRating.Positive ? ThumbUp : ThumbUpOutlined;
-    const BadIcon = currentLabel?.rating === LabelRating.Negative ? ThumbDown : ThumbDownOutlined;
-    const FlagIcon = currentLabel?.rating === LabelRating.Flag ? Flag : FlagOutlined;
+    const ratings = new Set(currentLabels.map((label) => label.rating));
+    const hasPositive = ratings.has(LabelRating.Positive);
+    const hasNegative = ratings.has(LabelRating.Negative);
+    const hasFlag = ratings.has(LabelRating.Flag);
+
+    const GoodIcon = hasPositive ? ThumbUp : ThumbUpOutlined;
+    const BadIcon = hasNegative ? ThumbDown : ThumbDownOutlined;
+    const FlagIcon = hasFlag ? Flag : FlagOutlined;
 
     const rateMessage = async (newRating: LabelRating) => {
-        await updateLabel({ rating: newRating, message: messageId }, currentLabel).then(
-            (newLabel) => {
-                setCurrentLabel(newLabel);
-            }
-        );
+        let newLabels: SchemaLabelRequest[];
+
+        // is toggling a label
+        const isTogglingOff = currentLabels.some((label) => label.rating === newRating);
+
+        if (isTogglingOff) {
+            // filter toggled label out
+            newLabels = currentLabels.filter((label) => label.rating !== newRating);
+        } else {
+            // if its an exclusive label, filter all exclusive labels out
+            newLabels = ExclusiveRatings.has(newRating)
+                ? currentLabels.filter((label) => !ExclusiveRatings.has(label.rating))
+                : [...currentLabels];
+
+            // add new label
+            newLabels.push({
+                rating: newRating,
+                comment: undefined, // we don't have comments right now
+            });
+        }
+
+        await putLabels(messageId, newLabels);
     };
 
     const copyMessage = useCallback(async () => {
         await navigator.clipboard.writeText(content);
-        setCopySnackbarOpen(true);
-    }, [content]);
+        addSnackMessage({
+            id: `response-copied-${new Date().getTime()}`.toLowerCase(),
+            type: SnackMessageType.Brief,
+            message: 'LLM Response Copied.',
+            autoHideDuration: 500,
+        });
+    }, [content, addSnackMessage]);
 
     const shouldHide = role === Role.User || isStreaming;
 
@@ -96,7 +126,7 @@ export const MessageInteraction = ({
                 <MessageInteractionIcon
                     tooltip="Good response"
                     Icon={GoodIcon}
-                    selected={currentLabel?.rating === LabelRating.Positive}
+                    selected={hasPositive}
                     onClick={async () => {
                         await rateMessage(LabelRating.Positive);
                     }}
@@ -104,7 +134,7 @@ export const MessageInteraction = ({
                 <MessageInteractionIcon
                     tooltip="Bad response"
                     Icon={BadIcon}
-                    selected={currentLabel?.rating === LabelRating.Negative}
+                    selected={hasNegative}
                     onClick={async () => {
                         await rateMessage(LabelRating.Negative);
                     }}
@@ -112,21 +142,13 @@ export const MessageInteraction = ({
                 <MessageInteractionIcon
                     tooltip="Inappropriate response"
                     Icon={FlagIcon}
-                    selected={currentLabel?.rating === LabelRating.Flag}
+                    selected={hasFlag}
                     onClick={async () => {
                         await rateMessage(LabelRating.Flag);
                     }}
                 />
             </ButtonGroup>
             <MessageInteractionIcon tooltip="Copy" Icon={ContentCopy} onClick={copyMessage} />
-            <Snackbar // TODO: convert to using AlertSlice once PR #396 gets merged.
-                open={copySnackbarOpen}
-                autoHideDuration={500}
-                onClose={() => {
-                    setCopySnackbarOpen(false);
-                }}
-                message="LLM Response Copied."
-            />
             <RawToggleButton
                 isRawMode={isRawMode}
                 setRawMode={setRawMode}

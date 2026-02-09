@@ -140,6 +140,40 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    '/v5/message/{message_id}/label/': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Create Label */
+        put: operations['create_label_v5_message__message_id__label__put'];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/v5/message/{message_id}/label/{label_id}': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Label */
+        delete: operations['delete_label_v5_message__message_id__label__label_id__delete'];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/v5/admin/models/': {
         parameters: {
             query?: never;
@@ -532,6 +566,17 @@ export type components = {
             created: string;
             /** Deleted */
             deleted?: string | null;
+        };
+        /** LabelCreateRequest */
+        LabelCreateRequest: {
+            /** Labels */
+            labels: components['schemas']['LabelRequest'][];
+        };
+        /** LabelRequest */
+        LabelRequest: {
+            rating: components['schemas']['Rating'];
+            /** Comment */
+            comment?: string | null;
         };
         /** ListMeta */
         ListMeta: {
@@ -1133,6 +1178,8 @@ export type SchemaFlatMessage = components['schemas']['FlatMessage'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
 export type SchemaInferenceOptionsResponse = components['schemas']['InferenceOptionsResponse'];
 export type SchemaLabel = components['schemas']['Label'];
+export type SchemaLabelCreateRequest = components['schemas']['LabelCreateRequest'];
+export type SchemaLabelRequest = components['schemas']['LabelRequest'];
 export type SchemaListMeta = components['schemas']['ListMeta'];
 export type SchemaModelAvailability = components['schemas']['ModelAvailability'];
 export type SchemaModelConfigListResponse = components['schemas']['ModelConfigListResponse'];
@@ -1537,6 +1584,115 @@ export interface operations {
             };
             path: {
                 thread_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['HTTPValidationError'];
+                };
+            };
+            /** @description Client Error */
+            '4XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+            /** @description Server Error */
+            '5XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+        };
+    };
+    create_label_v5_message__message_id__label__put: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                'X-Anonymous-User-ID'?: string | null;
+            };
+            path: {
+                message_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['LabelCreateRequest'];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['FlatMessage'];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['HTTPValidationError'];
+                };
+            };
+            /** @description Client Error */
+            '4XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+            /** @description Server Error */
+            '5XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+        };
+    };
+    delete_label_v5_message__message_id__label__label_id__delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                'X-Anonymous-User-ID'?: string | null;
+            };
+            path: {
+                message_id: string;
+                label_id: string;
             };
             cookie?: never;
         };

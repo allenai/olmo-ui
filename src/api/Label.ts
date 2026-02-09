@@ -12,6 +12,8 @@ export enum LabelRating {
     Positive,
 }
 
+export const ExclusiveRatings = new Set([LabelRating.Positive, LabelRating.Negative]);
+
 export interface CreateLabelRequest {
     message: string;
     rating: LabelRating;

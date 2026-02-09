@@ -140,10 +140,6 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
     const MessageComponent = message.role === Role.User ? UserMessage : LLMMessage;
     const icon = message.role === Role.User ? <UserAvatar /> : <Ai2Avatar />;
 
-    const messageLabels = labels
-        ? labels.map((label) => ({ ...label, created: new Date(label.created) }) as Label)
-        : [];
-
     const isStreaming = remoteState === RemoteState.Loading && streamingMessageId === messageId;
 
     const messageHasToolCalls = message.toolCalls != null && message.toolCalls.length > 0;
@@ -188,7 +184,7 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
                 <MessageInteraction
                     role={role as Role}
                     content={rawMode ? escapeForDisplay(content) : content}
-                    messageLabels={messageLabels}
+                    messageLabels={labels}
                     messageId={messageId}
                     isLastMessage={isLastMessageInThread}
                     isStreaming={isStreaming}
