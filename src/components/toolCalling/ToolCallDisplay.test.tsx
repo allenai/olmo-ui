@@ -24,7 +24,7 @@ beforeEach(() => {
 
 const mockModelsApi = (models: ReturnType<typeof createMockModel>[]) => {
     server.use(
-        http.get('http://localhost:8080/v4/models/', () => {
+        http.get('http://localhost:8080/v5/models/', () => {
             return HttpResponse.json(models);
         })
     );
