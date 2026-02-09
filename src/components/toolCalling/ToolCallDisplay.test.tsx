@@ -43,8 +43,8 @@ const renderWithProvider = ({ selectedModelId }: { selectedModelId: string }) =>
 describe('ToolCallDisplay', () => {
     beforeEach(() => {
         mockModelsApi([
-            createMockModel('has-tools', { can_call_tools: true }),
-            createMockModel('no-tools', { can_call_tools: false }),
+            createMockModel('has-tools', { canCallTools: true }),
+            createMockModel('no-tools', { canCallTools: false }),
         ]);
     });
 

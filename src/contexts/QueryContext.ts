@@ -27,7 +27,7 @@ interface QueryContextValue {
     canCallTools: boolean;
     isToolCallingEnabled: boolean;
     userToolDefinitions: CreateMessageRequest['toolDefinitions'];
-    availableTools: Model['available_tools'];
+    availableTools: Model['availableTools'];
     canPauseThread: boolean;
     isLimitReached: boolean;
     remoteState?: RemoteState;

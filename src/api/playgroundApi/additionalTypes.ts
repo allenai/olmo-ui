@@ -1,6 +1,6 @@
-import type { SchemaModelResponse } from './playgroundApiSchema';
+import type { SchemaModelResponse } from './v5playgroundApiSchema';
 
-export type Model = SchemaModelResponse[number];
+export type Model = SchemaModelResponse;
 
 // TODO: Delete this when we have the type from the API
 export type Agent = {

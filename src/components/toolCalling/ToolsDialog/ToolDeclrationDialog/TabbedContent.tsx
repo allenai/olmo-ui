@@ -24,7 +24,7 @@ type TabbedContentProps = {
     setTabSelect: (t: Key) => void;
     isDisabled?: boolean;
     control: Control<DataFields>;
-    tools: Model['available_tools'];
+    tools: Model['availableTools'];
     setValue: UseFormSetValue<DataFields>;
 };
 

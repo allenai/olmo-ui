@@ -47,8 +47,8 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
         it('should use regular selection logic for first model', async () => {
             const testId = createTestId();
             const models = [
-                createMockModel(`${testId}-model-1`, { accepts_files: false }),
-                createMockModel(`${testId}-model-2`, { accepts_files: false }),
+                createMockModel(`${testId}-model-1`, { acceptsFiles: false }),
+                createMockModel(`${testId}-model-2`, { acceptsFiles: false }),
             ];
             setupModelsApi(models);
 
@@ -62,9 +62,9 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
         it('should only consider models compatible with first default model for subsequent models', async () => {
             const testId = createTestId();
             const models = [
-                createMockModel(`${testId}-file-model`, { accepts_files: true }),
-                createMockModel(`${testId}-text-model-1`, { accepts_files: false }),
-                createMockModel(`${testId}-text-model-2`, { accepts_files: false }),
+                createMockModel(`${testId}-file-model`, { acceptsFiles: true }),
+                createMockModel(`${testId}-text-model-1`, { acceptsFiles: false }),
+                createMockModel(`${testId}-text-model-2`, { acceptsFiles: false }),
             ];
             setupModelsApi(models);
 
@@ -75,16 +75,16 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
             const secondModel = comparisonModels[1].model!;
 
             // Both models should have the same file acceptance capability (be compatible)
-            expect(firstModel.accepts_files).toBe(secondModel.accepts_files);
+            expect(firstModel.acceptsFiles).toBe(secondModel.acceptsFiles);
         });
 
         it('should filter for compatible models', async () => {
             const testId = createTestId();
             // Models with different file acceptance
             const models = [
-                createMockModel(`${testId}-file-model`, { accepts_files: true }),
-                createMockModel(`${testId}-text-model-1`, { accepts_files: false }),
-                createMockModel(`${testId}-text-model-2`, { accepts_files: false }),
+                createMockModel(`${testId}-file-model`, { acceptsFiles: true }),
+                createMockModel(`${testId}-text-model-1`, { acceptsFiles: false }),
+                createMockModel(`${testId}-text-model-2`, { acceptsFiles: false }),
             ];
             setupModelsApi(models);
 
@@ -95,15 +95,15 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
             const secondModel = comparisonModels[1].model!;
 
             // Both models should be compatible
-            expect(firstModel.accepts_files).toBe(secondModel.accepts_files);
+            expect(firstModel.acceptsFiles).toBe(secondModel.acceptsFiles);
         });
 
         it('should select different models when multiple compatible models are available', async () => {
             const testId = createTestId();
-            // Create multiple models that are all compatible (same accepts_files value)
+            // Create multiple models that are all compatible (same acceptsFiles value)
             const models = [
-                createMockModel(`${testId}-text-model-1`, { accepts_files: false }),
-                createMockModel(`${testId}-text-model-2`, { accepts_files: false }),
+                createMockModel(`${testId}-text-model-1`, { acceptsFiles: false }),
+                createMockModel(`${testId}-text-model-2`, { acceptsFiles: false }),
             ];
             setupModelsApi(models);
 
@@ -115,13 +115,13 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
 
             // Should use different models when multiple compatible models exist
             expect(firstModel.id).not.toBe(secondModel.id);
-            expect(firstModel.accepts_files).toBe(secondModel.accepts_files);
+            expect(firstModel.acceptsFiles).toBe(secondModel.acceptsFiles);
         });
 
         it('should allow duplicate models when only one compatible model exists', async () => {
             const testId = createTestId();
             // Create only one model, Both comparison slots should use it
-            const singleModel = createMockModel(`${testId}-model`, { accepts_files: false });
+            const singleModel = createMockModel(`${testId}-model`, { acceptsFiles: false });
             setupModelsApi([singleModel]);
 
             const result = await loadComparisonPage();
@@ -153,10 +153,10 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
                 const testId = createTestId();
 
                 // Create models where compatibility checking will fail
-                const firstModel = createMockModel(`${testId}-first`, { accepts_files: true });
+                const firstModel = createMockModel(`${testId}-first`, { acceptsFiles: true });
                 const otherModels = [
-                    createMockModel(`${testId}-model-1`, { accepts_files: false }),
-                    createMockModel(`${testId}-model-2`, { accepts_files: false }),
+                    createMockModel(`${testId}-model-1`, { acceptsFiles: false }),
+                    createMockModel(`${testId}-model-2`, { acceptsFiles: false }),
                 ];
 
                 setupModelsApi([firstModel, ...otherModels]);

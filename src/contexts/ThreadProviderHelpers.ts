@@ -141,7 +141,7 @@ export const getInitialInferenceParameters = (
         temperature: clipToMinMax(
             lastLLMMessage?.opts.temperature ??
                 promptTemplate?.opts.temperature ??
-                model?.temperature_default ??
+                model?.temperatureDefault ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.temperature,
             constraints.temperature.minValue,
             constraints.temperature.maxValue
@@ -149,7 +149,7 @@ export const getInitialInferenceParameters = (
         topP: clipToMinMax(
             lastLLMMessage?.opts.topP ??
                 promptTemplate?.opts.topP ??
-                model?.top_p_default ??
+                model?.topPDefault ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.topP,
             constraints.topP.minValue,
             constraints.topP.maxValue
@@ -157,7 +157,7 @@ export const getInitialInferenceParameters = (
         maxTokens: clipToMinMax(
             lastLLMMessage?.opts.maxTokens ??
                 promptTemplate?.opts.maxTokens ??
-                model?.max_tokens_default ??
+                model?.maxTokensDefault ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.maxTokens,
             constraints.maxTokens.minValue,
             constraints.maxTokens.maxValue
@@ -205,19 +205,19 @@ export type ModelInferenceConstraints = {
 export const getInferenceConstraints = (model?: Model): ModelInferenceConstraints => {
     return {
         temperature: {
-            minValue: model?.temperature_lower ?? 0,
-            maxValue: model?.temperature_upper ?? 1,
-            step: model?.temperature_step ?? 0.01,
+            minValue: model?.temperatureLower ?? 0,
+            maxValue: model?.temperatureUpper ?? 1,
+            step: model?.temperatureStep ?? 0.01,
         },
         topP: {
-            minValue: model?.top_p_lower ?? 0,
-            maxValue: model?.top_p_upper ?? 1,
-            step: model?.top_p_step ?? 0.01,
+            minValue: model?.topPLower ?? 0,
+            maxValue: model?.topPUpper ?? 1,
+            step: model?.topPStep ?? 0.01,
         },
         maxTokens: {
-            minValue: model?.max_tokens_lower ?? 1,
-            maxValue: model?.max_tokens_upper ?? 2048,
-            step: model?.max_tokens_step ?? 100,
+            minValue: model?.maxTokensLower ?? 1,
+            maxValue: model?.maxTokensUpper ?? 2048,
+            step: model?.maxTokensStep ?? 100,
         },
     };
 };

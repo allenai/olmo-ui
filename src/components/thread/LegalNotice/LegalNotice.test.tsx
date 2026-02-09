@@ -44,7 +44,7 @@ describe('LegalNotice', () => {
 
         render(
             <FakeAppContextProvider initialState={{}}>
-                <FakeQueryContextProvider selectedModel={{ family_id: 'tulu' }}>
+                <FakeQueryContextProvider selectedModel={{ familyId: 'tulu' }}>
                     <LegalNotice />
                 </FakeQueryContextProvider>
             </FakeAppContextProvider>

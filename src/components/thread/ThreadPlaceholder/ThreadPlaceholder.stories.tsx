@@ -7,11 +7,11 @@ import { createMockModel } from '@/utils/test/createMockModel';
 import { ThreadPlaceholder } from './ThreadPlaceholder';
 
 const toolModel = createMockModel('with-tools', {
-    can_call_tools: true,
+    canCallTools: true,
 });
 
 const nonToolModel = createMockModel('without-tools', {
-    can_call_tools: false,
+    canCallTools: false,
 });
 
 const toolCallModelContext = {

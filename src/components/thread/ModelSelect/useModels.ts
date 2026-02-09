@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
+import { apiQueryClient } from '@/api/playgroundApi/v5';
+import { SchemaModelResponse as Model } from '@/api/playgroundApi/v5playgroundApiSchema';
 
-export const getModelsQueryOptions = playgroundApiQueryClient.queryOptions('get', '/v4/models/');
+export const getModelsQueryOptions = apiQueryClient.queryOptions('get', '/v5/models/');
 
 export const useModels = (options?: Pick<typeof getModelsQueryOptions, 'select'>) => {
     const { data } = useSuspenseQuery({
@@ -20,12 +20,12 @@ export const useModelById = (modelId: string | undefined, availableOnly: boolean
     });
 };
 
-export const isModelVisible = (model: Model) => model.is_visible;
+export const isModelVisible = (model: Model) => model.isVisible;
 
-export const isModelAvailable = (model: Model) => model.is_visible && !model.is_deprecated;
+export const isModelAvailable = (model: Model) => model.isVisible && !model.isDeprecated;
 
 export const isModelPubliclyAvailable = (model: Model): boolean =>
-    model.is_visible && !model.is_deprecated && !model.internal;
+    model.isVisible && !model.isDeprecated && !model.internal;
 
 export const modelById = (modelId: string | undefined) => (model: Model) => model.id === modelId;
 
@@ -45,5 +45,5 @@ export const selectModelById =
 
 export const areModelsCompatibleForThread = (model1: Model, model2: Model): boolean => {
     // TODO: We may need to have more detailed checks in the future but this is good enough for Molmo launch
-    return model1.accepts_files === model2.accepts_files;
+    return model1.acceptsFiles === model2.acceptsFiles;
 };

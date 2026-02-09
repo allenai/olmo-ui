@@ -44,7 +44,7 @@ export const LegalNotice = () => {
     const queryContext = useQueryContext();
 
     const selectedModel = queryContext.getThreadViewModel();
-    const selectedModelFamilyId = selectedModel?.family_id;
+    const selectedModelFamilyId = selectedModel?.familyId;
     const selectedModelId = selectedModel?.id;
 
     const FamilySpecificLegalNotice =

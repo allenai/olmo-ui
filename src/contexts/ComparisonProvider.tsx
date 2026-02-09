@@ -160,7 +160,7 @@ const ComparisonProviderContent = ({
             .filter(Boolean)
             .map((modelId) => {
                 const model = models.find((m) => m.id === modelId);
-                return model?.can_call_tools;
+                return model?.canCallTools;
             })
             .filter(Boolean);
 
@@ -173,7 +173,7 @@ const ComparisonProviderContent = ({
             .filter(Boolean)
             .map((modelId) => {
                 const model = models.find((m) => m.id === modelId);
-                return model?.family_name || model?.name;
+                return model?.familyName || model?.name;
             })
             .filter(Boolean);
 

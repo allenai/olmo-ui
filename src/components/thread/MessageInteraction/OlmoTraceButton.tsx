@@ -71,7 +71,7 @@ export const OlmoTraceButton = ({
         isLastButton && isHintVisible
     );
 
-    if (!isCorpusLinkEnabled || isOnComparisonPage || !model?.infini_gram_index) {
+    if (!isCorpusLinkEnabled || isOnComparisonPage || !model?.infiniGramIndex) {
         return null;
     }
 
