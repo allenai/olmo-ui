@@ -2,7 +2,6 @@ import { http, HttpResponse, passthrough } from 'msw';
 
 import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
 
-import { attributionHandlers } from './attributionHandlers';
 import { messageHandlers } from './messageHandlers';
 import { messageStreamHandlers } from './messageStreamHandlers';
 import { datasetDocumentResponse } from './responses/datasetDocumentResponse';
@@ -10,13 +9,14 @@ import { datasetSearchResponse } from './responses/datasetSearchResponse';
 import { v4ModelsHandlers } from './v4ModelsHandlers';
 import { v4PromptTemplatesHandlers } from './v4PromptTemplatesHandlers';
 import { v4TranscriptionHandlers } from './v4TranscriptionHandlers';
+import { v5AttributionHandlers } from './v5AttributionHandlers';
 import { v5ModelsHandlers } from './v5ModelsHandlers';
 import { v5PromptTemplatesHandlers } from './v5PromptTemplatesHandlers';
 import { v5ThreadHandlers } from './v5ThreadHandlers';
 
 export const handlers = [
     ...messageStreamHandlers,
-    ...attributionHandlers,
+    ...v5AttributionHandlers,
     ...messageHandlers,
     ...v5ThreadHandlers,
     ...v4ModelsHandlers,
