@@ -43,9 +43,9 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
                         ? spanIds.some((spanId) =>
                               // HACK: our types are a little mismatched rn. we'll need to reconcile this in the future
                               // spanId is a string here but a number in corresponding_spans. It's always a number in a string right now
-                              document?.corresponding_spans.includes(Number(spanId))
+                              document?.correspondingSpans.includes(Number(spanId))
                           )
-                        : document?.corresponding_spans.includes(Number(spanIds)) ?? false;
+                        : document?.correspondingSpans.includes(Number(spanIds)) ?? false;
 
                     return [isSelectedSpan, 'document'];
                 }
@@ -92,10 +92,10 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             if (span == null) {
                 return acc;
             }
-            const nestedSpanRelevanceScore = (span.nested_spans ?? []).reduce((acc, nestedSpan) => {
+            const nestedSpanRelevanceScore = (span.nestedSpans ?? []).reduce((acc, nestedSpan) => {
                 return (nestedSpan.documents ?? []).reduce((acc, documentIx) => {
                     const document = documents[documentIx];
-                    return Math.max(acc, document?.relevance_score ?? 0.0);
+                    return Math.max(acc, document?.relevanceScore ?? 0.0);
                 }, acc);
             }, 0.0);
 
@@ -119,10 +119,10 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             }
             return Math.max(
                 acc,
-                (span.nested_spans ?? []).reduce((acc, nestedSpan) => {
+                (span.nestedSpans ?? []).reduce((acc, nestedSpan) => {
                     return (nestedSpan.documents ?? []).reduce((acc, documentIx) => {
                         const document = documents[documentIx];
-                        return Math.max(acc, document?.relevance_score ?? 0.0);
+                        return Math.max(acc, document?.relevanceScore ?? 0.0);
                     }, acc);
                 }, 0.0)
             );
@@ -134,10 +134,10 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             }
             return Math.min(
                 acc,
-                (span.nested_spans ?? []).reduce((acc, nestedSpan) => {
+                (span.nestedSpans ?? []).reduce((acc, nestedSpan) => {
                     return (nestedSpan.documents ?? []).reduce((acc, documentIx) => {
                         const document = documents[documentIx];
-                        return Math.max(acc, document?.relevance_score ?? 0.0);
+                        return Math.max(acc, document?.relevanceScore ?? 0.0);
                     }, acc);
                 }, 0.0)
             );

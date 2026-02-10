@@ -4,7 +4,7 @@ import type {
     SchemaResponseAttributionDocument,
     SchemaResponseAttributionSpan,
     SchemaTopLevelAttributionSpan,
-} from './playgroundApi/playgroundApiSchema';
+} from './playgroundApi/v5playgroundApiSchema';
 
 export type AttributionDocumentSnippet = SchemaAttributionDocumentSnippet;
 
@@ -19,7 +19,7 @@ interface AttributionResponse {
     index: string;
 }
 
-const AttributionApiUrl = '/v3/attribution';
+const AttributionApiUrl = '/v5/attribution/';
 
 export class AttributionClient extends ClientBase {
     getAttributionDocuments = async (

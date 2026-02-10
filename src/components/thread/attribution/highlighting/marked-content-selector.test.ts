@@ -50,28 +50,28 @@ describe('markedContentSelector', () => {
                         loadingState: RemoteState.Loaded,
                         documents: {
                             12345: {
-                                corresponding_spans: [0, 1],
-                                corresponding_span_texts: [
+                                correspondingSpans: [0, 1],
+                                correspondingSpanTexts: [
                                     'This is a',
                                     'message from the LLM',
                                     '- **Spring (March to May):** Milder weather with fewer tourists',
                                 ],
                                 index: '12345',
                                 source: 'c4',
-                                text_long: 'document 1',
-                                relevance_score: 1.6,
+                                textLong: 'document 1',
+                                relevanceScore: 1.6,
                                 snippets: [
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'This is a',
+                                        correspondingSpanText: 'This is a',
                                     },
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'message from the LLM',
+                                        correspondingSpanText: 'message from the LLM',
                                     },
                                     {
                                         text: '**Best Time to Visit Paris for Climate:** - **Spring (March to May):** Milder weather with fewer tourists, making it ideal for exploring without the crowds.',
-                                        corresponding_span_text:
+                                        correspondingSpanText:
                                             '- **Spring (March to May):** Milder weather with fewer tourists',
                                     },
                                 ],
@@ -82,17 +82,17 @@ describe('markedContentSelector', () => {
                             0: {
                                 documents: [12345],
                                 text: 'This is a',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                             1: {
                                 documents: [67890],
                                 text: 'message from the LLM',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                             2: {
                                 documents: [12345],
                                 text: '- **Spring (March to May):** Milder weather with fewer tourists',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                         },
                     },
@@ -155,28 +155,28 @@ describe('markedContentSelector', () => {
                         loadingState: RemoteState.Loaded,
                         documents: {
                             1: {
-                                corresponding_spans: [0, 1, 2],
-                                corresponding_span_texts: [
+                                correspondingSpans: [0, 1, 2],
+                                correspondingSpanTexts: [
                                     'longer span with text inside',
                                     'shorter span',
                                     'span with text',
                                 ],
                                 index: '12345',
                                 source: 'c4',
-                                text_long: 'document 1',
-                                relevance_score: 1.6,
+                                textLong: 'document 1',
+                                relevanceScore: 1.6,
                                 snippets: [
                                     {
                                         text: 'longer span with text inside',
-                                        corresponding_span_text: 'longer span with text inside',
+                                        correspondingSpanText: 'longer span with text inside',
                                     },
                                     {
                                         text: 'shorter span',
-                                        corresponding_span_text: 'shorter span',
+                                        correspondingSpanText: 'shorter span',
                                     },
                                     {
                                         text: 'span with text',
-                                        corresponding_span_text: 'span with text',
+                                        correspondingSpanText: 'span with text',
                                     },
                                 ],
                                 title: 'Title',
@@ -186,17 +186,17 @@ describe('markedContentSelector', () => {
                             0: {
                                 documents: [1],
                                 text: 'longer span with text inside',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                             1: {
                                 documents: [1],
                                 text: 'shorter span',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                             2: {
                                 documents: [1],
                                 text: 'span with text',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                         },
                     },
@@ -259,28 +259,28 @@ describe('markedContentSelector', () => {
                         loadingState: RemoteState.Loaded,
                         documents: {
                             1: {
-                                corresponding_spans: [0, 1, 2],
-                                corresponding_span_texts: [
+                                correspondingSpans: [0, 1, 2],
+                                correspondingSpanTexts: [
                                     'longer span with text inside',
                                     'shorter span',
                                     'span with text',
                                 ],
                                 index: '12345',
                                 source: 'c4',
-                                text_long: 'document 1',
-                                relevance_score: 1.6,
+                                textLong: 'document 1',
+                                relevanceScore: 1.6,
                                 snippets: [
                                     {
                                         text: 'longer span with text inside',
-                                        corresponding_span_text: 'longer span with text inside',
+                                        correspondingSpanText: 'longer span with text inside',
                                     },
                                     {
                                         text: 'shorter span',
-                                        corresponding_span_text: 'shorter span',
+                                        correspondingSpanText: 'shorter span',
                                     },
                                     {
                                         text: 'span with text',
-                                        corresponding_span_text: 'span with text',
+                                        correspondingSpanText: 'span with text',
                                     },
                                 ],
                                 title: 'Title',
@@ -290,17 +290,17 @@ describe('markedContentSelector', () => {
                             0: {
                                 documents: [1],
                                 text: 'longer span with text inside',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                             1: {
                                 documents: [1],
                                 text: 'shorter span',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                             2: {
                                 documents: [1],
                                 text: 'span with text',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                         },
                     },
@@ -530,30 +530,30 @@ describe('markedContentSelector', () => {
                         loadingState: RemoteState.Loaded,
                         documents: {
                             '0': {
-                                text_long: response,
+                                textLong: response,
                                 snippets: [
                                     {
                                         text: span,
-                                        corresponding_span_text: span,
+                                        correspondingSpanText: span,
                                     },
                                 ],
-                                corresponding_spans: [0],
-                                corresponding_span_texts: [span],
+                                correspondingSpans: [0],
+                                correspondingSpanTexts: [span],
                                 index: '0',
                                 source: 'source',
-                                relevance_score: 0,
+                                relevanceScore: 0,
                             },
                         },
                         spans: {
                             '0': {
                                 text: span,
                                 documents: [0],
-                                start_index: 0,
-                                nested_spans: [
+                                startIndex: 0,
+                                nestedSpans: [
                                     {
                                         text: span,
                                         documents: [0],
-                                        start_index: 0,
+                                        startIndex: 0,
                                     },
                                 ],
                             },

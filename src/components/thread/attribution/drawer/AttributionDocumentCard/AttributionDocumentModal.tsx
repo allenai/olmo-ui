@@ -25,7 +25,7 @@ export const AttributionDocumentModal = ({
 }: AttributionDocumentModalProps) => {
     const { isDatasetExplorerEnabled } = useFeatureToggles();
     // we'd like to make spans bold on the text in the modal
-    const correspondingSpans = document.snippets.map((snippet) => snippet.corresponding_span_text);
+    const correspondingSpans = document.snippets.map((snippet) => snippet.correspondingSpanText);
 
     return (
         <StandardModal open={open} onClose={handleClose} data-testid="attribution-document-modal">
@@ -65,7 +65,7 @@ export const AttributionDocumentModal = ({
             <Stack pt={2} gap={3.5} sx={{ overflowY: 'scroll' }}>
                 <BoldTextForDocumentAttribution
                     correspondingSpans={correspondingSpans}
-                    text={document.text_long}
+                    text={document.textLong}
                     lineBreak={true}
                 />
             </Stack>

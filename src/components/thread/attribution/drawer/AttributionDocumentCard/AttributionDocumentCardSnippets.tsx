@@ -20,7 +20,7 @@ export const AttributionDocumentCardSnippets = ({
                 {snippets.map((snippet) => (
                     <BoldTextForDocumentAttribution
                         key={snippet.text}
-                        correspondingSpans={[snippet.corresponding_span_text]}
+                        correspondingSpans={[snippet.correspondingSpanText]}
                         text={snippet.text}
                     />
                 ))}

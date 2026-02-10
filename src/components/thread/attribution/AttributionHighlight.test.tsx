@@ -23,20 +23,20 @@ describe('AttributionHighlight', () => {
                         loadingState: RemoteState.Loaded,
                         documents: {
                             12345: {
-                                corresponding_spans: [0, 1],
-                                corresponding_span_texts: ['This is a', 'message from the LLM'],
+                                correspondingSpans: [0, 1],
+                                correspondingSpanTexts: ['This is a', 'message from the LLM'],
                                 index: '12345',
                                 source: 'c4',
-                                text_long: 'document 1',
-                                relevance_score: 1.6,
+                                textLong: 'document 1',
+                                relevanceScore: 1.6,
                                 snippets: [
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'This is a',
+                                        correspondingSpanText: 'This is a',
                                     },
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'message from the LLM',
+                                        correspondingSpanText: 'message from the LLM',
                                     },
                                 ],
                                 title: 'Title',
@@ -46,12 +46,12 @@ describe('AttributionHighlight', () => {
                             0: {
                                 documents: [12345],
                                 text: 'This is a',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                             1: {
                                 documents: [67890],
                                 text: 'message from the LLM',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                         },
                     },
@@ -85,20 +85,20 @@ describe('AttributionHighlight', () => {
                         loadingState: RemoteState.Loaded,
                         documents: {
                             12345: {
-                                corresponding_spans: [0, 1],
-                                corresponding_span_texts: ['This is a', 'message from the LLM'],
+                                correspondingSpans: [0, 1],
+                                correspondingSpanTexts: ['This is a', 'message from the LLM'],
                                 index: '12345',
                                 source: 'c4',
-                                text_long: 'document 1',
-                                relevance_score: 1.6,
+                                textLong: 'document 1',
+                                relevanceScore: 1.6,
                                 snippets: [
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'This is a',
+                                        correspondingSpanText: 'This is a',
                                     },
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'message from the LLM',
+                                        correspondingSpanText: 'message from the LLM',
                                     },
                                 ],
                                 title: 'Title',
@@ -108,12 +108,12 @@ describe('AttributionHighlight', () => {
                             0: {
                                 documents: [12345],
                                 text: 'This is a',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                             1: {
                                 documents: [67890],
                                 text: 'message from the LLM',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                         },
                     },
@@ -147,20 +147,20 @@ describe('AttributionHighlight', () => {
                         loadingState: RemoteState.Loaded,
                         documents: {
                             12345: {
-                                corresponding_spans: [0, 1],
-                                corresponding_span_texts: ['This is a', 'message from the LLM'],
+                                correspondingSpans: [0, 1],
+                                correspondingSpanTexts: ['This is a', 'message from the LLM'],
                                 index: '12345',
                                 source: 'c4',
-                                text_long: 'document 1',
-                                relevance_score: 1.6,
+                                textLong: 'document 1',
+                                relevanceScore: 1.6,
                                 snippets: [
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'This is a',
+                                        correspondingSpanText: 'This is a',
                                     },
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'message from the LLM',
+                                        correspondingSpanText: 'message from the LLM',
                                     },
                                 ],
                                 title: 'Title',
@@ -170,12 +170,12 @@ describe('AttributionHighlight', () => {
                             0: {
                                 documents: [12345],
                                 text: 'This is a',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                             1: {
                                 documents: [67890],
                                 text: 'message from the LLM',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                         },
                     },
@@ -212,20 +212,20 @@ describe('AttributionHighlight', () => {
                         loadingState: RemoteState.Loaded,
                         documents: {
                             12345: {
-                                corresponding_spans: [0, 1],
-                                corresponding_span_texts: ['This is a', 'message from the LLM'],
+                                correspondingSpans: [0, 1],
+                                correspondingSpanTexts: ['This is a', 'message from the LLM'],
                                 index: '12345',
                                 source: 'c4',
-                                text_long: 'document 1',
-                                relevance_score: 1.6,
+                                textLong: 'document 1',
+                                relevanceScore: 1.6,
                                 snippets: [
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'This is a',
+                                        correspondingSpanText: 'This is a',
                                     },
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'message from the LLM',
+                                        correspondingSpanText: 'message from the LLM',
                                     },
                                 ],
                                 title: 'Title',
@@ -235,12 +235,12 @@ describe('AttributionHighlight', () => {
                             0: {
                                 documents: [12345],
                                 text: 'This is a',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                             1: {
                                 documents: [67890],
                                 text: 'message from the LLM',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                         },
                     },
@@ -274,20 +274,20 @@ describe('AttributionHighlight', () => {
                         loadingState: RemoteState.Loaded,
                         documents: {
                             12345: {
-                                corresponding_spans: [0, 1],
-                                corresponding_span_texts: ['This is a', 'message from the LLM'],
+                                correspondingSpans: [0, 1],
+                                correspondingSpanTexts: ['This is a', 'message from the LLM'],
                                 index: '12345',
                                 source: 'c4',
-                                text_long: 'document 1',
-                                relevance_score: 1.6,
+                                textLong: 'document 1',
+                                relevanceScore: 1.6,
                                 snippets: [
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'This is a',
+                                        correspondingSpanText: 'This is a',
                                     },
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
-                                        corresponding_span_text: 'message from the LLM',
+                                        correspondingSpanText: 'message from the LLM',
                                     },
                                 ],
                                 title: 'Title',
@@ -297,12 +297,12 @@ describe('AttributionHighlight', () => {
                             0: {
                                 documents: [12345],
                                 text: 'This is a',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                             1: {
                                 documents: [67890],
                                 text: 'message from the LLM',
-                                nested_spans: [],
+                                nestedSpans: [],
                             },
                         },
                     },

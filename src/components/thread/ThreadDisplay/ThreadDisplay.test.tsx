@@ -128,7 +128,7 @@ describe('ThreadDisplay', () => {
                                     0: {
                                         documents: [0],
                                         text: '(parens)',
-                                        nested_spans: [
+                                        nestedSpans: [
                                             {
                                                 documents: [0],
                                                 text: '(parens)',
@@ -138,7 +138,7 @@ describe('ThreadDisplay', () => {
                                     1: {
                                         documents: [0],
                                         text: '[braces]',
-                                        nested_spans: [
+                                        nestedSpans: [
                                             {
                                                 documents: [0],
                                                 text: '[braces]',
@@ -148,7 +148,7 @@ describe('ThreadDisplay', () => {
                                     2: {
                                         documents: [0],
                                         text: '.dot',
-                                        nested_spans: [
+                                        nestedSpans: [
                                             {
                                                 documents: [0],
                                                 text: '.dot',
@@ -158,7 +158,7 @@ describe('ThreadDisplay', () => {
                                     3: {
                                         documents: [0],
                                         text: '*star',
-                                        nested_spans: [
+                                        nestedSpans: [
                                             {
                                                 documents: [0],
                                                 text: '*star',
@@ -168,7 +168,7 @@ describe('ThreadDisplay', () => {
                                     4: {
                                         documents: [0],
                                         text: '|pipe',
-                                        nested_spans: [
+                                        nestedSpans: [
                                             {
                                                 documents: [0],
                                                 text: '|pipe',
@@ -178,7 +178,7 @@ describe('ThreadDisplay', () => {
                                     5: {
                                         documents: [0],
                                         text: '\\backslash',
-                                        nested_spans: [
+                                        nestedSpans: [
                                             {
                                                 documents: [0],
                                                 text: '\\backslash',
@@ -188,7 +188,7 @@ describe('ThreadDisplay', () => {
                                     6: {
                                         documents: [0],
                                         text: '"quotes"',
-                                        nested_spans: [
+                                        nestedSpans: [
                                             {
                                                 documents: [0],
                                                 text: '"quotes"',

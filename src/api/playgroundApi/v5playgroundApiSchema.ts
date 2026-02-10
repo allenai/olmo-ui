@@ -174,6 +174,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    '/v5/attribution/': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Get Attribution */
+        post: operations['get_attribution_v5_attribution__post'];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/v5/admin/models/': {
         parameters: {
             query?: never;
@@ -215,6 +232,41 @@ export type paths = {
 export type webhooks = Record<string, never>;
 export type components = {
     schemas: {
+        /** AttributionDocumentSnippet */
+        AttributionDocumentSnippet: {
+            /** Text */
+            text: string;
+            /** Correspondingspantext */
+            correspondingSpanText: string;
+        };
+        /** AttributionRequest */
+        AttributionRequest: {
+            /** Prompt */
+            prompt: string;
+            /** Modelresponse */
+            modelResponse: string;
+            /** Modelid */
+            modelId: string;
+            /**
+             * Maxdocuments
+             * @default 10
+             */
+            maxDocuments?: number;
+            /**
+             * Maxdisplaycontextlength
+             * @default 250
+             */
+            maxDisplayContextLength?: number;
+        };
+        /** AttributionResponse */
+        AttributionResponse: {
+            /** Index */
+            index: string;
+            /** Documents */
+            documents: components['schemas']['ResponseAttributionDocument'][];
+            /** Spans */
+            spans: components['schemas']['TopLevelAttributionSpan'][];
+        };
         /** AuthenticatedClient */
         AuthenticatedClient: {
             /** Id */
@@ -772,6 +824,44 @@ export type components = {
             /** Orderedmodels */
             orderedModels: components['schemas']['ModelOrder'][];
         };
+        /** ResponseAttributionDocument */
+        ResponseAttributionDocument: {
+            /** Textlong */
+            textLong: string;
+            /** Snippets */
+            snippets: components['schemas']['AttributionDocumentSnippet'][];
+            /** Correspondingspans */
+            correspondingSpans: number[];
+            /** Correspondingspantexts */
+            correspondingSpanTexts: string[];
+            /** Index */
+            index: string;
+            /** Source */
+            source: string | null;
+            /** Usage */
+            usage: string | null;
+            /** Displayname */
+            displayName: string | null;
+            /** Sourceurl */
+            sourceUrl: string | null;
+            /** Relevancescore */
+            relevanceScore: number;
+            /** Title */
+            title?: string | null;
+            /** Url */
+            url?: string | null;
+            /** Secondaryname */
+            secondaryName?: string | null;
+        };
+        /** ResponseAttributionSpan */
+        ResponseAttributionSpan: {
+            /** Text */
+            text: string;
+            /** Startindex */
+            startIndex: number;
+            /** Documents */
+            documents?: number[];
+        };
         /**
          * Role
          * @enum {string}
@@ -918,6 +1008,17 @@ export type components = {
          * @enum {string}
          */
         ToolSource: 'internal' | 'user_defined' | 'model_context_protocol';
+        /** TopLevelAttributionSpan */
+        TopLevelAttributionSpan: {
+            /** Text */
+            text: string;
+            /** Startindex */
+            startIndex: number;
+            /** Documents */
+            documents?: number[];
+            /** Nestedspans */
+            nestedSpans?: components['schemas']['ResponseAttributionSpan'][];
+        };
         /** UpdateMultiModalModelConfigRequest */
         UpdateMultiModalModelConfigRequest: {
             /** Name */
@@ -1163,6 +1264,9 @@ export type components = {
     headers: never;
     pathItems: never;
 };
+export type SchemaAttributionDocumentSnippet = components['schemas']['AttributionDocumentSnippet'];
+export type SchemaAttributionRequest = components['schemas']['AttributionRequest'];
+export type SchemaAttributionResponse = components['schemas']['AttributionResponse'];
 export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
 export type SchemaAvailableInfiniGramIndexId = components['schemas']['AvailableInfiniGramIndexId'];
 export type SchemaCreateMultiModalModelConfigRequest =
@@ -1194,6 +1298,9 @@ export type SchemaPromptTemplateResponse = components['schemas']['PromptTemplate
 export type SchemaPromptTemplateResponseList = components['schemas']['PromptTemplateResponseList'];
 export type SchemaRating = components['schemas']['Rating'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
+export type SchemaResponseAttributionDocument =
+    components['schemas']['ResponseAttributionDocument'];
+export type SchemaResponseAttributionSpan = components['schemas']['ResponseAttributionSpan'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaRootCreateModelConfigRequest =
     components['schemas']['RootCreateModelConfigRequest'];
@@ -1208,6 +1315,7 @@ export type SchemaThreadList = components['schemas']['ThreadList'];
 export type SchemaToolCall = components['schemas']['ToolCall'];
 export type SchemaToolDefinition = components['schemas']['ToolDefinition'];
 export type SchemaToolSource = components['schemas']['ToolSource'];
+export type SchemaTopLevelAttributionSpan = components['schemas']['TopLevelAttributionSpan'];
 export type SchemaUpdateMultiModalModelConfigRequest =
     components['schemas']['UpdateMultiModalModelConfigRequest'];
 export type SchemaUpdateTextOnlyModelConfigRequest =
@@ -1577,7 +1685,9 @@ export interface operations {
     };
     delete_thread_v5_threads__thread_id__delete: {
         parameters: {
-            query?: never;
+            query?: {
+                session?: unknown;
+            };
             header?: {
                 Authorization?: string | null;
                 'X-Anonymous-User-ID'?: string | null;
@@ -1705,6 +1815,60 @@ export interface operations {
                 };
                 content: {
                     'application/json': unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['HTTPValidationError'];
+                };
+            };
+            /** @description Client Error */
+            '4XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+            /** @description Server Error */
+            '5XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+        };
+    };
+    get_attribution_v5_attribution__post: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                'X-Anonymous-User-ID'?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['AttributionRequest'];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['AttributionResponse'];
                 };
             };
             /** @description Validation Error */

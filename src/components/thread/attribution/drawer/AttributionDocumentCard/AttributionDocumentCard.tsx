@@ -116,7 +116,7 @@ export const AttributionDocumentCard = ({
 
                 return {
                     snippets: document?.snippets ?? [],
-                    correspondingSpanCount: document?.corresponding_spans.length ?? 0,
+                    correspondingSpanCount: document?.correspondingSpans.length ?? 0,
                 };
             } else {
                 return { snippets: [], correspondingSpanCount: 0 };
