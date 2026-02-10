@@ -37,7 +37,7 @@ export const HistoryDrawer = (): ReactNode => {
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
 
-    const { mutateAsync: deleteThread } = useDeleteThread();
+    const { deleteThread } = useDeleteThread();
     const [threadToDelete, setThreadToDelete] = useState<string>();
     const handleConfirmDelete = async () => {
         if (threadToDelete) {

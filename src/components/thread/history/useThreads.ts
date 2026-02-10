@@ -1,12 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
-
-import { MessageApiUrl, MessageClient } from '@/api/Message';
 import { processPageMetadata } from '@/api/playgroundApi/pagination-utils';
-import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
 import { SchemaGetThreadsRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import { apiQueryClient } from '@/api/playgroundApi/v5';
 import { queryClient } from '@/api/query-client';
-
-const messageClient = new MessageClient();
 
 // NOTE: It looks like a new infiniteQueryOptions method has been introduced. If it's accepted
 // we can then create the options separately and pass to our installed Tanstack React-Query hooks.
@@ -15,9 +10,9 @@ const messageClient = new MessageClient();
 
 // export const getThreadsOptions = (initParams?: SchemaGetThreadsRequest) => {
 //     const { offset, ...rest } = initParams ?? {};
-//     return playgroundApiQueryClient.infiniteQueryOptions(
+//     return apiQueryClient.infiniteQueryOptions(
 //         'get',
-//         '/v4/threads/',
+//         '/v5/threads/',
 //         {
 //             params: {
 //                 query: rest,
@@ -44,9 +39,9 @@ const messageClient = new MessageClient();
 
 export const useThreads = (initParams?: SchemaGetThreadsRequest) => {
     const { offset, ...rest } = initParams ?? {};
-    return playgroundApiQueryClient.useInfiniteQuery(
+    return apiQueryClient.useInfiniteQuery(
         'get',
-        '/v4/threads/',
+        '/v5/threads/',
         {
             params: {
                 query: rest,
@@ -77,14 +72,22 @@ export const useThreads = (initParams?: SchemaGetThreadsRequest) => {
 };
 
 export const useDeleteThread = () => {
-    return useMutation({
-        mutationKey: ['delete', MessageApiUrl],
-        mutationFn: (id: string) => messageClient.deleteThread(id),
-    });
+    const { mutateAsync } = apiQueryClient.useMutation('delete', '/v5/threads/{thread_id}');
+    return {
+        deleteThread: (threadId: string) => {
+            return mutateAsync({
+                params: {
+                    path: {
+                        thread_id: threadId,
+                    },
+                },
+            });
+        },
+    };
 };
 
 export const invalidateThreadsCache = () => {
     void queryClient.invalidateQueries({
-        queryKey: ['get', '/v4/threads/'],
+        queryKey: ['get', '/v5/threads/'],
     });
 };
