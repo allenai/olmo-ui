@@ -1685,9 +1685,7 @@ export interface operations {
     };
     delete_thread_v5_threads__thread_id__delete: {
         parameters: {
-            query?: {
-                session?: unknown;
-            };
+            query?: never;
             header?: {
                 Authorization?: string | null;
                 'X-Anonymous-User-ID'?: string | null;
