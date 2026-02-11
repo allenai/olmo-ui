@@ -2,7 +2,6 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Alert, Box, CircularProgress, Typography } from '@mui/material';
 import { PropsWithChildren, type ReactNode, useState } from 'react';
 
-import { Label } from '@/api/Label';
 import { MessageId, useMessage } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { Ai2Avatar } from '@/components/avatars/Ai2Avatar';
@@ -140,10 +139,6 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
     const MessageComponent = message.role === Role.User ? UserMessage : LLMMessage;
     const icon = message.role === Role.User ? <UserAvatar /> : <Ai2Avatar />;
 
-    const messageLabels = labels
-        ? labels.map((label) => ({ ...label, created: new Date(label.created) }) as Label)
-        : [];
-
     const isStreaming = remoteState === RemoteState.Loading && streamingMessageId === messageId;
 
     const messageHasToolCalls = message.toolCalls != null && message.toolCalls.length > 0;
@@ -188,7 +183,7 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
                 <MessageInteraction
                     role={role as Role}
                     content={rawMode ? escapeForDisplay(content) : content}
-                    messageLabels={messageLabels}
+                    messageLabels={labels}
                     messageId={messageId}
                     isLastMessage={isLastMessageInThread}
                     isStreaming={isStreaming}
