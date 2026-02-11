@@ -94,7 +94,7 @@ export const MessageInteraction = ({
             id: `response-copied-${new Date().getTime()}`.toLowerCase(),
             type: SnackMessageType.Brief,
             message: 'LLM Response Copied.',
-            autoHideDuration: 500,
+            autoHideDuration: 1000,
         });
     }, [content, addSnackMessage]);
 
