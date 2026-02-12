@@ -181,7 +181,7 @@ export const RepeatedAttributionDocumentsContent = () => {
                     listStyle: 'none',
                 }}>
                 {repeatedDocumentsByUrl.map((document) => {
-                    const score = calculateRelevanceScore(document.relevance_score, messageLength); // INTO Bucket
+                    const score = calculateRelevanceScore(document.relevanceScore, messageLength); // INTO Bucket
                     const bucket = getBucketForScorePercentile(score);
                     return (
                         <AttributionDocumentCard

@@ -10,9 +10,9 @@ interface PrettySourceProps {
 export const PrettifySource = ({ document }: PrettySourceProps): ReactNode => {
     return (
         <>
-            {document.source_url != null ? (
+            {document.sourceUrl != null ? (
                 <Link
-                    href={document.source_url}
+                    href={document.sourceUrl}
                     target="_blank"
                     fontWeight={600}
                     color="primary"
@@ -23,13 +23,13 @@ export const PrettifySource = ({ document }: PrettySourceProps): ReactNode => {
                             textDecorationColor: 'currentColor',
                         },
                     }}>
-                    {document.display_name}
+                    {document.displayName}
                 </Link>
             ) : (
-                <Typography fontWeight={600}>{document.display_name}</Typography>
+                <Typography fontWeight={600}>{document.displayName}</Typography>
             )}
 
-            {document.secondary_name != null && (
+            {document.secondaryName != null && (
                 <Typography
                     variant="body2"
                     component="span"
@@ -40,7 +40,7 @@ export const PrettifySource = ({ document }: PrettySourceProps): ReactNode => {
                         },
                     })}>
                     {' > '}
-                    {document.secondary_name}
+                    {document.secondaryName}
                 </Typography>
             )}
         </>

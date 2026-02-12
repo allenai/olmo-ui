@@ -114,7 +114,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
 
     const relevance = deduplicatedDocuments.reduce<Record<AttributionBucket, RelevanceGroup>>(
         (acc, doc) => {
-            const score = calculateRelevanceScore(doc.relevance_score, messageLength);
+            const score = calculateRelevanceScore(doc.relevanceScore, messageLength);
             const bucket = getBucketForScorePercentile(score);
             acc[bucket].collections.push(doc);
 
