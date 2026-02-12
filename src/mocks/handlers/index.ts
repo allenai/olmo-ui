@@ -6,23 +6,20 @@ import { messageHandlers } from './messageHandlers';
 import { messageStreamHandlers } from './messageStreamHandlers';
 import { datasetDocumentResponse } from './responses/datasetDocumentResponse';
 import { datasetSearchResponse } from './responses/datasetSearchResponse';
-import { v4ModelsHandlers } from './v4ModelsHandlers';
-import { v4PromptTemplatesHandlers } from './v4PromptTemplatesHandlers';
-import { v4TranscriptionHandlers } from './v4TranscriptionHandlers';
 import { v5AttributionHandlers } from './v5AttributionHandlers';
 import { v5ModelsHandlers } from './v5ModelsHandlers';
 import { v5PromptTemplatesHandlers } from './v5PromptTemplatesHandlers';
 import { v5ThreadHandlers } from './v5ThreadHandlers';
+import { v5TranscriptionHandlers } from './v5TranscriptionHandlers';
 
 export const handlers = [
     ...messageStreamHandlers,
-    ...v5AttributionHandlers,
     ...messageHandlers,
+
+    ...v5AttributionHandlers,
     ...v5ThreadHandlers,
-    ...v4ModelsHandlers,
-    ...v4TranscriptionHandlers,
-    ...v4PromptTemplatesHandlers,
     ...v5ModelsHandlers,
+    ...v5TranscriptionHandlers,
     ...v5PromptTemplatesHandlers,
 
     http.get(`${process.env.VITE_API_URL}${WhoamiApiUrl}`, () => {

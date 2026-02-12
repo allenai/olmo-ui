@@ -211,6 +211,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    '/v5/transcription/': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Transcribe */
+        post: operations['transcribe_v5_transcription__post'];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/v5/admin/models/': {
         parameters: {
             query?: never;
@@ -326,6 +343,14 @@ export type components = {
             mcpServerId?: string | null;
             /** Description */
             description?: string | null;
+        };
+        /** Body_transcribe_v5_transcription__post */
+        Body_transcribe_v5_transcription__post: {
+            /**
+             * Audio
+             * Format: binary
+             */
+            audio: string;
         };
         /** CreateMultiModalModelConfigRequest */
         CreateMultiModalModelConfigRequest: {
@@ -1228,6 +1253,11 @@ export type components = {
             /** Nestedspans */
             nestedSpans?: components['schemas']['ResponseAttributionSpan'][];
         };
+        /** TranscriptionSingleResponse */
+        TranscriptionSingleResponse: {
+            /** Text */
+            text: string;
+        };
         /** UpdateMultiModalModelConfigRequest */
         UpdateMultiModalModelConfigRequest: {
             /** Name */
@@ -1479,6 +1509,8 @@ export type SchemaAttributionResponse = components['schemas']['AttributionRespon
 export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
 export type SchemaAvailableInfiniGramIndexId = components['schemas']['AvailableInfiniGramIndexId'];
 export type SchemaAvailableTool = components['schemas']['AvailableTool'];
+export type SchemaBodyTranscribeV5TranscriptionPost =
+    components['schemas']['Body_transcribe_v5_transcription__post'];
 export type SchemaCreateMultiModalModelConfigRequest =
     components['schemas']['CreateMultiModalModelConfigRequest'];
 export type SchemaCreateTextOnlyModelConfigRequest =
@@ -1530,6 +1562,8 @@ export type SchemaToolCall = components['schemas']['ToolCall'];
 export type SchemaToolDefinition = components['schemas']['ToolDefinition'];
 export type SchemaToolSource = components['schemas']['ToolSource'];
 export type SchemaTopLevelAttributionSpan = components['schemas']['TopLevelAttributionSpan'];
+export type SchemaTranscriptionSingleResponse =
+    components['schemas']['TranscriptionSingleResponse'];
 export type SchemaUpdateMultiModalModelConfigRequest =
     components['schemas']['UpdateMultiModalModelConfigRequest'];
 export type SchemaUpdateTextOnlyModelConfigRequest =
@@ -2131,6 +2165,57 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['AttributionResponse'];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['HTTPValidationError'];
+                };
+            };
+            /** @description Client Error */
+            '4XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+            /** @description Server Error */
+            '5XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+        };
+    };
+    transcribe_v5_transcription__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'multipart/form-data': components['schemas']['Body_transcribe_v5_transcription__post'];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['TranscriptionSingleResponse'];
                 };
             };
             /** @description Validation Error */
