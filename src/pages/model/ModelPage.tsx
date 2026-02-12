@@ -82,7 +82,7 @@ export const ModelPage = () => {
                                             id={model.id}
                                             name={model.name}
                                             description={model.description}
-                                            informationUrl={model.information_url}
+                                            informationUrl={model.informationUrl}
                                         />
                                     ))}
                                 </LinkCardList>
@@ -99,7 +99,7 @@ export const ModelPage = () => {
                                     id={model.id}
                                     name={model.name}
                                     description={model.description}
-                                    informationUrl={model.information_url}
+                                    informationUrl={model.informationUrl}
                                     color="faded"
                                 />
                             ))}

@@ -35,7 +35,7 @@ export const toolGroupInfoById = (serverId: string): ToolGroupInfo => {
 
 type GroupedToolList = Record<string, SchemaAvailableTool[]>;
 
-export const groupTools = (tools: Model['available_tools'] = []): GroupedToolList => {
+export const groupTools = (tools: Model['availableTools'] = []): GroupedToolList => {
     const groupedTools: GroupedToolList = {};
     if (tools) {
         for (const tool of tools) {

@@ -16,7 +16,7 @@ const UIRefreshThreadPageContent = () => {
     const queryContext = useQueryContext();
 
     const selectedModel = queryContext.getThreadViewModel();
-    const selectedModelFamilyId = selectedModel?.family_id;
+    const selectedModelFamilyId = selectedModel?.familyId;
 
     return (
         <>

@@ -10,7 +10,7 @@ import { ToolGroupSection } from './ToolGroupSection';
 
 interface ControlledToggleTableProps {
     control?: Omit<UseControllerProps<DataFields>, 'name'>;
-    tools: Model['available_tools'];
+    tools: Model['availableTools'];
     isDisabled?: boolean;
 }
 

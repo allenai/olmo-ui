@@ -65,12 +65,12 @@ export const ThreadPlaceholder = () => {
                         promptTemplates={exampleTemplates}
                     />
                 )}
-                {!!selectedModel?.information_url && (
+                {!!selectedModel?.informationUrl && (
                     <Box minHeight={40} textAlign="center">
                         <ButtonLink
                             variant="text"
                             color="primary"
-                            href={selectedModel.information_url || undefined}
+                            href={selectedModel.informationUrl || undefined}
                             target="_blank"
                             rel="noopener"
                             startIcon={<WysiwygOutlined />}

@@ -103,13 +103,12 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const placeholderText = useMemo(() => {
         const actionText = threadId ? 'Reply to' : 'Message';
-        const modelText = selectedModel?.family_name || selectedModel?.name || 'the model';
+        const modelText = selectedModel?.familyName || selectedModel?.name || 'the model';
         return `${actionText} ${modelText}`;
     }, [threadId, selectedModel]);
 
-    const canCallTools = Boolean(selectedModel?.can_call_tools);
-
-    const areFilesAllowed = Boolean(selectedModel?.accepts_files);
+    const canCallTools = Boolean(selectedModel?.canCallTools);
+    const areFilesAllowed = Boolean(selectedModel?.acceptsFiles);
 
     const isLimitReached = useMemo(() => {
         if (!threadId) {
@@ -151,7 +150,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             : undefined;
         setUserToolDefinitions(toolDefs);
 
-        const selectedSystemTools = selectedModel?.available_tools?.map((t) => t.name) || [];
+        const selectedSystemTools = selectedModel?.availableTools?.map((t) => t.name) || [];
 
         setSelectedTools(selectedSystemTools);
 
@@ -295,7 +294,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             autofocus,
             placeholderText,
             canCallTools,
-            availableTools: selectedModel?.available_tools,
+            availableTools: selectedModel?.availableTools,
             isToolCallingEnabled,
             userToolDefinitions,
             areFilesAllowed,

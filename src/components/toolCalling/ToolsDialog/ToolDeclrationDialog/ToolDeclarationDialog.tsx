@@ -35,7 +35,7 @@ export interface DataFields {
     tools: string[];
 }
 export interface ToolDeclarationDialogProps {
-    availableTools: Model['available_tools'];
+    availableTools: Model['availableTools'];
     selectedTools: string[];
     isToolCallingEnabled?: boolean;
     jsonData?: string;

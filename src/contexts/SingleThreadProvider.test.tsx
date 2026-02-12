@@ -340,7 +340,7 @@ describe('SingleThreadProvider', () => {
                 // Should not include any deprecated models in the available options
                 // olmo-7b-chat is deprecated but should be filtered out
                 const deprecatedModel = result.current.availableModels.find(
-                    (model) => model.is_deprecated
+                    (model) => model.isDeprecated
                 );
                 expect(deprecatedModel).toBeUndefined();
             });
@@ -354,7 +354,7 @@ describe('SingleThreadProvider', () => {
             await waitFor(() => {
                 // Should include the deprecated model since it's selected
                 const deprecatedModel = result.current.availableModels.find(
-                    (model) => model.is_deprecated
+                    (model) => model.isDeprecated
                 );
                 expect(deprecatedModel).toBeDefined();
                 expect(deprecatedModel?.id).toBe('olmo-7b-chat');

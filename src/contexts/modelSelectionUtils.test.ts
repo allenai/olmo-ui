@@ -7,10 +7,10 @@ import { selectModelIdForThread } from './modelSelectionUtils';
 
 describe('selectModelIdForThread', () => {
     const mockModels: readonly Model[] = [
-        createMockModel('model-1', { is_visible: true }),
-        createMockModel('model-2', { is_visible: true }),
-        createMockModel('model-3', { is_visible: false }),
-        createMockModel('model-4', { is_visible: true }),
+        createMockModel('model-1', { isVisible: true }),
+        createMockModel('model-2', { isVisible: true }),
+        createMockModel('model-3', { isVisible: false }),
+        createMockModel('model-4', { isVisible: true }),
     ];
 
     describe('Thread continuity: maintaining conversation context', () => {
@@ -92,10 +92,10 @@ describe('selectModelIdForThread', () => {
 
         it('selects first available model when others are hidden', () => {
             const modelsWithInvisibleFirst: readonly Model[] = [
-                createMockModel('invisible-1', { is_visible: false }),
-                createMockModel('invisible-2', { is_visible: false }),
-                createMockModel('visible-1', { is_visible: true }),
-                createMockModel('visible-2', { is_visible: true }),
+                createMockModel('invisible-1', { isVisible: false }),
+                createMockModel('invisible-2', { isVisible: false }),
+                createMockModel('visible-1', { isVisible: true }),
+                createMockModel('visible-2', { isVisible: true }),
             ];
 
             const result = selectModelIdForThread(modelsWithInvisibleFirst);
@@ -105,8 +105,8 @@ describe('selectModelIdForThread', () => {
 
         it('handles no available models gracefully', () => {
             const invisibleModels: readonly Model[] = [
-                createMockModel('invisible-1', { is_visible: false }),
-                createMockModel('invisible-2', { is_visible: false }),
+                createMockModel('invisible-1', { isVisible: false }),
+                createMockModel('invisible-2', { isVisible: false }),
             ];
 
             const result = selectModelIdForThread(invisibleModels);

@@ -64,7 +64,7 @@ export const ModelSelectMenuItem = ({
     isNewModel = false,
     ...rest
 }: ModelSelectMenuItemProps) => {
-    const MenuItemIcon = model.prompt_type === 'multi_modal' ? ImageOutlinedIcon : ChatOutlinedIcon;
+    const MenuItemIcon = model.promptType === 'multi_modal' ? ImageOutlinedIcon : ChatOutlinedIcon;
 
     return (
         // Value MUST be passed in here to make it work with MUI
@@ -80,14 +80,14 @@ export const ModelSelectMenuItem = ({
                 {model.name}
             </Typography>
             <Typography sx={{ opacity: 0.55, gridArea: 'features' }} component="div">
-                {model.accepts_files ? 'Multimodal' : 'Text-only'}
+                {model.acceptsFiles ? 'Multimodal' : 'Text-only'}
                 {model.internal && ' (Internal)'}
                 <ul>
                     {isNewModel && <ModelSelectFeatureIndicator Icon={AutoAwesome} feature="New" />}
-                    {model.can_think && (
+                    {model.canThink && (
                         <ModelSelectFeatureIndicator Icon={ThinkingSvg} feature="Thinking" />
                     )}
-                    {model.can_call_tools && (
+                    {model.canCallTools && (
                         <ModelSelectFeatureIndicator Icon={ToolCallIcon} feature="Tool calling" />
                     )}
                 </ul>

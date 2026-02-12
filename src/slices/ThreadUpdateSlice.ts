@@ -6,7 +6,7 @@ import { getModelFamilyNameFromId } from '@/util';
 import { AlertMessageSeverity, SnackMessage, SnackMessageType } from './SnackMessageSlice';
 
 export const createModelAbortErrorMessage = (model: Model): SnackMessage => {
-    const modelFamilyName = model.family_name ?? getModelFamilyNameFromId(model.id) ?? 'the model';
+    const modelFamilyName = model.familyName ?? getModelFamilyNameFromId(model.id) ?? 'the model';
 
     return {
         type: SnackMessageType.Alert,
