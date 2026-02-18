@@ -8,8 +8,8 @@ import { AlertMessageSeverity, errorToAlert, SnackMessageType } from '@/slices/S
 import { PromptButton } from '../PromptButton';
 import { AcceptOrCancelButtons } from './AcceptOrCancelButtons';
 import { DotIndicator } from './DotIndicator';
-import { handleTranscribe } from './handleTranscribe';
 import { useAudioRecording } from './useAudioRecording';
+import { usePostTranscription } from './usePostTranscription';
 
 const iconClassName = css({
     transform: 'translateY(1px)', // Microphone looks odd sitting higher than the camera icon
@@ -37,6 +37,7 @@ export const AudioInputButton = ({
     const { isTranscribing, addSnackMessage, isProcessingAudio, setIsProcessingAudio } =
         useAppContext();
     const { startRecording, stopRecording } = useAudioRecording();
+    const transcribe = usePostTranscription();
 
     const cancelRecording = () => {
         stopRecording('userCancel');
@@ -77,7 +78,7 @@ export const AudioInputButton = ({
                         try {
                             onRecordingEnd?.();
                             onTranscriptionBegin?.();
-                            const { text } = await handleTranscribe(data);
+                            const { text } = await transcribe(data);
                             onTranscriptionComplete?.(text);
                             onComplete?.(text);
                         } catch (error: unknown) {
