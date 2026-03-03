@@ -627,7 +627,7 @@ export type components = {
          * ErrorCode
          * @enum {string}
          */
-        ErrorCode: 'toolCallError' | 'otherError';
+        ErrorCode: 'toolCallError' | 'unknownError' | 'exceededMaxTokens' | 'modelOverloaded';
         /**
          * ErrorSeverity
          * @enum {string}
@@ -2845,7 +2845,9 @@ export const createMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
 > = ['multi_modal', 'files_only'];
 export const errorCodeValues: ReadonlyArray<components['schemas']['ErrorCode']> = [
     'toolCallError',
-    'otherError',
+    'unknownError',
+    'exceededMaxTokens',
+    'modelOverloaded',
 ];
 export const errorSeverityValues: ReadonlyArray<components['schemas']['ErrorSeverity']> = [
     'error',

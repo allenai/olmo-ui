@@ -1,5 +1,5 @@
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { MessageStreamError, MessageStreamErrorReason, StreamBadRequestError } from '@/api/Message';
+import { MessageStreamError, StreamBadRequestError } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { CreateMessageRequest, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
@@ -16,8 +16,7 @@ import type { ExtraParameters } from './QueryContext';
 import {
     containsMessages,
     isChunk,
-    isErrorChunk,
-    isFirstMessage,
+    isKnownErrorChunk,
     isMessageStreamError,
     isModelResponseChunk,
     isOldMessageChunk,
@@ -106,8 +105,8 @@ export async function* readStream(response: Response, abortSignal?: AbortSignal)
             if (isMessageStreamError(part.value)) {
                 throw new MessageStreamError(
                     part.value.message,
-                    part.value.reason,
-                    `streaming response failed: ${part.value.error}`
+                    part.value.errorCode,
+                    `streaming response failed: ${part.value.errorDescription}`
                 );
             }
 
@@ -151,7 +150,7 @@ export const updateCacheWithMessagePart = async (
             queryClient.setQueryData(queryKey, mergeMessages(message));
         } else if (isToolCallChunk(message)) {
             queryClient.setQueryData(queryKey, updateThreadWithToolCall(message));
-        } else if (isErrorChunk(message)) {
+        } else if (isKnownErrorChunk(message)) {
             queryClient.setQueryData(queryKey, updateThreadWithError(message));
         } else if (isThinkingChunk(message)) {
             queryClient.setQueryData(queryKey, updateThreadWithThinking(message));
@@ -194,7 +193,7 @@ export const handleSubmissionError = ({
     );
 
     if (error instanceof MessageStreamError) {
-        if (error.finishReason === MessageStreamErrorReason.LENGTH) {
+        if (error.finishReason === 'exceededMaxTokens') {
             snackMessage = errorToAlert(
                 `create-message-${new Date().getTime()}`.toLowerCase(),
                 'Maximum Thread Length',
@@ -205,7 +204,7 @@ export const handleSubmissionError = ({
             // setMessageLimitReached(err.messageId, true);
         }
 
-        if (error.finishReason === MessageStreamErrorReason.MODEL_OVERLOADED) {
+        if (error.finishReason === 'modelOverloaded') {
             analyticsClient.trackModelOverloadedError(model.id);
 
             snackMessage = errorToAlert(

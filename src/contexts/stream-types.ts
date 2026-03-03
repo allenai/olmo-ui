@@ -50,12 +50,6 @@ export type StreamingMessageResponse =
     | MessageStreamErrorType
     | Chunk;
 
-export const isMessageStreamError = (
-    message: StreamingMessageResponse
-): message is MessageStreamErrorType => {
-    return 'error' in message;
-};
-
 export const isChunk = (message: StreamingMessageResponse): message is Chunk => {
     return 'type' in message && 'message' in message;
 };
@@ -85,6 +79,18 @@ export const isToolCallChunk = (
 
 export const isErrorChunk = (message: StreamingMessageResponse): message is SchemaErrorChunk => {
     return isChunk(message) && message.type === 'error';
+};
+
+export const isKnownErrorChunk = (
+    message: StreamingMessageResponse
+): message is SchemaErrorChunk => {
+    return isErrorChunk(message) && message.errorCode !== 'unknownError';
+};
+
+export const isMessageStreamError = (
+    message: StreamingMessageResponse
+): message is SchemaErrorChunk => {
+    return isErrorChunk(message) && message.errorCode === 'unknownError';
 };
 
 export const isThinkingChunk = (
