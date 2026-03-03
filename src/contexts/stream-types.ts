@@ -1,6 +1,7 @@
 import { MessageStreamErrorType } from '@/api/Message';
 import type {
-    SchemaCreateMessageRequest,
+    SchemaAddMessageChunk,
+    SchemaChatRequest,
     SchemaErrorChunk,
     SchemaFlatMessage,
     SchemaModelResponseChunk,
@@ -23,9 +24,9 @@ export interface StreamMessageRequest {
     captchaToken?: string | null;
     parent?: string;
     files?: FileList | null;
-    role?: SchemaCreateMessageRequest['role'];
+    role?: SchemaChatRequest['role'];
     toolCallId?: SchemaToolCall['toolCallId'];
-    inputParts?: SchemaCreateMessageRequest['inputParts'];
+    inputParts?: SchemaChatRequest['inputParts'];
 }
 
 export type MessageChunk = Pick<SchemaFlatMessage, 'content'> & {
@@ -38,7 +39,9 @@ export type Chunk =
     | SchemaThinkingChunk
     | SchemaToolCallChunk
     | SchemaStreamStartChunk
-    | SchemaStreamEndChunk;
+    | SchemaStreamEndChunk
+    | SchemaFirstMessageChunk
+    | SchemaAddMessageChunk;
 
 export type StreamingMessageResponse =
     | StreamingThread
