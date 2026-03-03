@@ -290,6 +290,8 @@ export type components = {
         AddMessageChunk: {
             /** Message */
             message: string;
+            /** Id */
+            id: string;
             /** Messages */
             messages: components['schemas']['FlatMessage'][];
             /**
@@ -650,6 +652,20 @@ export type components = {
          * @enum {string}
          */
         FileRequiredToPromptOption: 'first_message' | 'all_messages' | 'no_requirement';
+        /** FinalThreadChunk */
+        FinalThreadChunk: {
+            /** Message */
+            message: string;
+            /** Id */
+            id: string;
+            /** Messages */
+            messages: components['schemas']['FlatMessage'][];
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'finalThread';
+        };
         /**
          * FinishReason
          * @enum {string}
@@ -664,18 +680,6 @@ export type components = {
             | 'value error'
             | 'tool error'
             | 'unknown';
-        /** FirstMessageChunk */
-        FirstMessageChunk: {
-            /** Message */
-            message: string;
-            /** Messages */
-            messages: components['schemas']['FlatMessage'][];
-            /**
-             * Type
-             * @constant
-             */
-            readonly type: 'firstMessage';
-        };
         /** FlatMessage */
         FlatMessage: {
             /** Id */
@@ -1209,6 +1213,20 @@ export type components = {
          * @enum {string}
          */
         SortDirection: 'ASC' | 'DESC';
+        /** StartThreadChunk */
+        StartThreadChunk: {
+            /** Message */
+            message: string;
+            /** Id */
+            id: string;
+            /** Messages */
+            messages: components['schemas']['FlatMessage'][];
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'startThread';
+        };
         /** StreamEndChunk */
         StreamEndChunk: {
             /** Message */
@@ -1741,8 +1759,8 @@ export type SchemaErrorCode = components['schemas']['ErrorCode'];
 export type SchemaErrorSeverity = components['schemas']['ErrorSeverity'];
 export type SchemaEvent = components['schemas']['Event'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
+export type SchemaFinalThreadChunk = components['schemas']['FinalThreadChunk'];
 export type SchemaFinishReason = components['schemas']['FinishReason'];
-export type SchemaFirstMessageChunk = components['schemas']['FirstMessageChunk'];
 export type SchemaFlatMessage = components['schemas']['FlatMessage'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
 export type SchemaInferenceOptionsResponse = components['schemas']['InferenceOptionsResponse'];
@@ -1778,6 +1796,7 @@ export type SchemaRootUpdateModelConfigRequest =
     components['schemas']['RootUpdateModelConfigRequest'];
 export type SchemaSort = components['schemas']['Sort'];
 export type SchemaSortDirection = components['schemas']['SortDirection'];
+export type SchemaStartThreadChunk = components['schemas']['StartThreadChunk'];
 export type SchemaStreamEndChunk = components['schemas']['StreamEndChunk'];
 export type SchemaStreamStartChunk = components['schemas']['StreamStartChunk'];
 export type SchemaTextOnlyModelConfigResponse =
@@ -2291,8 +2310,9 @@ export interface operations {
                         | components['schemas']['ThinkingChunk']
                         | components['schemas']['StreamStartChunk']
                         | components['schemas']['StreamEndChunk']
-                        | components['schemas']['FirstMessageChunk']
+                        | components['schemas']['StartThreadChunk']
                         | components['schemas']['AddMessageChunk']
+                        | components['schemas']['FinalThreadChunk']
                         | components['schemas']['Thread'];
                 };
             };
