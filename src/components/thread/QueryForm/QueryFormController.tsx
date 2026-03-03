@@ -18,10 +18,10 @@ import { useNavigation } from 'react-router-dom';
 import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import {
-    type SchemaCreateMessageRequest,
     SchemaPromptTemplateResponse,
     SchemaToolCall,
 } from '@/api/playgroundApi/playgroundApiSchema';
+import type { ChatRequest, SchemaInputParts } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { VideoPointingInput } from '@/components/video/pointing/VideoPointing';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
@@ -49,9 +49,9 @@ export interface QueryFormValues {
     files?: FileList | null;
     // This isn't part of the form data explicitly, but is added in the submit handler
     captchaToken?: string | null;
-    role?: SchemaCreateMessageRequest['role'];
+    role?: ChatRequest['role'];
     toolCallId?: SchemaToolCall['toolCallId'];
-    inputParts?: SchemaCreateMessageRequest['inputParts'];
+    inputParts?: SchemaInputParts;
 }
 
 interface QueryFormControllerProps {
@@ -344,7 +344,7 @@ export const QueryFormController = ({
                                                     ? getDataUrl(files[0])
                                                     : null
                                             }
-                                            userPoint={value ? value[0] : null}
+                                            userPoint={value?.[0] ?? null}
                                             setUserPoint={(point) => {
                                                 onChange(point ? [point] : []);
                                             }}

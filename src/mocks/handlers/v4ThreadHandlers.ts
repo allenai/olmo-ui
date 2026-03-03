@@ -1,6 +1,7 @@
 import { delay, http, HttpResponse } from 'msw';
 
-import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
+import type { SchemaThread as Thread } from '@/api/playgroundApi/playgroundApiSchema';
+import { MessageChunk } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { PaginationData } from '@/api/Schema';
 import type { Chunk, StreamingMessageResponse } from '@/contexts/stream-types';

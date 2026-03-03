@@ -2,8 +2,9 @@ import { useMutation } from '@tanstack/react-query';
 import { useRef } from 'react';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
-import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
+import type { ChatRequest, SchemaChatRequest } from '@/api/playgroundApi/thread';
+import { Thread } from '@/api/playgroundApi/thread';
+import { fetchClient } from '@/api/playgroundApi/v5';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
@@ -23,7 +24,7 @@ export interface ThreadStreamMutationVariables {
     model: Model;
     thread?: Thread;
     inferenceOpts: MessageInferenceParameters;
-    toolDefinitions: CreateMessageRequest['toolDefinitions'];
+    toolDefinitions?: ChatRequest['toolDefinitions'];
     selectedTools: string[];
     isToolCallingEnabled: boolean;
     bypassSafetyCheck: boolean;
@@ -85,31 +86,34 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
                 inputParts,
             } = request;
 
-            const result = await playgroundApiClient.POST('/v4/threads/', {
+            const body: ChatRequest = {
+                content,
+                inputParts,
+                captchaToken,
+                // @ts-expect-error - We're uploading a FileList but the schema says it wants strings. Need to figure out how to get those to sync up
+                files,
+                parent,
+                host: model.host,
+                model: model.id,
+                role,
+                toolCallId,
+                toolDefinitions: toolDefinitions ?? undefined,
+                selectedTools,
+                enableToolCalling: isToolCallingEnabled,
+                bypassSafetyCheck,
+                // @ts-expect-error - Our bodySerializer will map extraParameters to a string before it sends it over
+                extraParameters,
+                ...inferenceOpts,
+            };
+
+            const result = await fetchClient.POST('/v5/threads/chat', {
                 parseAs: 'stream',
-                body: {
-                    content,
-                    inputParts,
-                    captchaToken,
-                    // @ts-expect-error - We're uploading a FileList but the schema says it wants strings. Need to figure out how to get those to sync up
-                    files,
-                    parent,
-                    host: model.host,
-                    model: model.id,
-                    role,
-                    toolCallId,
-                    toolDefinitions: toolDefinitions ?? undefined,
-                    selectedTools,
-                    enableToolCalling: isToolCallingEnabled,
-                    bypassSafetyCheck,
-                    // @ts-expect-error - Our bodySerializer will map extraParameters to a string before it sends it over
-                    extraParameters,
-                    ...inferenceOpts,
-                },
+                body: body as SchemaChatRequest,
                 bodySerializer: (body) => {
                     const formData = new FormData();
                     for (const property in body) {
-                        const value = body[property as keyof CreateMessageRequest];
+                        // Using the API's request directly here since it differs a little from how we map JSON in the UI types
+                        const value = body[property as keyof SchemaChatRequest];
                         mapValueToFormData(formData, property, value);
                     }
 

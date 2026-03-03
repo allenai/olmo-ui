@@ -8,7 +8,6 @@ import remarkGfm from 'remark-gfm';
 
 import customRemarkMath from '@/components/markdownMath/remark-math/remark-math';
 import { AttributionHighlight } from '@/components/thread/attribution/AttributionHighlight';
-import { DeepResearchCite } from '@/components/thread/DeepResearch/DeepResearchMessage';
 
 import { CodeBlock } from '../CodeBlock';
 import { CustomDivider, CustomLink, CustomPre } from './CustomComponents';
@@ -77,7 +76,6 @@ export const MarkdownRenderer = ({ className, children: markdown }: MarkdownRend
                 hr: CustomDivider,
                 a: CustomLink,
                 'attribution-highlight': AttributionHighlight,
-                cite: DeepResearchCite,
             }}>
             {markdown}
         </Box>
