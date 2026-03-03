@@ -2,8 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useRef } from 'react';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
+import { fetchClient } from '@/api/playgroundApi/v5';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
@@ -85,7 +85,7 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
                 inputParts,
             } = request;
 
-            const result = await playgroundApiClient.POST('/v4/threads/', {
+            const result = await fetchClient.POST('/v5/threads/chat', {
                 parseAs: 'stream',
                 body: {
                     content,

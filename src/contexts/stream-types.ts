@@ -3,6 +3,7 @@ import type {
     SchemaAddMessageChunk,
     SchemaChatRequest,
     SchemaErrorChunk,
+    SchemaFirstMessageChunk,
     SchemaFlatMessage,
     SchemaModelResponseChunk,
     SchemaStreamEndChunk,
@@ -11,7 +12,7 @@ import type {
     SchemaThread,
     SchemaToolCall,
     SchemaToolCallChunk,
-} from '@/api/playgroundApi/playgroundApiSchema';
+} from '@/api/playgroundApi/v5playgroundApiSchema';
 
 // Thread plus streaming state
 export interface StreamingThread extends SchemaThread {
@@ -55,20 +56,25 @@ export const isMessageStreamError = (
     return 'error' in message;
 };
 
+export const isChunk = (message: StreamingMessageResponse): message is Chunk => {
+    return 'type' in message && 'message' in message;
+};
+
 export const containsMessages = (message: StreamingMessageResponse): message is StreamingThread => {
     return 'messages' in message;
 };
 
 export const isFirstMessage = (message: StreamingMessageResponse): message is StreamingThread => {
+    if (isChunk(message)) {
+        return message.type === 'firstMessage';
+    }
+
+    // back-compat for v4 messages
     return containsMessages(message) && !message.messages.some((msg) => msg.final);
 };
 
 export const isOldMessageChunk = (message: StreamingMessageResponse): message is MessageChunk => {
     return 'message' in message && !Object.hasOwn(message, 'type');
-};
-
-export const isChunk = (message: StreamingMessageResponse): message is Chunk => {
-    return 'type' in message && 'message' in message;
 };
 
 export const isToolCallChunk = (
