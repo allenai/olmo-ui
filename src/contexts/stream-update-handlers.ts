@@ -1,13 +1,13 @@
 import { type Draft, produce } from 'immer';
 
+import type { FlatMessage } from '@/api/playgroundApi/thread';
 import type {
     SchemaErrorChunk,
     SchemaModelResponseChunk,
     SchemaThinkingChunk,
     SchemaToolCall,
     SchemaToolCallChunk,
-} from '@/api/playgroundApi/playgroundApiSchema';
-import type { FlatMessage } from '@/api/playgroundApi/thread';
+} from '@/api/playgroundApi/v5playgroundApiSchema';
 
 import type { Chunk, MessageChunk, StreamingThread } from './stream-types';
 

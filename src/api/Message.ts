@@ -3,6 +3,7 @@ import { NullishPartial } from '@/util';
 import { ClientBase } from './ClientBase';
 import { Label } from './Label';
 import { Thread } from './playgroundApi/thread';
+import type { SchemaErrorCode } from './playgroundApi/v5playgroundApiSchema';
 import { Role } from './Role';
 import { InferenceOpts, PaginationData } from './Schema';
 
@@ -77,38 +78,14 @@ export interface MessageStreamErrorType {
     reason: string;
 }
 
-export enum MessageStreamErrorReason {
-    LENGTH = 'length',
-    UNCLOSED_STREAM = 'unclosed stream',
-    STOP = 'stop',
-    ABORTED = 'aborted',
-    FINALIZATION = 'finalization failure',
-    GRPC = 'grpc inference failed',
-    MODEL_OVERLOADED = 'model overloaded',
-    BAD_CONNECTION = 'bad connection',
-    VALUE_ERROR = 'value error',
-    UNKNOWN = 'unkown',
-}
-
 export class MessageStreamError extends Error {
     messageId: string;
-    finishReason: MessageStreamErrorReason;
-    constructor(messageId: string, finishReason: string, message: string) {
+    finishReason: SchemaErrorCode;
+
+    constructor(messageId: string, finishReason: SchemaErrorCode, message: string) {
         super(message);
         this.messageId = messageId;
-        this.finishReason = MessageStreamError.mapFinishReason(finishReason);
-    }
-
-    static mapFinishReason(finishReason: string): MessageStreamErrorReason {
-        if (
-            Object.values(MessageStreamErrorReason).some(
-                (reason) => (reason as string) === finishReason
-            )
-        ) {
-            return finishReason as MessageStreamErrorReason;
-        }
-
-        return MessageStreamErrorReason.UNKNOWN;
+        this.finishReason = finishReason;
     }
 }
 
