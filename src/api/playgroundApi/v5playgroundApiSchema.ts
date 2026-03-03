@@ -160,6 +160,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    '/v5/threads/chat': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stream Chat Message */
+        post: operations['stream_chat_message_v5_threads_chat_post'];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/v5/message/{message_id}/label/': {
         parameters: {
             query?: never;
@@ -269,6 +286,18 @@ export type paths = {
 export type webhooks = Record<string, never>;
 export type components = {
     schemas: {
+        /** AddMessageChunk */
+        AddMessageChunk: {
+            /** Message */
+            message: string;
+            /** Messages */
+            messages: components['schemas']['FlatMessage'][];
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'addMessage';
+        };
         /** AttributionDocumentSnippet */
         AttributionDocumentSnippet: {
             /** Text */
@@ -351,6 +380,70 @@ export type components = {
              * Format: binary
              */
             audio: string;
+        };
+        /** ChatRequest */
+        ChatRequest: {
+            /** Parent */
+            parent?: string | null;
+            /** Content */
+            content?: string | null;
+            /** Inputparts */
+            inputParts?: string[] | null;
+            /** @default user */
+            role?: components['schemas']['Role'];
+            /** Original */
+            original?: string | null;
+            /**
+             * Private
+             * @default false
+             */
+            private?: boolean;
+            /** Template */
+            template?: string | null;
+            /** Model */
+            model: string;
+            /**
+             * Host
+             * @deprecated
+             */
+            host?: string | null;
+            /** Toolcallid */
+            toolCallId?: string | null;
+            /** Tooldefinitions */
+            toolDefinitions?: string | null;
+            /** Selectedtools */
+            selectedTools?: string[] | null;
+            /**
+             * Enabletoolcalling
+             * @default false
+             */
+            enableToolCalling?: boolean;
+            /**
+             * Bypasssafetycheck
+             * @default false
+             */
+            bypassSafetyCheck?: boolean;
+            /** Captchatoken */
+            captchaToken?: string | null;
+            /** Maxtokens */
+            maxTokens?: number | null;
+            /** Temperature */
+            temperature?: number | null;
+            /** Topp */
+            topP?: number | null;
+            /** Stop */
+            stop?: string[] | null;
+            /**
+             * N
+             * @default 1
+             */
+            n?: number | null;
+            /** Logprobs */
+            logprobs?: number | null;
+            /** Extraparameters */
+            extraParameters?: string | null;
+            /** Files */
+            files?: string[] | null;
         };
         /** CreateMultiModalModelConfigRequest */
         CreateMultiModalModelConfigRequest: {
@@ -505,11 +598,34 @@ export type components = {
             /** Id */
             id: string;
         };
+        /** CreateToolDefinition */
+        CreateToolDefinition: {
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
+            parameters: components['schemas']['ParameterDef'];
+        };
+        /** ErrorChunk */
+        ErrorChunk: {
+            /** Message */
+            message: string;
+            errorCode: components['schemas']['ErrorCode'];
+            /** Errordescription */
+            errorDescription: string;
+            /** @default error */
+            errorSeverity?: components['schemas']['ErrorSeverity'];
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'error';
+        };
         /**
          * ErrorCode
          * @enum {string}
          */
-        ErrorCode: 'toolCallError';
+        ErrorCode: 'toolCallError' | 'otherError';
         /**
          * ErrorSeverity
          * @enum {string}
@@ -548,6 +664,18 @@ export type components = {
             | 'value error'
             | 'tool error'
             | 'unknown';
+        /** FirstMessageChunk */
+        FirstMessageChunk: {
+            /** Message */
+            message: string;
+            /** Messages */
+            messages: components['schemas']['FlatMessage'][];
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'firstMessage';
+        };
         /** FlatMessage */
         FlatMessage: {
             /** Id */
@@ -731,6 +859,18 @@ export type components = {
         ModelResponse:
             | components['schemas']['TextOnlyModelResponse']
             | components['schemas']['MultiModalModelResponse'];
+        /** ModelResponseChunk */
+        ModelResponseChunk: {
+            /** Message */
+            message: string;
+            /** Content */
+            content: string;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'modelResponse';
+        };
         /**
          * ModelType
          * @enum {string}
@@ -941,6 +1081,28 @@ export type components = {
             /** Isdeprecated */
             readonly isDeprecated: boolean;
         };
+        /** ParameterDef */
+        ParameterDef: {
+            /** Type */
+            type: string;
+            /** Properties */
+            properties?: {
+                [key: string]: components['schemas']['ParameterDef'];
+            } | null;
+            /** Description */
+            description?: string | null;
+            /**
+             * Required
+             * @default []
+             */
+            required?: string[] | null;
+            /** Propertyordering */
+            propertyOrdering?: string[] | null;
+            /** Default */
+            default?: {
+                [key: string]: string;
+            } | null;
+        };
         /** PromptTemplateResponse */
         PromptTemplateResponse: {
             /** Id */
@@ -1047,6 +1209,26 @@ export type components = {
          * @enum {string}
          */
         SortDirection: 'ASC' | 'DESC';
+        /** StreamEndChunk */
+        StreamEndChunk: {
+            /** Message */
+            message: string;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'end';
+        };
+        /** StreamStartChunk */
+        StreamStartChunk: {
+            /** Message */
+            message: string;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'start';
+        };
         /** TextOnlyModelConfigResponse */
         TextOnlyModelConfigResponse: {
             /** Id */
@@ -1197,6 +1379,20 @@ export type components = {
             /** Isdeprecated */
             readonly isDeprecated: boolean;
         };
+        /** ThinkingChunk */
+        ThinkingChunk: {
+            /** Message */
+            message: string;
+            /** Content */
+            content: string;
+            /** Id */
+            id?: string | null;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'thinking';
+        };
         /** Thread */
         Thread: {
             /** Id */
@@ -1224,6 +1420,28 @@ export type components = {
             /** Toolcallid */
             toolCallId: string;
             toolSource: components['schemas']['ToolSource'];
+        };
+        /** ToolCallChunk */
+        ToolCallChunk: {
+            /** Message */
+            message: string;
+            /** Toolcallid */
+            toolCallId: string;
+            /** Toolname */
+            toolName: string;
+            /** Args */
+            args?:
+                | string
+                | {
+                      [key: string]: unknown;
+                  }
+                | null;
+            toolSource: components['schemas']['ToolSource'] | null;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'toolCall';
         };
         /** ToolDefinition */
         ToolDefinition: {
@@ -1503,6 +1721,7 @@ export type components = {
     headers: never;
     pathItems: never;
 };
+export type SchemaAddMessageChunk = components['schemas']['AddMessageChunk'];
 export type SchemaAttributionDocumentSnippet = components['schemas']['AttributionDocumentSnippet'];
 export type SchemaAttributionRequest = components['schemas']['AttributionRequest'];
 export type SchemaAttributionResponse = components['schemas']['AttributionResponse'];
@@ -1511,15 +1730,19 @@ export type SchemaAvailableInfiniGramIndexId = components['schemas']['AvailableI
 export type SchemaAvailableTool = components['schemas']['AvailableTool'];
 export type SchemaBodyTranscribeV5TranscriptionPost =
     components['schemas']['Body_transcribe_v5_transcription__post'];
+export type SchemaChatRequest = components['schemas']['ChatRequest'];
 export type SchemaCreateMultiModalModelConfigRequest =
     components['schemas']['CreateMultiModalModelConfigRequest'];
 export type SchemaCreateTextOnlyModelConfigRequest =
     components['schemas']['CreateTextOnlyModelConfigRequest'];
+export type SchemaCreateToolDefinition = components['schemas']['CreateToolDefinition'];
+export type SchemaErrorChunk = components['schemas']['ErrorChunk'];
 export type SchemaErrorCode = components['schemas']['ErrorCode'];
 export type SchemaErrorSeverity = components['schemas']['ErrorSeverity'];
 export type SchemaEvent = components['schemas']['Event'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
 export type SchemaFinishReason = components['schemas']['FinishReason'];
+export type SchemaFirstMessageChunk = components['schemas']['FirstMessageChunk'];
 export type SchemaFlatMessage = components['schemas']['FlatMessage'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
 export type SchemaInferenceOptionsResponse = components['schemas']['InferenceOptionsResponse'];
@@ -1534,11 +1757,13 @@ export type SchemaModelHost = components['schemas']['ModelHost'];
 export type SchemaModelListResponse = components['schemas']['ModelListResponse'];
 export type SchemaModelOrder = components['schemas']['ModelOrder'];
 export type SchemaModelResponse = components['schemas']['ModelResponse'];
+export type SchemaModelResponseChunk = components['schemas']['ModelResponseChunk'];
 export type SchemaModelType = components['schemas']['ModelType'];
 export type SchemaMolmo2PointPart = components['schemas']['Molmo2PointPart'];
 export type SchemaMultiModalModelConfigResponse =
     components['schemas']['MultiModalModelConfigResponse'];
 export type SchemaMultiModalModelResponse = components['schemas']['MultiModalModelResponse'];
+export type SchemaParameterDef = components['schemas']['ParameterDef'];
 export type SchemaPromptTemplateResponse = components['schemas']['PromptTemplateResponse'];
 export type SchemaPromptTemplateResponseList = components['schemas']['PromptTemplateResponseList'];
 export type SchemaRating = components['schemas']['Rating'];
@@ -1553,12 +1778,16 @@ export type SchemaRootUpdateModelConfigRequest =
     components['schemas']['RootUpdateModelConfigRequest'];
 export type SchemaSort = components['schemas']['Sort'];
 export type SchemaSortDirection = components['schemas']['SortDirection'];
+export type SchemaStreamEndChunk = components['schemas']['StreamEndChunk'];
+export type SchemaStreamStartChunk = components['schemas']['StreamStartChunk'];
 export type SchemaTextOnlyModelConfigResponse =
     components['schemas']['TextOnlyModelConfigResponse'];
 export type SchemaTextOnlyModelResponse = components['schemas']['TextOnlyModelResponse'];
+export type SchemaThinkingChunk = components['schemas']['ThinkingChunk'];
 export type SchemaThread = components['schemas']['Thread'];
 export type SchemaThreadList = components['schemas']['ThreadList'];
 export type SchemaToolCall = components['schemas']['ToolCall'];
+export type SchemaToolCallChunk = components['schemas']['ToolCallChunk'];
 export type SchemaToolDefinition = components['schemas']['ToolDefinition'];
 export type SchemaToolSource = components['schemas']['ToolSource'];
 export type SchemaTopLevelAttributionSpan = components['schemas']['TopLevelAttributionSpan'];
@@ -2002,6 +2231,69 @@ export interface operations {
                 };
                 content: {
                     'application/json': unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['HTTPValidationError'];
+                };
+            };
+            /** @description Client Error */
+            '4XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+            /** @description Server Error */
+            '5XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/problem+json': components['schemas']['Problem'];
+                };
+            };
+        };
+    };
+    stream_chat_message_v5_threads_chat_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                'X-Anonymous-User-ID'?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'application/x-www-form-urlencoded': components['schemas']['ChatRequest'];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json':
+                        | components['schemas']['ModelResponseChunk']
+                        | components['schemas']['ToolCallChunk']
+                        | components['schemas']['ErrorChunk']
+                        | components['schemas']['ThinkingChunk']
+                        | components['schemas']['StreamStartChunk']
+                        | components['schemas']['StreamEndChunk']
+                        | components['schemas']['FirstMessageChunk']
+                        | components['schemas']['AddMessageChunk']
+                        | components['schemas']['Thread'];
                 };
             };
             /** @description Validation Error */
@@ -2531,7 +2823,10 @@ export const availableInfiniGramIndexIdValues: ReadonlyArray<
 export const createMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
     components['schemas']['CreateMultiModalModelConfigRequest']['promptType']
 > = ['multi_modal', 'files_only'];
-export const errorCodeValues: ReadonlyArray<components['schemas']['ErrorCode']> = ['toolCallError'];
+export const errorCodeValues: ReadonlyArray<components['schemas']['ErrorCode']> = [
+    'toolCallError',
+    'otherError',
+];
 export const errorSeverityValues: ReadonlyArray<components['schemas']['ErrorSeverity']> = [
     'error',
     'warning',
