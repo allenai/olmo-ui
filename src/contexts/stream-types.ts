@@ -3,9 +3,9 @@ import type {
     SchemaAddMessageChunk,
     SchemaChatRequest,
     SchemaErrorChunk,
-    SchemaFirstMessageChunk,
     SchemaFlatMessage,
     SchemaModelResponseChunk,
+    SchemaStartThreadChunk,
     SchemaStreamEndChunk,
     SchemaStreamStartChunk,
     SchemaThinkingChunk,
@@ -41,7 +41,7 @@ export type Chunk =
     | SchemaToolCallChunk
     | SchemaStreamStartChunk
     | SchemaStreamEndChunk
-    | SchemaFirstMessageChunk
+    | SchemaStartThreadChunk
     | SchemaAddMessageChunk;
 
 export type StreamingMessageResponse =
@@ -66,7 +66,7 @@ export const containsMessages = (message: StreamingMessageResponse): message is 
 
 export const isFirstMessage = (message: StreamingMessageResponse): message is StreamingThread => {
     if (isChunk(message)) {
-        return message.type === 'firstMessage';
+        return message.type === 'startThread';
     }
 
     // back-compat for v4 messages
