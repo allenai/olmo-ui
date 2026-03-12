@@ -2,15 +2,12 @@ import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
 import { apiQueryClient } from '@/api/playgroundApi/v5';
 
-// v4
-import type { SchemaCreateMessageRequest as CreateMessageRequest } from './playgroundApiSchema';
-// v5
 import type {
     SchemaFlatMessage as FlatMessage,
     SchemaThread as Thread,
 } from './v5playgroundApiSchema';
 
-export type { CreateMessageRequest, FlatMessage, Thread };
+export type { FlatMessage, Thread };
 export type ThreadId = Thread['id'];
 export type MessageId = FlatMessage['id'];
 export type MessageChunk = Pick<FlatMessage, 'content'> & {

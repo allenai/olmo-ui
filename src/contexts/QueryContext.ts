@@ -3,7 +3,7 @@ import React, { UIEvent } from 'react';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { SchemaPromptTemplateResponse } from '@/api/playgroundApi/playgroundApiSchema';
-import { CreateMessageRequest } from '@/api/playgroundApi/thread';
+import type { SchemaChatRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton/FileUploadButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { RemoteState } from '@/contexts/util';
@@ -26,7 +26,7 @@ interface QueryContextValue {
     areFilesAllowed: boolean;
     canCallTools: boolean;
     isToolCallingEnabled: boolean;
-    userToolDefinitions: CreateMessageRequest['toolDefinitions'];
+    userToolDefinitions: SchemaChatRequest['toolDefinitions'];
     availableTools: Model['availableTools'];
     canPauseThread: boolean;
     isLimitReached: boolean;

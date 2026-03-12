@@ -5,6 +5,7 @@ import type {
 } from '@/api/playgroundApi/playgroundApiSchema';
 import { SchemaCreateMessageRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { type FlatMessage, threadOptions } from '@/api/playgroundApi/thread';
+import type { SchemaChatRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { areModelsCompatibleForThread } from '@/components/thread/ModelSelect/useModels';
@@ -126,7 +127,7 @@ export function areAllModelsCompatible(models: readonly Model[]): boolean {
 }
 
 export type MessageInferenceParameters = Pick<
-    SchemaCreateMessageRequest,
+    SchemaChatRequest,
     'temperature' | 'topP' | 'maxTokens' | 'n' | 'logprobs' | 'stop'
 >;
 

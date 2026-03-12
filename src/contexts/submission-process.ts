@@ -1,7 +1,8 @@
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { MessageStreamError, MessageStreamErrorReason, StreamBadRequestError } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { CreateMessageRequest, threadOptions } from '@/api/playgroundApi/thread';
+import { threadOptions } from '@/api/playgroundApi/thread';
+import type { SchemaChatRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
@@ -249,7 +250,7 @@ interface ProcessSingleModelSubmissionProps {
     rootThreadId: string | undefined;
     threadViewId: ThreadViewId;
     inferenceOpts: MessageInferenceParameters;
-    toolDefinitions: CreateMessageRequest['toolDefinitions'];
+    toolDefinitions: SchemaChatRequest['toolDefinitions'];
     selectedTools: string[];
     isToolCallingEnabled: boolean;
     bypassSafetyCheck: boolean;

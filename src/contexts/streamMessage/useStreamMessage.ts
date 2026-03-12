@@ -2,8 +2,9 @@ import { useMutation } from '@tanstack/react-query';
 import { useRef } from 'react';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
+import { Thread } from '@/api/playgroundApi/thread';
 import { fetchClient } from '@/api/playgroundApi/v5';
+import type { SchemaChatRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
@@ -23,7 +24,7 @@ export interface ThreadStreamMutationVariables {
     model: Model;
     thread?: Thread;
     inferenceOpts: MessageInferenceParameters;
-    toolDefinitions: CreateMessageRequest['toolDefinitions'];
+    toolDefinitions: SchemaChatRequest['toolDefinitions'];
     selectedTools: string[];
     isToolCallingEnabled: boolean;
     bypassSafetyCheck: boolean;
@@ -109,7 +110,7 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
                 bodySerializer: (body) => {
                     const formData = new FormData();
                     for (const property in body) {
-                        const value = body[property as keyof CreateMessageRequest];
+                        const value = body[property as keyof SchemaChatRequest];
                         mapValueToFormData(formData, property, value);
                     }
 

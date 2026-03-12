@@ -383,70 +383,6 @@ export type components = {
              */
             audio: string;
         };
-        /** ChatRequest */
-        ChatRequest: {
-            /** Parent */
-            parent?: string | null;
-            /** Content */
-            content?: string | null;
-            /** Inputparts */
-            inputParts?: string[] | null;
-            /** @default user */
-            role?: components['schemas']['Role'];
-            /** Original */
-            original?: string | null;
-            /**
-             * Private
-             * @default false
-             */
-            private?: boolean;
-            /** Template */
-            template?: string | null;
-            /** Model */
-            model: string;
-            /**
-             * Host
-             * @deprecated
-             */
-            host?: string | null;
-            /** Toolcallid */
-            toolCallId?: string | null;
-            /** Tooldefinitions */
-            toolDefinitions?: string | null;
-            /** Selectedtools */
-            selectedTools?: string[] | null;
-            /**
-             * Enabletoolcalling
-             * @default false
-             */
-            enableToolCalling?: boolean;
-            /**
-             * Bypasssafetycheck
-             * @default false
-             */
-            bypassSafetyCheck?: boolean;
-            /** Captchatoken */
-            captchaToken?: string | null;
-            /** Maxtokens */
-            maxTokens?: number | null;
-            /** Temperature */
-            temperature?: number | null;
-            /** Topp */
-            topP?: number | null;
-            /** Stop */
-            stop?: string[] | null;
-            /**
-             * N
-             * @default 1
-             */
-            n?: number | null;
-            /** Logprobs */
-            logprobs?: number | null;
-            /** Extraparameters */
-            extraParameters?: string | null;
-            /** Files */
-            files?: string[] | null;
-        };
         /** CreateMultiModalModelConfigRequest */
         CreateMultiModalModelConfigRequest: {
             /** Name */
@@ -1473,6 +1409,69 @@ export type components = {
             } | null;
             toolSource: components['schemas']['ToolSource'];
         };
+        /** ToolResponseChatRequest */
+        ToolResponseChatRequest: {
+            /** Model */
+            model: string;
+            /**
+             * Host
+             * @deprecated
+             */
+            host?: string | null;
+            /** Template */
+            template?: string | null;
+            /**
+             * Private
+             * @default false
+             */
+            private?: boolean;
+            /**
+             * Bypasssafetycheck
+             * @default false
+             */
+            bypassSafetyCheck?: boolean;
+            /** Captchatoken */
+            captchaToken?: string | null;
+            /** Maxtokens */
+            maxTokens?: number | null;
+            /** Temperature */
+            temperature?: number | null;
+            /** Topp */
+            topP?: number | null;
+            /** Stop */
+            stop?: string[] | null;
+            /**
+             * N
+             * @default 1
+             */
+            n?: number | null;
+            /** Logprobs */
+            logprobs?: number | null;
+            /** Extraparameters */
+            extraParameters?: string | null;
+            /** Files */
+            files?: string[] | null;
+            /** Tooldefinitions */
+            toolDefinitions?: string | null;
+            /** Selectedtools */
+            selectedTools?: string[] | null;
+            /**
+             * Enabletoolcalling
+             * @default false
+             */
+            enableToolCalling?: boolean;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            role: 'tool_call_result';
+            /** Parent */
+            parent: string;
+            /** Toolcallid */
+            toolCallId: string;
+            /** Content */
+            content: string;
+        };
         /**
          * ToolSource
          * @enum {string}
@@ -1701,6 +1700,71 @@ export type components = {
             /** Mediacollectionacceptancerevokeddate */
             mediaCollectionAcceptanceRevokedDate: string | null;
         };
+        /** UserChatRequest */
+        UserChatRequest: {
+            /** Model */
+            model: string;
+            /**
+             * Host
+             * @deprecated
+             */
+            host?: string | null;
+            /** Template */
+            template?: string | null;
+            /**
+             * Private
+             * @default false
+             */
+            private?: boolean;
+            /**
+             * Bypasssafetycheck
+             * @default false
+             */
+            bypassSafetyCheck?: boolean;
+            /** Captchatoken */
+            captchaToken?: string | null;
+            /** Maxtokens */
+            maxTokens?: number | null;
+            /** Temperature */
+            temperature?: number | null;
+            /** Topp */
+            topP?: number | null;
+            /** Stop */
+            stop?: string[] | null;
+            /**
+             * N
+             * @default 1
+             */
+            n?: number | null;
+            /** Logprobs */
+            logprobs?: number | null;
+            /** Extraparameters */
+            extraParameters?: string | null;
+            /** Files */
+            files?: string[] | null;
+            /** Tooldefinitions */
+            toolDefinitions?: string | null;
+            /** Selectedtools */
+            selectedTools?: string[] | null;
+            /**
+             * Enabletoolcalling
+             * @default false
+             */
+            enableToolCalling?: boolean;
+            /** Content */
+            content?: string | null;
+            /** Inputparts */
+            inputParts?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            role: 'user';
+            /** Parent */
+            parent?: string | null;
+            /** Original */
+            original?: string | null;
+        };
         /** UserMigrationRequest */
         UserMigrationRequest: {
             /** Anonymoususerid */
@@ -1748,7 +1812,6 @@ export type SchemaAvailableInfiniGramIndexId = components['schemas']['AvailableI
 export type SchemaAvailableTool = components['schemas']['AvailableTool'];
 export type SchemaBodyTranscribeV5TranscriptionPost =
     components['schemas']['Body_transcribe_v5_transcription__post'];
-export type SchemaChatRequest = components['schemas']['ChatRequest'];
 export type SchemaCreateMultiModalModelConfigRequest =
     components['schemas']['CreateMultiModalModelConfigRequest'];
 export type SchemaCreateTextOnlyModelConfigRequest =
@@ -1808,6 +1871,7 @@ export type SchemaThreadList = components['schemas']['ThreadList'];
 export type SchemaToolCall = components['schemas']['ToolCall'];
 export type SchemaToolCallChunk = components['schemas']['ToolCallChunk'];
 export type SchemaToolDefinition = components['schemas']['ToolDefinition'];
+export type SchemaToolResponseChatRequest = components['schemas']['ToolResponseChatRequest'];
 export type SchemaToolSource = components['schemas']['ToolSource'];
 export type SchemaTopLevelAttributionSpan = components['schemas']['TopLevelAttributionSpan'];
 export type SchemaTranscriptionSingleResponse =
@@ -1819,6 +1883,7 @@ export type SchemaUpdateTextOnlyModelConfigRequest =
 export type SchemaUpsertUserRequest = components['schemas']['UpsertUserRequest'];
 export type SchemaUpsertUserResponse = components['schemas']['UpsertUserResponse'];
 export type SchemaUser = components['schemas']['User'];
+export type SchemaUserChatRequest = components['schemas']['UserChatRequest'];
 export type SchemaUserMigrationRequest = components['schemas']['UserMigrationRequest'];
 export type SchemaUserMigrationResponse = components['schemas']['UserMigrationResponse'];
 export type SchemaValidationError = components['schemas']['ValidationError'];
@@ -2293,7 +2358,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                'application/x-www-form-urlencoded': components['schemas']['ChatRequest'];
+                'application/x-www-form-urlencoded':
+                    | components['schemas']['UserChatRequest']
+                    | components['schemas']['ToolResponseChatRequest'];
             };
         };
         responses: {
@@ -2312,8 +2379,7 @@ export interface operations {
                         | components['schemas']['StreamEndChunk']
                         | components['schemas']['StartThreadChunk']
                         | components['schemas']['AddMessageChunk']
-                        | components['schemas']['FinalThreadChunk']
-                        | components['schemas']['Thread'];
+                        | components['schemas']['FinalThreadChunk'];
                 };
             };
             /** @description Validation Error */
@@ -2905,6 +2971,9 @@ export const textOnlyModelConfigResponsePromptTypeValues: ReadonlyArray<
 export const textOnlyModelResponsePromptTypeValues: ReadonlyArray<
     components['schemas']['TextOnlyModelResponse']['promptType']
 > = ['text_only'];
+export const toolResponseChatRequestRoleValues: ReadonlyArray<
+    components['schemas']['ToolResponseChatRequest']['role']
+> = ['tool_call_result'];
 export const toolSourceValues: ReadonlyArray<components['schemas']['ToolSource']> = [
     'internal',
     'user_defined',
@@ -2913,3 +2982,6 @@ export const toolSourceValues: ReadonlyArray<components['schemas']['ToolSource']
 export const updateMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
     components['schemas']['UpdateMultiModalModelConfigRequest']['promptType']
 > = ['multi_modal', 'files_only'];
+export const userChatRequestRoleValues: ReadonlyArray<
+    components['schemas']['UserChatRequest']['role']
+> = ['user'];
