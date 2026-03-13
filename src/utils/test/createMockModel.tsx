@@ -45,7 +45,7 @@ export const createMockMessage = (overrides: Partial<FlatMessage> = {}): FlatMes
     modelType: 'chat',
     opts: {
         maxTokens: 2048,
-        temperature: 1,
+        // temperature is not provided here, it _should_ fall back to the model defaults of 0.7
         n: 1,
         topP: 1,
     },
