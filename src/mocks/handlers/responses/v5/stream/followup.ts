@@ -1,4 +1,3 @@
-import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { Chunk } from '@/contexts/stream-types';
 
@@ -6,13 +5,15 @@ import { newMessageId } from './default';
 
 export const followupUserMessageId = 'msg_G8D2Q9Y8Q7';
 const followupLLMMessageId = 'msg_V6Y0U4H414';
-export const fakeFollowupResponse = (parentId: string): Array<Thread | MessageChunk | Chunk> => [
+export const fakeFollowupResponse = (parentId: string): Array<Chunk> => [
     {
         message: followupUserMessageId,
         type: 'start',
     },
     {
         id: newMessageId,
+        message: newMessageId,
+        type: 'addMessage',
         messages: [
             {
                 content: 'Second user message',
@@ -100,6 +101,8 @@ export const fakeFollowupResponse = (parentId: string): Array<Thread | MessageCh
     },
     {
         id: followupUserMessageId,
+        message: followupUserMessageId,
+        type: 'addMessage',
         messages: [
             {
                 content: 'Second user message',
