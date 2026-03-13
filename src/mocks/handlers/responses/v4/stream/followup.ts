@@ -66,30 +66,37 @@ export const fakeFollowupResponse = (parentId: string): Array<Thread | MessageCh
     {
         message: followupLLMMessageId,
         content: '',
+        type: 'modelResponse',
     },
     {
         message: followupLLMMessageId,
         content: '',
+        type: 'modelResponse',
     },
     {
         message: followupLLMMessageId,
         content: 'This ',
+        type: 'modelResponse',
     },
     {
         message: followupLLMMessageId,
         content: 'is ',
+        type: 'modelResponse',
     },
     {
         message: followupLLMMessageId,
         content: '',
+        type: 'modelResponse',
     },
     {
         message: followupLLMMessageId,
         content: 'the ',
+        type: 'modelResponse',
     },
     {
         message: followupLLMMessageId,
         content: 'second response.',
+        type: 'modelResponse',
     },
     {
         id: followupUserMessageId,

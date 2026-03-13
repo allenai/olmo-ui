@@ -7,23 +7,11 @@ import type {
     SchemaFlatMessage as FlatMessage,
     SchemaFlatMessage,
     SchemaThread as Thread,
-    SchemaToolDefinition,
 } from './v5playgroundApiSchema';
 
 export type { FlatMessage, Thread };
 export type ThreadId = Thread['id'];
 export type MessageId = FlatMessage['id'];
-
-// export type MessageChunk =
-//     | SchemaModelResponseChunk
-//     | SchemaToolCallChunk
-//     | SchemaErrorChunk
-//     | SchemaThinkingChunk
-//     | SchemaStreamStartChunk
-//     | SchemaStreamEndChunk
-//     | SchemaStartThreadChunk
-//     | SchemaAddMessageChunk
-//     | SchemaFinalThreadChunk;
 
 export type MessageChunk =
     operations['stream_chat_message_v5_threads_chat_post']['responses']['200']['content']['application/json'];
@@ -38,9 +26,8 @@ export type SchemaInputParts = SchemaFlatMessage['inputParts'];
  * This type fixes the type inference for the JSON types in our schema
  * openapi-ts interprets them as just strings instead of allowing the JSON parts that we then stringify
  */
-export type ChatRequest = Omit<SchemaChatRequest, 'inputParts' | 'toolDefinitions'> & {
+export type ChatRequest = Omit<SchemaChatRequest, 'inputParts'> & {
     inputParts?: SchemaInputParts | null;
-    toolDefinitions?: SchemaToolDefinition[] | null;
 };
 
 const threadParams = (threadId: ThreadId) => ({

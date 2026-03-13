@@ -24,7 +24,7 @@ export interface ThreadStreamMutationVariables {
     model: Model;
     thread?: Thread;
     inferenceOpts: MessageInferenceParameters;
-    toolDefinitions: ChatRequest['toolDefinitions'];
+    toolDefinitions?: string;
     selectedTools: string[];
     isToolCallingEnabled: boolean;
     bypassSafetyCheck: boolean;
