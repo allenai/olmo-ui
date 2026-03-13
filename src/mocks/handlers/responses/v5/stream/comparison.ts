@@ -11,7 +11,7 @@ export const fakeCompareNewThreadMessages: Array<Chunk> = [
     {
         id: compareNewMessageId,
         message: compareNewMessageId,
-        type: 'addMessage',
+        type: 'startThread',
         messages: [
             {
                 content: 'User message',
@@ -98,7 +98,7 @@ export const fakeCompareNewThreadMessages: Array<Chunk> = [
     {
         id: compareNewMessageId,
         message: compareNewMessageId,
-        type: 'addMessage',
+        type: 'finalThread',
         messages: [
             {
                 content: 'User message',

@@ -1,13 +1,10 @@
 import { MessageStreamErrorType } from '@/api/Message';
-import type { ChatRequest } from '@/api/playgroundApi/thread';
+import type { ChatRequest, MessageChunk as ThreadMessageChunk } from '@/api/playgroundApi/thread';
 import type {
-    SchemaAddMessageChunk,
     SchemaErrorChunk,
     SchemaFlatMessage,
     SchemaModelResponseChunk,
     SchemaStartThreadChunk,
-    SchemaStreamEndChunk,
-    SchemaStreamStartChunk,
     SchemaThinkingChunk,
     SchemaThread,
     SchemaToolCall,
@@ -32,16 +29,9 @@ export type MessageChunk = Pick<SchemaFlatMessage, 'content'> & {
     message: SchemaFlatMessage['id'];
 };
 
-export type Chunk =
-    | SchemaErrorChunk
-    | SchemaModelResponseChunk
-    | SchemaThinkingChunk
-    | SchemaToolCallChunk
-    | SchemaStreamStartChunk
-    | SchemaStreamEndChunk
-    | SchemaStartThreadChunk
-    | SchemaAddMessageChunk;
+export type Chunk = ThreadMessageChunk;
 
+// TODO: Adjust this to just v5 types
 export type StreamingMessageResponse =
     | StreamingThread
     | MessageChunk
@@ -62,9 +52,15 @@ export const containsMessages = (message: StreamingMessageResponse): message is 
     return 'messages' in message;
 };
 
-export const isFirstMessage = (message: StreamingMessageResponse): message is StreamingThread => {
+export const isStartChunk = (message: StreamingMessageResponse) => {
+    return isChunk(message) && message.type === 'start';
+};
+
+export const isNewThreadChunk = (
+    message: StreamingMessageResponse
+): message is SchemaStartThreadChunk => {
     if (isChunk(message)) {
-        return message.type === 'start';
+        return message.type === 'startThread';
     }
 
     // back-compat for v4 messages

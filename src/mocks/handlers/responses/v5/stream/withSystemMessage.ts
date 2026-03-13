@@ -126,7 +126,7 @@ export const streamResponseWithSystemMessage: Array<Chunk> = [
     {
         id: newMessageWithSystemMessageId,
         message: newMessageWithSystemMessageId,
-        type: 'addMessage',
+        type: 'finalThread',
         messages: [
             {
                 content: 'System message',

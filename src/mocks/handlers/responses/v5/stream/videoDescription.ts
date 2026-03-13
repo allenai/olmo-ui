@@ -1,5 +1,5 @@
 // video description -- streaming
-import type { StreamingMessageResponse } from '@/contexts/stream-types';
+import type { Chunk } from '@/contexts/stream-types';
 
 import { VIDEO_DESCRIPTION_ROOT_ID, VIDEO_DESCRIPTION_VIDEO } from '../videoDescriptionResponse';
 
@@ -10,6 +10,8 @@ export const videoDescriptionStreamResponse = [
     },
     {
         id: VIDEO_DESCRIPTION_ROOT_ID,
+        message: VIDEO_DESCRIPTION_ROOT_ID,
+        type: 'startThread',
         messages: [
             {
                 children: ['msg_Q8A1U6J3U8'],
@@ -569,6 +571,8 @@ export const videoDescriptionStreamResponse = [
     },
     {
         id: VIDEO_DESCRIPTION_ROOT_ID,
+        message: VIDEO_DESCRIPTION_ROOT_ID,
+        type: 'finalThread',
         messages: [
             {
                 children: ['msg_Q8A1U6J3U8'],
@@ -662,4 +666,4 @@ export const videoDescriptionStreamResponse = [
         message: VIDEO_DESCRIPTION_ROOT_ID,
         type: 'end',
     },
-] satisfies StreamingMessageResponse[];
+] satisfies Chunk[];

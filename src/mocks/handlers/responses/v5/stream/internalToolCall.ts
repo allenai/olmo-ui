@@ -1,4 +1,4 @@
-import type { StreamingMessageResponse } from '@/contexts/stream-types';
+import type { Chunk } from '@/contexts/stream-types';
 
 import { INTERNAL_TOOL_CALLS_THREAD_ROOT_ID } from '../internalToolCallResponse';
 
@@ -9,6 +9,8 @@ export const internalToolCallsStreamResponse = [
     },
     {
         id: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
+        message: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
+        type: 'startThread',
         messages: [
             {
                 id: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
@@ -181,6 +183,8 @@ export const internalToolCallsStreamResponse = [
     },
     {
         id: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
+        message: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
+        type: 'addMessage',
         messages: [
             {
                 id: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
@@ -311,6 +315,8 @@ export const internalToolCallsStreamResponse = [
     },
     {
         id: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
+        message: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
+        type: 'finalThread',
         messages: [
             {
                 id: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
@@ -476,4 +482,4 @@ export const internalToolCallsStreamResponse = [
             },
         ],
     },
-] as const satisfies StreamingMessageResponse[];
+] as const satisfies Chunk[];

@@ -1,4 +1,4 @@
-import type { StreamingMessageResponse } from '@/contexts/stream-types';
+import type { Chunk } from '@/contexts/stream-types';
 
 import { THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID } from '../thinkingAndToolCallsResponse';
 
@@ -9,6 +9,8 @@ export const thinkingAndToolCallsStreamResponse = [
     },
     {
         id: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+        message: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+        type: 'startThread',
         messages: [
             {
                 id: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
@@ -1487,6 +1489,8 @@ export const thinkingAndToolCallsStreamResponse = [
     },
     {
         id: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+        message: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+        type: 'addMessage',
         messages: [
             {
                 id: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
@@ -1618,6 +1622,8 @@ export const thinkingAndToolCallsStreamResponse = [
     },
     {
         id: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+        message: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+        type: 'finalThread',
         messages: [
             {
                 id: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
@@ -1785,4 +1791,4 @@ export const thinkingAndToolCallsStreamResponse = [
         ],
     },
     { message: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID, type: 'end' },
-] as const satisfies StreamingMessageResponse[];
+] as const satisfies Chunk[];

@@ -1,5 +1,5 @@
 // Molmo2 Single Image pointing stream
-import type { StreamingMessageResponse } from '@/contexts/stream-types';
+import type { Chunk } from '@/contexts/stream-types';
 
 import { IMAGE_POINTING_ROOT_ID } from '../imagePointingMolmo2Response';
 
@@ -10,6 +10,8 @@ export const thinkingAndToolCallsStreamResponse = [
     },
     {
         id: IMAGE_POINTING_ROOT_ID,
+        message: IMAGE_POINTING_ROOT_ID,
+        type: 'startThread',
         messages: [
             {
                 children: ['msg_E7L3O7Z7W9'],
@@ -441,6 +443,8 @@ export const thinkingAndToolCallsStreamResponse = [
     },
     {
         id: IMAGE_POINTING_ROOT_ID,
+        message: IMAGE_POINTING_ROOT_ID,
+        type: 'finalThread',
         messages: [
             {
                 children: ['msg_E7L3O7Z7W9'],
@@ -535,4 +539,4 @@ export const thinkingAndToolCallsStreamResponse = [
         message: IMAGE_POINTING_ROOT_ID,
         type: 'end',
     },
-] as const satisfies StreamingMessageResponse[];
+] as const satisfies Chunk[];

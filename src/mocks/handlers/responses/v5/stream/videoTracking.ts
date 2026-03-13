@@ -1,5 +1,5 @@
 // video tracking streaming
-import type { StreamingMessageResponse } from '@/contexts/stream-types';
+import type { Chunk } from '@/contexts/stream-types';
 
 import { VIDEO_TRACKING_ROOT_ID, VIDEO_TRACKING_VIDEO } from '../videoTrackingResponse';
 
@@ -10,6 +10,8 @@ export const videoTrackingStreamResponse = [
     },
     {
         id: VIDEO_TRACKING_ROOT_ID,
+        message: VIDEO_TRACKING_ROOT_ID,
+        type: 'startThread',
         messages: [
             {
                 children: ['msg_H8T4Q3M3O0'],
@@ -1344,6 +1346,8 @@ export const videoTrackingStreamResponse = [
     },
     {
         id: VIDEO_TRACKING_ROOT_ID,
+        message: VIDEO_TRACKING_ROOT_ID,
+        type: 'finalThread',
         messages: [
             {
                 children: ['msg_H8T4Q3M3O0'],
@@ -1436,4 +1440,4 @@ export const videoTrackingStreamResponse = [
         message: VIDEO_TRACKING_ROOT_ID,
         type: 'end',
     },
-] satisfies StreamingMessageResponse[];
+] satisfies Chunk[];

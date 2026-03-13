@@ -1,5 +1,5 @@
 // video counting -- streaming
-import type { StreamingMessageResponse } from '@/contexts/stream-types';
+import type { Chunk } from '@/contexts/stream-types';
 
 import { VIDEO_COUNTING_ROOT_ID, VIDEO_COUNTING_VIDEO } from '../videoCountingResponse';
 
@@ -10,6 +10,8 @@ export const videoCountingStreamResponse = [
     },
     {
         id: VIDEO_COUNTING_ROOT_ID,
+        message: VIDEO_COUNTING_ROOT_ID,
+        type: 'startThread',
         messages: [
             {
                 children: ['msg_O0K4A4R7V0'],
@@ -824,6 +826,8 @@ export const videoCountingStreamResponse = [
     },
     {
         id: VIDEO_COUNTING_ROOT_ID,
+        message: VIDEO_COUNTING_ROOT_ID,
+        type: 'finalThread',
         messages: [
             {
                 children: ['msg_O0K4A4R7V0'],
@@ -916,4 +920,4 @@ export const videoCountingStreamResponse = [
         message: VIDEO_COUNTING_ROOT_ID,
         type: 'end',
     },
-] satisfies StreamingMessageResponse[];
+] satisfies Chunk[];

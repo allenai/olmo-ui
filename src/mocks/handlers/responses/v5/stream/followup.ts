@@ -102,7 +102,7 @@ export const fakeFollowupResponse = (parentId: string): Array<Chunk> => [
     {
         id: followupUserMessageId,
         message: followupUserMessageId,
-        type: 'addMessage',
+        type: 'finalThread',
         messages: [
             {
                 content: 'Second user message',

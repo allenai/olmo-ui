@@ -1,4 +1,4 @@
-import type { StreamingMessageResponse } from '@/contexts/stream-types';
+import type { Chunk, StreamingMessageResponse } from '@/contexts/stream-types';
 
 import { USER_TOOL_CALL_ID, USER_TOOL_CALLS_THREAD_ROOT_ID } from '../userToolCallsResponse';
 
@@ -323,6 +323,8 @@ export const userToolCallsStreamToolResponse = [
     // return the whole user message
     {
         id: 'msg_userToolCall-toolResult',
+        message: 'msg_userToolCall-toolResult',
+        type: 'startThread',
         messages: [
             {
                 id: 'msg_userToolCall-toolResult',
@@ -416,7 +418,7 @@ export const userToolCallsStreamToolResponse = [
         message: USER_TOOL_CALLS_RESPONSE_ID,
         type: 'end',
     },
-] as const satisfies StreamingMessageResponse[];
+] as const satisfies Chunk[];
 
 export const bogusToolCallsStreamErrorResponse = [
     {
@@ -425,6 +427,8 @@ export const bogusToolCallsStreamErrorResponse = [
     },
     {
         id: USER_TOOL_CALLS_THREAD_ROOT_ID,
+        message: USER_TOOL_CALLS_THREAD_ROOT_ID,
+        type: 'addMessage',
         messages: [
             {
                 id: USER_TOOL_CALLS_THREAD_ROOT_ID,
@@ -540,6 +544,8 @@ export const bogusToolCallsStreamErrorResponse = [
     // END user tool call chunks
     {
         id: USER_TOOL_CALLS_THREAD_ROOT_ID,
+        message: USER_TOOL_CALLS_THREAD_ROOT_ID,
+        type: 'finalThread',
         messages: [
             {
                 id: USER_TOOL_CALLS_THREAD_ROOT_ID,
@@ -654,4 +660,4 @@ export const bogusToolCallsStreamErrorResponse = [
         type: 'end',
         message: USER_TOOL_CALLS_THREAD_ROOT_ID,
     },
-] as const satisfies StreamingMessageResponse[];
+] as const satisfies Chunk[];

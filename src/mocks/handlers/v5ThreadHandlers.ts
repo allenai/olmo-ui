@@ -1,9 +1,9 @@
-import { delay, http, HttpResponse } from 'msw';
+import { delay, HttpResponse } from 'msw';
 
 import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { PaginationData } from '@/api/Schema';
-import type { Chunk, StreamingMessageResponse } from '@/contexts/stream-types';
+import type { StreamingMessageResponse } from '@/contexts/stream-types';
 
 import { formatStreamMessage } from '../mockUtils';
 import highlightStressTestMessage from './responses/highlightStressTestMessage';
@@ -243,7 +243,7 @@ const highlightStressTestResponse = {
 } satisfies Thread;
 
 // Get the last Thread from a mixed-type array
-const getLastThread = (messages: Array<Thread | MessageChunk | Chunk>): Thread => {
+const getLastThread = (messages: Array<Thread | MessageChunk>): Thread => {
     const threads = messages.filter((item): item is Thread => 'messages' in item);
     const lastThread = threads.at(-1);
     if (!lastThread) {
@@ -318,15 +318,13 @@ export const v5ThreadHandlers = [
     v5TypedHttp.get(`/v5/threads/`, ({ response }) => {
         return response(200).json(fakeGetAllThreadsResponse);
     }),
-    // TODO:
-    //
-    // UPDATE THIS TO v5 when streaming is impemented -- see weather we can use v5TypedHttp
-    http.post(`*/v4/threads/`, async ({ request }) => {
+    v5TypedHttp.post(`/v5/threads/chat`, async ({ request }) => {
         const formData = await request.formData();
 
         const content = formData.get('content');
 
         if (content === 'test-inappropriate') {
+            // @ts-expect-error - TODO: Type this right
             return HttpResponse.json(inappropriateContentErrorResponse, { status: 400 });
         }
 
@@ -405,6 +403,7 @@ export const v5ThreadHandlers = [
             },
         });
 
+        // @ts-expect-error - The OpenAPI schema doesn't note a streaming response
         return new HttpResponse(stream);
     }),
 
