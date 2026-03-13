@@ -1,16 +1,17 @@
-import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { Chunk } from '@/contexts/stream-types';
 
 export const MULTI_MODAL_USER_MESSAGE_ID = 'multi-modal-count';
 const MULTI_MODAL_MESSAGE_ID = 'multi-modal-count-response';
-export const fakeMultiModalStreamMessages: Array<Thread | MessageChunk | Chunk> = [
+export const fakeMultiModalStreamMessages: Array<Chunk> = [
     {
         message: MULTI_MODAL_USER_MESSAGE_ID,
         type: 'start',
     },
     {
         id: MULTI_MODAL_USER_MESSAGE_ID,
+        message: MULTI_MODAL_USER_MESSAGE_ID,
+        type: 'addMessage',
         messages: [
             {
                 content: 'multimodaltest: count the boats',
@@ -93,6 +94,8 @@ export const fakeMultiModalStreamMessages: Array<Thread | MessageChunk | Chunk> 
     },
     {
         id: MULTI_MODAL_USER_MESSAGE_ID,
+        message: MULTI_MODAL_USER_MESSAGE_ID,
+        type: 'addMessage',
         messages: [
             {
                 content: 'multimodaltest: count the boats',

@@ -1,4 +1,3 @@
-import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { Chunk } from '@/contexts/stream-types';
 
@@ -7,13 +6,15 @@ import { Chunk } from '@/contexts/stream-types';
 
 export const newMessageId = 'msg_A8E5H1X2O4';
 export const LOREM_IPSUM_MESSAGE_ID = 'msg_V6Y0U4H4O9';
-export const fakeNewThreadMessages: Array<Thread | MessageChunk | Chunk> = [
+export const fakeNewThreadMessages: Array<Chunk> = [
     {
         message: newMessageId,
         type: 'start',
     },
     {
         id: newMessageId,
+        message: newMessageId,
+        type: 'addMessage',
         messages: [
             {
                 content: 'User message',
@@ -99,6 +100,8 @@ export const fakeNewThreadMessages: Array<Thread | MessageChunk | Chunk> = [
     },
     {
         id: newMessageId,
+        message: newMessageId,
+        type: 'addMessage',
         messages: [
             {
                 content: 'User message',
