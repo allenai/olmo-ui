@@ -64,7 +64,7 @@ export const containsMessages = (message: StreamingMessageResponse): message is 
 
 export const isFirstMessage = (message: StreamingMessageResponse): message is StreamingThread => {
     if (isChunk(message)) {
-        return message.type === 'startThread';
+        return message.type === 'start';
     }
 
     // back-compat for v4 messages
