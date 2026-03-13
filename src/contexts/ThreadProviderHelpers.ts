@@ -136,10 +136,10 @@ export const getInitialInferenceParameters = (
     promptTemplate?: SchemaPromptTemplateResponse
 ): MessageInferenceParameters => {
     const constraints = getInferenceConstraints(model);
-    const lastLLMMessage = thread?.messages.filter((msg) => msg.role === Role.LLM).at(-1);
+    const lastUserMessage = thread?.messages.findLast((msg) => msg.role === Role.User);
     const inferenceParams: MessageInferenceParameters = {
         temperature: clipToMinMax(
-            lastLLMMessage?.opts.temperature ??
+            lastUserMessage?.opts.temperature ??
                 promptTemplate?.opts.temperature ??
                 model?.temperatureDefault ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.temperature,
@@ -147,7 +147,7 @@ export const getInitialInferenceParameters = (
             constraints.temperature.maxValue
         ),
         topP: clipToMinMax(
-            lastLLMMessage?.opts.topP ??
+            lastUserMessage?.opts.topP ??
                 promptTemplate?.opts.topP ??
                 model?.topPDefault ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.topP,
@@ -155,7 +155,7 @@ export const getInitialInferenceParameters = (
             constraints.topP.maxValue
         ),
         maxTokens: clipToMinMax(
-            lastLLMMessage?.opts.maxTokens ??
+            lastUserMessage?.opts.maxTokens ??
                 promptTemplate?.opts.maxTokens ??
                 model?.maxTokensDefault ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.maxTokens,
@@ -163,15 +163,15 @@ export const getInitialInferenceParameters = (
             constraints.maxTokens.maxValue
         ),
         n:
-            lastLLMMessage?.opts.n ??
+            lastUserMessage?.opts.n ??
             promptTemplate?.opts.n ??
             DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.n,
         logprobs:
-            lastLLMMessage?.opts.logprobs ??
+            lastUserMessage?.opts.logprobs ??
             promptTemplate?.opts.logprobs ??
             DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.logprobs,
         stop:
-            lastLLMMessage?.opts.stop ??
+            lastUserMessage?.opts.stop ??
             promptTemplate?.opts.stop ??
             DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.stop,
     };
