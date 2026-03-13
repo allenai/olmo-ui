@@ -19,16 +19,6 @@ export interface StreamingThread extends SchemaThread {
     isUpdatingMessageContent?: boolean;
 }
 
-// export interface StreamMessageRequest {
-//     content: string;
-//     captchaToken?: string | null;
-//     parent?: string;
-//     files?: FileList | null;
-//     role?: ChatRequest['role'];
-//     toolCallId?: SchemaToolCall['toolCallId'];
-//     inputParts?: ChatRequest['inputParts'];
-// }
-//
 export type StreamMessageRequest = Pick<
     ChatRequest,
     'content' | 'captchaToken' | 'parent' | 'inputParts'

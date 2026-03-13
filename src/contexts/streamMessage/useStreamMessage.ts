@@ -24,7 +24,7 @@ export interface ThreadStreamMutationVariables {
     model: Model;
     thread?: Thread;
     inferenceOpts: MessageInferenceParameters;
-    toolDefinitions?: string;
+    toolDefinitions?: ChatRequest['toolDefinitions'];
     selectedTools: string[];
     isToolCallingEnabled: boolean;
     bypassSafetyCheck: boolean;
@@ -112,6 +112,7 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
                 bodySerializer: (body) => {
                     const formData = new FormData();
                     for (const property in body) {
+                        // Using the API's request directly here since it differs a little from how we map JSON in the UI types
                         const value = body[property as keyof SchemaChatRequest];
                         mapValueToFormData(formData, property, value);
                     }

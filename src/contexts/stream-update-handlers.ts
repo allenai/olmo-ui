@@ -1,8 +1,8 @@
 import { type Draft, produce } from 'immer';
 
-import type { FlatMessage } from '@/api/playgroundApi/thread';
 import type {
     SchemaErrorChunk,
+    SchemaFlatMessage as FlatMessage,
     SchemaModelResponseChunk,
     SchemaThinkingChunk,
     SchemaToolCall,
