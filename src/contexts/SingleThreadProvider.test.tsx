@@ -132,7 +132,7 @@ describe('SingleThreadProvider', () => {
                         id: 'msg-1',
                         role: 'user',
                         content: 'Hello',
-                        opts: {},
+                        opts: { temperature: 0.5, topP: 0.8 },
                     }),
                     createMockMessage({
                         id: 'msg-2',
@@ -144,7 +144,11 @@ describe('SingleThreadProvider', () => {
                         id: 'msg-3',
                         role: 'user',
                         content: 'Follow up',
-                        opts: {},
+                        opts: {
+                            temperature: 0.66,
+                            topP: 0.9,
+                            maxTokens: 1024,
+                        },
                     }),
                     createMockMessage({
                         id: 'msg-4',
