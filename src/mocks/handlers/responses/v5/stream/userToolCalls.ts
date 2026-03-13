@@ -428,7 +428,7 @@ export const bogusToolCallsStreamErrorResponse = [
     {
         id: USER_TOOL_CALLS_THREAD_ROOT_ID,
         message: USER_TOOL_CALLS_THREAD_ROOT_ID,
-        type: 'addMessage',
+        type: 'startThread',
         messages: [
             {
                 id: USER_TOOL_CALLS_THREAD_ROOT_ID,
