@@ -2,6 +2,7 @@ import type { Chunk } from '@/contexts/stream-types';
 
 import { INTERNAL_TOOL_CALLS_THREAD_ROOT_ID } from '../internalToolCallResponse';
 
+const RESPONSE_MESSAGE_ID = 'msg_P7C1R5N8G6';
 export const internalToolCallsStreamResponse = [
     {
         message: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
@@ -32,7 +33,7 @@ export const internalToolCallsStreamResponse = [
                 deleted: null,
                 parent: null,
                 template: null,
-                children: ['msg_P7C1R5N8G6'],
+                children: [RESPONSE_MESSAGE_ID],
                 completion: null,
                 final: false,
                 original: null,
@@ -49,8 +50,15 @@ export const internalToolCallsStreamResponse = [
                 isLimitReached: false,
                 isOlderThan30Days: false,
             },
+        ],
+    },
+    {
+        message: RESPONSE_MESSAGE_ID,
+        id: RESPONSE_MESSAGE_ID,
+        type: 'addMessage',
+        messages: [
             {
-                id: 'msg_P7C1R5N8G6',
+                id: RESPONSE_MESSAGE_ID,
                 content: '',
                 creator: 'google-oauth2|106113864953374894702',
                 role: 'assistant',
@@ -89,7 +97,7 @@ export const internalToolCallsStreamResponse = [
         ],
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
         toolName: 'combine_number_and_unit',
         args: null,
@@ -97,7 +105,7 @@ export const internalToolCallsStreamResponse = [
         toolSource: 'internal',
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
         toolName: '',
         args: '{"number": 10',
@@ -105,7 +113,7 @@ export const internalToolCallsStreamResponse = [
         toolSource: 'internal',
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
         toolName: '',
         args: '0',
@@ -113,7 +121,7 @@ export const internalToolCallsStreamResponse = [
         toolSource: 'internal',
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
         toolName: '',
         args: ',',
@@ -121,7 +129,7 @@ export const internalToolCallsStreamResponse = [
         toolSource: 'internal',
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
         toolName: '',
         args: ' "',
@@ -129,7 +137,7 @@ export const internalToolCallsStreamResponse = [
         toolSource: 'internal',
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
         toolName: '',
         args: 'unit',
@@ -137,7 +145,7 @@ export const internalToolCallsStreamResponse = [
         toolSource: 'internal',
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
         toolName: '',
         args: '":',
@@ -145,7 +153,7 @@ export const internalToolCallsStreamResponse = [
         toolSource: 'internal',
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
         toolName: '',
         args: ' "',
@@ -153,7 +161,7 @@ export const internalToolCallsStreamResponse = [
         toolSource: 'internal',
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
         toolName: '',
         args: 'Ki',
@@ -161,7 +169,7 @@ export const internalToolCallsStreamResponse = [
         toolSource: 'internal',
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
         toolName: '',
         args: 'B',
@@ -169,7 +177,7 @@ export const internalToolCallsStreamResponse = [
         toolSource: 'internal',
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
         toolName: '',
         args: '"}',
@@ -177,7 +185,7 @@ export const internalToolCallsStreamResponse = [
         toolSource: 'internal',
     },
     {
-        message: 'msg_P7C1R5N8G6',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
         content: '',
     },
@@ -206,7 +214,7 @@ export const internalToolCallsStreamResponse = [
                 deleted: null,
                 parent: null,
                 template: null,
-                children: ['msg_P7C1R5N8G6'],
+                children: [RESPONSE_MESSAGE_ID],
                 completion: null,
                 final: true,
                 original: null,
@@ -224,7 +232,7 @@ export const internalToolCallsStreamResponse = [
                 isOlderThan30Days: false,
             },
             {
-                id: 'msg_P7C1R5N8G6',
+                id: RESPONSE_MESSAGE_ID,
                 content: '',
                 creator: 'google-oauth2|106113864953374894702',
                 role: 'assistant',
@@ -285,7 +293,7 @@ export const internalToolCallsStreamResponse = [
                 modelId: 'qwen3-openai',
                 modelHost: 'modal_openai',
                 deleted: null,
-                parent: 'msg_P7C1R5N8G6',
+                parent: RESPONSE_MESSAGE_ID,
                 template: null,
                 children: null,
                 completion: null,
@@ -338,7 +346,7 @@ export const internalToolCallsStreamResponse = [
                 deleted: null,
                 parent: null,
                 template: null,
-                children: ['msg_P7C1R5N8G6'],
+                children: [RESPONSE_MESSAGE_ID],
                 completion: null,
                 final: true,
                 original: null,
@@ -356,7 +364,7 @@ export const internalToolCallsStreamResponse = [
                 isOlderThan30Days: false,
             },
             {
-                id: 'msg_P7C1R5N8G6',
+                id: RESPONSE_MESSAGE_ID,
                 content: '',
                 creator: 'google-oauth2|106113864953374894702',
                 role: 'assistant',
@@ -417,7 +425,7 @@ export const internalToolCallsStreamResponse = [
                 modelId: 'qwen3-openai',
                 modelHost: 'modal_openai',
                 deleted: null,
-                parent: 'msg_P7C1R5N8G6',
+                parent: RESPONSE_MESSAGE_ID,
                 template: null,
                 children: ['msg_Y1P2K4J6Q8'],
                 completion: null,

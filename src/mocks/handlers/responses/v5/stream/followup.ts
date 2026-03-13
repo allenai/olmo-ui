@@ -38,6 +38,13 @@ export const fakeFollowupResponse = (parentId: string): Array<Chunk> => [
                 modelHost: '',
                 modelId: '',
             },
+        ],
+    },
+    {
+        message: followupLLMMessageId,
+        id: followupLLMMessageId,
+        type: 'addMessage',
+        messages: [
             {
                 id: followupLLMMessageId,
                 content: '',

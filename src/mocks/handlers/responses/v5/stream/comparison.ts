@@ -35,6 +35,13 @@ export const fakeCompareNewThreadMessages: Array<Chunk> = [
                 modelHost: 'inferd',
                 modelId: 'tulu2',
             },
+        ],
+    },
+    {
+        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
+        id: COMPARE_LOREM_IPSUM_MESSAGE_ID,
+        type: 'addMessage',
+        messages: [
             {
                 id: COMPARE_LOREM_IPSUM_MESSAGE_ID,
                 content: '',

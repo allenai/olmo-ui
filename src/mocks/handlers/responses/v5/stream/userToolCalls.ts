@@ -4,6 +4,7 @@ import { USER_TOOL_CALL_ID, USER_TOOL_CALLS_THREAD_ROOT_ID } from '../userToolCa
 
 const USER_TOOL_CALLS_RESPONSE_ID = 'msg_';
 
+const RESPONSE_MESSAGE_ID = 'msg_userToolCall-Assistant-ToolCall';
 export const userToolCallsStreamResponse = [
     {
         message: USER_TOOL_CALLS_THREAD_ROOT_ID,
@@ -47,7 +48,7 @@ export const userToolCallsStreamResponse = [
                 deleted: null,
                 parent: null,
                 template: null,
-                children: ['msg_userToolCall-Assistant-ToolCall'],
+                children: [RESPONSE_MESSAGE_ID],
                 completion: null,
                 final: false,
                 original: null,
@@ -63,8 +64,15 @@ export const userToolCallsStreamResponse = [
                 isLimitReached: false,
                 isOlderThan30Days: false,
             },
+        ],
+    },
+    {
+        message: RESPONSE_MESSAGE_ID,
+        id: RESPONSE_MESSAGE_ID,
+        type: 'addMessage',
+        messages: [
             {
-                id: 'msg_userToolCall-Assistant-ToolCall',
+                id: RESPONSE_MESSAGE_ID,
                 content: '',
                 creator: 'google-oauth2|106113864953374894702',
                 role: 'assistant',
@@ -104,19 +112,19 @@ export const userToolCallsStreamResponse = [
     },
     // needed?
     // {
-    //     message: 'msg_userToolCall-Assistant-ToolCall',
+    //     message: RESPONSE_MESSAGE_ID,
     //     type: 'modelResponse',
     //     content: '',
     // },
     // {
-    //     message: 'msg_userToolCall-Assistant-ToolCall',
+    //     message: RESPONSE_MESSAGE_ID,
     //     type: 'modelResponse',
     //     content: '\n\n',
     // },
     //
     // Begin user tool call chunks
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: USER_TOOL_CALL_ID,
         toolName: 'getWeather',
         args: null,
@@ -124,7 +132,7 @@ export const userToolCallsStreamResponse = [
         toolSource: 'user_defined',
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: USER_TOOL_CALL_ID,
         toolName: '',
         args: '{"city": S',
@@ -132,7 +140,7 @@ export const userToolCallsStreamResponse = [
         toolSource: 'user_defined',
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: USER_TOOL_CALL_ID,
         toolName: '',
         args: 'e',
@@ -140,7 +148,7 @@ export const userToolCallsStreamResponse = [
         toolSource: 'user_defined',
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: USER_TOOL_CALL_ID,
         toolName: '',
         args: 'a',
@@ -148,7 +156,7 @@ export const userToolCallsStreamResponse = [
         toolSource: 'user_defined',
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: USER_TOOL_CALL_ID,
         toolName: '',
         args: 't',
@@ -156,7 +164,7 @@ export const userToolCallsStreamResponse = [
         toolSource: 'user_defined',
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: USER_TOOL_CALL_ID,
         toolName: '',
         args: 't',
@@ -164,7 +172,7 @@ export const userToolCallsStreamResponse = [
         toolSource: 'user_defined',
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: USER_TOOL_CALL_ID,
         toolName: '',
         args: 'l',
@@ -172,7 +180,7 @@ export const userToolCallsStreamResponse = [
         toolSource: 'user_defined',
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: USER_TOOL_CALL_ID,
         toolName: '',
         args: 'e',
@@ -180,7 +188,7 @@ export const userToolCallsStreamResponse = [
         toolSource: 'user_defined',
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: USER_TOOL_CALL_ID,
         toolName: '',
         args: '"',
@@ -188,7 +196,7 @@ export const userToolCallsStreamResponse = [
         toolSource: 'user_defined',
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: USER_TOOL_CALL_ID,
         toolName: '',
         args: '',
@@ -196,7 +204,7 @@ export const userToolCallsStreamResponse = [
         toolSource: 'user_defined',
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         toolCallId: USER_TOOL_CALL_ID,
         toolName: '',
         args: '}',
@@ -227,7 +235,7 @@ export const userToolCallsStreamResponse = [
                 deleted: null,
                 parent: null,
                 template: null,
-                children: ['msg_userToolCall-Assistant-ToolCall'],
+                children: [RESPONSE_MESSAGE_ID],
                 completion: null,
                 final: true,
                 original: null,
@@ -260,7 +268,7 @@ export const userToolCallsStreamResponse = [
                 isOlderThan30Days: false,
             },
             {
-                id: 'msg_userToolCall-Assistant-ToolCall',
+                id: RESPONSE_MESSAGE_ID,
                 content: '',
                 creator: 'google-oauth2|106113864953374894702',
                 role: 'assistant',
@@ -345,7 +353,7 @@ export const userToolCallsStreamToolResponse = [
                 modelHost: 'modal_openai',
                 deleted: null,
                 // double check
-                parent: 'msg_userToolCall-Assistant-ToolCall',
+                parent: RESPONSE_MESSAGE_ID,
                 template: null,
                 children: ['msg_userToolCall-Assistant-Response'],
                 completion: null,
@@ -465,7 +473,7 @@ export const bogusToolCallsStreamErrorResponse = [
                 deleted: null,
                 parent: null,
                 template: null,
-                children: ['msg_userToolCall-Assistant-ToolCall'],
+                children: [RESPONSE_MESSAGE_ID],
                 completion: null,
                 final: false,
                 original: null,
@@ -485,8 +493,15 @@ export const bogusToolCallsStreamErrorResponse = [
                 isLimitReached: false,
                 isOlderThan30Days: false,
             },
+        ],
+    },
+    {
+        message: USER_TOOL_CALLS_THREAD_ROOT_ID,
+        id: USER_TOOL_CALLS_THREAD_ROOT_ID,
+        type: 'addMessage',
+        messages: [
             {
-                id: 'msg_userToolCall-Assistant-ToolCall',
+                id: RESPONSE_MESSAGE_ID,
                 content: '',
                 creator: 'google-oauth2|106113864953374894702',
                 role: 'assistant',
@@ -529,12 +544,12 @@ export const bogusToolCallsStreamErrorResponse = [
         ],
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         content: '',
         type: 'modelResponse',
     },
     {
-        message: 'msg_userToolCall-Assistant-ToolCall',
+        message: RESPONSE_MESSAGE_ID,
         errorCode: 'toolCallError',
         errorDescription:
             "Could not find tool 'get_weather_in_seattle'. The model tried to call a tool that is not defined.",
@@ -567,7 +582,7 @@ export const bogusToolCallsStreamErrorResponse = [
                 deleted: null,
                 parent: null,
                 template: null,
-                children: ['msg_userToolCall-Assistant-ToolCall'],
+                children: [RESPONSE_MESSAGE_ID],
                 completion: null,
                 final: true,
                 original: null,
@@ -604,7 +619,7 @@ export const bogusToolCallsStreamErrorResponse = [
                 isOlderThan30Days: false,
             },
             {
-                id: 'msg_userToolCall-Assistant-ToolCall',
+                id: RESPONSE_MESSAGE_ID,
                 content: '',
                 creator: 'google-oauth2|106113864953374894702',
                 role: 'assistant',

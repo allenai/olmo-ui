@@ -38,6 +38,13 @@ export const fakeMultiModalStreamMessages: Array<Chunk> = [
                 modelHost: '',
                 modelId: '',
             },
+        ],
+    },
+    {
+        message: MULTI_MODAL_MESSAGE_ID,
+        id: MULTI_MODAL_MESSAGE_ID,
+        type: 'addMessage',
+        messages: [
             {
                 id: MULTI_MODAL_MESSAGE_ID,
                 content: '',
