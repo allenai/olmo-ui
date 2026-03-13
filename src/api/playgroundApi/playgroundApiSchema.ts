@@ -488,6 +488,20 @@ export type paths = {
 export type webhooks = Record<string, never>;
 export type components = {
     schemas: {
+        /** AddMessageChunk */
+        AddMessageChunk: {
+            /** Id */
+            id: string;
+            /** Message */
+            message: string;
+            /** Messages */
+            messages: components['schemas']['FlatMessage'][];
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'addMessage';
+        };
         /** AdminModelResponse */
         AdminModelResponse: components['schemas']['ResponseModel'][];
         /** AgentChatRequest */
@@ -542,11 +556,11 @@ export type components = {
         AuthenticatedClient: {
             /** Client */
             client: string;
-            /** Hasaccepteddatacollection */
+            /** Has Accepted Data Collection */
             hasAcceptedDataCollection: boolean;
-            /** Hasacceptedmediacollection */
+            /** Has Accepted Media Collection */
             hasAcceptedMediaCollection: boolean;
-            /** Hasacceptedtermsandconditions */
+            /** Has Accepted Terms and Conditions */
             hasAcceptedTermsAndConditions: boolean;
             /**
              * Id
@@ -599,9 +613,11 @@ export type components = {
              * @default null
              */
             captchaToken?: string | null;
-            /** Content */
-            content: string;
-
+            /**
+             * Content
+             * @default null
+             */
+            content?: string | null;
             /**
              * Enabletoolcalling
              * @default false
@@ -623,9 +639,11 @@ export type components = {
              * @default null
              */
             host?: string | null;
-            /** Inputparts */
-            inputParts?: components['schemas']['Molmo2PointPart'][];
-
+            /**
+             * Inputparts
+             * @default null
+             */
+            inputParts?: string[] | null;
             /**
              * Logprobs
              * @default null
@@ -999,7 +1017,7 @@ export type components = {
          * ErrorCode
          * @enum {string}
          */
-        ErrorCode: 'toolCallError';
+        ErrorCode: 'toolCallError' | 'otherError';
         /**
          * ErrorSeverity
          * @enum {string}
@@ -1010,6 +1028,20 @@ export type components = {
          * @enum {string}
          */
         FileRequiredToPromptOption: 'first_message' | 'all_messages' | 'no_requirement';
+        /** FinalThreadChunk */
+        FinalThreadChunk: {
+            /** Id */
+            id: string;
+            /** Message */
+            message: string;
+            /** Messages */
+            messages: components['schemas']['FlatMessage'][];
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'finalThread';
+        };
         /**
          * FinishReason
          * @enum {string}
@@ -1105,7 +1137,7 @@ export type components = {
             /** Isolderthan30Days */
             readonly isOlderThan30Days: boolean;
             /** Labels */
-            labels?: components['schemas']['LabelResponse'][];
+            labels?: components['schemas']['Label'][];
             /** Modelhost */
             modelHost: string;
             /** Modelid */
@@ -1255,8 +1287,8 @@ export type components = {
              */
             topP?: number | null;
         };
-        /** LabelResponse */
-        LabelResponse: {
+        /** Label */
+        Label: {
             /**
              * Comment
              * @default null
@@ -1923,6 +1955,20 @@ export type components = {
          * @enum {string}
          */
         SortDirection: 'ASC' | 'DESC';
+        /** StartThreadChunk */
+        StartThreadChunk: {
+            /** Id */
+            id: string;
+            /** Message */
+            message: string;
+            /** Messages */
+            messages: components['schemas']['FlatMessage'][];
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'startThread';
+        };
         /** StreamEndChunk */
         StreamEndChunk: {
             /** Message */
@@ -2421,6 +2467,7 @@ export type components = {
     headers: never;
     pathItems: never;
 };
+export type SchemaAddMessageChunk = components['schemas']['AddMessageChunk'];
 export type SchemaAdminModelResponse = components['schemas']['AdminModelResponse'];
 export type SchemaAgentChatRequest = components['schemas']['AgentChatRequest'];
 export type SchemaAttributionDocumentSnippet = components['schemas']['AttributionDocumentSnippet'];
@@ -2438,6 +2485,7 @@ export type SchemaErrorChunk = components['schemas']['ErrorChunk'];
 export type SchemaErrorCode = components['schemas']['ErrorCode'];
 export type SchemaErrorSeverity = components['schemas']['ErrorSeverity'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
+export type SchemaFinalThreadChunk = components['schemas']['FinalThreadChunk'];
 export type SchemaFinishReason = components['schemas']['FinishReason'];
 export type SchemaFlatMessage = components['schemas']['FlatMessage'];
 export type SchemaGetAttributionRequest = components['schemas']['GetAttributionRequest'];
@@ -2446,7 +2494,7 @@ export type SchemaGetThreadsResponse = components['schemas']['GetThreadsResponse
 export type SchemaGetTranscriptionRequest = components['schemas']['GetTranscriptionRequest'];
 export type SchemaGetTranscriptionResponse = components['schemas']['GetTranscriptionResponse'];
 export type SchemaInferenceOptionsResponse = components['schemas']['InferenceOptionsResponse'];
-export type SchemaLabelResponse = components['schemas']['LabelResponse'];
+export type SchemaLabel = components['schemas']['Label'];
 export type SchemaListMeta = components['schemas']['ListMeta'];
 export type SchemaModel = components['schemas']['Model'];
 export type SchemaModelAvailability = components['schemas']['ModelAvailability'];
@@ -2474,6 +2522,7 @@ export type SchemaRootUpdateModelConfigRequest =
     components['schemas']['RootUpdateModelConfigRequest'];
 export type SchemaSort = components['schemas']['Sort'];
 export type SchemaSortDirection = components['schemas']['SortDirection'];
+export type SchemaStartThreadChunk = components['schemas']['StartThreadChunk'];
 export type SchemaStreamEndChunk = components['schemas']['StreamEndChunk'];
 export type SchemaStreamStartChunk = components['schemas']['StreamStartChunk'];
 export type SchemaTextOnlyResponseModel = components['schemas']['TextOnlyResponseModel'];
@@ -2513,7 +2562,10 @@ export const createMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
 export const createTextOnlyModelConfigRequestPromptTypeValues: ReadonlyArray<
     components['schemas']['CreateTextOnlyModelConfigRequest']['promptType']
 > = ['text_only'];
-export const errorCodeValues: ReadonlyArray<components['schemas']['ErrorCode']> = ['toolCallError'];
+export const errorCodeValues: ReadonlyArray<components['schemas']['ErrorCode']> = [
+    'toolCallError',
+    'otherError',
+];
 export const errorSeverityValues: ReadonlyArray<components['schemas']['ErrorSeverity']> = [
     'error',
     'warning',
