@@ -3,7 +3,7 @@ import { Player, PlayerRef } from '@remotion/player';
 import { useRef, useState } from 'react';
 import { AbsoluteFill, Html5Video, OffthreadVideo } from 'remotion';
 
-import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { Controls, ControlsGroup, SplitControls } from '../controls/Controls';

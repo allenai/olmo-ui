@@ -21,7 +21,7 @@ import {
     SchemaPromptTemplateResponse,
     SchemaToolCall,
 } from '@/api/playgroundApi/playgroundApiSchema';
-import type { SchemaChatRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
+import type { ChatRequest, SchemaInputParts } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { VideoPointingInput } from '@/components/video/pointing/VideoPointing';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
@@ -49,9 +49,9 @@ export interface QueryFormValues {
     files?: FileList | null;
     // This isn't part of the form data explicitly, but is added in the submit handler
     captchaToken?: string | null;
-    role?: SchemaChatRequest['role'];
+    role?: ChatRequest['role'];
     toolCallId?: SchemaToolCall['toolCallId'];
-    inputParts?: SchemaChatRequest['inputParts'];
+    inputParts?: SchemaInputParts;
 }
 
 interface QueryFormControllerProps {
@@ -344,7 +344,7 @@ export const QueryFormController = ({
                                                     ? getDataUrl(files[0])
                                                     : null
                                             }
-                                            userPoint={value ? value[0] : null}
+                                            userPoint={value?.[0] ?? null}
                                             setUserPoint={(point) => {
                                                 onChange(point ? [point] : []);
                                             }}

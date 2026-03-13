@@ -1,7 +1,7 @@
 import { MessageStreamErrorType } from '@/api/Message';
+import type { ChatRequest } from '@/api/playgroundApi/thread';
 import type {
     SchemaAddMessageChunk,
-    SchemaChatRequest,
     SchemaErrorChunk,
     SchemaFlatMessage,
     SchemaModelResponseChunk,
@@ -13,22 +13,30 @@ import type {
     SchemaToolCall,
     SchemaToolCallChunk,
 } from '@/api/playgroundApi/v5playgroundApiSchema';
-
 // Thread plus streaming state
 export interface StreamingThread extends SchemaThread {
     streamingMessageId?: string;
     isUpdatingMessageContent?: boolean;
 }
 
-export interface StreamMessageRequest {
-    content: string;
-    captchaToken?: string | null;
-    parent?: string;
+// export interface StreamMessageRequest {
+//     content: string;
+//     captchaToken?: string | null;
+//     parent?: string;
+//     files?: FileList | null;
+//     role?: ChatRequest['role'];
+//     toolCallId?: SchemaToolCall['toolCallId'];
+//     inputParts?: ChatRequest['inputParts'];
+// }
+//
+export type StreamMessageRequest = Pick<
+    ChatRequest,
+    'content' | 'captchaToken' | 'parent' | 'inputParts'
+> & {
+    role?: ChatRequest['role'];
     files?: FileList | null;
-    role?: SchemaChatRequest['role'];
     toolCallId?: SchemaToolCall['toolCallId'];
-    inputParts?: SchemaChatRequest['inputParts'];
-}
+};
 
 export type MessageChunk = Pick<SchemaFlatMessage, 'content'> & {
     message: SchemaFlatMessage['id'];
