@@ -9,6 +9,7 @@ import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 
 import type { StreamingMessageResponse } from '../stream-types';
 import type { StreamCallbacks } from './streamMessageUtils';
+import { SchemaHttpValidationError, SchemaProblem } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 export const useStreamTracking = (
     abortControllersRef: MutableRefObject<Map<string, AbortController>>,
@@ -43,17 +44,14 @@ export const useStreamTracking = (
         [callbacks]
     );
 
-    const handleErrors = (messageError: unknown, response: Response): void => {
-        // @ts-expect-error Our API endpoints aren't properly typed with error responses
-        const resultError = messageError?.error as unknown;
-        if (error.isErrorDetailsPayload(resultError) && resultError.code === 400) {
-            // It's a validation error from our API
-
-            if (
-                error.isValidationErrorPayload(resultError) &&
-                resultError.validation_errors.length > 0
-            ) {
-                const captchaTokenValidationErrors = resultError.validation_errors.filter((error) =>
+    const handleErrors = (
+        error: SchemaProblem | SchemaHttpValidationError,
+        response: Response
+    ): void => {
+        // `HTTPValidationError`
+        if ('errors' in error) {
+            if (error.errors.length > 0) {
+                const captchaTokenValidationErrors = error.errors.filter((error) =>
                     error.loc.some((location) => location === 'captchaToken')
                 );
 
@@ -63,22 +61,23 @@ export const useStreamTracking = (
                         return acc;
                     }, new Set<string>());
 
-                    analyticsClient.trackCaptchaError(Array.from(captchaErrorTypes.values()));
+                    analyticsClient.trackCaptchaError(Array.from(captchaErrorTypes));
                 }
 
-                throw new StreamValidationError(
-                    resultError.code,
-                    resultError.validation_errors.map((err) => {
-                        if (err.loc.length > 0) {
-                            return `${err.loc.join(', ')}: ${err.msg}`;
-                        }
-
-                        return err.msg;
-                    })
-                );
+                throw new StreamValidationError(error);
             }
 
-            throw new StreamBadRequestError(resultError.code, resultError.message);
+            throw new StreamBadRequestError(error.title, { status: error.status });
+        }
+
+        // FastAPI `Problem`
+        if ('detail' in error) {
+            const description = [error.title, error.detail].filter(Boolean).join(': ')
+
+            throw new StreamBadRequestError(description, {
+                cause: error,
+                status: error.status,
+            });
         }
 
         // This isn't a known error, throw something
