@@ -46,7 +46,7 @@ export const isInappropriateFormError = (error: unknown): boolean => {
             return true;
         }
 
-        return error.description != null && error.description in INAPPROPRIATE_FORM_ERROR_CONFIGS;
+        return error.type in INAPPROPRIATE_FORM_ERROR_CONFIGS;
     }
 
     return false;
@@ -69,7 +69,7 @@ export const handleFormSubmitException = <T extends { content: string }>(
 
         const config = e.description
             ? INAPPROPRIATE_FORM_ERROR_CONFIGS[
-                  e.description as keyof typeof INAPPROPRIATE_FORM_ERROR_CONFIGS
+                  e.type as keyof typeof INAPPROPRIATE_FORM_ERROR_CONFIGS
               ]
             : undefined;
 

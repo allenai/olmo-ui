@@ -75,14 +75,14 @@ export const useStreamTracking = (
                 throw new StreamValidationError(error);
             }
 
-            throw new StreamBadRequestError(error.title, { status: error.status });
+            throw new StreamBadRequestError(error.title, error.type, { status: error.status });
         }
 
         // FastAPI `Problem`
         if ('detail' in error) {
             const description = [error.title, error.detail].filter(Boolean).join(': ');
 
-            throw new StreamBadRequestError(description, {
+            throw new StreamBadRequestError(description, error.type, {
                 cause: error,
                 status: error.status,
             });
