@@ -1,18 +1,25 @@
 import React, { createContext, useEffect, useRef } from 'react';
 
+import type { SchemaStartThreadChunk } from '@/api/playgroundApi/v5playgroundApiSchema';
+
 import { StreamingMessageResponse } from './stream-types';
 import { ensureContext } from './util';
 
 // Callback types for each event
-type OnNewUserMessageCallback = (threadViewId: string) => void;
-type OnFirstMessageCallback = (threadViewId: string, message: StreamingMessageResponse) => void;
-type OnCompleteStreamCallback = (threadViewId: string, message?: StreamingMessageResponse) => void;
-type OnErrorCallback = (threadViewId: string, error: unknown) => void;
+export type OnStreamStartCallback = (threadViewId: string) => void;
+export type OnNewUserMessageCallback = (threadViewId: string) => void;
+export type OnNewThreadCallback = (threadViewId: string, message: SchemaStartThreadChunk) => void;
+export type OnCompleteStreamCallback = (
+    threadViewId: string,
+    message?: StreamingMessageResponse
+) => void;
+export type OnErrorCallback = (threadViewId: string, error: unknown) => void;
 
 // Event name to callback type mapping
-interface StreamEventMap {
+export interface StreamEventMap {
+    onStreamStart: OnStreamStartCallback;
     onNewUserMessage: OnNewUserMessageCallback;
-    onFirstMessage: OnFirstMessageCallback;
+    onNewThread: OnNewThreadCallback;
     onCompleteStream: OnCompleteStreamCallback;
     onError: OnErrorCallback;
 }
@@ -87,7 +94,7 @@ export const useStreamCallbackRegistry = () => {
 // Create callbacks that each call all registered handlers for that event
 export const createStreamCallbacks = (
     callbackRegistryRef: React.MutableRefObject<Partial<StreamEventRegistry>>
-) => {
+): StreamEventMap => {
     // Call callbacks, optionally filter by threadViewId
     const callFilteredCallbacks = <T extends keyof StreamEventMap>(
         eventName: T,
@@ -104,13 +111,18 @@ export const createStreamCallbacks = (
     };
 
     return {
+        onStreamStart: (threadViewId: string) => {
+            callFilteredCallbacks('onStreamStart', threadViewId, (callback) => {
+                callback(threadViewId);
+            });
+        },
         onNewUserMessage: (threadViewId: string) => {
             callFilteredCallbacks('onNewUserMessage', threadViewId, (callback) => {
                 callback(threadViewId);
             });
         },
-        onFirstMessage: (threadViewId: string, message: StreamingMessageResponse) => {
-            callFilteredCallbacks('onFirstMessage', threadViewId, (callback) => {
+        onNewThread: (threadViewId: string, message: SchemaStartThreadChunk) => {
+            callFilteredCallbacks('onNewThread', threadViewId, (callback) => {
                 callback(threadViewId, message);
             });
         },

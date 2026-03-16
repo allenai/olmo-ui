@@ -125,7 +125,7 @@ export const QueryFormController = ({
         }
     }, [formContext, navigation.state]);
 
-    useStreamEvent('onFirstMessage', () => {
+    useStreamEvent('onStreamStart', () => {
         // Clear the file input element to prevent iOS Safari from holding stale references
         formContext.setValue('files', null);
         setMimeFromFiles(null);

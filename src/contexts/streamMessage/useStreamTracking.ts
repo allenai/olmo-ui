@@ -2,14 +2,16 @@ import { type MutableRefObject, useCallback, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { error } from '@/api/error';
 import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
+import {
+    SchemaHttpValidationError,
+    SchemaProblem,
+    type SchemaStartThreadChunk,
+} from '@/api/playgroundApi/v5playgroundApiSchema';
 import { useAppContext } from '@/AppContext';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 
-import type { StreamingMessageResponse } from '../stream-types';
 import type { StreamCallbacks } from './streamMessageUtils';
-import { SchemaHttpValidationError, SchemaProblem } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 export const useStreamTracking = (
     abortControllersRef: MutableRefObject<Map<string, AbortController>>,
@@ -36,10 +38,9 @@ export const useStreamTracking = (
         setHasReceivedFirstResponse(false);
     };
 
-    const handleFirstMessage = useCallback(
-        (threadViewId: ThreadViewId, message: StreamingMessageResponse) => {
-            callbacks.onNewUserMessage?.(threadViewId);
-            callbacks.onFirstMessage?.(threadViewId, message);
+    const handleNewThread = useCallback(
+        (threadViewId: ThreadViewId, message: SchemaStartThreadChunk) => {
+            callbacks.onNewThread?.(threadViewId, message);
         },
         [callbacks]
     );
@@ -72,7 +73,7 @@ export const useStreamTracking = (
 
         // FastAPI `Problem`
         if ('detail' in error) {
-            const description = [error.title, error.detail].filter(Boolean).join(': ')
+            const description = [error.title, error.detail].filter(Boolean).join(': ');
 
             throw new StreamBadRequestError(description, {
                 cause: error,
@@ -107,7 +108,7 @@ export const useStreamTracking = (
         startStream,
         stopStream,
         prepareForNewSubmission,
-        handleFirstMessage,
+        handleNewThread,
         handleErrors,
         hasReceivedFirstResponse,
         abortAllStreams,

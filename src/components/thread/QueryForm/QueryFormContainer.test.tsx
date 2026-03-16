@@ -8,10 +8,10 @@ import { useParams } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
+import type { SchemaStartThreadChunk } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
-import { StreamingMessageResponse } from '@/contexts/stream-types';
 import { useStreamCallbackRegistry, useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { useStreamMessage } from '@/contexts/streamMessage/useStreamMessage';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -89,11 +89,11 @@ const renderWithProvider = (
 describe('QueryFormContainer', () => {
     it('should clear out prompt after receiving the first message from the response', async () => {
         let onFirstMessageCallback:
-            | ((threadViewId: string, message: StreamingMessageResponse) => void)
+            | ((threadViewId: string, message: SchemaStartThreadChunk) => void)
             | undefined;
 
         mockUseStreamEvent.mockImplementation((eventName, callback) => {
-            if (eventName === 'onFirstMessage') {
+            if (eventName === 'onNewThread') {
                 onFirstMessageCallback = callback;
             }
         });
@@ -133,12 +133,12 @@ describe('QueryFormContainer', () => {
     it('should not clear out prompt after the stream finishes', async () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let onFirstMessageCallback:
-            | ((threadViewId: string, message: StreamingMessageResponse) => void)
+            | ((threadViewId: string, message: SchemaStartThreadChunk) => void)
             | undefined;
 
         // Mock useStreamEvent to capture callbacks but don't trigger onFirstMessage
         mockUseStreamEvent.mockImplementation((eventName, callback) => {
-            if (eventName === 'onFirstMessage') {
+            if (eventName === 'onNewThread') {
                 onFirstMessageCallback = callback;
             }
         });

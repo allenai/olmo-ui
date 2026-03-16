@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { type To, useNavigate } from 'react-router-dom';
 
+import type { SchemaStartThreadChunk } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { useStreamMessage } from '@/contexts/streamMessage';
 import { links } from '@/Links';
 
-import { isNewThreadChunk, type StreamingMessageResponse } from '../../stream-types';
 import {
     createStreamCallbacks,
     useStreamCallbackRegistry,
@@ -24,9 +24,9 @@ const useChatStreamMessageBase = (
 
     const navigate = useNavigate();
 
-    const handleFirstMessage = useCallback(
-        (_threadViewId: string, message: StreamingMessageResponse) => {
-            if (isNewThreadChunk(message) && !threadId) {
+    const handleNewThread = useCallback(
+        (_threadViewId: string, message: SchemaStartThreadChunk) => {
+            if (!threadId) {
                 navigate(pathGenerator(message.id));
             }
         },
@@ -34,7 +34,7 @@ const useChatStreamMessageBase = (
     );
 
     // Handle nav on first message
-    useStreamEvent('onFirstMessage', handleFirstMessage);
+    useStreamEvent('onNewThread', handleNewThread);
 
     return streamCallbacks;
 };

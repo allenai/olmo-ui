@@ -15,6 +15,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { threadOptions } from '@/api/playgroundApi/thread';
+import type { SchemaStartThreadChunk } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
@@ -30,7 +31,7 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 import { parseComparisonSearchParams } from '@/pages/comparison/parseComparisonSearchParams';
 
 import { ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
-import { isNewThreadChunk, StreamingMessageResponse, StreamingThread } from './stream-types';
+import { StreamingThread } from './stream-types';
 import {
     createStreamCallbacks,
     StreamEventRegistryProvider,
@@ -261,16 +262,14 @@ const ComparisonProviderContent = ({
     }, [comparisonState, streamErrors, threadIds.length, navigate]);
 
     useStreamEvent(
-        'onFirstMessage',
+        'onNewThread',
         useCallback(
-            (threadViewId: string, message: StreamingMessageResponse) => {
-                if (isNewThreadChunk(message)) {
-                    firstMessageThreadIdsRef.current = {
-                        ...firstMessageThreadIdsRef.current,
-                        [threadViewId]: message.id,
-                    };
-                    checkAndNavigateIfReady();
-                }
+            (threadViewId: string, message: SchemaStartThreadChunk) => {
+                firstMessageThreadIdsRef.current = {
+                    ...firstMessageThreadIdsRef.current,
+                    [threadViewId]: message.id,
+                };
+                checkAndNavigateIfReady();
             },
             [checkAndNavigateIfReady]
         )
@@ -312,7 +311,7 @@ const ComparisonProviderContent = ({
                 bypassSafetyCheck,
                 streamMutateAsync: streamMessage.mutateAsync,
                 executeRecaptcha,
-                onFirstMessage: streamMessage.onFirstMessage,
+                onNewThread: streamMessage.onNewThread,
                 onCompleteStream: streamMessage.completeStream,
                 addSnackMessage,
                 extraParameters,
@@ -326,7 +325,7 @@ const ComparisonProviderContent = ({
             models,
             streamMessage.completeStream,
             streamMessage.mutateAsync,
-            streamMessage.onFirstMessage,
+            streamMessage.onNewThread,
             threadIds,
             bypassSafetyCheck,
             executeRecaptcha,
