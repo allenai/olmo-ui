@@ -8,20 +8,18 @@ import { useParams } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
-import type { SchemaStartThreadChunk } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
-import { useStreamCallbackRegistry, useStreamEvent } from '@/contexts/StreamEventRegistry';
+import {
+    type OnStreamStartCallback,
+    useStreamCallbackRegistry,
+    useStreamEvent,
+} from '@/contexts/StreamEventRegistry';
 import { useStreamMessage } from '@/contexts/streamMessage/useStreamMessage';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { getFakeUseUserAuthInfo } from '@/utils/FakeAuthLoaders';
-import {
-    createMockMessage,
-    createMockStartThreadChunk,
-    createMockUser,
-    createStreamMessageMock,
-} from '@/utils/test/createMockModel';
+import { createMockUser, createStreamMessageMock } from '@/utils/test/createMockModel';
 
 import { QueryFormContainer } from './QueryFormContainer';
 
@@ -87,14 +85,13 @@ const renderWithProvider = (
 };
 
 describe('QueryFormContainer', () => {
-    it('should clear out prompt after receiving the first message from the response', async () => {
-        let onFirstMessageCallback:
-            | ((threadViewId: string, message: SchemaStartThreadChunk) => void)
-            | undefined;
+    it('should clear out prompt on handling a stream start event', async () => {
+        let onStreamStartCallback: ((threadViewId: string) => void) | undefined;
 
         mockUseStreamEvent.mockImplementation((eventName, callback) => {
-            if (eventName === 'onNewThread') {
-                onFirstMessageCallback = callback;
+            if (eventName === 'onStreamStart') {
+                // I'm not sure how to get TS to narrow the type properly here so I'm casting it
+                onStreamStartCallback = callback as OnStreamStartCallback;
             }
         });
 
@@ -113,54 +110,15 @@ describe('QueryFormContainer', () => {
         });
 
         expect(textfield).toHaveValue('write a poem');
-        expect(onFirstMessageCallback).toBeDefined();
-
-        const mockMessage = createMockStartThreadChunk({
-            messages: [createMockMessage({ id: 'msg-1', content: 'response', final: false })],
-        });
+        expect(onStreamStartCallback).toBeDefined();
 
         await act(async () => {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            onFirstMessageCallback!('0', mockMessage);
+            onStreamStartCallback!('0');
         });
 
         await waitFor(() => {
             expect(textfield).toHaveValue('');
         });
-    });
-
-    it('should not clear out prompt after the stream finishes', async () => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        let onFirstMessageCallback:
-            | ((threadViewId: string, message: SchemaStartThreadChunk) => void)
-            | undefined;
-
-        // Mock useStreamEvent to capture callbacks but don't trigger onFirstMessage
-        mockUseStreamEvent.mockImplementation((eventName, callback) => {
-            if (eventName === 'onNewThread') {
-                onFirstMessageCallback = callback;
-            }
-        });
-
-        renderWithProvider();
-
-        await waitFor(() => {
-            expect(screen.getByRole('textbox', { name: 'Message Tülu' })).toBeVisible();
-        });
-
-        const textfield = screen.getByRole('textbox', { name: 'Message Tülu' });
-        const user = userEvent.setup();
-
-        await act(async () => {
-            await user.click(textfield);
-            await user.keyboard('write a poem');
-        });
-
-        expect(textfield).toHaveValue('write a poem');
-
-        // Form should maintain text.
-        await new Promise((resolve) => setTimeout(resolve, 100));
-
-        expect(textfield).toHaveValue('write a poem');
     });
 });
