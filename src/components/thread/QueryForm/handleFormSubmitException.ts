@@ -21,9 +21,9 @@ const INAPPROPRIATE_FORM_ERROR_CONFIGS = {
         },
     },
     inappropriate_prompt_file: {
-        type: 'inappropriate' as const,
+        type: 'inappropriate_file' as const,
         message:
-            'The submitted image was flagged as inappropriate. Please change your image and resubmit.',
+            'The submitted file(s) were flagged as inappropriate. Please change your file(s) and resubmit.',
         analytics: () => {
             analyticsClient.trackInappropriatePrompt('file');
         },
