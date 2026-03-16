@@ -114,7 +114,49 @@ const MessageContent = ({ rawMode = false, hasPoints = false, messageId }: Messa
     return <StandardMessage messageId={messageId} />;
 };
 
-interface ChatMessageProps extends PropsWithChildren {
+interface ChatMessageContainerProps extends PropsWithChildren {
+    dataMessageId?: string;
+    icon: ReactNode;
+}
+
+export const ChatMessageContainer = ({
+    dataMessageId,
+    icon,
+    children,
+}: ChatMessageContainerProps) => {
+    return (
+        <Box
+            data-messageid={dataMessageId}
+            className={CHAT_MESSAGE_CLASS_NAME}
+            sx={{
+                display: 'grid',
+                gridTemplateColumns: 'subgrid',
+                gridColumn: '1 / -1',
+            }}>
+            <Box id="icon" width={CHAT_ICON_WIDTH} height={CHAT_ICON_WIDTH} gridColumn="1">
+                {icon}
+            </Box>
+            <Box>{children}</Box>
+        </Box>
+    );
+};
+
+export const ChatMessageLoadingSpinner = (): ReactNode => {
+    return (
+        <CircularProgress size="1em" sx={{ color: 'var(--vui-colors-icon)', marginBlock: 0.5 }} />
+    );
+};
+
+export const ChatMessageAssistantLoading = (): ReactNode => {
+    return (
+        <ChatMessageContainer icon={<Ai2Avatar />}>
+            <ChatMessageLoadingSpinner />
+            <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
+        </ChatMessageContainer>
+    );
+};
+
+interface ChatMessageProps {
     messageId: string;
     isLastMessageInThread: boolean;
 }
@@ -141,63 +183,35 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
 
     const isStreaming = remoteState === RemoteState.Loading && streamingMessageId === messageId;
 
-    const messageHasToolCalls = message.toolCalls != null && message.toolCalls.length > 0;
-
-    const waitingForFirstToken =
-        isStreaming && content === '' && !message.thinking && !messageHasToolCalls;
-
     return (
-        <Box
-            data-messageid={messageId}
-            className={CHAT_MESSAGE_CLASS_NAME}
-            sx={{
-                display: 'grid',
-                gridTemplateColumns: 'subgrid',
-                gridColumn: '1 / -1',
-            }}>
-            <Box id="icon" width={CHAT_ICON_WIDTH} height={CHAT_ICON_WIDTH} gridColumn="1">
-                {icon}
-            </Box>
-            <Box>
-                <MessageThinking messageId={messageId} />
-                {waitingForFirstToken && (
-                    <div
-                        className={css({
-                            paddingBlock: '1',
-                        })}>
-                        <CircularProgress size="1em" sx={{ color: 'var(--vui-colors-icon)' }} />
-                    </div>
-                )}
-                <MessageComponent messageId={messageId}>
-                    <MessageContent
-                        messageId={messageId}
-                        rawMode={rawMode}
-                        hasPoints={hasPoints(content)}
-                    />
-                </MessageComponent>
-
-                {fileUrls?.length ? <UserMessageFileWidget fileUrls={fileUrls} /> : null}
-
-                <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
-                <InlineAlertMessage messageId={messageId} />
-                <MessageInteraction
-                    role={role as Role}
-                    content={rawMode ? escapeForDisplay(content) : content}
-                    messageLabels={labels}
+        <ChatMessageContainer dataMessageId={messageId} icon={icon}>
+            <MessageThinking messageId={messageId} />
+            <MessageComponent messageId={messageId}>
+                <MessageContent
                     messageId={messageId}
-                    isLastMessage={isLastMessageInThread}
-                    isStreaming={isStreaming}
-                    isRawMode={rawMode}
-                    setRawMode={setRawMode}
+                    rawMode={rawMode}
+                    hasPoints={hasPoints(content)}
                 />
-                {remoteState === RemoteState.Loading && (
-                    <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
-                )}
-                {/* This gets the latest LLM response to alert screen readers */}
-                {!!finalMessageContent && (
-                    <ScreenReaderAnnouncer level="assertive" content={finalMessageContent} />
-                )}
-            </Box>
-        </Box>
+            </MessageComponent>
+
+            {fileUrls?.length ? <UserMessageFileWidget fileUrls={fileUrls} /> : null}
+
+            <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
+            <InlineAlertMessage messageId={messageId} />
+            <MessageInteraction
+                role={role as Role}
+                content={rawMode ? escapeForDisplay(content) : content}
+                messageLabels={labels}
+                messageId={messageId}
+                isLastMessage={isLastMessageInThread}
+                isStreaming={isStreaming}
+                isRawMode={rawMode}
+                setRawMode={setRawMode}
+            />
+            {/* This gets the latest LLM response to alert screen readers */}
+            {!!finalMessageContent && (
+                <ScreenReaderAnnouncer level="assertive" content={finalMessageContent} />
+            )}
+        </ChatMessageContainer>
     );
 };

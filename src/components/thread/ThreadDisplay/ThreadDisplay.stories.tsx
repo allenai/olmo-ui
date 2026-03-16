@@ -50,6 +50,7 @@ export const StandardTextThread: Story = {
         shouldShowAttributionHighlightDescription: false,
         streamingMessageId: null,
         isUpdatingMessageContent: false,
+        showLoadingInThread: false,
     },
 };
 
@@ -59,6 +60,7 @@ export const MultiplePointsThread: Story = {
         shouldShowAttributionHighlightDescription: false,
         streamingMessageId: null,
         isUpdatingMessageContent: false,
+        showLoadingInThread: false,
     },
     parameters: {
         mockData: [
@@ -70,5 +72,15 @@ export const MultiplePointsThread: Story = {
         threadView: {
             threadId: multiplePointerThreadResponse.id,
         },
+    },
+};
+
+export const LoadingThread: Story = {
+    args: {
+        childMessageIds: mockThread.messages.slice(0, -1).map((message) => message.id),
+        shouldShowAttributionHighlightDescription: false,
+        streamingMessageId: null,
+        isUpdatingMessageContent: false,
+        showLoadingInThread: true,
     },
 };

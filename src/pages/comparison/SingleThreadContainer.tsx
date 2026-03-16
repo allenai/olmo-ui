@@ -2,6 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { ThreadId, useThread } from '@/api/playgroundApi/thread';
+import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 import { ThreadPlaceholder } from '@/components/thread/ThreadPlaceholder/ThreadPlaceholder';
@@ -61,6 +62,10 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
         return message.id;
     });
 
+    const isLastMessageUserMessage = messages.at(-1)?.role === Role.User;
+    const isWaitingForAssistantResponse =
+        remoteState === RemoteState.Loading && isLastMessageUserMessage;
+
     return (
         <ThreadDisplay
             childMessageIds={childMessageIds}
@@ -69,6 +74,7 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
             isUpdatingMessageContent={isUpdatingMessageContent ?? false}
             selectedMessageId={selectedMessageId}
             hasError={remoteState === RemoteState.Error}
+            showLoadingInThread={isWaitingForAssistantResponse}
         />
     );
 };
@@ -90,6 +96,7 @@ const ThreadViewPlaceholder = ({ threadViewIdx, models }: ThreadViewPlaceholderP
                     isUpdatingMessageContent={false}
                     selectedMessageId={null}
                     hasError={true}
+                    showLoadingInThread={false}
                 />
             </div>
         );
