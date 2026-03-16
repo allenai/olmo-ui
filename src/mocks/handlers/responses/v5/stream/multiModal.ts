@@ -11,7 +11,7 @@ export const fakeMultiModalStreamMessages: Array<Chunk> = [
     {
         id: MULTI_MODAL_USER_MESSAGE_ID,
         message: MULTI_MODAL_USER_MESSAGE_ID,
-        type: 'addMessage',
+        type: 'startThread',
         messages: [
             {
                 content: 'multimodaltest: count the boats',
@@ -38,6 +38,13 @@ export const fakeMultiModalStreamMessages: Array<Chunk> = [
                 modelHost: '',
                 modelId: '',
             },
+        ],
+    },
+    {
+        message: MULTI_MODAL_MESSAGE_ID,
+        id: MULTI_MODAL_MESSAGE_ID,
+        type: 'addMessage',
+        messages: [
             {
                 id: MULTI_MODAL_MESSAGE_ID,
                 content: '',
@@ -95,7 +102,7 @@ export const fakeMultiModalStreamMessages: Array<Chunk> = [
     {
         id: MULTI_MODAL_USER_MESSAGE_ID,
         message: MULTI_MODAL_USER_MESSAGE_ID,
-        type: 'addMessage',
+        type: 'finalThread',
         messages: [
             {
                 content: 'multimodaltest: count the boats',

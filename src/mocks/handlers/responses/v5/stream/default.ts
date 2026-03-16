@@ -14,7 +14,7 @@ export const fakeNewThreadMessages: Array<Chunk> = [
     {
         id: newMessageId,
         message: newMessageId,
-        type: 'addMessage',
+        type: 'startThread',
         messages: [
             {
                 content: 'User message',
@@ -38,6 +38,13 @@ export const fakeNewThreadMessages: Array<Chunk> = [
                 modelHost: 'modal',
                 modelId: 'Olmo-peteish-dpo-preview',
             },
+        ],
+    },
+    {
+        id: LOREM_IPSUM_MESSAGE_ID,
+        message: LOREM_IPSUM_MESSAGE_ID,
+        type: 'addMessage',
+        messages: [
             {
                 id: LOREM_IPSUM_MESSAGE_ID,
                 content: '',
@@ -101,7 +108,7 @@ export const fakeNewThreadMessages: Array<Chunk> = [
     {
         id: newMessageId,
         message: newMessageId,
-        type: 'addMessage',
+        type: 'finalThread',
         messages: [
             {
                 content: 'User message',
