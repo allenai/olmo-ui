@@ -1,6 +1,6 @@
 export const inappropriateContentErrorResponse = {
-    error: {
-        code: 400,
-        message: 'inappropriate_prompt_text',
-    },
+    type: 'inappropriate_prompt_text',
+    title: 'Inappropriate prompt text',
+    status: 422,
+    detail: 'Text was flagged as inappropriate',
 };

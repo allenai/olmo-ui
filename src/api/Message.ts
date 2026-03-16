@@ -136,13 +136,15 @@ type StreamBadRequestErrorOptions = {
 export class StreamBadRequestError extends Error {
     status?: number;
     description: string;
+    type: string;
 
-    constructor(description: string, options: StreamBadRequestErrorOptions = {}) {
+    constructor(description: string, type: string, options: StreamBadRequestErrorOptions = {}) {
         super(description, { cause: options.cause });
 
         this.description = description;
         this.name = 'StreamBadRequestError';
         this.status = options.status;
+        this.type = type;
     }
 }
 
@@ -155,7 +157,7 @@ export class StreamValidationError extends StreamBadRequestError {
         );
 
         const description = validationErrors.join(';');
-        super(`${error.title}: ${description}`, { status: error.status, cause: error });
+        super(`${error.title}: ${description}`, error.type, { status: error.status, cause: error });
 
         this.validationErrors = validationErrors;
     }

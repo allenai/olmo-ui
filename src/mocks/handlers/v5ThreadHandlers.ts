@@ -324,8 +324,7 @@ export const v5ThreadHandlers = [
         const content = formData.get('content');
 
         if (content === 'test-inappropriate') {
-            // @ts-expect-error - TODO: Type this right
-            return HttpResponse.json(inappropriateContentErrorResponse, { status: 400 });
+            return HttpResponse.json(inappropriateContentErrorResponse, { status: 422 });
         }
 
         let response: StreamingMessageResponse[];
