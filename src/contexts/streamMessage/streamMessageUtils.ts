@@ -3,8 +3,11 @@ import { type MutationObserverResult, type UseMutationResult } from '@tanstack/r
 import { RemoteState } from '@/contexts/util';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 
-import type { StreamingMessageResponse } from '../stream-types';
-import type { OnNewThreadCallback, StreamEventMap } from '../StreamEventRegistry';
+import type {
+    OnNewThreadCallback,
+    OnStreamStartCallback,
+    StreamEventMap,
+} from '../StreamEventRegistry';
 
 export type StreamCallbacks = Partial<StreamEventMap>;
 
@@ -33,6 +36,8 @@ export type StreamMessageControls<TVariables = unknown> = UseMutationResult<
     abortAllStreams: () => void;
     completeStream: (threadViewId: ThreadViewId) => void;
     prepareForNewSubmission: () => void;
+
+    onStreamStart: OnStreamStartCallback;
 
     // Callback to call on first message
     // This is currently necessary because stream processing is done externally

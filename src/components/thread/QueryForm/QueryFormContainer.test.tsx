@@ -18,7 +18,7 @@ import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContex
 import { getFakeUseUserAuthInfo } from '@/utils/FakeAuthLoaders';
 import {
     createMockMessage,
-    createMockThread,
+    createMockStartThreadChunk,
     createMockUser,
     createStreamMessageMock,
 } from '@/utils/test/createMockModel';
@@ -115,8 +115,7 @@ describe('QueryFormContainer', () => {
         expect(textfield).toHaveValue('write a poem');
         expect(onFirstMessageCallback).toBeDefined();
 
-        const mockMessage = createMockThread({
-            id: 'thread-123',
+        const mockMessage = createMockStartThreadChunk({
             messages: [createMockMessage({ id: 'msg-1', content: 'response', final: false })],
         });
 

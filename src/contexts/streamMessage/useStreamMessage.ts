@@ -45,6 +45,7 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
         startStream,
         stopStream,
         prepareForNewSubmission,
+        handleStreamStart,
         handleNewThread,
         handleErrors,
         hasReceivedFirstResponse,
@@ -161,6 +162,8 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
         abortAllStreams,
         completeStream,
         prepareForNewSubmission,
+
+        onStreamStart: handleStreamStart,
 
         // Callback to call on first message
         // This is currently necessary because stream processing is done externally

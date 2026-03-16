@@ -38,6 +38,13 @@ export const useStreamTracking = (
         setHasReceivedFirstResponse(false);
     };
 
+    const handleStreamStart = useCallback(
+        (threadViewId: ThreadViewId) => {
+            callbacks.onStreamStart?.(threadViewId);
+        },
+        [callbacks]
+    );
+
     const handleNewThread = useCallback(
         (threadViewId: ThreadViewId, message: SchemaStartThreadChunk) => {
             callbacks.onNewThread?.(threadViewId, message);
@@ -108,6 +115,7 @@ export const useStreamTracking = (
         startStream,
         stopStream,
         prepareForNewSubmission,
+        handleStreamStart,
         handleNewThread,
         handleErrors,
         hasReceivedFirstResponse,

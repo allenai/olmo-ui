@@ -1,11 +1,10 @@
 import { NullishPartial } from '@/util';
 
-import { ClientBase } from './ClientBase';
 import { Label } from './Label';
 import { Thread } from './playgroundApi/thread';
+import { SchemaHttpValidationError } from './playgroundApi/v5playgroundApiSchema';
 import { Role } from './Role';
 import { InferenceOpts, PaginationData } from './Schema';
-import { SchemaHttpValidationError } from './playgroundApi/v5playgroundApiSchema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
@@ -141,7 +140,7 @@ export class StreamBadRequestError extends Error {
     constructor(description: string, options: StreamBadRequestErrorOptions = {}) {
         super(description, { cause: options.cause });
 
-        this.description = description
+        this.description = description;
         this.name = 'StreamBadRequestError';
         this.status = options.status;
     }
