@@ -30,7 +30,7 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 import { parseComparisonSearchParams } from '@/pages/comparison/parseComparisonSearchParams';
 
 import { ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
-import { isFirstMessage, StreamingMessageResponse, StreamingThread } from './stream-types';
+import { isNewThreadChunk, StreamingMessageResponse, StreamingThread } from './stream-types';
 import {
     createStreamCallbacks,
     StreamEventRegistryProvider,
@@ -264,7 +264,7 @@ const ComparisonProviderContent = ({
         'onFirstMessage',
         useCallback(
             (threadViewId: string, message: StreamingMessageResponse) => {
-                if (isFirstMessage(message)) {
+                if (isNewThreadChunk(message)) {
                     firstMessageThreadIdsRef.current = {
                         ...firstMessageThreadIdsRef.current,
                         [threadViewId]: message.id,

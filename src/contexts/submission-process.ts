@@ -17,9 +17,9 @@ import {
     containsMessages,
     isChunk,
     isErrorChunk,
-    isFirstMessage,
     isMessageStreamError,
     isModelResponseChunk,
+    isNewThreadChunk,
     isOldMessageChunk,
     isThinkingChunk,
     isToolCallChunk,
@@ -126,12 +126,12 @@ export const updateCacheWithMessagePart = async (
 ): Promise<string | undefined> => {
     let currentThreadId = threadId;
 
-    if (isCreatingNewThread && isFirstMessage(message)) {
+    if (isCreatingNewThread && isNewThreadChunk(message)) {
         currentThreadId = message.id;
         if (currentThreadId) {
             const { queryKey } = threadOptions(currentThreadId);
 
-            const updatedMessage = { ...message };
+            const updatedMessage: StreamingThread = { ...message };
 
             updatedMessage.streamingMessageId = message.messages.at(-1)?.id;
 
@@ -140,7 +140,7 @@ export const updateCacheWithMessagePart = async (
     }
     // Our first message callbacks need to run after we set the message in the cache
     // Make sure this stays below any cache setting
-    if (isFirstMessage(message)) {
+    if (containsMessages(message)) {
         onFirstMessage?.(threadViewId, message);
     }
 

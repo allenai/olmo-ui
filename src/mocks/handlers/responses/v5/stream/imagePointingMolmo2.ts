@@ -1,7 +1,9 @@
 // Molmo2 Single Image pointing stream
-import type { StreamingMessageResponse } from '@/contexts/stream-types';
+import type { Chunk } from '@/contexts/stream-types';
 
 import { IMAGE_POINTING_ROOT_ID } from '../imagePointingMolmo2Response';
+
+const RESPONSE_MESSAGE_ID = 'msg_E7L3O7Z7W9';
 
 export const thinkingAndToolCallsStreamResponse = [
     {
@@ -10,9 +12,11 @@ export const thinkingAndToolCallsStreamResponse = [
     },
     {
         id: IMAGE_POINTING_ROOT_ID,
+        message: IMAGE_POINTING_ROOT_ID,
+        type: 'startThread',
         messages: [
             {
-                children: ['msg_E7L3O7Z7W9'],
+                children: [RESPONSE_MESSAGE_ID],
                 completion: null,
                 content: 'point to the cats ears, eyes and mouth',
                 created: '2025-11-23T19:38:37.917732+00:00',
@@ -55,6 +59,13 @@ export const thinkingAndToolCallsStreamResponse = [
                 toolCalls: [],
                 toolDefinitions: [],
             },
+        ],
+    },
+    {
+        message: RESPONSE_MESSAGE_ID,
+        id: RESPONSE_MESSAGE_ID,
+        type: 'addMessage',
+        messages: [
             {
                 children: [],
                 completion: null,
@@ -71,7 +82,7 @@ export const thinkingAndToolCallsStreamResponse = [
                 final: false,
                 finishReason: null,
                 harmful: null,
-                id: 'msg_E7L3O7Z7W9',
+                id: RESPONSE_MESSAGE_ID,
                 isLimitReached: false,
                 isOlderThan30Days: false,
                 labels: [],
@@ -101,349 +112,351 @@ export const thinkingAndToolCallsStreamResponse = [
     },
     {
         content: '',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '<',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: 'points',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' coords',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '="',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '1',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '1',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '1',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '9',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '9',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '2',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '3',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '9',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '2',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '2',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '7',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '9',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '3',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '0',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '7',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '3',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '3',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '4',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '8',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '3',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '3',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '5',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '4',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '3',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '9',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '6',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '2',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '9',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '8',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '5',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '4',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '6',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '2',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '2',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '1',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '7',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '">',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: 'the',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' cats',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' ears',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ',',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' eyes',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' and',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: ' mouth',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '</',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: 'points',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '>',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         content: '',
-        message: 'msg_E7L3O7Z7W9',
+        message: RESPONSE_MESSAGE_ID,
         type: 'modelResponse',
     },
     {
         id: IMAGE_POINTING_ROOT_ID,
+        message: IMAGE_POINTING_ROOT_ID,
+        type: 'finalThread',
         messages: [
             {
-                children: ['msg_E7L3O7Z7W9'],
+                children: [RESPONSE_MESSAGE_ID],
                 completion: null,
                 content: 'point to the cats ears, eyes and mouth',
                 created: '2025-11-23T19:38:37.917732+00:00',
@@ -503,7 +516,7 @@ export const thinkingAndToolCallsStreamResponse = [
                 final: true,
                 finishReason: null,
                 harmful: null,
-                id: 'msg_E7L3O7Z7W9',
+                id: RESPONSE_MESSAGE_ID,
                 isLimitReached: false,
                 isOlderThan30Days: false,
                 labels: [],
@@ -535,4 +548,4 @@ export const thinkingAndToolCallsStreamResponse = [
         message: IMAGE_POINTING_ROOT_ID,
         type: 'end',
     },
-] as const satisfies StreamingMessageResponse[];
+] as const satisfies Chunk[];

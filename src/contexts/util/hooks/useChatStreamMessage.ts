@@ -4,7 +4,7 @@ import { type To, useNavigate } from 'react-router-dom';
 import { useStreamMessage } from '@/contexts/streamMessage';
 import { links } from '@/Links';
 
-import { isFirstMessage, type StreamingMessageResponse } from '../../stream-types';
+import { isNewThreadChunk, type StreamingMessageResponse } from '../../stream-types';
 import {
     createStreamCallbacks,
     useStreamCallbackRegistry,
@@ -26,7 +26,7 @@ const useChatStreamMessageBase = (
 
     const handleFirstMessage = useCallback(
         (_threadViewId: string, message: StreamingMessageResponse) => {
-            if (isFirstMessage(message) && !threadId) {
+            if (isNewThreadChunk(message) && !threadId) {
                 navigate(pathGenerator(message.id));
             }
         },
