@@ -45,7 +45,8 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
         startStream,
         stopStream,
         prepareForNewSubmission,
-        handleFirstMessage,
+        handleStreamStart,
+        handleNewThread,
         handleErrors,
         hasReceivedFirstResponse,
     } = useStreamTracking(abortControllersRef, callbacks);
@@ -162,9 +163,11 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
         completeStream,
         prepareForNewSubmission,
 
+        onStreamStart: handleStreamStart,
+
         // Callback to call on first message
         // This is currently necessary because stream processing is done externally
-        onFirstMessage: handleFirstMessage,
+        onNewThread: handleNewThread,
 
         // State
         canPause: mutation.isPending || activeStreams.length > 0,

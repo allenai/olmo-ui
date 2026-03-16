@@ -1,6 +1,7 @@
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { FlatMessage, Thread } from '@/api/playgroundApi/thread';
 import { threadOptions } from '@/api/playgroundApi/thread';
+import type { SchemaStartThreadChunk } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { queryClient } from '@/api/query-client';
 import type { User } from '@/api/User';
 import type { useStreamMessage } from '@/contexts/streamMessage/useStreamMessage';
@@ -64,6 +65,18 @@ export const createMockThread = (overrides: Partial<Thread> = {}): Thread => ({
     messages: [createMockMessage()],
     ...overrides,
 });
+
+export const createMockStartThreadChunk = (
+    overrides: Partial<SchemaStartThreadChunk> = {}
+): SchemaStartThreadChunk => {
+    const mockThread = createMockThread(overrides);
+
+    return {
+        ...mockThread,
+        message: mockThread.id,
+        type: 'startThread',
+    };
+};
 
 export const createMockUser = (overrides: Partial<User> = {}): User => ({
     client: 'user-123',

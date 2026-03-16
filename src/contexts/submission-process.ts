@@ -21,6 +21,7 @@ import {
     isModelResponseChunk,
     isNewThreadChunk,
     isOldMessageChunk,
+    isStartChunk,
     isThinkingChunk,
     isToolCallChunk,
     type StreamingMessageResponse,
@@ -34,6 +35,11 @@ import {
     updateThreadWithThinking,
     updateThreadWithToolCall,
 } from './stream-update-handlers';
+import type {
+    OnCompleteStreamCallback,
+    OnNewThreadCallback,
+    OnStreamStartCallback,
+} from './StreamEventRegistry';
 import type { ThreadStreamMutationVariables } from './streamMessage/useStreamMessage';
 import { MessageInferenceParameters } from './ThreadProviderHelpers';
 
@@ -116,15 +122,30 @@ export async function* readStream(response: Response, abortSignal?: AbortSignal)
     }
 }
 
+type HandleMessageChunkProps = {
+    message: StreamingMessageResponse;
+    threadId: string | undefined;
+    isCreatingNewThread: boolean;
+    threadViewId: ThreadViewId;
+    onStreamStart?: OnStreamStartCallback;
+    onNewThread?: OnNewThreadCallback;
+};
+
 // threadId can be undefined
-export const updateCacheWithMessagePart = async (
-    message: StreamingMessageResponse,
-    threadId: string | undefined,
-    isCreatingNewThread: boolean,
-    threadViewId: ThreadViewId,
-    onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void
-): Promise<string | undefined> => {
+export const handleMessageChunk = async ({
+    message,
+    threadId,
+    isCreatingNewThread,
+    threadViewId,
+    onStreamStart,
+    onNewThread,
+    // eslint-disable-next-line @typescript-eslint/require-await
+}: HandleMessageChunkProps): Promise<string | undefined> => {
     let currentThreadId = threadId;
+
+    if (isStartChunk(message)) {
+        onStreamStart?.(threadViewId);
+    }
 
     if (isCreatingNewThread && isNewThreadChunk(message)) {
         currentThreadId = message.id;
@@ -137,11 +158,10 @@ export const updateCacheWithMessagePart = async (
 
             queryClient.setQueryData(queryKey, updatedMessage);
         }
-    }
-    // Our first message callbacks need to run after we set the message in the cache
-    // Make sure this stays below any cache setting
-    if (containsMessages(message)) {
-        onFirstMessage?.(threadViewId, message);
+
+        // Our new thread callbacks need to run after we set the message in the cache
+        // Make sure this stays below any cache setting
+        onNewThread?.(threadViewId, message);
     }
 
     if (currentThreadId) {
@@ -260,8 +280,9 @@ interface ProcessSingleModelSubmissionProps {
         abortController: AbortController;
     }>;
     executeRecaptcha: ((action?: string) => Promise<string> | null) | undefined;
-    onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void;
-    onCompleteStream?: (threadViewId: ThreadViewId) => void;
+    onStreamStart?: OnStreamStartCallback;
+    onNewThread?: OnNewThreadCallback;
+    onCompleteStream?: OnCompleteStreamCallback;
     addSnackMessage?: (message: SnackMessage) => void;
 }
 
@@ -278,10 +299,13 @@ export const processSingleModelSubmission = async ({
     extraParameters,
     streamMutateAsync,
     executeRecaptcha,
-    onFirstMessage,
+    onNewThread,
     onCompleteStream,
     addSnackMessage,
+    onStreamStart,
 }: ProcessSingleModelSubmissionProps): Promise<string | null> => {
+    // This isn't always defined, our types aren't quite right. This plays it safe
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!model) {
         console.warn('processSingleModelSubmission called without a model');
         return null;
@@ -313,14 +337,15 @@ export const processSingleModelSubmission = async ({
         });
 
         // Return the final thread ID for parallel streaming navigation
-        const result = await processStreamResponse(
+        const result = await processStreamResponse({
             response,
             abortController,
             rootThreadId,
             threadViewId,
-            onFirstMessage,
-            onCompleteStream
-        );
+            onStreamStart,
+            onNewThread,
+            onCompleteStream,
+        });
         return result ?? null;
     } catch (error) {
         // We need to clean up streaming state for all submission errors
@@ -339,14 +364,25 @@ export const processSingleModelSubmission = async ({
     }
 };
 
-export const processStreamResponse = async (
-    response: Response,
-    abortController: AbortController,
-    rootThreadId: string | undefined,
-    threadViewId: ThreadViewId,
-    onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
-    onCompleteStream?: (threadViewId: ThreadViewId) => void
-): Promise<string | undefined> => {
+type ProcessStreamResponseProps = {
+    response: Response;
+    abortController: AbortController;
+    rootThreadId: string | undefined;
+    threadViewId: ThreadViewId;
+    onNewThread?: OnNewThreadCallback;
+    onCompleteStream?: OnCompleteStreamCallback;
+    onStreamStart?: OnStreamStartCallback;
+};
+
+export const processStreamResponse = async ({
+    response,
+    abortController,
+    rootThreadId,
+    threadViewId,
+    onNewThread,
+    onCompleteStream,
+    onStreamStart,
+}: ProcessStreamResponseProps): Promise<string | undefined> => {
     let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
 
     const chunks = readStream(response, abortController.signal);
@@ -354,13 +390,14 @@ export const processStreamResponse = async (
 
     for await (const chunk of chunks) {
         // return the root thread id (this shouldn't be undefined anymore)
-        streamingRootThreadId = await updateCacheWithMessagePart(
-            chunk,
-            streamingRootThreadId,
+        streamingRootThreadId = await handleMessageChunk({
+            message: chunk,
+            threadId: streamingRootThreadId,
             isCreatingNewThread,
             threadViewId,
-            onFirstMessage
-        );
+            onStreamStart,
+            onNewThread,
+        });
     }
 
     // Mark stream as completed

@@ -27,7 +27,7 @@ const ThreadDisplayContent = () => {
     });
 
     // Handle scroll to new user message
-    useStreamEvent('onNewUserMessage', (_threadViewId: string) => {
+    useStreamEvent('onStreamStart', (_threadViewId: string) => {
         const element = document.querySelector('[data-testid="thread-display"]');
         if (element) {
             element.scrollTo({
