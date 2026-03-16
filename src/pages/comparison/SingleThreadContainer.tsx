@@ -10,6 +10,7 @@ import { RemoteState } from '@/contexts/util';
 
 import { CompareModelSelect } from './CompareModelSelect';
 import { ThreadViewProvider, useThreadView } from './ThreadViewContext';
+import { Role } from '@/api/Role';
 
 const singleThreadClasses = css({
     display: 'flex',
@@ -61,6 +62,10 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
         return message.id;
     });
 
+    const isLastMessageUserMessage = messages.at(-1)?.role === Role.User;
+    const isWaitingForAssistantResponse =
+        remoteState === RemoteState.Loading && isLastMessageUserMessage;
+
     return (
         <ThreadDisplay
             childMessageIds={childMessageIds}
@@ -69,6 +74,7 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
             isUpdatingMessageContent={isUpdatingMessageContent ?? false}
             selectedMessageId={selectedMessageId}
             hasError={remoteState === RemoteState.Error}
+            showLoadingInThread={isWaitingForAssistantResponse}
         />
     );
 };
@@ -90,6 +96,7 @@ const ThreadViewPlaceholder = ({ threadViewIdx, models }: ThreadViewPlaceholderP
                     isUpdatingMessageContent={false}
                     selectedMessageId={null}
                     hasError={true}
+                    showLoadingInThread={false}
                 />
             </div>
         );
