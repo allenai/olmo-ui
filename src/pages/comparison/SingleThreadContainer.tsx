@@ -2,6 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { ThreadId, useThread } from '@/api/playgroundApi/thread';
+import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 import { ThreadPlaceholder } from '@/components/thread/ThreadPlaceholder/ThreadPlaceholder';
@@ -10,7 +11,6 @@ import { RemoteState } from '@/contexts/util';
 
 import { CompareModelSelect } from './CompareModelSelect';
 import { ThreadViewProvider, useThreadView } from './ThreadViewContext';
-import { Role } from '@/api/Role';
 
 const singleThreadClasses = css({
     display: 'flex',
