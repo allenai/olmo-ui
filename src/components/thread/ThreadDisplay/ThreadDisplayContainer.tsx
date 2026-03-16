@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
 
 import { useThread } from '@/api/playgroundApi/thread';
+import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
@@ -45,6 +46,10 @@ const ThreadDisplayContent = () => {
     const messages = data?.messages ?? [];
     const childMessageIds = messages.map((message) => message.id);
 
+    const isLastMessageUserMessage = messages.at(-1)?.role === Role.User;
+    const isWaitingForAssistantResponse =
+        remoteState === RemoteState.Loading && isLastMessageUserMessage;
+
     return (
         <ThreadDisplay
             childMessageIds={childMessageIds}
@@ -53,6 +58,7 @@ const ThreadDisplayContent = () => {
             isUpdatingMessageContent={isUpdatingMessageContent ?? false}
             selectedMessageId={selectedMessageId}
             hasError={remoteState === RemoteState.Error}
+            showLoadingInThread={isWaitingForAssistantResponse}
         />
     );
 };

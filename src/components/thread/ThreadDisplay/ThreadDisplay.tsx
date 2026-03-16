@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { ThreadError } from '@/pages/comparison/ThreadError';
 
 import { AttributionHighlightDescription } from '../attribution/AttributionHighlightDescription';
-import { ChatMessage } from '../ChatMessage/ChatMessage';
+import { ChatMessage, ChatMessageAssistantLoading } from '../ChatMessage/ChatMessage';
 import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
@@ -18,10 +18,13 @@ interface ThreadDisplayProps {
     isUpdatingMessageContent: boolean;
     selectedMessageId?: string | null;
     hasError?: boolean;
+    showLoadingInThread: boolean;
 }
 
 // same as ThreadDisplay, but children instead of props
-type ThreadDisplayViewProps = React.PropsWithChildren<Omit<ThreadDisplayProps, 'childMessageIds'>>;
+type ThreadDisplayViewProps = React.PropsWithChildren<
+    Omit<ThreadDisplayProps, 'childMessageIds' | 'showLoadingInThread'>
+>;
 
 const DISTANCE_TO_DISABLE_STICKY_SCROLL = 50;
 
@@ -236,6 +239,7 @@ export const ThreadDisplay = ({
     isUpdatingMessageContent,
     selectedMessageId,
     hasError = false,
+    showLoadingInThread,
 }: ThreadDisplayProps) => {
     const lastMessageId = childMessageIds.at(-1);
 
@@ -261,6 +265,7 @@ export const ThreadDisplay = ({
                     isLastMessageInThread={lastMessageId === messageId}
                 />
             ))}
+            {showLoadingInThread && <ChatMessageAssistantLoading />}
             {hasError && <ThreadError />}
         </ThreadDisplayView>
     );
