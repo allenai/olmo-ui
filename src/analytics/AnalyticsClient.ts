@@ -60,7 +60,7 @@ export class AnalyticsClient {
                 plausibleTrackEvent(event);
 
                 const data = new Blob([JSON.stringify(event)], { type: 'application/json' });
-                return navigator.sendBeacon('/v5/event', data);
+                return navigator.sendBeacon(`${process.env.VITE_API_URL}/v5/event`, data);
             } else {
                 console.log('Track event', details);
                 return true;
