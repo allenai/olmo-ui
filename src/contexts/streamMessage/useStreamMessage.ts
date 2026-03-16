@@ -106,7 +106,7 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
                 ...inferenceOpts,
             };
 
-            const result = await fetchClient.POST('/v5/threads/chat', {
+            const { response, error } = await fetchClient.POST('/v5/threads/chat', {
                 parseAs: 'stream',
                 body: body as SchemaChatRequest,
                 bodySerializer: (body) => {
@@ -123,14 +123,11 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
             });
 
             // Our API endpoints aren't properly typed with error responses
-            const resultError = result.error as unknown;
-            if (resultError != null) {
-                // Since we're using react-query with this we need to throw errors instead of returning them
-                // Even though we told openapi-fetch to give us the raw response it parses the response if !response.ok
-                handleErrors(resultError, result.response);
+            if (error) {
+                handleErrors(error, response);
             }
 
-            return { response: result.response, abortController };
+            return { response, abortController };
         } catch (error) {
             // Clean up on error
             stopStream(threadViewId);
@@ -138,11 +135,7 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
         }
     };
 
-    const mutation = useMutation<
-        { response: Response; abortController: AbortController },
-        Error,
-        ThreadStreamMutationVariables
-    >({
+    const mutation = useMutation({
         mutationKey: THREAD_STREAM_MUTATION_KEY,
         mutationFn: queryToThreadOrView,
         onMutate(variables) {

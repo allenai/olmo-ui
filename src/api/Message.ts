@@ -5,6 +5,7 @@ import { Label } from './Label';
 import { Thread } from './playgroundApi/thread';
 import { Role } from './Role';
 import { InferenceOpts, PaginationData } from './Schema';
+import { SchemaHttpValidationError } from './playgroundApi/v5playgroundApiSchema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
@@ -127,33 +128,35 @@ export const parseMessage = (message: JSONMessage): Message => {
     };
 };
 
-export class MessageClient extends ClientBase {
-    deleteThread = async (threadId: string): Promise<void> => {
-        const url = this.createURL(MessageApiUrl, threadId);
+type StreamBadRequestErrorOptions = {
+    status?: number;
+    cause?: ErrorOptions['cause'];
+};
 
-        return this.fetch(url, { method: 'DELETE' });
-    };
-}
-
+// should clean these up along with mutations and such, leaving as-is for now
 export class StreamBadRequestError extends Error {
-    status: number;
-    description: string | undefined;
+    status?: number;
+    description: string;
 
-    constructor(status: number, description?: string) {
-        super(`Received a Bad Request (${status}) response from the API: ${description}`);
+    constructor(description: string, options: StreamBadRequestErrorOptions = {}) {
+        super(description, { cause: options.cause });
 
+        this.description = description
         this.name = 'StreamBadRequestError';
-        this.status = status;
-        this.description = description;
+        this.status = options.status;
     }
 }
 
 export class StreamValidationError extends StreamBadRequestError {
     validationErrors: string[];
 
-    constructor(status: number, validationErrors: string[]) {
+    constructor(error: SchemaHttpValidationError) {
+        const validationErrors = error.errors.map((err) =>
+            err.loc.length > 0 ? `${err.loc.join(', ')}: ${err.msg}` : err.msg
+        );
+
         const description = validationErrors.join(';');
-        super(status, description);
+        super(`${error.title}: ${description}`, { status: error.status, cause: error });
 
         this.validationErrors = validationErrors;
     }
