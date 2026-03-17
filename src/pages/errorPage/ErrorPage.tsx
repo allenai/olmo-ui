@@ -1,4 +1,7 @@
+import { useEffect, useRef } from 'react';
 import { useRouteError } from 'react-router-dom';
+
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 import { AuthErrorPage } from './AuthErrorPage';
 import {
@@ -13,6 +16,16 @@ import { GenericErrorPage } from './GenericErrorPage';
 
 export const ErrorPage = () => {
     const error = useRouteError();
+    const hasReportedErrorRef = useRef(false);
+
+    useEffect(() => {
+        // We can move this effect to RouterProvider.onError if we move to React Router v7
+        if (!hasReportedErrorRef.current) {
+            analyticsClient.trackError(error);
+
+            hasReportedErrorRef.current = true;
+        }
+    });
 
     if (isMissingAuthorizationError(error)) {
         return (
