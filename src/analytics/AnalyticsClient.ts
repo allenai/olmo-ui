@@ -1,3 +1,5 @@
+import type { ErrorInfo } from 'react';
+
 import { plausibleTrackEvent, plausibleTrackPageview } from './plausible';
 
 export enum EventType {
@@ -43,6 +45,11 @@ const generatePlausibleEvent = (et: EventType, details?: AnalyticsEventDetails):
         details: details ?? {},
     };
 };
+
+type ErrorBody = {
+    componentStack?: string;
+    digest?: string;
+} & ({ error: string } | { name: string; stack?: string; message: string });
 
 export class AnalyticsClient {
     /**
@@ -140,6 +147,20 @@ export class AnalyticsClient {
 
     trackCaptchaNotLoaded() {
         this.track(EventType.CaptchaNotLoaded);
+    }
+
+    trackError(error: unknown, info?: ErrorInfo) {
+        const body: ErrorBody =
+            error instanceof Error
+                ? { stack: error.stack, name: error.name, message: error.message }
+                : { error: JSON.stringify(error) };
+
+        if (info != null) {
+            body.componentStack = info.componentStack ?? undefined;
+            body.digest = info.digest ?? undefined;
+        }
+
+        this.track(EventType.Error, body);
     }
 }
 

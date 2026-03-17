@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useRouteError } from 'react-router-dom';
 
-import { analyticsClient, EventType } from '@/analytics/AnalyticsClient';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 import { AuthErrorPage } from './AuthErrorPage';
 import {
@@ -19,12 +19,11 @@ export const ErrorPage = () => {
     const hasReportedErrorRef = useRef(false);
 
     useEffect(() => {
+        // We can move this effect to RouterProvider.onError if we move to React Router v7
         if (!hasReportedErrorRef.current) {
-            const body =
-                error instanceof Error
-                    ? { stack: error.stack, name: error.name, message: error.message }
-                    : { error: JSON.stringify(error) };
-            analyticsClient.track(EventType.Error, body);
+            analyticsClient.trackError(error);
+
+            hasReportedErrorRef.current = true;
         }
     });
 

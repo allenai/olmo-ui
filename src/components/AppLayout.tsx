@@ -2,7 +2,7 @@ import { Container, Paper, PaperProps } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { analyticsClient, EventType } from '@/analytics/AnalyticsClient';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { DESKTOP_LAYOUT_BREAKPOINT, SMALL_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { DesktopPageControls } from './DesktopPageControls';
@@ -56,13 +56,9 @@ export const AppLayout = ({ children }: AppLayout) => {
                 maxWidth={false}>
                 <ErrorBoundary
                     FallbackComponent={ErrorBoundaryFallback}
-                    onError={(error, info) =>
-                        analyticsClient.track(EventType.Error, {
-                            error: JSON.stringify(error),
-                            stack: info.componentStack ?? null,
-                            digest: info.digest ?? null,
-                        })
-                    }>
+                    onError={(error, info) => {
+                        analyticsClient.trackError(error, info);
+                    }}>
                     {children}
                 </ErrorBoundary>
             </Container>
