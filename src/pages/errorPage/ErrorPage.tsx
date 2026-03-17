@@ -1,4 +1,7 @@
+import { useEffect, useRef } from 'react';
 import { useRouteError } from 'react-router-dom';
+
+import { analyticsClient, EventType } from '@/analytics/AnalyticsClient';
 
 import { AuthErrorPage } from './AuthErrorPage';
 import {
@@ -13,6 +16,17 @@ import { GenericErrorPage } from './GenericErrorPage';
 
 export const ErrorPage = () => {
     const error = useRouteError();
+    const hasReportedErrorRef = useRef(false);
+
+    useEffect(() => {
+        if (!hasReportedErrorRef.current) {
+            const body =
+                error instanceof Error
+                    ? { stack: error.stack, name: error.name, message: error.message }
+                    : { error: JSON.stringify(error) };
+            analyticsClient.track(EventType.Error, body);
+        }
+    });
 
     if (isMissingAuthorizationError(error)) {
         return (
