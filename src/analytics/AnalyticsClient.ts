@@ -20,6 +20,8 @@ export enum EventType {
     PromptOlmoTrace = 'prompt.corpuslink',
     CaptchaError = 'queryform.captcha-error',
     CaptchaNotLoaded = 'queryform.captcha-not-loaded',
+
+    Error = 'error',
 }
 
 export type PromptMessageDetails = {

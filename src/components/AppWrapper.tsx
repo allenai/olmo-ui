@@ -3,12 +3,15 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReCaptchaProvider } from '@wojtekmaj/react-recaptcha-v3';
 import { PropsWithChildren } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
+import { analyticsClient, EventType } from '@/analytics/AnalyticsClient';
 import { queryClient } from '@/api/query-client';
 
 import { FeatureToggleProvider } from '../FeatureToggleContext';
 import { uiRefreshOlmoTheme } from '../olmoTheme';
 import { ColorModeProvider } from './ColorModeProvider';
+import { ErrorBoundaryFallback } from './ErrorBoundaryFallback';
 import { ScrollToTopOnPageChange } from './ScrollToTopOnPageChange';
 
 const GlobalStyle = () => (
@@ -46,7 +49,17 @@ export const AppWrapper = ({ children, theme = uiRefreshOlmoTheme }: VarnishedAp
             <FeatureToggleProvider>
                 <ScrollToTopOnPageChange />
                 <ColorModeProvider theme={theme}>
-                    <ReCaptchaWrapper>{children}</ReCaptchaWrapper>
+                    <ErrorBoundary
+                        FallbackComponent={ErrorBoundaryFallback}
+                        onError={(error, info) =>
+                            analyticsClient.track(EventType.Error, {
+                                error: JSON.stringify(error),
+                                stack: info.componentStack ?? null,
+                                digest: info.digest ?? null,
+                            })
+                        }>
+                        <ReCaptchaWrapper>{children}</ReCaptchaWrapper>
+                    </ErrorBoundary>
                 </ColorModeProvider>
             </FeatureToggleProvider>
             <ReactQueryDevtools />
