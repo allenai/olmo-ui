@@ -83,9 +83,7 @@ export const ColorModeProvider = ({
                 setColorPreference,
             }}>
             <ThemeProvider theme={combinedTheme}>
-                <VarnishApp layout="left-aligned" theme={combinedTheme}>
-                    {children}
-                </VarnishApp>
+                <VarnishApp theme={combinedTheme}>{children}</VarnishApp>
             </ThemeProvider>
         </ColorModeContext.Provider>
     );

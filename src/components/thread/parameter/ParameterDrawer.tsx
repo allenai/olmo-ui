@@ -46,10 +46,7 @@ export const MobileParameterDrawer = ({ children }: PropsWithChildren): ReactEle
                         gap={2}
                         alignItems="center">
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
-                            <Typography
-                                variant="h5"
-                                margin={0}
-                                color={(theme) => theme.palette.text.primary}>
+                            <Typography variant="h5" margin={0} color="textPrimary">
                                 Parameters
                             </Typography>
                         </ListSubheader>
