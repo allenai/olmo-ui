@@ -244,7 +244,13 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                             }
                         }
 
-                        if (e instanceof error.HTTPError) {
+                        if (e instanceof error.ProblemError) {
+                            if (e.type === 'unavailable-olmotrace-index') {
+                                attributions.attributionRequestError = 'model-not-supported';
+                            }
+                        }
+
+                        if (e instanceof error.HTTPError || e instanceof error.ProblemError) {
                             if (e.status === 503) {
                                 attributions.attributionRequestError = 'overloaded';
                             }
