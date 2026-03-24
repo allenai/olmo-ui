@@ -1,7 +1,7 @@
-import { loadEnv } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
-import { configDefaults, defineConfig, defineProject } from 'vitest/config';
-import react from '@vitejs/plugin-react-swc'
+/// <reference types="vitest/config" />
+import { loadEnv, defineConfig } from 'vite';
+import { configDefaults, defineProject } from 'vitest/config';
+import react from '@vitejs/plugin-react'
 import svgr from "vite-plugin-svgr";
 import checker from 'vite-plugin-checker';
 import environment from 'vite-plugin-environment'
@@ -9,6 +9,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { playwright } from '@vitest/browser-playwright'
 
 const dirname =
   typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
@@ -21,7 +22,6 @@ export default defineConfig(({ mode }) => {
             sourcemap: true
         },
         plugins: [
-            tsconfigPaths(), 
             react(), 
             svgr(), 
             checker({
@@ -45,7 +45,7 @@ export default defineConfig(({ mode }) => {
                     test: {
                         name: 'base',
                         globals: true,
-                        environment: 'jsdom',
+                        environment: 'happy-dom',
                         setupFiles: ['./vitest-setup.ts'],
                         exclude: [...configDefaults.exclude, 'e2e/*'],
                         restoreMocks: true,
@@ -68,7 +68,7 @@ export default defineConfig(({ mode }) => {
                             enabled: true,
                             headless: true,
                             instances: [{ browser: 'chromium' }],
-                            provider: 'playwright'
+                            provider: playwright()
                         },
                         setupFiles: ['.storybook/vitest.setup.ts'],
                     },
@@ -79,6 +79,7 @@ export default defineConfig(({ mode }) => {
         // Ref: https://github.com/plouc/nivo/issues/2310
         resolve: {
             mainFields: ['module', 'browser', 'jsnext:main', 'jsnext'],
+            tsconfigPaths: true
         },
         server: {
             proxy: {

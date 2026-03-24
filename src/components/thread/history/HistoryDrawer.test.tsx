@@ -40,13 +40,15 @@ vi.mock('react-router-dom', () => ({
 
 beforeEach(() => {
     // IntersectionObserver isn't available in test environment
-    const mockIntersectionObserver = vi.fn();
-    mockIntersectionObserver.mockReturnValue({
-        observe: () => null,
-        unobserve: () => null,
-        disconnect: () => null,
-    });
-    window.IntersectionObserver = mockIntersectionObserver;
+    const IntersectionObserverMock = vi.fn(
+        class {
+            disconnect = vi.fn();
+            observe = vi.fn();
+            takeRecords = vi.fn();
+            unobserve = vi.fn();
+        }
+    );
+    vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
     vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
     vi.spyOn(useCloseDrawerOnNavigation, 'useCloseDrawerOnNavigation').mockImplementation(() => {});
 });
