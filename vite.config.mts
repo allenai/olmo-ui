@@ -45,11 +45,13 @@ export default defineConfig(({ mode }) => {
                     test: {
                         name: 'base',
                         globals: true,
-                        environment: 'happy-dom',
+                        environment: 'jsdom',
                         setupFiles: ['./vitest-setup.ts'],
                         exclude: [...configDefaults.exclude, 'e2e/*'],
                         restoreMocks: true,
                         env: loadEnv(mode, process.cwd(), ''),
+                        mockReset: true,
+                        unstubGlobals: true
                     }
                 },
                 {
