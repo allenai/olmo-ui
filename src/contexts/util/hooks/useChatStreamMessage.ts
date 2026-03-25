@@ -43,20 +43,22 @@ const useChatStreamMessageBase = (
         (_threadViewId: string) => {
             const thread = getThread(threadId);
             if (thread) {
-                // better way to determine if the thrad is valid?
+                // better way to determine if the thread is valid?
                 const hasAssistantMessage = thread.messages.some((msg) => msg.role === 'assistant');
                 const { queryKey } = threadOptions(thread.id);
 
-                // sync
-                queryClient.removeQueries({ queryKey, exact: true });
+                queryClient
+                    .invalidateQueries({ queryKey, exact: true })
+                    .catch((reason: unknown) => {
+                        console.error(reason);
+                    });
 
                 if (hasAssistantMessage) {
-                    navigate(pathGenerator(thread.id), { replace: true });
                     return;
                 }
             }
-            // back to the playground root
-            navigate(links.playground);
+            // back to the playground root -- replace state the previous URL is invalid
+            navigate(links.playground, { replace: true });
         },
         [threadId, navigate]
     );
