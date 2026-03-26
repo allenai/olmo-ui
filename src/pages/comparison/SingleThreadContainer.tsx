@@ -1,16 +1,14 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { ThreadId, useThread } from '@/api/playgroundApi/thread';
-import { Role } from '@/api/Role';
+import { ThreadId } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
+import { ThreadDisplayContent } from '@/components/thread/ThreadDisplay/ThreadDisplayContainer';
 import { ThreadPlaceholder } from '@/components/thread/ThreadPlaceholder/ThreadPlaceholder';
-import { StreamingThread } from '@/contexts/stream-types';
-import { RemoteState } from '@/contexts/util';
 
 import { CompareModelSelect } from './CompareModelSelect';
-import { ThreadViewProvider, useThreadView } from './ThreadViewContext';
+import { ThreadViewProvider } from './ThreadViewContext';
 
 const singleThreadClasses = css({
     display: 'flex',
@@ -37,45 +35,13 @@ export const SingleThreadContainer = ({
         <div className={singleThreadClasses}>
             <ThreadViewProvider threadId={threadRootId} threadViewId={threadViewIdx}>
                 <CompareModelSelect threadViewId={threadViewIdx} models={models} />
-                <SingleThread threadRootId={threadRootId} />
+                <ThreadDisplayContent
+                    threadRootId={threadRootId}
+                    selectedMessageId={undefined}
+                    shouldShowAttributionHighlightDescription={false}
+                />
             </ThreadViewProvider>
         </div>
-    );
-};
-
-interface SingleThreadProps {
-    threadRootId: ThreadId;
-}
-
-const SingleThread = ({ threadRootId }: SingleThreadProps) => {
-    const { streamingMessageId, isUpdatingMessageContent, remoteState } = useThreadView();
-    const shouldShowAttributionHighlightDescription = false;
-    const selectedMessageId = undefined;
-
-    const { data } = useThread(
-        threadRootId,
-        (thread): StreamingThread => thread as StreamingThread
-    );
-
-    const messages = data?.messages ?? [];
-    const childMessageIds = messages.map((message) => {
-        return message.id;
-    });
-
-    const isLastMessageUserMessage = messages.at(-1)?.role === Role.User;
-    const isWaitingForAssistantResponse =
-        remoteState === RemoteState.Loading && isLastMessageUserMessage;
-
-    return (
-        <ThreadDisplay
-            childMessageIds={childMessageIds}
-            shouldShowAttributionHighlightDescription={shouldShowAttributionHighlightDescription}
-            streamingMessageId={streamingMessageId ?? null}
-            isUpdatingMessageContent={isUpdatingMessageContent ?? false}
-            selectedMessageId={selectedMessageId}
-            hasError={remoteState === RemoteState.Error}
-            showLoadingInThread={isWaitingForAssistantResponse}
-        />
     );
 };
 

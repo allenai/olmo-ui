@@ -1,3 +1,5 @@
+import type { SchemaProblem } from './playgroundApi/v5playgroundApiSchema';
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace error {
     export interface Details {
@@ -42,12 +44,42 @@ export namespace error {
         }
     }
 
+    export class ProblemError extends Error {
+        public title: string;
+        public type: string;
+        public status: number;
+        public detail?: string | null;
+
+        constructor(problem: SchemaProblem) {
+            const { title, type, status, detail } = problem;
+
+            super(detail ?? title);
+            this.title = title;
+            this.type = type;
+            this.status = status;
+            this.detail = detail;
+        }
+    }
+
     export function isErrorDetailsPayload(error: unknown): error is Details {
         return typeof error === 'object' && error != null && 'code' in error && 'message' in error;
     }
 
     export function isValidationErrorPayload(error: object): error is ValidationErrorDetails {
         return isErrorDetailsPayload(error) && 'validation_errors' in error;
+    }
+
+    export function isProblem(error: unknown): error is SchemaProblem {
+        return (
+            typeof error === 'object' &&
+            error != null &&
+            'title' in error &&
+            typeof error.title === 'string' &&
+            'type' in error &&
+            typeof error.type === 'string' &&
+            'status' in error &&
+            typeof error.status === 'number'
+        );
     }
 
     export interface Payload {
@@ -64,6 +96,17 @@ export namespace error {
                     return new ValidationError(err.error.message, err.error.validation_errors);
                 }
                 return new HTTPError(err.error.message, r);
+            }
+
+            case 'application/problem+json': {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const err = await r.json();
+
+                if (isProblem(err)) {
+                    return new ProblemError(err);
+                } else {
+                    return new HTTPError(`HTTP ${r.status}: ${r.statusText}`, r);
+                }
             }
             // This is probably an error returned by the NGINX reverse proxy. Don't attempt to
             // parse the response. Use the HTTP status information.

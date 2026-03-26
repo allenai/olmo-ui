@@ -237,7 +237,9 @@ export const TermsAndDataCollectionModal = ({
                             variant="contained"
                             type="submit"
                             form={formId}
-                            isDisabled={!formContext.formState.isValid}
+                            isDisabled={
+                                !formContext.formState.isValid || formContext.formState.isSubmitting
+                            }
                             onClick={formContext.handleSubmit(handleSubmit)}>
                             Accept terms & use Playground
                         </Button>

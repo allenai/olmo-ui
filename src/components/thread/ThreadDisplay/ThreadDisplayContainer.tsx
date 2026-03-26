@@ -14,34 +14,20 @@ import { messageAttributionsSelector } from '@/slices/attribution/attribution-se
 import { SelectedThreadLoaderData } from './selectedThreadPageLoader';
 import { ThreadDisplay } from './ThreadDisplay';
 
-const ThreadDisplayContent = () => {
-    const {
-        threadId: selectedThreadRootId,
-        streamingMessageId,
-        isUpdatingMessageContent,
-        remoteState,
-    } = useThreadView();
+interface ThreadDisplayContentProps {
+    threadRootId: string;
+    selectedMessageId?: string | null;
+    shouldShowAttributionHighlightDescription: boolean;
+}
 
-    const shouldShowAttributionHighlightDescription = useAppContext((state) => {
-        const attributions = messageAttributionsSelector(state);
-        return attributions != null && Object.keys(attributions.spans).length > 0;
-    });
+export const ThreadDisplayContent = ({
+    threadRootId,
+    selectedMessageId,
+    shouldShowAttributionHighlightDescription,
+}: ThreadDisplayContentProps) => {
+    const { streamingMessageId, isUpdatingMessageContent, remoteState } = useThreadView();
 
-    // Handle scroll to new user message
-    useStreamEvent('onStreamStart', (_threadViewId: string) => {
-        const element = document.querySelector('[data-testid="thread-display"]');
-        if (element) {
-            element.scrollTo({
-                top: element.scrollHeight,
-            });
-        }
-    });
-
-    // get selectedID
-    const [searchParams, _] = useSearchParams();
-    const selectedMessageId = searchParams.get(PARAM_SELECTED_MESSAGE);
-
-    const { data, error: _error } = useThread(selectedThreadRootId);
+    const { data, error: _error } = useThread(threadRootId);
     // TODO handle errors: https://github.com/allenai/playground-issues-repo/issues/412
     const messages = data?.messages ?? [];
     const childMessageIds = messages.map((message) => message.id);
@@ -77,9 +63,34 @@ export const ThreadDisplayContainer = () => {
         }
     }, [selectedThreadRootId, loaderData?.selectedModelId, queryContext]);
 
+    // Handle scroll to new user message
+    useStreamEvent('onStreamStart', (_threadViewId: string) => {
+        const element = document.querySelector('[data-testid="thread-display"]');
+        if (element) {
+            element.scrollTo({
+                top: element.scrollHeight,
+            });
+        }
+    });
+
+    // get selectedID
+    const [searchParams, _] = useSearchParams();
+    const selectedMessageId = searchParams.get(PARAM_SELECTED_MESSAGE);
+
+    const shouldShowAttributionHighlightDescription = useAppContext((state) => {
+        const attributions = messageAttributionsSelector(state);
+        return attributions != null && Object.keys(attributions.spans).length > 0;
+    });
+
     return (
         <ThreadViewProvider threadId={selectedThreadRootId} threadViewId="0">
-            <ThreadDisplayContent />
+            <ThreadDisplayContent
+                threadRootId={selectedThreadRootId}
+                selectedMessageId={selectedMessageId}
+                shouldShowAttributionHighlightDescription={
+                    shouldShowAttributionHighlightDescription
+                }
+            />
         </ThreadViewProvider>
     );
 };
