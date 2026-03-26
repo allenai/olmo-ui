@@ -44,16 +44,20 @@ const useChatStreamMessageBase = (
             const thread = getThread(threadId);
             if (thread) {
                 // better way to determine if the thread is valid?
-                const hasAssistantMessage = thread.messages.some((msg) => msg.role === 'assistant');
-                const { queryKey } = threadOptions(thread.id);
-
-                queryClient
-                    .invalidateQueries({ queryKey, exact: true })
-                    .catch((reason: unknown) => {
-                        console.error(reason);
-                    });
+                //
+                // one assistant message that isnt the one streaming in
+                const hasAssistantMessage = thread.messages.some(
+                    (msg) => msg.role === 'assistant' && msg.id !== thread.streamingMessageId
+                );
 
                 if (hasAssistantMessage) {
+                    const { queryKey } = threadOptions(thread.id);
+
+                    queryClient
+                        .invalidateQueries({ queryKey, exact: true })
+                        .catch((reason: unknown) => {
+                            console.error(reason);
+                        });
                     return;
                 }
             }
