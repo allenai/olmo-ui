@@ -48,7 +48,7 @@ const MatchingDocumentsText = ({
 };
 
 const AttributionDocumentGroupTitle = styled(Typography)(({ theme }) => ({
-    fontWeight: theme.font.weight.semiBold,
+    fontWeight: theme.typography.fontWeightMedium,
     color:
         theme.palette.mode === 'dark' ? theme.palette.secondary.main : theme.palette.text.primary,
     opacity: theme.palette.mode === 'light' ? 0.5 : undefined,

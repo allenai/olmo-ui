@@ -224,7 +224,7 @@ const LocateSpanButton = ({
                     padding: 0,
                     fontWeight: 'semiBold',
                     '[data-selected-document="true"] &': {
-                        fontWeight: theme.font.weight.semiBold,
+                        fontWeight: theme.typography.fontWeightMedium,
                         color: theme.palette.secondary.contrastText,
                     },
                 })}
