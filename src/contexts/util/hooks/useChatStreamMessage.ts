@@ -43,9 +43,8 @@ const useChatStreamMessageBase = (
         (_threadViewId: string) => {
             const thread = getThread(threadId);
             if (thread) {
-                // better way to determine if the thread is valid?
-                //
-                // one assistant message that isnt the one streaming in
+                // thread considered "valid" if:
+                // there is one assistant message that isnt the currently streaming in
                 const hasAssistantMessage = thread.messages.some(
                     (msg) => msg.role === 'assistant' && msg.id !== thread.streamingMessageId
                 );
@@ -61,7 +60,7 @@ const useChatStreamMessageBase = (
                     return;
                 }
             }
-            // back to the playground root -- replace state the previous URL is invalid
+            // replace state the previous URL is invalid
             navigate(links.playground, { replace: true });
         },
         [threadId, navigate]
