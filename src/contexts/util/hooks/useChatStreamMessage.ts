@@ -43,11 +43,10 @@ const useChatStreamMessageBase = (
         (_threadViewId: string) => {
             const thread = getThread(threadId);
             if (thread) {
-                // thread considered "valid" if:
-                // there is one assistant message that isnt the currently streaming in
-                const isThreadComplete = thread.messages.some((msg) => msg.final);
+                // if a message is marked `final` then the URL is valid
+                const threadHasFinalMessage = thread.messages.some((msg) => msg.final);
 
-                if (isThreadComplete) {
+                if (threadHasFinalMessage) {
                     const { queryKey } = threadOptions(thread.id);
 
                     queryClient
