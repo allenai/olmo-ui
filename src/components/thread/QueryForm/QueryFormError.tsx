@@ -6,7 +6,7 @@ export const QueryFormError = ({ children }: PropsWithChildren): ReactNode => (
         variant="subtitle2"
         component="p"
         sx={{ alignSelf: 'center', textAlign: 'center' }}
-        color="error">
+        color={(theme) => theme.palette.error.main}>
         {children}
     </Typography>
 );
