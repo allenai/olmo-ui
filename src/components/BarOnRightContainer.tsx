@@ -1,4 +1,3 @@
-import { Theme } from '@mui/material';
 import styled from 'styled-components';
 
 interface Props {
@@ -10,7 +9,7 @@ export const BarOnRightContainer = ({ children, displayBar = false }: Props) => 
 };
 
 const Wrapper = styled.div<{ displayBar?: boolean }>`
-    border-right: ${({ displayBar, theme }: { displayBar?: boolean; theme: Theme }) =>
-        displayBar ? `6px solid ${theme.palette.warning.dark}` : `transparent`};
+    border-right: ${({ displayBar, theme }) =>
+        displayBar ? `6px solid ${theme.color2.O7}` : `transparent`};
     margin-right: ${({ displayBar }) => (displayBar ? `10px` : `0px`)};
 `;
