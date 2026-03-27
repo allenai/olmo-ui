@@ -1,8 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { type To, useNavigate } from 'react-router-dom';
 
+import { threadOptions } from '@/api/playgroundApi/thread';
 import type { SchemaStartThreadChunk } from '@/api/playgroundApi/v5playgroundApiSchema';
+import { queryClient } from '@/api/query-client';
 import { useStreamMessage } from '@/contexts/streamMessage';
+import { getThread } from '@/contexts/ThreadProviderHelpers';
 import { links } from '@/Links';
 
 import {
@@ -35,6 +38,32 @@ const useChatStreamMessageBase = (
 
     // Handle nav on first message
     useStreamEvent('onNewThread', handleNewThread);
+
+    const handleAbortStream = useCallback(
+        (_threadViewId: string) => {
+            const thread = getThread(threadId);
+            if (thread) {
+                // if a message is marked `final` then the URL is valid
+                const threadHasFinalMessage = thread.messages.some((msg) => msg.final);
+
+                if (threadHasFinalMessage) {
+                    const { queryKey } = threadOptions(thread.id);
+
+                    queryClient
+                        .invalidateQueries({ queryKey, exact: true })
+                        .catch((reason: unknown) => {
+                            console.error(reason);
+                        });
+                    return;
+                }
+            }
+            // replace state the previous URL is invalid
+            navigate(links.playground, { replace: true });
+        },
+        [threadId, navigate]
+    );
+
+    useStreamEvent('onAbortStream', handleAbortStream);
 
     return streamCallbacks;
 };

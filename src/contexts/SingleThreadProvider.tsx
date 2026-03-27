@@ -250,18 +250,19 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             });
         },
         [
-            addSnackMessage,
-            inferenceOpts,
             selectedModel,
-            streamMessage.completeStream,
-            streamMessage.mutateAsync,
-            streamMessage.onNewThread,
             threadId,
+            inferenceOpts,
             userToolDefinitions,
             selectedTools,
             isToolCallingEnabled,
             bypassSafetyCheck,
+            streamMessage.mutateAsync,
+            streamMessage.onStreamStart,
+            streamMessage.onNewThread,
+            streamMessage.completeStream,
             executeRecaptcha,
+            addSnackMessage,
             extraParameters,
         ]
     );
