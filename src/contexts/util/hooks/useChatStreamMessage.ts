@@ -45,11 +45,9 @@ const useChatStreamMessageBase = (
             if (thread) {
                 // thread considered "valid" if:
                 // there is one assistant message that isnt the currently streaming in
-                const hasAssistantMessage = thread.messages.some(
-                    (msg) => msg.role === 'assistant' && msg.id !== thread.streamingMessageId
-                );
+                const isThreadComplete = thread.messages.some((msg) => msg.final);
 
-                if (hasAssistantMessage) {
+                if (isThreadComplete) {
                     const { queryKey } = threadOptions(thread.id);
 
                     queryClient
