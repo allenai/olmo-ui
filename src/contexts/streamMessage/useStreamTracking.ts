@@ -52,6 +52,13 @@ export const useStreamTracking = (
         [callbacks]
     );
 
+    const handleAbortStream = useCallback(
+        (threadViewId: ThreadViewId) => {
+            callbacks.onAbortStream?.(threadViewId);
+        },
+        [callbacks]
+    );
+
     const handleErrors = (
         error: SchemaProblem | SchemaHttpValidationError,
         response: Response
@@ -94,8 +101,9 @@ export const useStreamTracking = (
 
     // Abort functionality
     const abortAllStreams = useCallback(() => {
-        abortControllersRef.current.forEach((controller, _threadViewId) => {
+        abortControllersRef.current.forEach((controller, threadViewId) => {
             controller.abort();
+            handleAbortStream(threadViewId);
         });
         abortControllersRef.current.clear();
         clearAllActiveStreams();
