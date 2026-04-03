@@ -13,6 +13,7 @@ export type OnCompleteStreamCallback = (
     threadViewId: string,
     message?: StreamingMessageResponse
 ) => void;
+export type OnAbortStreamCallback = (threadViewId: string) => void;
 export type OnErrorCallback = (threadViewId: string, error: unknown) => void;
 
 // Event name to callback type mapping
@@ -21,6 +22,7 @@ export interface StreamEventMap {
     onNewUserMessage: OnNewUserMessageCallback;
     onNewThread: OnNewThreadCallback;
     onCompleteStream: OnCompleteStreamCallback;
+    onAbortStream: OnAbortStreamCallback;
     onError: OnErrorCallback;
 }
 
@@ -129,6 +131,11 @@ export const createStreamCallbacks = (
         onCompleteStream: (threadViewId: string, message?: StreamingMessageResponse) => {
             callFilteredCallbacks('onCompleteStream', threadViewId, (callback) => {
                 callback(threadViewId, message);
+            });
+        },
+        onAbortStream: (threadViewId: string) => {
+            callFilteredCallbacks('onAbortStream', threadViewId, (callback) => {
+                callback(threadViewId);
             });
         },
         onError: (threadViewId: string, error: unknown) => {

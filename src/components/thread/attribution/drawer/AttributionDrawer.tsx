@@ -35,7 +35,11 @@ export const MobileAttributionDrawer = () => {
                         gap={2}
                         alignItems="center">
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
-                            <Typography component="h2" variant="h5" margin={0} color="textPrimary">
+                            <Typography
+                                component="h2"
+                                variant="h5"
+                                margin={0}
+                                color={(theme) => theme.palette.text.primary}>
                                 OlmoTrace
                             </Typography>
                         </ListSubheader>
