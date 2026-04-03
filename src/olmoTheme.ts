@@ -19,6 +19,7 @@ declare module '@mui/material/styles' {
 
 // extended theme to hold olmo specific values and overrides
 export const uiRefreshOlmoTheme = {
+    cssVariables: { colorSchemeSelector: 'data' },
     // Top-level palette defines CSS variable structure available in all modes
     palette: {
         background: {
