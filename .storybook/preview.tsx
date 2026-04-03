@@ -2,16 +2,16 @@
 import { ReactRenderer, type Preview } from '@storybook/react-vite'
 import { withThemeByClassName, withThemeFromJSXProvider } from '@storybook/addon-themes'
 import { ThemeProvider, Paper } from '@mui/material';
-import { olmoThemePaletteMode, uiRefreshOlmoTheme } from '@/olmoTheme';
+import { uiRefreshOlmoTheme } from '@/olmoTheme';
 import { getTheme } from '@allenai/varnish2/theme';
-import { fn } from 'storybook/test';
-import { ColorModeContext } from '@/components/ColorModeProvider';
+import React from 'react';
 
 import '../styled-system/styles.css'
 import './custom.css'
-import { createMemoryRouter, MemoryRouter, RouterProvider, useRouteError } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { BubbleError } from '@/utils/test/BubbleError';
 
+const mergedTheme = getTheme(uiRefreshOlmoTheme);
 
 
 
@@ -45,28 +45,16 @@ const preview: Preview = {
     (Story) => <Paper><Story /></Paper>,
     withThemeFromJSXProvider({
       themes: {
-        light: olmoThemePaletteMode(getTheme(uiRefreshOlmoTheme), 'light'),
-        dark: olmoThemePaletteMode(getTheme(uiRefreshOlmoTheme), 'dark')
+        light: { mode: 'light' as const },
+        dark: { mode: 'dark' as const },
       },
-      Provider: ThemeProvider
+      Provider: ({ theme: { mode }, children }: { theme: { mode: 'light' | 'dark' }, children: React.ReactNode }) => (
+        <ThemeProvider theme={mergedTheme} defaultMode={mode}>
+          {children}
+        </ThemeProvider>
+      )
     }),
-    withThemeFromJSXProvider({
-      themes: {
-        light: {
-          colorMode: 'light',
-          colorPreference: 'light',
-          setColorPreference: fn()
-        },
-        dark: {
-          colorMode: 'dark',
-          colorPreference: 'dark',
-          setColorPreference: fn()
-        }
-      },
-      // @ts-expect-error - Provider is typed as `any`, we're assuming that it accepts `theme` and `children` props
-       Provider: ({ theme, children }) => <ColorModeContext.Provider value={theme}>{children}</ColorModeContext.Provider>
-    }),
-    (Story) => { const router = createMemoryRouter([{ path: '/', element: <Story />, errorElement: <BubbleError />}]); return <RouterProvider router={router} />}
+(Story) => { const router = createMemoryRouter([{ path: '/', element: <Story />, errorElement: <BubbleError />}]); return <RouterProvider router={router} />}
   ]
 };
 

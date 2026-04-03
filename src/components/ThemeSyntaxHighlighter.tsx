@@ -1,6 +1,6 @@
 import { CodeBlock, type CodeBlockProps } from '@allenai/varnish-ui';
+import { useColorScheme } from '@mui/material';
 
-import { useColorMode } from './ColorModeProvider';
 import { MathBlock } from './markdownMath/MathBlock';
 
 type ThemeSyntaxHighlighterProps = Omit<CodeBlockProps, 'value'> & {
@@ -13,7 +13,8 @@ export const ThemeSyntaxHighlighter = ({
     children,
     ...rest
 }: ThemeSyntaxHighlighterProps) => {
-    const { colorMode } = useColorMode();
+    const { mode, systemMode } = useColorScheme();
+    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
     if (language === 'math') {
         return <MathBlock inline={inline}>{children}</MathBlock>;
     }

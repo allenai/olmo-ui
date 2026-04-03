@@ -41,10 +41,10 @@
     react-markdown "^10.1.0"
     react-syntax-highlighter "^15.6.6"
 
-"@allenai/varnish2@^4.0.0-alpha.0":
-  version "4.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-4.0.0-alpha.0.tgz#c25eaf9244ba1a8e0bf0ba5454158c58b45754fb"
-  integrity sha512-6Wtpsoi4es6bBd4vlJBP1e93SwwpRx+x3tfnmCIk/oYSirA+Oci9ORWQCF2SRyXHLABRIRhzWDr+qD586cujuw==
+"@allenai/varnish2@^4.0.1-alpha.0":
+  version "4.0.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-4.0.1-alpha.0.tgz#0a51f13d3ec41c8d0e05998b00d662bf487dd06f"
+  integrity sha512-UJ+CPIpVnz11OQ5o4/RsqgYDulxojNbB+ZQQScuMth69JtnSl+DIZu90U9Nk1zmNZe6NK/HkHbt1DW6j04NgZA==
   dependencies:
     "@allenai/varnish-theme" "^3.0.9-alpha.0"
     react-markdown "^9.0.1"

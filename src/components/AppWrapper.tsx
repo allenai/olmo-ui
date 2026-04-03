@@ -8,7 +8,7 @@ import { queryClient } from '@/api/query-client';
 
 import { FeatureToggleProvider } from '../FeatureToggleContext';
 import { uiRefreshOlmoTheme } from '../olmoTheme';
-import { ColorModeProvider } from './ColorModeProvider';
+import { VarnishAppWithColorMode } from './ColorModeProvider';
 import { ScrollToTopOnPageChange } from './ScrollToTopOnPageChange';
 
 const GlobalStyle = () => (
@@ -45,9 +45,9 @@ export const AppWrapper = ({ children, theme = uiRefreshOlmoTheme }: VarnishedAp
         <QueryClientProvider client={queryClient}>
             <FeatureToggleProvider>
                 <ScrollToTopOnPageChange />
-                <ColorModeProvider theme={theme}>
+                <VarnishAppWithColorMode theme={theme}>
                     <ReCaptchaWrapper>{children}</ReCaptchaWrapper>
-                </ColorModeProvider>
+                </VarnishAppWithColorMode>
             </FeatureToggleProvider>
             <ReactQueryDevtools />
         </QueryClientProvider>

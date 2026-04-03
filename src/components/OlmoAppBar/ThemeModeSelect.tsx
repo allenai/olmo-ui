@@ -13,16 +13,15 @@ import {
     selectClasses,
     SxProps,
     Theme,
+    useColorScheme,
 } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 
-import { ColorPreference, useColorMode } from '../ColorModeProvider';
-
 interface ThemeModeSelectMenuItemProps extends MenuItemProps {
     title: string;
-    mode: ColorPreference;
+    mode: 'light' | 'dark' | 'system';
     themeModeAdaptive?: boolean;
 }
 
@@ -33,8 +32,8 @@ const ThemeModeSelectMenuItem = ({
     onClick,
     ...menuItemProps
 }: ThemeModeSelectMenuItemProps): ReactNode => {
-    const { colorPreference, setColorPreference } = useColorMode();
-    const isSelected = mode === colorPreference;
+    const { mode: muiMode, setMode } = useColorScheme();
+    const isSelected = mode === muiMode;
 
     const sx: SxProps<Theme> = (theme) => ({
         '--theme-select-text-color': theme.palette.common.white,
@@ -74,7 +73,7 @@ const ThemeModeSelectMenuItem = ({
             {...menuItemProps}
             onClick={(e) => {
                 analyticsClient.trackColorModeChange({ colorMode: mode });
-                setColorPreference(mode);
+                setMode(mode);
                 onClick?.(e);
             }}>
             <Box flexGrow={1}>{title}</Box>
@@ -99,10 +98,10 @@ type ThemeModeInputProps = InputBaseProps & {
 };
 
 export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptive?: boolean }) => {
-    const { colorPreference } = useColorMode();
+    const { mode } = useColorScheme();
     const themeOptions: Array<{
         title: string;
-        mode: ColorPreference;
+        mode: 'light' | 'dark' | 'system';
     }> = [
         {
             title: 'System theme',
@@ -119,7 +118,7 @@ export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptiv
     ];
 
     const selectedThemeMode = (
-        themeOptions.find((option) => option.mode === colorPreference) || themeOptions[0]
+        themeOptions.find((option) => option.mode === mode) || themeOptions[0]
     ).mode;
 
     return (

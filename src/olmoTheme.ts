@@ -1,5 +1,5 @@
 import { varnishTheme } from '@allenai/varnish2/theme';
-import { alpha, createTheme, PaletteMode, Theme, ThemeOptions } from '@mui/material';
+import { alpha, ThemeOptions } from '@mui/material';
 
 declare module '@mui/material/styles' {
     interface TypeBackground {
@@ -19,6 +19,7 @@ declare module '@mui/material/styles' {
 
 // extended theme to hold olmo specific values and overrides
 export const uiRefreshOlmoTheme = {
+    // Top-level palette defines CSS variable structure available in all modes
     palette: {
         background: {
             code: varnishTheme.palette.background.reversed,
@@ -31,6 +32,47 @@ export const uiRefreshOlmoTheme = {
             drawer: {
                 primary: varnishTheme.palette.text.reversed,
                 secondary: varnishTheme.palette.primary.dark,
+            },
+        },
+    },
+    colorSchemes: {
+        light: {
+            palette: {
+                error: { main: '#d50000' },
+            },
+        },
+        dark: {
+            palette: {
+                background: {
+                    paper: '#032629',
+                    reversed: varnishTheme.palette.background.paper,
+                    default: '#032629',
+                    drawer: {
+                        primary: varnishTheme.color['dark-teal-100'].hex,
+                        secondary: varnishTheme.color['dark-teal-100'].hex,
+                    },
+                    code: varnishTheme.palette.background.reversed,
+                },
+                text: {
+                    primary: varnishTheme.palette.text.reversed ?? '#FFF',
+                    reversed: varnishTheme.palette.text.primary,
+                    secondary: `color-mix(in srgb, ${varnishTheme.palette.text.reversed} 60%, white)`,
+                    disabled: `color-mix(in srgb, ${varnishTheme.palette.text.reversed} 38%, white)`,
+                    drawer: {
+                        primary: varnishTheme.palette.text.reversed,
+                        secondary: varnishTheme.palette.secondary.main,
+                    },
+                },
+                primary: {
+                    main: varnishTheme.palette.primary.main,
+                    contrastText: varnishTheme.palette.text.reversed ?? '#FFF',
+                },
+                error: { main: '#fe3e3e' },
+                action: {
+                    active: 'rgba(255, 255, 255, 0.54)',
+                    disabled: 'rgba(255, 255, 255, 0.26)',
+                    disabledBackground: 'rgba(255, 255, 255, 0.12)',
+                },
             },
         },
     },
@@ -145,78 +187,3 @@ export const uiRefreshOlmoTheme = {
         },
     },
 } satisfies Partial<ThemeOptions>;
-
-const lightPaletteFromTheme = (theme: Theme): Theme => {
-    return createTheme(theme, {
-        palette: {
-            error: theme.palette.augmentColor({ color: { main: '#d50000' } }),
-        },
-    });
-};
-
-const darkPaletteFromTheme = (theme: Theme): Theme => {
-    const { palette } = theme;
-    const { background, text, primary, action } = palette;
-    return {
-        ...theme,
-        palette: {
-            ...palette,
-            mode: 'dark',
-
-            background: {
-                paper: '#032629',
-                reversed: background.paper,
-                default: '#032629',
-                drawer: {
-                    primary: varnishTheme.color['dark-teal-100'].hex,
-                    secondary: varnishTheme.color['dark-teal-100'].hex,
-                },
-                code: background.reversed,
-            },
-            text: {
-                // ...text,
-                primary: text.reversed ?? '#FFF', // this is required
-                reversed: text.primary,
-
-                // sane-ish defaults? -- MUIs alpha() - ?
-                secondary: `color-mix(in srgb, ${text.reversed} 60%, white)`, // 'rgba(0, 0, 0, 0.6)',
-                disabled: `color-mix(in srgb, ${text.reversed} 38%, white)`, // 'rgba(0, 0, 0, 0.38)',
-
-                drawer: {
-                    primary: text.reversed,
-                    secondary: palette.secondary.main,
-                },
-            },
-            primary: {
-                ...primary,
-
-                contrastText: text.reversed ?? '#FFF', // default
-            },
-            secondary: {
-                ...palette.secondary,
-            },
-            tertiary: {
-                ...palette.tertiary,
-            },
-            error: theme.palette.augmentColor({ color: { main: '#fe3e3e' } }),
-            warning: {
-                ...palette.warning,
-            },
-            info: {
-                ...palette.info,
-            },
-            success: {
-                ...palette.success,
-            },
-            action: {
-                ...action,
-                active: 'rgba(255, 255, 255, 0.54)',
-                disabled: 'rgba(255, 255, 255, 0.26)',
-                disabledBackground: 'rgba(255, 255, 255, 0.12)',
-            },
-        },
-    };
-};
-
-export const olmoThemePaletteMode = (theme: Theme, mode: PaletteMode): Theme =>
-    mode === 'dark' ? darkPaletteFromTheme(theme) : lightPaletteFromTheme(theme);
