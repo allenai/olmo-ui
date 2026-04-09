@@ -34,7 +34,7 @@ export const PrettifySource = ({ document }: PrettySourceProps): ReactNode => {
                     variant="body2"
                     component="span"
                     sx={(theme) => ({
-                        color: theme.palette.text.secondary,
+                        color: theme.vars?.palette.text.secondary,
                         '[data-selected-document=true] &': {
                             color: 'inherit',
                         },

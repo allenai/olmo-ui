@@ -71,16 +71,16 @@ export const CodeBlock = ({
                     <Button
                         variant="outlined"
                         sx={(theme) => ({
-                            color: theme.palette.primary.contrastText,
-                            borderColor: theme.palette.primary.contrastText,
+                            color: theme.vars?.palette.primary.contrastText,
+                            borderColor: theme.vars?.palette.primary.contrastText,
                             backgroundColor: isShowMatchesButtonClicked
-                                ? theme.palette.secondary.main
+                                ? theme.vars?.palette.secondary.main
                                 : undefined,
                             '&:hover': {
                                 backgroundColor: isShowMatchesButtonClicked
-                                    ? theme.palette.secondary.main
-                                    : theme.palette.action.hover,
-                                borderColor: (theme) => theme.palette.primary.contrastText,
+                                    ? theme.vars?.palette.secondary.main
+                                    : theme.vars?.palette.action.hover,
+                                borderColor: (theme) => theme.vars?.palette.primary.contrastText,
                             },
                         })}
                         onClick={() => {

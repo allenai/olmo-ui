@@ -18,7 +18,7 @@ const ErrorMessageWrapper = ({ children }: PropsWithChildren) => {
                 sx={(theme) => ({
                     width: 52.5,
                     height: 55,
-                    fill: theme.palette.text.primary,
+                    fill: theme.vars?.palette.text.primary,
                     opacity: 0.5,
                 })}
             />

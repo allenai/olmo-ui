@@ -40,7 +40,7 @@ const ThemeModeSelectMenuItem = ({
         '--theme-select-background-color': alpha('#032629', 0.6),
 
         '&[data-theme-mode-adaptive="true"]': {
-            '--theme-select-text-color': theme.palette.text.primary,
+            '--theme-select-text-color': theme.vars?.palette.text.primary,
             '--theme-select-background-color': alpha(theme.palette.background.paper, 0.6),
         },
 
@@ -83,7 +83,7 @@ const ThemeModeSelectMenuItem = ({
                         flexDirection: 'row-reverse',
                         justifySelf: 'end',
                         color: themeModeAdaptive
-                            ? theme.palette.primary.contrastText
+                            ? theme.vars?.palette.primary.contrastText
                             : theme.palette.common.white,
                     })}>
                     <Check />
@@ -144,8 +144,8 @@ export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptiv
                         sx: (theme) => ({
                             borderRadius: theme.spacing(1),
                             backgroundColor: themeModeAdaptive
-                                ? theme.palette.background.drawer.secondary
-                                : theme.palette.background.drawer.primary,
+                                ? theme.vars?.palette.background.drawer.secondary
+                                : theme.vars?.palette.background.drawer.primary,
                             overflow: 'hidden',
                             padding: 0,
                             boxShadow: 1,
@@ -174,11 +174,7 @@ const ThemeModeInput = ({ themeModeAdaptive, ...props }: ThemeModeInputProps) =>
         '--theme-select-background-color': alpha(theme.palette.common.white, 0.1),
 
         '&[data-theme-mode-adaptive="true"]': {
-            '--theme-select-text-color': theme.palette.text.primary,
-            '--theme-select-background-color':
-                theme.palette.mode === 'light'
-                    ? theme.palette.background.drawer.secondary
-                    : alpha(theme.palette.common.white, 0.1),
+            '--theme-select-text-color': theme.vars?.palette.text.primary,
         },
 
         borderRadius: '8px',
@@ -188,7 +184,7 @@ const ThemeModeInput = ({ themeModeAdaptive, ...props }: ThemeModeInputProps) =>
         marginBottom: theme.spacing(1),
         border: '1px solid rgba(0, 0, 0, 0.10)',
         '&.Mui-focused': {
-            borderColor: theme.palette.secondary.main,
+            borderColor: theme.vars?.palette.secondary.main,
         },
         [`.${inputBaseClasses.input}`]: {
             paddingBlock: theme.spacing(1),
@@ -202,13 +198,13 @@ const ThemeModeInput = ({ themeModeAdaptive, ...props }: ThemeModeInputProps) =>
                 paddingInlineEnd: theme.spacing(6),
             },
             [`.${inputBaseClasses.focused}`]: {
-                borderColor: theme.palette.secondary.main,
+                borderColor: theme.vars?.palette.secondary.main,
             },
         },
         [`.${selectClasses.icon}`]: {
             marginInlineEnd: theme.spacing(1),
             transform: 'scale(1.2) translateY(0px)',
-            fill: theme.palette.secondary.main,
+            fill: theme.vars?.palette.secondary.main,
         },
     });
 

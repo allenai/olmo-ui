@@ -1,4 +1,4 @@
-import { alpha, Typography } from '@mui/material';
+import { alpha, Typography, useColorScheme } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { familySpecificQueryFormNoticesMap } from './family-specific-query-form-notices-map';
@@ -12,6 +12,8 @@ export const QueryFormNotice = ({ selectedModelFamilyId }: QueryFormNoticeProps)
         selectedModelFamilyId != null
             ? familySpecificQueryFormNoticesMap[selectedModelFamilyId]
             : undefined;
+    const { mode, systemMode } = useColorScheme();
+    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
 
     return (
         <Typography
@@ -25,7 +27,8 @@ export const QueryFormNotice = ({ selectedModelFamilyId }: QueryFormNoticeProps)
                 margin: '0',
                 color: alpha(
                     theme.palette.text.primary,
-                    theme.palette.mode === 'dark' ? 0.5 : 0.75
+                    // TODO: eval if this is still needed or if varnish proper is fine
+                    colorMode === 'dark' ? 0.5 : 0.75
                 ),
                 paddingInline: 2,
             })}>

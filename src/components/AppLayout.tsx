@@ -1,4 +1,4 @@
-import { Container, Paper, PaperProps } from '@mui/material';
+import { Container, Paper, PaperProps, useColorScheme } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -13,6 +13,8 @@ import { OlmoAppBar } from './OlmoAppBar';
 interface AppLayout extends PropsWithChildren {}
 
 export const AppLayout = ({ children }: AppLayout) => {
+    const { mode, systemMode } = useColorScheme();
+    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
     return (
         <OuterContainer>
             <OlmoAppBar />
@@ -40,14 +42,16 @@ export const AppLayout = ({ children }: AppLayout) => {
                     },
                     {
                         '--color-transparent-text-accent': (theme) =>
-                            theme.palette.mode === 'light'
+                            // TODO: eval if this is still needed or if varnish proper is fine
+                            colorMode === 'light'
                                 ? theme.color['gray-50'].hex
                                 : theme.color['gray-10'].hex,
 
                         '@supports(color: rgb(from white r g b))': {
                             // This matches the placeholder color in the prompt input
-                            '--color-transparent-text-accent': (theme) =>
-                                `rgb(from currentColor r g b / ${theme.palette.mode === 'light' ? 0.42 : 0.5})`,
+                            '--color-transparent-text-accent':
+                                // TODO: eval if this is still needed or if varnish proper is fine
+                                `rgb(from currentColor r g b / ${colorMode === 'light' ? 0.42 : 0.5})`,
                         },
 
                         scrollbarColor: `var(--color-transparent-text-accent, currentColor) transparent`,

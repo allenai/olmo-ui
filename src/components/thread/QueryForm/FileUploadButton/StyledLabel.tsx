@@ -17,7 +17,7 @@ export const StyledLabel = styled('label')(({ theme }) => ({
     },
 
     ':has(input[type="file"]:disabled)': {
-        color: theme.palette.action.disabled,
+        color: theme.vars?.palette.action.disabled,
         ':hover': {
             cursor: 'default',
         },

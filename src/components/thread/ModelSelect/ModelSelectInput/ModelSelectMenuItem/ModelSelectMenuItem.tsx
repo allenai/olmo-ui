@@ -41,7 +41,7 @@ const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
     },
     [`&.${menuItemClasses.selected}`]: {
         background: alpha(theme.palette.background.paper, 0.6),
-        color: theme.palette.text.primary,
+        color: theme.vars?.palette.text.primary,
         [`&.${menuItemClasses.focusVisible}`]: {
             // @ts-expect-error - we need to type the variants with reversed better
             backgroundColor: alpha(theme.palette.background.reversed, 0.12),

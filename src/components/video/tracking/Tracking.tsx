@@ -150,7 +150,9 @@ const VideoSingleDotTrack = ({
                 r={'1.5%'}
                 stroke={showInterpolation || shouldShowPoint === 1 ? 'white' : 'transparent'}
                 strokeWidth={'0.3%'}
-                fill={shouldShowPoint === 1 ? varnishTheme.palette.primary.main : 'transparent'}
+                fill={
+                    shouldShowPoint === 1 ? varnishTheme.vars?.palette.primary.main : 'transparent'
+                }
             />
         </svg>
     );

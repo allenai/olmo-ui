@@ -32,7 +32,7 @@ const GlobalStyle = () => (
 );
 
 const sharedDrawerStyle: SxProps<Theme> = (theme) => ({
-    background: theme.palette.background.drawer.primary,
+    background: theme.vars?.palette.background.drawer.primary,
 });
 
 export const ResponsiveDrawer = ({

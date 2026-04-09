@@ -61,7 +61,7 @@ export const BaseCard = ({ children, ...cardProps }: CardProps) => (
     <Card
         sx={{
             padding: (theme) => theme.spacing(2.25),
-            backgroundColor: (theme) => theme.palette.background.default,
+            backgroundColor: (theme) => theme.vars?.palette.background.default,
         }}
         {...cardProps}>
         {children}

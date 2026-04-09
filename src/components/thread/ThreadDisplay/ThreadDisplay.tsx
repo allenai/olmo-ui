@@ -196,7 +196,8 @@ export const ThreadDisplayView = ({
                     pointerEvents: 'none',
                     top: '-1px',
                     position: 'sticky',
-                    boxShadow: (theme) => `0 12px 50px 12px ${theme.palette.background.paper}`,
+                    boxShadow: (theme) =>
+                        `0 12px 50px 12px ${theme.vars?.palette.background.paper}`,
                 }}
             />
             <ThreadMaxWidthContainer>
@@ -225,7 +226,8 @@ export const ThreadDisplayView = ({
                     bottom: '-1px',
                     position: 'sticky',
 
-                    boxShadow: (theme) => `0 -12px 50px 12px ${theme.palette.background.paper}`,
+                    boxShadow: (theme) =>
+                        `0 -12px 50px 12px ${theme.vars?.palette.background.paper}`,
                 }}
             />
         </Box>

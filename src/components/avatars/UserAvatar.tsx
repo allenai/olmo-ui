@@ -34,7 +34,7 @@ export const UserAvatar = ({ useProfilePicture = false }: UserAvatarProps) => {
             alt=""
             color="primary"
             sx={(theme: Theme) => ({
-                background: theme.palette.secondary.main,
+                background: theme.vars?.palette.secondary.main,
                 border: 'none',
             })}
         />

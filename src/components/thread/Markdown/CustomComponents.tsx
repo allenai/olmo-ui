@@ -1,27 +1,31 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
-import { alpha, Divider, Link } from '@mui/material';
+import { alpha, Divider, Link, useColorScheme } from '@mui/material';
 import { AnchorHTMLAttributes, HTMLAttributes } from 'react';
 import { ExtraProps } from 'react-markdown';
 
 export const CustomDivider = ({
     node: _node,
     ...props
-}: HTMLAttributes<HTMLHRElement> & ExtraProps) => (
-    <Divider
-        {...props}
-        sx={(theme) => ({
-            borderBottomWidth: '2px',
-            borderColor: alpha(
-                theme.palette.mode === 'dark'
-                    ? theme.palette.common.white
-                    : theme.palette.common.black,
-                0.25
-            ),
-            margin: '1.5rem 0',
-        })}
-    />
-);
+}: HTMLAttributes<HTMLHRElement> & ExtraProps) => {
+    const { mode, systemMode } = useColorScheme();
+    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+
+    return (
+        <Divider
+            {...props}
+            sx={(theme) => ({
+                borderBottomWidth: '2px',
+                borderColor: alpha(
+                    // TODO: eval if this is still needed or if varnish proper is fine
+                    colorMode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
+                    0.25
+                ),
+                margin: '1.5rem 0',
+            })}
+        />
+    );
+};
 
 export const CustomLink = ({
     node: _node,
@@ -33,7 +37,7 @@ export const CustomLink = ({
         rel="noopener noreferrer"
         sx={(theme) => ({
             '&, &:visited': {
-                color: theme.palette.primary.main,
+                color: theme.vars?.palette.primary.main,
             },
         })}
     />

@@ -26,7 +26,7 @@ export const SVGLogo = ({
         maxWidth: width ?? intrinsicWidth,
         height: 'auto',
         fill: 'currentColor',
-        color: color ?? theme.palette.primary.main,
+        color: color ?? theme.vars?.palette.primary.main,
     };
     // Follows best practices for SVG images inline:
     // https://css-tricks.com/accessible-svgs/#aa-2-inline-svg

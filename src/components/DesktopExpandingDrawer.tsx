@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, useColorScheme } from '@mui/material';
 import { CSSProperties, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
 const DEFAULT_DRAWER_WIDTH = '20rem';
@@ -25,6 +25,8 @@ export const DesktopExpandingDrawer = ({
             setIsFullyClosed(false);
         }
     }, [open]);
+    const { mode, systemMode } = useColorScheme();
+    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
 
     return (
         <Box
@@ -34,7 +36,7 @@ export const DesktopExpandingDrawer = ({
                     setIsFullyClosed(true);
                 }
             }}
-            sx={(theme) => ({
+            sx={{
                 overflowX: 'hidden',
                 width: open ? width : 0,
                 transitionProperty: 'width, padding-inline',
@@ -46,9 +48,10 @@ export const DesktopExpandingDrawer = ({
                 gridArea: 'drawer',
                 visibility: isFullyClosed ? 'hidden' : 'visible',
                 '--drop-shadow-color':
-                    theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.33)' : 'rgba(0, 0, 0, 0.15)',
+                    // TODO: eval if this is still needed or if varnish proper is fine
+                    colorMode === 'dark' ? 'rgba(0, 0, 0, 0.33)' : 'rgba(0, 0, 0, 0.15)',
                 boxShadow: '0px 0px 120px var(--drop-shadow-color)',
-            })}>
+            }}>
             <Box
                 paddingInline={2}
                 sx={{

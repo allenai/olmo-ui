@@ -1,6 +1,14 @@
-import { VarnishApp } from '@allenai/varnish2/components';
+import { ErrorBoundary } from '@allenai/varnish2/components';
+import { varnishTheme } from '@allenai/varnish2/theme';
 import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
-import { PaletteMode, ThemeOptions, useColorScheme } from '@mui/material';
+import {
+    createTheme,
+    CssBaseline,
+    PaletteMode,
+    ThemeOptions,
+    ThemeProvider,
+    useColorScheme,
+} from '@mui/material';
 import { PropsWithChildren, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -13,7 +21,7 @@ type VarnishAppWithColorModeProps = PropsWithChildren<{
     theme: ThemeOptions;
 }>;
 
-// Must be inside VarnishApp's ThemeProvider to use useColorScheme
+// Must be inside ThemeProvider to use useColorScheme
 const PandaColorModeSetter = () => {
     const { mode, systemMode } = useColorScheme();
 
@@ -32,12 +40,32 @@ export const VarnishAppWithColorMode = ({
     defaultThemeColorMode = 'dark',
     theme = uiRefreshOlmoTheme,
 }: VarnishAppWithColorModeProps) => {
-    const routerTheme = useMemo(() => getRouterOverriddenTheme(Link, theme), [theme]);
+    const mergedTheme = useMemo(() => {
+        const routerOverrides = getRouterOverriddenTheme(Link, theme);
+        // TODO: fox varnishTheme's createTheme to properly handle the CSS variables path so we don't have to pass it in here.
+        //
+        // varnishTheme.cssVariables is undefined on the processed object, so we must pass
+        // cssVariables explicitly as the first arg to ensure createTheme takes the CSS vars path
+        // and properly processes colorSchemes overrides.
+        //
+        // Once varnish's getTheme is fixed to do:
+        //   createTheme({ cssVariables: { colorSchemeSelector: 'data' } }, varnishTheme, overrides)
+        // this can be simplified to:
+        //   return <VarnishApp theme={routerOverrides} defaultMode={defaultThemeColorMode}>
+        return createTheme(
+            { cssVariables: { colorSchemeSelector: 'data' } },
+            varnishTheme,
+            routerOverrides
+        );
+    }, [theme]);
 
     return (
-        <VarnishApp theme={routerTheme} defaultMode={defaultThemeColorMode}>
-            <PandaColorModeSetter />
-            {children}
-        </VarnishApp>
+        <ThemeProvider theme={mergedTheme} defaultMode={defaultThemeColorMode}>
+            <CssBaseline />
+            <ErrorBoundary>
+                <PandaColorModeSetter />
+                {children}
+            </ErrorBoundary>
+        </ThemeProvider>
     );
 };

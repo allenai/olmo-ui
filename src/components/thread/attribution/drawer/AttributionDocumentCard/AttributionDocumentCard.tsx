@@ -1,4 +1,13 @@
-import { Box, Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Link,
+    Stack,
+    Typography,
+    useColorScheme,
+} from '@mui/material';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -29,6 +38,9 @@ const AttributionDocumentCardBase = ({
     isSelected,
     relevanceBucket,
 }: AttributionDocumentCardBaseProps): ReactNode => {
+    const { mode, systemMode } = useColorScheme();
+    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+
     return (
         <Card
             component="li"
@@ -36,8 +48,9 @@ const AttributionDocumentCardBase = ({
             data-document-relevance={relevanceBucket}
             sx={(theme) => ({
                 bgcolor:
-                    theme.palette.mode === 'dark'
-                        ? theme.palette.background.drawer.primary
+                    // TODO: eval if this is still needed or if varnish proper is fine
+                    colorMode === 'dark'
+                        ? theme.vars?.palette.background.drawer.primary
                         : theme.palette.background.default,
                 overflow: 'visible',
                 borderRadius: 3,
@@ -46,7 +59,7 @@ const AttributionDocumentCardBase = ({
                 // These need are related to opacity for spans in
                 // `../../AttributionHilight.tsx`
                 //
-                '--base-border-color': theme.palette.secondary.main,
+                '--base-border-color': theme.vars?.palette.secondary.main,
                 borderLeft: '9px solid var(--base-border-color)',
 
                 '&[data-document-relevance="high"]': {
@@ -60,9 +73,9 @@ const AttributionDocumentCardBase = ({
                 },
 
                 '&[data-selected-document="true"]': {
-                    backgroundColor: theme.palette.secondary.main,
-                    color: theme.palette.secondary.contrastText,
-                    borderColor: (theme) => theme.palette.secondary.main,
+                    backgroundColor: theme.vars?.palette.secondary.main,
+                    color: theme.vars?.palette.secondary.contrastText,
+                    borderColor: (theme) => theme.vars?.palette.secondary.main,
                 },
             })}>
             <CardContent component={Stack} direction="column" gap={1}>
@@ -225,7 +238,7 @@ const LocateSpanButton = ({
                     fontWeight: 'semiBold',
                     '[data-selected-document="true"] &': {
                         fontWeight: theme.typography.fontWeightMedium,
-                        color: theme.palette.secondary.contrastText,
+                        color: theme.vars?.palette.secondary.contrastText,
                     },
                 })}
                 onClick={() => {

@@ -9,7 +9,7 @@ const meta = {
     component: NavigationLink,
     decorators: [
         (Story) => (
-            <Box sx={{ backgroundColor: (theme) => theme.palette.background.drawer.primary }}>
+            <Box sx={{ backgroundColor: (theme) => theme.vars?.palette.background.drawer.primary }}>
                 <Story />
             </Box>
         ),

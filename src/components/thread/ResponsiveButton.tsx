@@ -49,11 +49,11 @@ const ResponsiveButtonBase = ({
             startIcon={layout === 'both' ? startIcon : undefined}
             sx={(theme: Theme) => ({
                 ...sizeStyles(),
-                borderColor: theme.palette.primary.contrastText,
-                color: theme.palette.primary.contrastText,
+                borderColor: theme.vars?.palette.primary.contrastText,
+                color: theme.vars?.palette.primary.contrastText,
                 '&:hover': {
-                    color: theme.palette.primary.contrastText,
-                    borderColor: theme.palette.primary.contrastText,
+                    color: theme.vars?.palette.primary.contrastText,
+                    borderColor: theme.vars?.palette.primary.contrastText,
                 },
                 justifyContent: variant === 'list' ? 'start' : 'center',
                 flexBasis: layout === 'icon' ? 'min-content' : undefined,

@@ -1,5 +1,4 @@
-import { varnishTheme } from '@allenai/varnish2/theme';
-import { alpha, IconButton, IconButtonOwnProps, SxProps, Theme } from '@mui/material';
+import { IconButton, IconButtonOwnProps, SxProps, Theme } from '@mui/material';
 import { MouseEventHandler } from 'react';
 
 import { StyledTooltip, type StyledTooltipProps } from './StyledTooltip';
@@ -40,10 +39,7 @@ export const IconButtonWithTooltip = ({
                 sx={[
                     (theme) => ({
                         '&[data-active="true"]': {
-                            backgroundColor:
-                                theme.palette.mode === 'light'
-                                    ? varnishTheme.palette.background.paper
-                                    : alpha(theme.palette.common.white, 0.1),
+                            backgroundColor: theme.vars?.palette.background.paper,
                             borderRadius: '10px',
                         },
                     }),

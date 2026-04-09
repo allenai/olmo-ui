@@ -11,6 +11,6 @@ export const BarOnRightContainer = ({ children, displayBar = false }: Props) => 
 
 const Wrapper = styled.div<{ displayBar?: boolean }>`
     border-right: ${({ displayBar, theme }: { displayBar?: boolean; theme: Theme }) =>
-        displayBar ? `6px solid ${theme.palette.warning.dark}` : `transparent`};
+        displayBar ? `6px solid ${theme.vars?.palette.warning.dark}` : `transparent`};
     margin-right: ${({ displayBar }) => (displayBar ? `10px` : `0px`)};
 `;
