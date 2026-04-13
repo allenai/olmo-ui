@@ -100,8 +100,6 @@ export const QueryFormController = ({
         },
     });
 
-    const [tempPlaceholder, _setTempPlaceholder] = useState('');
-
     const [fileMimeTypes, setFileMimeTypes] = useState<null | string[]>(null);
     const [loadingMedia, setLoadingMedia] = useState(false);
     const isSelectedThreadLoading = remoteState === RemoteState.Loading;
@@ -407,7 +405,7 @@ export const QueryFormController = ({
                                         ref={ref}
                                         onKeyDown={handleKeyDown}
                                         aria-label={placeholderText}
-                                        placeholder={tempPlaceholder || placeholderText}
+                                        placeholder={placeholderText}
                                         isDisabled={isSelectedThreadLoading}
                                     />
                                 )}
