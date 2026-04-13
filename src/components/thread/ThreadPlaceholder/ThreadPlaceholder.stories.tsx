@@ -4,6 +4,7 @@ import { withMockQueryContext } from '@/utils/storybook/withMockQueryContext';
 import { withMockReactQuery } from '@/utils/storybook/withReactQuery';
 import { createMockModel } from '@/utils/test/createMockModel';
 
+import { getPromptTemplatesQueryOptions } from '../promptTemplates/usePromptTemplates';
 import { ThreadPlaceholder } from './ThreadPlaceholder';
 
 const toolModel = createMockModel('with-tools', {
@@ -25,6 +26,11 @@ const noToolCallModelContext = {
     getThreadViewModel: () => nonToolModel,
 };
 
+const promptTemplatesMockData = {
+    queryKey: getPromptTemplatesQueryOptions.queryKey,
+    data: [],
+};
+
 const meta = {
     title: 'organism/ThreadPlaceholder',
     component: ThreadPlaceholder,
@@ -36,10 +42,16 @@ type Story = StoryObj<typeof meta>;
 
 export const PlaceholderWithTools: Story = {
     decorators: [withMockQueryContext, withMockReactQuery],
-    parameters: { queryContext: toolCallModelContext },
+    parameters: {
+        queryContext: toolCallModelContext,
+        mockData: [promptTemplatesMockData],
+    },
 };
 
 export const PlaceholderWithoutTools: Story = {
     decorators: [withMockQueryContext, withMockReactQuery],
-    parameters: { queryContext: noToolCallModelContext },
+    parameters: {
+        queryContext: noToolCallModelContext,
+        mockData: [promptTemplatesMockData],
+    },
 };
