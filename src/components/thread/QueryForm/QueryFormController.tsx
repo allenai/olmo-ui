@@ -91,9 +91,6 @@ export const QueryFormController = ({
     const selectedModel = getThreadViewModel();
     const selectedModelId = selectedModel?.id;
 
-    const isTranscribing = useAppContext((state) => state.isTranscribing);
-    const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
-
     const formContext = useForm<QueryFormValues>({
         mode: 'onSubmit',
         defaultValues: {
@@ -103,7 +100,7 @@ export const QueryFormController = ({
         },
     });
 
-    const [tempPlaceholder, setTempPlaceholder] = useState('');
+    const [tempPlaceholder, _setTempPlaceholder] = useState('');
 
     const [fileMimeTypes, setFileMimeTypes] = useState<null | string[]>(null);
     const [loadingMedia, setLoadingMedia] = useState(false);

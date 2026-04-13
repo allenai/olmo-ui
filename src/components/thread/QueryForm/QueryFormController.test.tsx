@@ -54,18 +54,12 @@ const renderQueryFormController = (
     propsOverrides = {},
     contextOverrides: DeepPartial<AppContextState> = {}
 ) => {
-    const initialStates = {
-        isTranscribing: false,
-        isProcessingAudio: false,
-        ...contextOverrides,
-    };
-
     const props = { ...defaultProps, ...propsOverrides };
 
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
     return renderWithRouter(
-        <FakeAppContextProvider initialState={initialStates}>
+        <FakeAppContextProvider initialState={contextOverrides}>
             <QueryFormController modelSupportsPointingInput={false} {...props} />
         </FakeAppContextProvider>,
         {

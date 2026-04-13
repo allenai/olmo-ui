@@ -15,7 +15,6 @@ import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/Selecte
 import { createSnackMessageSlice, SnackMessageSlice } from './slices/SnackMessageSlice';
 import { createThreadStreamSlice, ThreadStreamSlice } from './slices/ThreadStreamSlice';
 import { createThreadUpdateSlice, ThreadUpdateSlice } from './slices/ThreadUpdateSlice';
-import { createTranscriptionSlice, TranscriptionSlice } from './slices/TranscriptionSlice';
 import { createUserSlice, UserSlice } from './slices/UserSlice';
 
 export type AppContextState = LabelSlice &
@@ -26,7 +25,6 @@ export type AppContextState = LabelSlice &
     CompareModelSlice &
     DrawerSlice &
     ThreadUpdateSlice &
-    TranscriptionSlice &
     SelectedThreadSlice &
     GlobalThreadsUISlice &
     AttributionSlice;
@@ -55,7 +53,6 @@ export const createAppContext = (
                         ...createCompareModelSlice(...store),
                         ...createDrawerSlice(...store),
                         ...createThreadUpdateSlice(...store),
-                        ...createTranscriptionSlice(...store),
                         ...createSelectedThreadSlice(...store),
                         ...createGlobalThreadsUISlice(...store),
                         ...createAttributionSlice(...store),
