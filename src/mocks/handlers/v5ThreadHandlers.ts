@@ -1,12 +1,20 @@
 import { delay, HttpResponse } from 'msw';
 
 import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
-import { Role } from '@/api/Role';
 import { PaginationData } from '@/api/Schema';
 import type { StreamingMessageResponse } from '@/contexts/stream-types';
 
 import { formatStreamMessage } from '../mockUtils';
-import highlightStressTestMessage from './responses/highlightStressTestMessage';
+import {
+    fakeFirstThreadResponse,
+    fakeSecondThreadResponse,
+    firstThreadMessageId,
+    secondThreadMessageId,
+} from './responses/basicThreadResponses';
+import {
+    highlightStressTestMessageId,
+    highlightStressTestResponse,
+} from './responses/highlightStressTestResponse';
 import documentWithMultipleSnippetsResponse from './responses/v5/documentWithMultipleSnippetsResponse';
 import duplicateDocumentsResponse from './responses/v5/duplicateDocumentMessageResponse';
 import { inappropriateContentErrorResponse } from './responses/v5/inappropriateContentErrorResponse';
@@ -63,184 +71,6 @@ import {
     videoTrackingResponse,
 } from './responses/v5/videoTrackingResponse';
 import { v5TypedHttp } from './v5TypedHttp';
-
-export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
-const fakeFirstThreadResponse = {
-    id: firstThreadMessageId,
-    messages: [
-        {
-            id: firstThreadMessageId,
-            content: 'System message',
-            snippet: 'System message',
-            creator: 'murphy@allenai.org',
-            role: Role.System,
-            opts: {
-                maxTokens: 2048,
-                n: 1,
-                temperature: 1.0,
-                topP: 1.0,
-            },
-            modelHost: 'modal',
-            modelId: 'Tulu-v3-8-dpo-preview',
-            root: firstThreadMessageId,
-            created: '2024-03-20T18:45:58.032751+00:00',
-            isLimitReached: false,
-            isOlderThan30Days: false,
-        },
-        {
-            id: 'msg_G8D2Q9Y8Q4',
-            content: 'First existing message',
-            snippet: 'First existing message',
-            creator: 'murphy@allenai.org',
-            role: Role.User,
-            opts: {
-                maxTokens: 2048,
-                n: 1,
-                temperature: 1.0,
-                topP: 1.0,
-            },
-            modelHost: 'modal',
-            modelId: 'Tulu-v3-8-dpo-preview',
-            root: firstThreadMessageId,
-            created: '2024-03-20T18:45:58.032751+00:00',
-            final: true,
-            labels: [],
-            private: false,
-            isLimitReached: false,
-            isOlderThan30Days: false,
-        },
-        {
-            completion: 'cpl_K4T8N7R4S8',
-            content: 'Ether',
-            created: '2024-03-20T18:45:58.040176+00:00',
-            creator: 'murphy@allenai.org',
-            final: true,
-            id: 'msg_D6H1N4L6L2',
-            labels: [],
-            // logprobs: [],
-            modelType: 'chat',
-            opts: {
-                maxTokens: 2048,
-                n: 1,
-                temperature: 1.0,
-                topP: 1.0,
-            },
-            parent: firstThreadMessageId,
-            private: false,
-            role: Role.LLM,
-            root: firstThreadMessageId,
-            snippet: 'Ether',
-            modelHost: 'modal',
-            modelId: 'Tulu-v3-8-dpo-preview',
-            isLimitReached: false,
-            isOlderThan30Days: false,
-        },
-    ],
-} satisfies Thread;
-
-export const secondThreadMessageId = 'msg_A8E5H1X2O3';
-const fakeSecondThreadResponse = {
-    id: secondThreadMessageId,
-    messages: [
-        {
-            id: secondThreadMessageId,
-            content: 'Second existing message',
-            snippet: 'Second existing message',
-            creator: 'murphy@allenai.org',
-            modelId: 'Olmo-peteish-dpo-preview',
-            modelHost: 'modal',
-            role: Role.User,
-            opts: {
-                maxTokens: 2048,
-                temperature: 1,
-                n: 1,
-                topP: 1,
-            },
-            root: secondThreadMessageId,
-            created: '2024-03-20T22:34:03.329111+00:00',
-            isLimitReached: false,
-            isOlderThan30Days: false,
-        },
-        {
-            id: 'msg_V6Y0U4H4O9',
-            content: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
-            snippet: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
-            creator: 'murphy@allenai.org',
-            modelId: 'Olmo-peteish-dpo-preview',
-            modelHost: 'modal',
-            role: Role.LLM,
-            opts: {
-                maxTokens: 2048,
-                temperature: 1,
-                n: 1,
-                topP: 1,
-            },
-            root: secondThreadMessageId,
-            created: '2024-03-20T22:34:03.342086+00:00',
-            parent: secondThreadMessageId,
-            // logprobs: [],
-            completion: 'cpl_R5T5K6B4C9',
-            final: true,
-            private: false,
-            modelType: 'chat',
-            labels: [],
-            isLimitReached: false,
-            isOlderThan30Days: false,
-        },
-    ],
-} satisfies Thread;
-
-const highlightStressTestMessageId = 'highlightstresstest';
-const highlightStressTestResponse = {
-    id: highlightStressTestMessageId,
-    messages: [
-        {
-            id: highlightStressTestMessageId,
-            content: 'Highlight stress test',
-            snippet: 'Highlight stress test',
-            creator: 'murphy@allenai.org',
-            role: Role.User,
-            opts: {
-                maxTokens: 2048,
-                temperature: 1,
-                n: 1,
-                topP: 1,
-            },
-            root: highlightStressTestMessageId,
-            modelId: 'Olmo-peteish-dpo-preview',
-            created: '2024-08-20T22:34:03.342086+00:00',
-            isLimitReached: false,
-            isOlderThan30Days: false,
-            modelHost: 'modal',
-        },
-        {
-            id: highlightStressTestMessageId + 'response',
-            content: highlightStressTestMessage,
-            snippet: 'HighlightStressTest',
-            creator: 'murphy@allenai.org',
-            role: Role.LLM,
-            opts: {
-                maxTokens: 2048,
-                temperature: 1,
-                n: 1,
-                topP: 1,
-            },
-            root: highlightStressTestMessageId,
-            created: '2024-08-20T22:34:03.342086+00:00',
-            parent: highlightStressTestMessageId,
-            modelId: 'Olmo-peteish-dpo-preview',
-            // logprobs: [],
-            completion: 'cpl_R5T5K6B4D9',
-            final: true,
-            private: false,
-            modelType: 'chat',
-            labels: [],
-            isLimitReached: false,
-            isOlderThan30Days: false,
-            modelHost: 'model',
-        },
-    ],
-} satisfies Thread;
 
 // Get the last Thread from a mixed-type array
 const getLastThread = (messages: Array<Thread | MessageChunk>): Thread => {
