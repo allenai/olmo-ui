@@ -22,7 +22,6 @@ import {
     SchemaToolCall,
 } from '@/api/playgroundApi/playgroundApiSchema';
 import type { ChatRequest, SchemaInputParts } from '@/api/playgroundApi/thread';
-import { useAppContext } from '@/AppContext';
 import { VideoPointingInput } from '@/components/video/pointing/VideoPointing';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
