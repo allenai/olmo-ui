@@ -1,11 +1,11 @@
 import { parseAbsoluteToLocal } from '@internationalized/date';
 
-import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaModelResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
 
-import { ModelConfigFormValues } from './components/ModelConfigForm/ModelConfigForm';
+import type { ModelConfigFormValues } from './components/ModelConfigForm/ModelConfigForm';
 
 export const mapDataToModelConfigFormValues = (
-    model: SchemaResponseModel
+    model: SchemaModelResponse
 ): ModelConfigFormValues => {
     const {
         availableTime,

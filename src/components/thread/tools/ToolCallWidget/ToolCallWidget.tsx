@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Code } from '@mui/icons-material';
 
-import type { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaToolCall } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { CollapsibleWidgetBase } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetBase';
 import { CollapsibleWidgetHeading } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetHeading';
 import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';

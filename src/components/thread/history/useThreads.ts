@@ -1,6 +1,6 @@
 import { processPageMetadata } from '@/api/playgroundApi/pagination-utils';
-import { SchemaGetThreadsRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { apiQueryClient } from '@/api/playgroundApi/v5';
+import { SchemaGetThreadsRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { queryClient } from '@/api/query-client';
 
 // NOTE: It looks like a new infiniteQueryOptions method has been introduced. If it's accepted

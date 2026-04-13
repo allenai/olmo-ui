@@ -1,7 +1,7 @@
 import { SelectListBoxItem } from '@allenai/varnish-ui';
 import type { ComponentProps } from 'react';
 
-import { availableInfiniGramIndexIdValues } from '@/api/playgroundApi/playgroundApiSchema';
+import { availableInfiniGramIndexIdValues } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
 
 interface InfiniGramIndexInputProps

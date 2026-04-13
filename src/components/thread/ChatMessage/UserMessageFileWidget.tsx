@@ -2,7 +2,6 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import mime from 'mime/lite';
 import { ReactNode, useState } from 'react';
 
-import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
 import type { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 import { MolmoTrackingVideo } from '@/components/video/tracking/MolmoTrackingVideo';
 
@@ -44,7 +43,7 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
         );
     }
     if (mimeType.startsWith('video/')) {
-        const mapPointToData = (_userPoint: SchemaMolmo2PointPart | null) => {
+        const mapPointToData = () => {
             // TODO refactor seekbar to generic type
             const point: VideoTrackingPoints = {
                 label: '1',
@@ -69,7 +68,7 @@ export const UserMessageFileWidget = ({ fileUrls }: UserMessageFileWidgetProps):
                             })}>
                             <MolmoTrackingVideo
                                 videoUrl={fileUrls[0]}
-                                videoTrackingPoints={mapPointToData(null)}
+                                videoTrackingPoints={mapPointToData()}
                             />
                         </div>
                     )}

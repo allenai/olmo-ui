@@ -1,10 +1,10 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 
+import { apiQueryClient } from '@/api/playgroundApi/v5';
 import {
     SchemaPromptTemplateResponse,
     SchemaPromptTemplateResponseList,
-} from '@/api/playgroundApi/playgroundApiSchema';
-import { apiQueryClient } from '@/api/playgroundApi/v5';
+} from '@/api/playgroundApi/v5playgroundApiSchema';
 
 export const getPromptTemplatesQueryOptions = apiQueryClient.queryOptions(
     'get',

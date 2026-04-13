@@ -5,7 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { GridListItem } from 'react-aria-components';
 import { useNavigate } from 'react-router-dom';
 
-import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaModelResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { links } from '@/Links';
 
 import { DeleteModelDialog } from './DeleteModelDialog';
@@ -88,7 +88,7 @@ const modelMetadata = css({
 });
 
 interface ModelConfigurationListItemProps {
-    item: SchemaResponseModel;
+    item: SchemaModelResponse;
 }
 
 export const ModelConfigurationListItem = ({ item }: ModelConfigurationListItemProps) => {

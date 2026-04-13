@@ -1,11 +1,11 @@
-import { SelectChangeEvent } from '@mui/material';
-import React, { UIEvent } from 'react';
+import type { SelectChangeEvent } from '@mui/material';
+import React, { type UIEvent } from 'react';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
-import { SchemaPromptTemplateResponse } from '@/api/playgroundApi/playgroundApiSchema';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { ChatRequest } from '@/api/playgroundApi/thread';
-import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton/FileUploadButton';
-import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
+import type { SchemaPromptTemplateResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
+import type { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton/FileUploadButton';
+import type { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { RemoteState } from '@/contexts/util';
 
 import type {

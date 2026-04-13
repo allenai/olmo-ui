@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import type { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaToolCall } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { stack } from '@/styled-system/patterns';
 
 import { ToolCallWithAnswer } from './ToolCallWithAnswer';

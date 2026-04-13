@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react-vite';
 import { useDragAndDrop } from 'react-aria-components';
 import { useListData } from 'react-stately';
 
-import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
+import { SchemaModelResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 import { ModelConfigurationList } from './ModelConfigurationList';
 import { ModelConfigurationListItem } from './ModelConfigurationListItem';
@@ -36,7 +36,7 @@ const defaultInferenceConstraints = {
     top_p_step: 0.01,
 };
 
-const mockModels: SchemaResponseModel[] = [
+const mockModels: SchemaModelResponse[] = [
     {
         availability: 'internal',
         availableTime: null,

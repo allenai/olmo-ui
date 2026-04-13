@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import { type PlayerRef } from '@remotion/player';
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 
-import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaInputPart } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { RemoveButton } from '@/components/thread/QueryForm/FileUploadThumbnails/Thumbnail';
 
 export const VideoDotControl = ({
@@ -21,9 +21,9 @@ export const VideoDotControl = ({
     isPointSelectDisabled,
 }: {
     children: ReactNode;
-    onPointSelect: (point: SchemaMolmo2PointPart | null) => void;
+    onPointSelect: (point: SchemaInputPart | null) => void;
     playerRef: React.RefObject<PlayerRef | null>;
-    userPoint: SchemaMolmo2PointPart | null;
+    userPoint: SchemaInputPart | null;
     isDisabled?: boolean;
     onRemoveFile: () => void;
     fps: number;
@@ -56,7 +56,7 @@ export const VideoDotControl = ({
         };
     }, [playerRef, userPoint, fps]);
 
-    const setPoint = (point: SchemaMolmo2PointPart) => {
+    const setPoint = (point: SchemaInputPart) => {
         setState('placed');
         setShowShockwave(true);
         setTimeout(() => {
@@ -94,7 +94,7 @@ export const VideoDotControl = ({
             y: +(y * 1000).toFixed(0),
             time: +time.toFixed(2),
             type: 'molmo_2_input_point',
-        } satisfies SchemaMolmo2PointPart;
+        } satisfies SchemaInputPart;
 
         setPoint(point);
     };
