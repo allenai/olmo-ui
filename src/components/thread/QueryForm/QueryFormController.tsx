@@ -18,7 +18,7 @@ import { useNavigation } from 'react-router-dom';
 import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import type { ChatRequest, SchemaInputParts } from '@/api/playgroundApi/thread';
-import {
+import type {
     SchemaPromptTemplateResponse,
     SchemaToolCall,
 } from '@/api/playgroundApi/v5playgroundApiSchema';

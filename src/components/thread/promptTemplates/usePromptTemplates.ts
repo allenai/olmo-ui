@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { apiQueryClient } from '@/api/playgroundApi/v5';
-import {
+import type {
     SchemaPromptTemplateResponse,
     SchemaPromptTemplateResponseList,
 } from '@/api/playgroundApi/v5playgroundApiSchema';

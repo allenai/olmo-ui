@@ -1,7 +1,7 @@
 import { Link } from '@allenai/varnish-ui';
 import type { ReactNode } from 'react';
 
-import type { SchemaModelResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
+import type { SchemaModelHost } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 interface HostIdMeta {
     label: string;
@@ -13,7 +13,7 @@ interface ModelHostMeta {
     friendlyName: string;
 }
 
-export const modelHostMeta: Record<SchemaModelResponse, ModelHostMeta> = {
+export const modelHostMeta: Record<SchemaModelHost, ModelHostMeta> = {
     beaker_queues: {
         friendlyName: 'Beaker Queues',
         hostIdMeta: {

@@ -1,7 +1,7 @@
 import { act, render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 
-import { type SchemaAvailableTool } from '@/api/playgroundApi/v5playgroundApiSchema';
+import type { SchemaAvailableTool } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 import { ToolDeclarationDialog } from './ToolDeclarationDialog';
 

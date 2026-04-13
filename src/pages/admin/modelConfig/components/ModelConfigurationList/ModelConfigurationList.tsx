@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { DragAndDropHooks, GridList } from 'react-aria-components';
 
-import type { SchemaModelResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
+import type { SchemaModelConfigResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 import { ModelConfigurationListItem } from './ModelConfigurationListItem';
 
@@ -25,7 +25,7 @@ const modelListContainer = css({
 });
 
 interface ModelConfigurationListProps {
-    items: SchemaModelResponse[];
+    items: SchemaModelConfigResponse[];
     dragAndDropHooks?: DragAndDropHooks;
 }
 
