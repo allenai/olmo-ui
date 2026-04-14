@@ -8,7 +8,6 @@ import {
     MAX_THREAD_IMAGE_HEIGHT_PX,
     MAX_THREAD_IMAGE_WIDTH_PX,
 } from '../ThreadDisplay/threadDisplayConsts';
-import type { PointsSets } from './PointPicture';
 import { PointPicture } from './PointPicture';
 
 interface PointPictureListProps {

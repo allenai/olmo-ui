@@ -283,7 +283,7 @@ export const QueryFormController = ({
                 // return copy/cancel
                 return 'cancel';
             }}>
-            <QueryFormStyledBox isModal={Boolean(showTrackingInput)}>
+            <QueryFormStyledBox isModal={showTrackingInput}>
                 <FormContainer
                     formContext={formContext}
                     onSuccess={handleSubmitController}

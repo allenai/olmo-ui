@@ -1,6 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, IconButton, Modal, ModalTrigger } from '@allenai/varnish-ui';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { Fragment } from 'react';
 import { useSubmit } from 'react-router-dom';
 
 import { links } from '@/Links';
@@ -33,7 +34,7 @@ export const DeleteModelDialog = ({ modelId }: DeleteModelDialogProps) => {
                 heading="Delete Model"
                 className={modalStyling}
                 buttons={[
-                    <>
+                    <Fragment key="buttons">
                         <Button variant="outlined" slot="close">
                             Close
                         </Button>
@@ -46,7 +47,7 @@ export const DeleteModelDialog = ({ modelId }: DeleteModelDialogProps) => {
                             onPress={handleDeleteModel}>
                             Confirm
                         </Button>
-                    </>,
+                    </Fragment>,
                 ]}>
                 <p>Are you sure you want to delete this model?</p>
             </Modal>

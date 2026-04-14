@@ -35,7 +35,7 @@ export const THREAD_STREAM_MUTATION_KEY = ['thread-stream'];
 export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> = (
     callbacks?: StreamCallbacks
 ) => {
-    const abortControllersRef = useRef(new Map());
+    const abortControllersRef = useRef(new Map<ThreadViewId, AbortController>());
 
     const {
         activeStreams,

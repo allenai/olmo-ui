@@ -36,7 +36,7 @@ export const VolumeControl = memo(function VolumeControl() {
 
     const handleChange = useCallback(
         (value: number) => {
-            const newVolume = Number(value) / 100;
+            const newVolume = value / 100;
             if (newVolume > 0 && isMuted) {
                 unMute();
             }

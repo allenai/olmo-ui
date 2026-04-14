@@ -20,7 +20,9 @@ export const userInfoLoader =
         const userInfoPromise =
             storedUserInfo == null ? getUserInfo(queryClient) : Promise.resolve(null);
 
-        const userAuthInfoPromise = userAuthInfoLoader(loaderProps) as UserAuthInfo | undefined;
+        const userAuthInfoPromise = userAuthInfoLoader(loaderProps) as Promise<
+            UserAuthInfo | undefined
+        >;
 
         const [playgroundUserInfo, userAuthInfo] = await Promise.all([
             userInfoPromise,

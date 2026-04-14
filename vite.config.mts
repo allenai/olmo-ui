@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference types="vitest/config" />
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,7 +11,7 @@ import checker from 'vite-plugin-checker';
 import environment from 'vite-plugin-environment';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import svgr from 'vite-plugin-svgr';
-import { configDefaults, defineProject } from 'vitest/config';
+import { configDefaults } from 'vitest/config';
 
 const dirname =
     typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));

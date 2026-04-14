@@ -25,7 +25,7 @@ export const addToolsToSelected = (selectedTools: string[], toolsToAdd: string[]
 };
 
 export const isMcpServer = (mcpId: string): mcpId is keyof typeof MCP_SERVER_INFO =>
-    Boolean(mcpId in MCP_SERVER_INFO);
+    mcpId in MCP_SERVER_INFO;
 
 export const toolGroupInfoById = (serverId: string): ToolGroupInfo => {
     if (isMcpServer(serverId)) {

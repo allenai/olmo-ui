@@ -91,11 +91,9 @@ export function useAppContext<TSelectorReturnValue>(
 
 export function useAppContext<TSelectorReturnValue>(selector?: SelectorType<TSelectorReturnValue>) {
     if (selector == null) {
-        // eslint-disable-next-line react-compiler/react-compiler
         return useStore(appContext);
     }
 
-    // eslint-disable-next-line react-compiler/react-compiler
     return useStore(appContext, selector);
 }
 

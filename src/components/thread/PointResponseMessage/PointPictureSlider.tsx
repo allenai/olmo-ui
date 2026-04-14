@@ -7,7 +7,6 @@ import { ChevronIcon } from '@/components/assets/ChevronIcon';
 
 import type { ImagePoints } from '../points/pointsDataTypes';
 import { MIN_THREAD_IMAGE_HEIGHT_PX } from '../ThreadDisplay/threadDisplayConsts';
-import type { PointsSets } from './PointPicture';
 import { PointPicture } from './PointPicture';
 import { PointPictureCaption } from './PointPictureCaption';
 

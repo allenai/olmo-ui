@@ -10,7 +10,7 @@ export const formatFileSize = (fileSize: number): string => {
     // find the decimal value of the fileSize in the denominator (scale)
     const scaledFileSize = String(
         // parseFloat will convert 3.00 to 3, but leave the decimals if they are significant
-        parseFloat(Number(fileSize / Math.pow(1000, unitScale)).toFixed(2))
+        parseFloat((fileSize / Math.pow(1000, unitScale)).toFixed(2))
     );
 
     return `${scaledFileSize} ${FILE_SIZE_UNITS[unitScale]}`;

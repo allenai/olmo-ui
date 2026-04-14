@@ -37,7 +37,7 @@ export const messageAttributionDocumentsSelector = (
 
     const documents: AttributionDocument[] = (attributions?.orderedDocumentIndexes ?? [])
         .map((docId) => {
-            return attributions?.documents[docId.toString()];
+            return attributions?.documents[docId];
         })
         .filter((doc) => doc !== undefined);
 

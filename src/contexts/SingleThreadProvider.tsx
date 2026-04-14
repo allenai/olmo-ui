@@ -17,7 +17,8 @@ import { links } from '@/Links';
 import type { PlaygroundLoaderData } from '@/pages/playgroundLoader';
 import { PARAM_SELECTED_MODEL } from '@/pages/queryParameterConsts';
 
-import type { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
+import type { QueryContextValue } from './QueryContext';
+import { QueryContext } from './QueryContext';
 import { StreamEventRegistryProvider } from './StreamEventRegistry';
 import { processSingleModelSubmission } from './submission-process';
 import type { MessageInferenceParameters } from './ThreadProviderHelpers';
