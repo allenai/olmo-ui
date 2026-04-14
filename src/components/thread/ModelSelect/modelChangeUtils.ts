@@ -1,6 +1,6 @@
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { CompareModelState } from '@/slices/CompareModelSlice';
+import type { CompareModelState } from '@/slices/CompareModelSlice';
 
 // Track model selection for analytics
 export const trackModelSelection = (modelId: string) => {

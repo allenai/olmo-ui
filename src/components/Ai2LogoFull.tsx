@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
 type Ai2LogoFullProps = Pick<ComponentProps<'img'>, 'height' | 'width' | 'alt'>;
 

@@ -61,8 +61,7 @@ const thinkingWidgetRecipe = sva({
 });
 
 interface ThinkingWidgetProps
-    extends Omit<CollapsibleWidgetBaseProps, 'children'>,
-        PropsWithChildren {
+    extends Omit<CollapsibleWidgetBaseProps, 'children'>, PropsWithChildren {
     contentClassName?: string;
     isThinkingInProgress: boolean;
 }

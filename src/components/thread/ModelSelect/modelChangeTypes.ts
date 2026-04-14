@@ -1,4 +1,4 @@
-import { SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 
 // Shared output contract for model change hooks
 export interface ModelChangeHookResult {

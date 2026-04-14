@@ -1,5 +1,5 @@
 import { FakeQueryContextProvider, render, screen } from '@test-utils';
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 import * as reactRouter from 'react-router-dom';
 import { MemoryRouter } from 'react-router-dom';
 

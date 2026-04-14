@@ -1,6 +1,6 @@
 import { fromHtmlIsomorphic } from 'hast-util-from-html-isomorphic';
 import { toJsxRuntime } from 'hast-util-to-jsx-runtime';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import temml from 'temml';
 

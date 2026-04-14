@@ -1,40 +1,40 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["dom", "dom.iterable", "ESNext"],
-    "moduleResolution": "Bundler",
-    "module": "ESNext",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "jsx": "react-jsx",
-    "sourceMap": true,
-    "allowJs": true,
-    "baseUrl": ".",
-    "noEmit": true,
-    "paths": {
-      "@test-utils": ["src/utils/test/test-utils"],
-      "@playwright-utils": ["e2e/playwright-utils"],
-      "@/styled-system/*": ["styled-system/*"],
-      "@/*": ["src/*"]
+    "compilerOptions": {
+        "target": "ESNext",
+        "lib": ["dom", "dom.iterable", "ESNext"],
+        "moduleResolution": "Bundler",
+        "module": "ESNext",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "jsx": "react-jsx",
+        "sourceMap": true,
+        "allowJs": true,
+        "baseUrl": ".",
+        "noEmit": true,
+        "paths": {
+            "@test-utils": ["src/utils/test/test-utils"],
+            "@playwright-utils": ["e2e/playwright-utils"],
+            "@/styled-system/*": ["styled-system/*"],
+            "@/*": ["src/*"]
+        },
+        "types": ["vitest/globals"]
     },
-    "types": ["vitest/globals"]
-  },
-  "include": [
-    "src/**/*",
-    "./vitest-setup.ts",
-    "index.d.ts",
-    "__mocks__",
-    "webpack.config.js",
-    "vite.config.mts",
-    ".eslintrc.js",
-    "e2e",
-    "playwright.config.ts",
-    "panda.config.ts",
-    "styled-system",
-    ".storybook/**/*"
-  ],
-  "exclude": ["node_modules", "dist"]
+    "include": [
+        "src/**/*",
+        "./vitest-setup.ts",
+        "index.d.ts",
+        "__mocks__",
+        "webpack.config.js",
+        "vite.config.mts",
+        ".eslintrc.js",
+        "e2e",
+        "playwright.config.ts",
+        "panda.config.ts",
+        "styled-system",
+        ".storybook/**/*"
+    ],
+    "exclude": ["node_modules", "dist"]
 }

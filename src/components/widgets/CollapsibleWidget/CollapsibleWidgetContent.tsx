@@ -1,5 +1,5 @@
 import { cx } from '@allenai/varnish-ui';
-import { HTMLAttributes } from 'react';
+import type { HTMLAttributes } from 'react';
 
 import {
     collapsibleWidgetRecipe,
@@ -7,8 +7,7 @@ import {
 } from './collapsibleWidget.styles';
 
 interface CollapsibleWidgetContentProps
-    extends CollapsibleWidgetRecipeVariantProps,
-        HTMLAttributes<HTMLDivElement> {
+    extends CollapsibleWidgetRecipeVariantProps, HTMLAttributes<HTMLDivElement> {
     className?: string;
 }
 

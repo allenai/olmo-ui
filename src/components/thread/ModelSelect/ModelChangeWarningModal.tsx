@@ -1,5 +1,5 @@
 import { Button, DialogActions, DialogContent, Stack, Typography } from '@mui/material';
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
 import {
     StandardDialogCloseButton,

@@ -2,12 +2,12 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Checkbox, Link, type LinkProps } from '@allenai/varnish-ui';
 import { ArrowOutwardOutlined } from '@mui/icons-material';
 import { useContext } from 'react';
+import type { PressEvent } from 'react-aria-components';
 import {
     Button as AriaButton,
     Disclosure,
     DisclosureStateContext,
     Heading,
-    PressEvent,
 } from 'react-aria-components';
 import { useController, type UseControllerProps } from 'react-hook-form';
 

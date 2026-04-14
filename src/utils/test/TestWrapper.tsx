@@ -1,16 +1,15 @@
-/* eslint-disable no-restricted-imports, react-refresh/only-export-components */
+/* eslint-disable react-refresh/only-export-components */
 /* this is the one file allowed to import @testing-library/react since it needs to modify it */
 import { getTheme } from '@allenai/varnish2/theme';
 import { CssBaseline, ThemeProvider as MUIThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, RenderOptions } from '@testing-library/react';
-import { ComponentProps, PropsWithChildren, ReactNode, Suspense } from 'react';
+import type { RenderOptions } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import type { ComponentProps, PropsWithChildren, ReactNode } from 'react';
+import { Suspense } from 'react';
 import { createMemoryRouter, type RouteObject, RouterProvider } from 'react-router-dom';
-import {
-    defaultFeatureToggles,
-    FeatureToggleContext,
-    FeatureToggles,
-} from 'src/FeatureToggleContext';
+import type { FeatureToggles } from 'src/FeatureToggleContext';
+import { defaultFeatureToggles, FeatureToggleContext } from 'src/FeatureToggleContext';
 import { ThemeProvider } from 'styled-components';
 
 import { uiRefreshOlmoTheme } from '@/olmoTheme';

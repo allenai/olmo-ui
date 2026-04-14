@@ -4,19 +4,12 @@ import { Stack } from '@mui/material';
 import mime from 'mime/lite';
 import { type KeyboardEvent, type ReactNode, type UIEvent, useEffect, useState } from 'react';
 import { DropZone } from 'react-aria-components';
-import {
-    Controller,
-    FormContainer,
-    SubmitHandler,
-    useForm,
-    useWatch,
-    Validate,
-    ValidateResult,
-} from 'react-hook-form-mui';
+import type { SubmitHandler, Validate, ValidateResult } from 'react-hook-form-mui';
+import { Controller, FormContainer, useForm, useWatch } from 'react-hook-form-mui';
 import { useNavigation } from 'react-router-dom';
 
 import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { ChatRequest, SchemaInputParts } from '@/api/playgroundApi/thread';
 import type {
     SchemaPromptTemplateResponse,
@@ -28,7 +21,8 @@ import { RemoteState } from '@/contexts/util';
 import { fetchFilesByUrls } from '@/utils/fetchFilesByUrl';
 
 import { getTrackingHiddenInfo } from '../PointResponseMessage/TrackingHiddenAlert';
-import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton/FileUploadButton';
+import type { FileuploadPropsBase } from './FileUploadButton/FileUploadButton';
+import { FileUploadButton } from './FileUploadButton/FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { useDataUrls } from './FileUploadThumbnails/useDataUrls';
 import { useObjectUrls } from './FileUploadThumbnails/useObjectUrls';

@@ -1,4 +1,5 @@
-import { createContext, PropsWithChildren, useContext, useRef } from 'react';
+import type { PropsWithChildren } from 'react';
+import { createContext, useContext, useRef } from 'react';
 import { useStore } from 'zustand';
 
 import * as appContext from '@/AppContext';
@@ -12,7 +13,7 @@ export const FakeAppContextProvider = ({
 }: PropsWithChildren<{
     initialState?: Parameters<typeof appContext.createAppContext>[0];
 }>) => {
-    const storeRef = useRef<AppContextStore>(appContext.createAppContext(initialState));
+    const storeRef = useRef(appContext.createAppContext(initialState));
 
     return <FakeAppContext.Provider value={storeRef.current}>{children}</FakeAppContext.Provider>;
 };

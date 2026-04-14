@@ -1,14 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
-import {
-    Dialog,
-    DialogProps,
-    DialogTitle,
-    DialogTitleProps,
-    IconButton,
-    IconButtonProps,
-    Theme,
-} from '@mui/material';
-import { SystemStyleObject } from '@mui/system';
+import type { DialogProps, DialogTitleProps, IconButtonProps, Theme } from '@mui/material';
+import { Dialog, DialogTitle, IconButton } from '@mui/material';
+import type { SystemStyleObject } from '@mui/system';
 
 import { SMALL_LAYOUT_BREAKPOINT } from '@/constants';
 

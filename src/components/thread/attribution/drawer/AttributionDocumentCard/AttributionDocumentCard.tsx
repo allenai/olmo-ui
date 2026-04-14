@@ -11,12 +11,12 @@ import {
 import { PropsWithChildren, ReactNode, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import { Document as AttributionDocument, Document } from '@/api/AttributionClient';
+import type { Document as AttributionDocument, Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { StyledTooltip } from '@/components/StyledTooltip';
 
-import { AttributionBucket } from '../../calculate-relevance-score';
+import type { AttributionBucket } from '../../calculate-relevance-score';
 import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
 import { AttributionDocumentModal } from './AttributionDocumentModal';
 import { PrettifySource } from './SourcePrettifier';

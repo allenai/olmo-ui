@@ -1,4 +1,4 @@
-import { Agent } from '@/api/playgroundApi/additionalTypes';
+import type { Agent } from '@/api/playgroundApi/additionalTypes';
 import placeholderImage from '@/assets/dolma-research.jpg';
 
 export const agentLinks: Agent[] = [

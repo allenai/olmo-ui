@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export const Fieldset = ({ children, legend }: { children: ReactNode; legend?: string }) => {
     return (

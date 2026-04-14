@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Stack, styled, Typography, useColorScheme } from '@mui/material';
 import { Fragment, type ReactNode, useMemo } from 'react';
 
-import { Document } from '@/api/AttributionClient';
+import type { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
 import { ImageSpinner } from '@/components/ImageSpinner';
 import { RemoteState } from '@/contexts/util';

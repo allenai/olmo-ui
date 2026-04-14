@@ -1,5 +1,5 @@
 import { Role } from '@/api/Role';
-import { Chunk } from '@/contexts/stream-types';
+import type { Chunk } from '@/contexts/stream-types';
 
 export const compareNewMessageId = 'msg_Z9DK87DSA4';
 export const COMPARE_LOREM_IPSUM_MESSAGE_ID = 'msg_Y289S72SL2';

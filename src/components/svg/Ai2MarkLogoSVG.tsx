@@ -1,4 +1,5 @@
-import { SVGLogo, SVGLogoComponentProps } from './SVGLogo';
+import type { SVGLogoComponentProps } from './SVGLogo';
+import { SVGLogo } from './SVGLogo';
 
 export const Ai2MarkLogoSVG = ({ width = 71, title, color, sx }: SVGLogoComponentProps) => {
     return (

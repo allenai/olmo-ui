@@ -1,4 +1,4 @@
-import { MessageStreamPart } from '@/api/Message';
+import type { MessageStreamPart } from '@/api/Message';
 import { Role } from '@/api/Role';
 
 import { newMessageId } from './default';

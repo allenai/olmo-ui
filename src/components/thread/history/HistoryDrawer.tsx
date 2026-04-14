@@ -10,16 +10,17 @@ import {
     Typography,
 } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import { KeyboardEventHandler, ReactNode, useState } from 'react';
+import type { KeyboardEventHandler, ReactNode } from 'react';
+import { useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useNavigate } from 'react-router-dom';
 
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
-import { ThreadLinkProps } from '@/components/ThreadLink';
+import type { ThreadLinkProps } from '@/components/ThreadLink';
 import { links } from '@/Links';
-import { DrawerId } from '@/slices/DrawerSlice';
+import type { DrawerId } from '@/slices/DrawerSlice';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';

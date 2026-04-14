@@ -1,5 +1,5 @@
 import { SvgIcon } from '@mui/material';
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
 export const ChatIcon = (props: ComponentProps<typeof SvgIcon>): JSX.Element => {
     return (

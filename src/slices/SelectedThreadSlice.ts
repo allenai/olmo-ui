@@ -1,7 +1,9 @@
-import { Message, MessageStreamErrorReason } from '@/api/Message';
-import { mapMessages, SelectedThreadMessage } from '@/api/SelectedThreadMessage';
-import { OlmoStateCreator } from '@/AppContext';
-import { RemoteState } from '@/contexts/util';
+import type { Message } from '@/api/Message';
+import { MessageStreamErrorReason } from '@/api/Message';
+import type { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
+import { mapMessages } from '@/api/SelectedThreadMessage';
+import type { OlmoStateCreator } from '@/AppContext';
+import type { RemoteState } from '@/contexts/util';
 import { isOlderThan30Days } from '@/utils/date-utils';
 
 // import { errorToAlert } from './SnackMessageSlice';

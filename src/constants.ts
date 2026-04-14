@@ -1,4 +1,4 @@
-import { Breakpoint } from '@mui/material';
+import type { Breakpoint } from '@mui/material';
 
 export const DESKTOP_LAYOUT_BREAKPOINT: Breakpoint = 'lg';
 export const MEDIUM_LAYOUT_BREAKPOINT: Breakpoint = 'md';

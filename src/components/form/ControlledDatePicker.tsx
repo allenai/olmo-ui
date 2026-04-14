@@ -3,8 +3,10 @@ import { useController, type UseControllerProps } from 'react-hook-form';
 
 import { DatePicker, type DatePickerProps } from '../datepicker';
 
-interface ControlledDatePickerProps
-    extends Omit<DatePickerProps, 'onChange' | 'name' | 'errorMessage' | 'onBlur'> {
+interface ControlledDatePickerProps extends Omit<
+    DatePickerProps,
+    'onChange' | 'name' | 'errorMessage' | 'onBlur'
+> {
     name: string;
     controllerProps?: Omit<UseControllerProps, 'name'>;
 }

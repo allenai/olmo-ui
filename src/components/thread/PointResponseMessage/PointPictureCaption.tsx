@@ -1,10 +1,10 @@
 import { Box, styled, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { ImagePoints } from '../points/pointsDataTypes';
+import type { ImagePoints } from '../points/pointsDataTypes';
 import { PointCircle } from './PointCircle';
-import { PointsSets } from './PointPicture';
+import type { PointsSets } from './PointPicture';
 import { usePointColors } from './usePointColors';
 
 export const PointPictureCaption = ({ pointsSets }: { pointsSets: PointsSets[] }): ReactNode => {
@@ -36,10 +36,7 @@ export const PointPictureListCaption = ({
                     key={index}
                     text={set.alt || set.label}
                     pointColor={pointColors[index % pointColors.length]}
-                    pointCount={set.imageList.reduce<number>(
-                        (acc, image) => acc + image.points.length,
-                        0
-                    )}
+                    pointCount={set.imageList.reduce((acc, image) => acc + image.points.length, 0)}
                 />
             ))}
         </Stack>

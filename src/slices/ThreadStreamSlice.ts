@@ -1,4 +1,4 @@
-import { OlmoStateCreator } from 'src/AppContext';
+import type { OlmoStateCreator } from 'src/AppContext';
 
 export interface ThreadStreamSlice {
     activeThreadViewIds: string[];

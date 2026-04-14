@@ -7,7 +7,8 @@ import {
     Link,
     Typography,
 } from '@mui/material';
-import { ComponentProps, createRef, useEffect } from 'react';
+import type { ComponentProps } from 'react';
+import { createRef, useEffect } from 'react';
 import Markdown from 'react-markdown';
 import { useLocation } from 'react-router-dom';
 

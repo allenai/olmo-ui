@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { ComponentProps, useState } from 'react';
+import type { ComponentProps } from 'react';
+import { useState } from 'react';
 import { fn } from 'storybook/test';
 
 import { MAX_MAIN_CONTENT_WIDTH } from '@/constants';

@@ -1,5 +1,5 @@
 import { SvgIcon } from '@mui/material';
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
 export const ChevronIcon = (props: ComponentProps<typeof SvgIcon>): JSX.Element => {
     return (

@@ -94,7 +94,7 @@ export const LinkCard = ({
           ? mediaUrl
           : '';
     // internal variant
-    const cardTypeVariant = cardType ?? imageSrc ? 'image' : 'text';
+    const cardTypeVariant = (cardType ?? imageSrc) ? 'image' : 'text';
 
     return (
         <Link to={url} className={cx(linkCard({ cardType: cardTypeVariant, color }), className)}>

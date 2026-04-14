@@ -11,7 +11,7 @@ import { ThreadViewProvider, useThreadView } from '@/pages/comparison/ThreadView
 import { PARAM_SELECTED_MESSAGE } from '@/pages/queryParameterConsts';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
-import { SelectedThreadLoaderData } from './selectedThreadPageLoader';
+import type { SelectedThreadLoaderData } from './selectedThreadPageLoader';
 import { ThreadDisplay } from './ThreadDisplay';
 
 interface ThreadDisplayContentProps {
@@ -53,7 +53,7 @@ export const ThreadDisplayContainer = () => {
     const loaderData = useLoaderData() as SelectedThreadLoaderData | null;
     const { id: selectedThreadRootId = '' } = useParams();
     const queryContext = useQueryContext();
-    const processedThreadRef = useRef<string>('');
+    const processedThreadRef = useRef('');
 
     useEffect(() => {
         // Only set model from loaderData if we're navigating to a new thread

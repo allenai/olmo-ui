@@ -14,9 +14,9 @@
 
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { DataObject } from '@mui/icons-material';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { FlatMessage } from '@/api/playgroundApi/thread';
+import type { FlatMessage } from '@/api/playgroundApi/thread';
 import DataObjectOff from '@/components/assets/dataObjectOff.svg?react';
 
 import { FeatureToggleButton } from './FeatureToggleButton';

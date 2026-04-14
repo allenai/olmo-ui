@@ -1,6 +1,6 @@
 import { Send } from '@mui/icons-material';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
-import { UIEvent } from 'react';
+import type { UIEvent } from 'react';
 
 import { QueryFormButton } from './QueryFormButton';
 

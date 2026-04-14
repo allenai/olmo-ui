@@ -39,7 +39,7 @@ export const AgentCard = ({
     const url =
         type === 'playground'
             ? generatePath('/agent/:agentId', { agentId: id })
-            : informationUrl ?? '/'; // we probably shouldn't be showing a card without an informationUrl, but it _is_ optional
+            : (informationUrl ?? '/'); // we probably shouldn't be showing a card without an informationUrl, but it _is_ optional
 
     const imageUrl = agentImages[id];
 

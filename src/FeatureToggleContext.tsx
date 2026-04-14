@@ -1,4 +1,5 @@
-import { createContext, FC, PropsWithChildren, useContext, useMemo } from 'react';
+import type { FC, PropsWithChildren } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 export enum FeatureToggle {
     logToggles = 'logToggles',
@@ -70,7 +71,7 @@ export interface FeatureToggleProps extends PropsWithChildren {
     featureToggles?: FeatureToggles;
 }
 
-export const FeatureToggleContext = createContext<FeatureToggles>(defaultFeatureToggles);
+export const FeatureToggleContext = createContext(defaultFeatureToggles);
 
 function createToggles(initialToggles = defaultFeatureToggles) {
     // grab from local storage if we have any

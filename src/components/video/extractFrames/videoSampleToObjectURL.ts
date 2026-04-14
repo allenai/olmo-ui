@@ -1,4 +1,4 @@
-import { VideoSample } from 'mediabunny';
+import type { VideoSample } from 'mediabunny';
 
 import { constrainSize } from '@/utils/constrainSize';
 

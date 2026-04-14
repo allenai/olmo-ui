@@ -5,9 +5,10 @@ import ScienceIcon from '@mui/icons-material/Science';
 import SortIcon from '@mui/icons-material/Sort';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import { IconButton, Stack } from '@mui/material';
-import { ComponentProps, type ReactNode } from 'react';
+import type { ComponentProps, type ReactNode } from 'react';
 import { Helmet } from 'react-helmet';
-import { UIMatch, useMatches } from 'react-router-dom';
+import type { UIMatch } from 'react-router-dom';
+import { useMatches } from 'react-router-dom';
 
 import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
@@ -33,11 +34,10 @@ const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
     });
 };
 
-interface NavigationDrawerProps
-    extends Omit<
-        ComponentProps<typeof ResponsiveDrawer>,
-        'children' | 'miniVariantCollapsedWidth' | 'miniVariantOpenedWidth'
-    > {
+interface NavigationDrawerProps extends Omit<
+    ComponentProps<typeof ResponsiveDrawer>,
+    'children' | 'miniVariantCollapsedWidth' | 'miniVariantOpenedWidth'
+> {
     onClose: () => void;
     onDrawerToggle: () => void;
 }

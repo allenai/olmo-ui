@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 
-import { SetupServerApi } from 'msw/node';
+import type { SetupServerApi } from 'msw/node';
 
 vi.mock('zustand');
 vi.mock('zustand/vanilla');

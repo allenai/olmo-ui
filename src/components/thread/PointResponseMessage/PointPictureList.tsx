@@ -1,14 +1,15 @@
 import Masonry from '@mui/lab/Masonry';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { useMediumLayoutOrUp, useSmallLayoutOrUp } from '@/components/dolma/shared';
 
-import { ImagePoints } from '../points/pointsDataTypes';
+import type { ImagePoints } from '../points/pointsDataTypes';
 import {
     MAX_THREAD_IMAGE_HEIGHT_PX,
     MAX_THREAD_IMAGE_WIDTH_PX,
 } from '../ThreadDisplay/threadDisplayConsts';
-import { PointPicture, PointsSets } from './PointPicture';
+import type { PointsSets } from './PointPicture';
+import { PointPicture } from './PointPicture';
 
 interface PointPictureListProps {
     imagePointsSets?: ImagePoints[];
@@ -26,7 +27,7 @@ export const PointPictureList = ({
     const medCol = useSmallLayoutOrUp();
 
     const colCount = maxCol ? 3 : medCol ? 2 : 1;
-    const pointsSetsByFileUrl = fileUrls.reduce<Map<string, PointsSets[]>>((acc, url, index) => {
+    const pointsSetsByFileUrl = fileUrls.reduce((acc, url, index) => {
         imagePointsSets.forEach(({ label, alt, imageList }) => {
             const pointsPerImageId = imageList.find(
                 ({ imageId }) => imageId === `${index + 1}`

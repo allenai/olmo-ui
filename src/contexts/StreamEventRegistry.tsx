@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useRef } from 'react';
 
 import type { SchemaStartThreadChunk } from '@/api/playgroundApi/v5playgroundApiSchema';
 
-import { StreamingMessageResponse } from './stream-types';
+import type { StreamingMessageResponse } from './stream-types';
 import { ensureContext } from './util';
 
 // Callback types for each event

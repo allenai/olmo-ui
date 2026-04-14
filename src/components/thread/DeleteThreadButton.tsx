@@ -6,7 +6,8 @@ import { useAppContext } from '@/AppContext';
 import { isOlderThan30Days } from '@/utils/date-utils';
 
 import { IconButtonWithTooltip } from '../IconButtonWithTooltip';
-import { ResponsiveButton, ResponsiveButtonProps } from './ResponsiveButton';
+import type { ResponsiveButtonProps } from './ResponsiveButton';
+import { ResponsiveButton } from './ResponsiveButton';
 
 type DeleteThreadButtonProps = Partial<
     Pick<ResponsiveButtonProps, 'isResponsive' | 'variant' | 'layout' | 'onClick'>

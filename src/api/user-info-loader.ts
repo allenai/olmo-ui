@@ -1,10 +1,11 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { json, LoaderFunction } from 'react-router-dom';
+import type { LoaderFunction } from 'react-router-dom';
+import { json } from 'react-router-dom';
 
 import { type UserAuthInfo, userAuthInfoLoader } from '@/api/auth/auth-loaders';
 import { appContext } from '@/AppContext';
 
-import { User } from './User';
+import type { User } from './User';
 
 export interface UserInfoLoaderResponse {
     userAuthInfo?: UserAuthInfo;

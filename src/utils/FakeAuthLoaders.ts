@@ -1,5 +1,5 @@
 import type { useUserAuthInfo } from '@/api/auth/auth-loaders';
-import { User as ApiUser } from '@/api/User';
+import type { User as ApiUser } from '@/api/User';
 
 export const getFakeUseUserAuthInfo =
     ({

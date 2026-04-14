@@ -2,8 +2,10 @@ import { Input, type InputProps } from '@allenai/varnish-ui';
 import type { ReactNode } from 'react';
 import { useController, type UseControllerProps } from 'react-hook-form';
 
-interface ControlledInputProps
-    extends Omit<InputProps, 'onChange' | 'name' | 'errorMessage' | 'onBlur'> {
+interface ControlledInputProps extends Omit<
+    InputProps,
+    'onChange' | 'name' | 'errorMessage' | 'onBlur'
+> {
     name: string;
     controllerProps?: Omit<UseControllerProps, 'name'>;
 }

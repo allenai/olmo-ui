@@ -13,7 +13,7 @@ import type { PropsWithChildren, ReactElement } from 'react';
 import { useAppContext } from '@/AppContext';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
-import { DrawerId } from '@/slices/DrawerSlice';
+import type { DrawerId } from '@/slices/DrawerSlice';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 

@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
-import { User } from '@/api/User';
+import type { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { useStreamMessage } from '@/contexts/streamMessage/useStreamMessage';

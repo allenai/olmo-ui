@@ -1,7 +1,8 @@
-import { ParseResult, PartialXMLStreamParser } from 'partial-xml-stream-parser';
+import type { ParseResult } from 'partial-xml-stream-parser';
+import { PartialXMLStreamParser } from 'partial-xml-stream-parser';
 import * as z from 'zod';
 
-import {
+import type {
     AllPointsFormats,
     ImagePoints,
     Point,

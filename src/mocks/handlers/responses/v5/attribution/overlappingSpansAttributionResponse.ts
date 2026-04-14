@@ -3,7 +3,7 @@ import type { SchemaAttributionResponse } from '@/api/playgroundApi/v5playground
 // this has math which eslint thinks are template strings
 // and I don't want to fix (escape) the actual contents
 //
-/* eslint-disable no-template-curly-in-string */
+
 export default {
     documents: [
         {

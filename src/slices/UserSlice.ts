@@ -1,11 +1,12 @@
-import { QueryClient } from '@tanstack/react-query';
+import type { QueryClient } from '@tanstack/react-query';
 
 import { createLoginRedirectURL } from '@/api/auth/auth-utils';
 import { auth0Client } from '@/api/auth/auth0Client';
 import { getUserModel } from '@/api/getWhoAmIModel';
-import { OlmoStateCreator } from '@/AppContext';
+import type { OlmoStateCreator } from '@/AppContext';
 
-import { User, UserClient, WhoamiApiUrl } from '../api/User';
+import type { User } from '../api/User';
+import { UserClient, WhoamiApiUrl } from '../api/User';
 import { RemoteState } from '../contexts/util';
 import { errorToAlert } from './SnackMessageSlice';
 

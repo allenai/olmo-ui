@@ -1,7 +1,7 @@
 import { Link, Typography } from '@mui/material';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { Document as AttributionDocument } from '@/api/AttributionClient';
+import type { Document as AttributionDocument } from '@/api/AttributionClient';
 
 interface PrettySourceProps {
     document: AttributionDocument;

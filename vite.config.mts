@@ -1,31 +1,32 @@
 /// <reference types="vitest/config" />
-import { loadEnv, defineConfig } from 'vite';
-import { configDefaults, defineProject } from 'vitest/config';
-import react from '@vitejs/plugin-react'
-import svgr from "vite-plugin-svgr";
-import checker from 'vite-plugin-checker';
-import environment from 'vite-plugin-environment'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { playwright } from '@vitest/browser-playwright'
+
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
+import react from '@vitejs/plugin-react';
+import { playwright } from '@vitest/browser-playwright';
+import { defineConfig, loadEnv } from 'vite';
+import checker from 'vite-plugin-checker';
+import environment from 'vite-plugin-environment';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
+import svgr from 'vite-plugin-svgr';
+import { configDefaults, defineProject } from 'vitest/config';
 
 const dirname =
-  typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+    typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, process.cwd(), '')
+    const env = loadEnv(mode, process.cwd(), '');
 
     return {
         build: {
-            sourcemap: true
+            sourcemap: true,
         },
         plugins: [
-            react(), 
-            svgr(), 
+            react(),
+            svgr(),
             checker({
-                typescript: mode === 'production'
+                typescript: mode === 'production',
             }),
             environment('all'),
             viteStaticCopy({
@@ -36,11 +37,11 @@ export default defineConfig(({ mode }) => {
                         dest: '.',
                     },
                 ],
-            })
+            }),
         ],
         test: {
             projects: [
-                {                
+                {
                     extends: true,
                     test: {
                         name: 'base',
@@ -51,13 +52,19 @@ export default defineConfig(({ mode }) => {
                         restoreMocks: true,
                         env: loadEnv(mode, process.cwd(), ''),
                         mockReset: true,
-                        unstubGlobals: true
-                    }
+                        unstubGlobals: true,
+                    },
                 },
                 {
                     extends: true,
                     optimizeDeps: {
-                        include: ['react', 'react-dom/client', '@wojtekmaj/react-recaptcha-v3', '@allenai/varnish2/components', '@allenai/varnish2/utils']
+                        include: [
+                            'react',
+                            'react-dom/client',
+                            '@wojtekmaj/react-recaptcha-v3',
+                            '@allenai/varnish2/components',
+                            '@allenai/varnish2/utils',
+                        ],
                     },
                     plugins: [
                         // The plugin will run tests for the stories defined in your Storybook config
@@ -70,44 +77,44 @@ export default defineConfig(({ mode }) => {
                             enabled: true,
                             headless: true,
                             instances: [{ browser: 'chromium' }],
-                            provider: playwright()
+                            provider: playwright(),
                         },
                     },
-                }
-            ]
+                },
+            ],
         },
         // we are facing issue with nivo import that make unit test won't run so we are using this to resolve it
         // Ref: https://github.com/plouc/nivo/issues/2310
         resolve: {
             mainFields: ['module', 'browser', 'jsnext:main', 'jsnext'],
-            tsconfigPaths: true
+            tsconfigPaths: true,
         },
         server: {
             proxy: {
                 '/v3': {
                     target: env.LOCAL_PLAYGROUND_API_URL,
                     secure: false,
-                    changeOrigin: true
+                    changeOrigin: true,
                 },
                 '/v4': {
                     target: env.LOCAL_PLAYGROUND_API_URL,
                     secure: false,
-                    changeOrigin: true
+                    changeOrigin: true,
                 },
                 '/v5': {
                     target: env.LOCAL_PLAYGROUND_FASTAPI_URL,
                     secure: false,
-                    changeOrigin: true
+                    changeOrigin: true,
                 },
                 '/api': {
                     target: env.LOCAL_DOLMA_API_URL,
                     secure: false,
                     changeOrigin: true,
-                }
-            }
+                },
+            },
         },
         preview: {
-            port: 8080
-        }
-    }
-})
+            port: 8080,
+        },
+    };
+});

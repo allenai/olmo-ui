@@ -1,6 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Tooltip, TooltipProps } from '@allenai/varnish-ui';
-import { ReactNode } from 'react';
+import type { TooltipProps } from '@allenai/varnish-ui';
+import { Tooltip } from '@allenai/varnish-ui';
+import type { ReactNode } from 'react';
 import { Focusable } from 'react-aria-components';
 
 import { useDesktopOrUp } from './dolma/shared';

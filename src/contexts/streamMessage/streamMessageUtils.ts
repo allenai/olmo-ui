@@ -1,7 +1,7 @@
 import { type MutationObserverResult, type UseMutationResult } from '@tanstack/react-query';
 
 import { RemoteState } from '@/contexts/util';
-import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
+import type { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 
 import type {
     OnNewThreadCallback,

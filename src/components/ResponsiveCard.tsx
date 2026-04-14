@@ -1,4 +1,5 @@
-import { Card, CardProps, Stack, styled } from '@mui/material';
+import type { CardProps } from '@mui/material';
+import { Card, Stack, styled } from '@mui/material';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
@@ -17,7 +18,7 @@ const ResponsiveCardBase = styled(Card)(({ theme }) => ({
     },
 }));
 
-export const ResponsiveCard = ({ sx = undefined, children }: ThreadPageCardProps): JSX.Element => {
+export const ResponsiveCard = ({ sx, children }: ThreadPageCardProps): JSX.Element => {
     return (
         <ResponsiveCardBase sx={sx}>
             <Stack

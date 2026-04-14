@@ -1,16 +1,16 @@
-import { SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 import { useRef, useState } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
-import { ModelChangeHookResult } from '@/components/thread/ModelSelect/modelChangeTypes';
+import type { ModelChangeHookResult } from '@/components/thread/ModelSelect/modelChangeTypes';
 import {
     findModelById,
     trackModelSelection,
 } from '@/components/thread/ModelSelect/modelChangeUtils';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
 import { areModelsCompatibleForThread } from '@/components/thread/ModelSelect/useModels';
-import { CompareModelState } from '@/slices/CompareModelSlice';
+import type { CompareModelState } from '@/slices/CompareModelSlice';
 
 // TODO: Delete this file after migration to QueryContext
 

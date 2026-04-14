@@ -1,5 +1,5 @@
 import { Link } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
 interface TermsAndConditionsLinkProps {
     link: string;

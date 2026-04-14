@@ -30,7 +30,7 @@ export const TermsAndDataCollectionModal = ({
     initialDataCollectionValue,
     initialMediaCollectionValue,
 }: TermsAndDataCollectionModalProps) => {
-    const [isOpen, setIsOpen] = useState<boolean>(true);
+    const [isOpen, setIsOpen] = useState(true);
 
     const updateTermsAndOrConsent = useAppContext(
         (state) => state.updateUserTermsAndDataCollection

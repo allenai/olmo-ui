@@ -1,32 +1,26 @@
-import { SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
-import {
-    PropsWithChildren,
-    UIEvent,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
+import type { PropsWithChildren, UIEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 import { trackModelSelection } from '@/components/thread/ModelSelect/modelChangeUtils';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
 import { isModelAvailable, useModels } from '@/components/thread/ModelSelect/useModels';
 import { usePromptTemplateById } from '@/components/thread/promptTemplates/usePromptTemplates';
 import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareFileUploadProps';
-import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
+import type { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { links } from '@/Links';
-import { PlaygroundLoaderData } from '@/pages/playgroundLoader';
+import type { PlaygroundLoaderData } from '@/pages/playgroundLoader';
 import { PARAM_SELECTED_MODEL } from '@/pages/queryParameterConsts';
 
-import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
+import type { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
 import { StreamEventRegistryProvider } from './StreamEventRegistry';
 import { processSingleModelSubmission } from './submission-process';
+import type { MessageInferenceParameters } from './ThreadProviderHelpers';
 import {
     getExtraParametersFromThread,
     getInferenceConstraints,
@@ -36,7 +30,6 @@ import {
     getUserToolDefinitionsFromThread,
     getUserToolDefinitionsFromToolList,
     hasUserTools,
-    MessageInferenceParameters,
     shouldShowCompatibilityWarning,
 } from './ThreadProviderHelpers';
 import { RemoteState } from './util';
@@ -67,13 +60,11 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const [bypassSafetyCheck, setBypassSafetyCheck] = useState(false);
 
-    const [inferenceOpts, setInferenceOpts] = useState<MessageInferenceParameters>(
+    const [inferenceOpts, setInferenceOpts] = useState(
         getInitialInferenceParameters(undefined, getThread(threadId))
     );
 
-    const [extraParameters, setExtraParameters] = useState<ExtraParameters | undefined>(
-        getExtraParametersFromThread(threadId)
-    );
+    const [extraParameters, setExtraParameters] = useState(getExtraParametersFromThread(threadId));
 
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();

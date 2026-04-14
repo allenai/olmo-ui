@@ -1,4 +1,5 @@
-import { Avatar, AvatarProps } from '@mui/material';
+import type { AvatarProps } from '@mui/material';
+import { Avatar } from '@mui/material';
 
 export const ChatAvatar = ({ sx, src, ...props }: AvatarProps) => (
     <Avatar

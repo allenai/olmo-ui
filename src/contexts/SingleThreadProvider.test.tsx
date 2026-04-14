@@ -1,4 +1,4 @@
-import { SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@test-utils';
@@ -9,13 +9,13 @@ import { describe, expect, it } from 'vitest';
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
-import { User } from '@/api/User';
+import type { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import {
     defaultInferenceConstraintsCamel,
     defaultInferenceParametersCamel,
 } from '@/mocks/handlers/defaultInferenceConstraints';
-import { PlaygroundLoaderData } from '@/pages/playgroundLoader';
+import type { PlaygroundLoaderData } from '@/pages/playgroundLoader';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import {
     convertMessagesForSetup,

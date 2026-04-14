@@ -1,5 +1,5 @@
 import { ListSubheader, Typography } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
 interface NavigationHeadingProps extends PropsWithChildren {
     color?: string;

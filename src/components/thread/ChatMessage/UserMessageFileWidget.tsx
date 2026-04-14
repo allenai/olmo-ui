@@ -1,6 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import mime from 'mime/lite';
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 import type { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 import { MolmoTrackingVideo } from '@/components/video/tracking/MolmoTrackingVideo';

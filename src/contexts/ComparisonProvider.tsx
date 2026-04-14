@@ -1,19 +1,12 @@
-import { SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import { produce } from 'immer';
-import React, {
-    UIEvent,
-    useCallback,
-    useEffect,
-    useMemo,
-    useReducer,
-    useRef,
-    useState,
-} from 'react';
+import type { UIEvent } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { threadOptions } from '@/api/playgroundApi/thread';
 import type { SchemaStartThreadChunk } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { queryClient } from '@/api/query-client';
@@ -27,11 +20,12 @@ import {
     reduceCompareFileUploadProps,
 } from '@/components/thread/QueryForm/compareFileUploadProps';
 import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFormSubmitException';
-import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
+import type { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { parseComparisonSearchParams } from '@/pages/comparison/parseComparisonSearchParams';
 
-import { ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
-import { StreamingThread } from './stream-types';
+import type { ExtraParameters, QueryContextValue } from './QueryContext';
+import { QueryContext } from './QueryContext';
+import type { StreamingThread } from './stream-types';
 import {
     createStreamCallbacks,
     StreamEventRegistryProvider,
@@ -40,13 +34,13 @@ import {
 } from './StreamEventRegistry';
 import { useStreamMessage } from './streamMessage/useStreamMessage';
 import { processSingleModelSubmission } from './submission-process';
+import type { MessageInferenceParameters } from './ThreadProviderHelpers';
 import {
     areAllModelsCompatible,
     getInferenceConstraints,
     getInitialInferenceParameters,
     getUserToolDefinitionsFromThread,
     getUserToolDefinitionsFromToolList,
-    MessageInferenceParameters,
 } from './ThreadProviderHelpers';
 import { RemoteState } from './util';
 
@@ -103,7 +97,7 @@ const ComparisonProviderContent = ({
         }, []);
     }, [threadParamsList]);
     const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
-    const [inferenceOpts, setInferenceOpts] = useState<MessageInferenceParameters>(
+    const [inferenceOpts, setInferenceOpts] = useState(
         // TODO: for comparison mode, we use don't use model-specific constraints.
         // This should change when we support separate parameters per thread.
         getInitialInferenceParameters()
@@ -121,7 +115,7 @@ const ComparisonProviderContent = ({
     const streamErrors = useAppContext((state) => state.streamErrors);
     const clearStreamError = useAppContext(useShallow((state) => state.clearStreamError));
 
-    const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
+    const [userToolDefinitions, setUserToolDefinitions] = useState(
         getUserToolDefinitionsFromThread(threadIds[0] || threadIds[1])
     );
     const [isToolCallingEnabled, setIsToolCallingEnabled] = useState(false);

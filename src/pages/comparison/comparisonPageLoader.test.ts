@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { QueryClient } from '@tanstack/react-query';
 import { http, HttpResponse } from 'msw';
@@ -8,7 +7,8 @@ import * as useModels from '@/components/thread/ModelSelect/useModels';
 import { server } from '@/mocks/node';
 import { createMockModel } from '@/utils/test/createMockModel';
 
-import { ComparisonLoaderData, comparisonPageLoader } from './comparisonPageLoader';
+import type { ComparisonLoaderData } from './comparisonPageLoader';
+import { comparisonPageLoader } from './comparisonPageLoader';
 
 describe('comparisonPageLoader: Model Selection Behaviors', () => {
     let queryClient: QueryClient;

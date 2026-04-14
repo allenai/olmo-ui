@@ -1,4 +1,5 @@
-import { cx, RecipeVariantProps, sva } from '@allenai/varnish-panda-runtime/css';
+import type { RecipeVariantProps } from '@allenai/varnish-panda-runtime/css';
+import { cx, sva } from '@allenai/varnish-panda-runtime/css';
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -87,8 +88,7 @@ const fadeOverflowRecipe = sva({
 type FadeOverFlowVariantProps = Exclude<RecipeVariantProps<typeof fadeOverflowRecipe>, undefined>;
 
 interface FadeOverflowContentProps
-    extends FadeOverFlowVariantProps,
-        React.HTMLAttributes<HTMLDivElement> {
+    extends FadeOverFlowVariantProps, React.HTMLAttributes<HTMLDivElement> {
     className?: string;
     fadeClassName?: string;
 }

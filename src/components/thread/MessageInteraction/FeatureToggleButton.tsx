@@ -19,8 +19,9 @@
  */
 
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Button, ButtonProps, cx, IconButton, IconButtonProps } from '@allenai/varnish-ui';
-import { ReactNode } from 'react';
+import type { ButtonProps, IconButtonProps } from '@allenai/varnish-ui';
+import { Button, cx, IconButton } from '@allenai/varnish-ui';
+import type { ReactNode } from 'react';
 
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { StyledTooltip } from '@/components/StyledTooltip';

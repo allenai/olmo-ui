@@ -1,7 +1,8 @@
 import { Divider, List, styled, useTheme } from '@mui/material';
 
 import { NavigationHeading } from '@/components/OlmoAppBar/NavigationHeading';
-import { ThreadLink, ThreadLinkProps } from '@/components/ThreadLink';
+import type { ThreadLinkProps } from '@/components/ThreadLink';
+import { ThreadLink } from '@/components/ThreadLink';
 
 interface HistoryDrawerSectionProps {
     heading: string;

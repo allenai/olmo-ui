@@ -6,7 +6,7 @@ import type { ChatRequest } from '@/api/playgroundApi/thread';
 import type { SchemaPromptTemplateResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
 import type { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton/FileUploadButton';
 import type { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
-import { RemoteState } from '@/contexts/util';
+import type { RemoteState } from '@/contexts/util';
 
 import type {
     MessageInferenceParameters,

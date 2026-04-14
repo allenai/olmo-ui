@@ -1,12 +1,12 @@
 import { useShallow } from 'zustand/react/shallow';
 
-import { Document as AttributionDocument } from '@/api/AttributionClient';
+import type { Document as AttributionDocument } from '@/api/AttributionClient';
 import { type AppContextState, useAppContext } from '@/AppContext';
 import {
     hasSelectedAttributionSelector,
     messageAttributionsSelector,
 } from '@/slices/attribution/attribution-selectors';
-import { SpansSelection } from '@/slices/attribution/AttributionSlice';
+import type { SpansSelection } from '@/slices/attribution/AttributionSlice';
 
 export const messageAttributionDocumentsSelector = (
     state: AppContextState

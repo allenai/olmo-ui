@@ -1,4 +1,4 @@
-import { TopLevelAttributionSpan } from '@/api/AttributionClient';
+import type { TopLevelAttributionSpan } from '@/api/AttributionClient';
 
 import {
     createSpanReplacementRegex,

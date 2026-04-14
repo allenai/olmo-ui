@@ -12,8 +12,7 @@ import { CollapsibleWidgetPanel } from './CollapsibleWidgetPanel';
 import { ExpandArrow } from './ExpandArrow';
 
 interface CollapsibleWidgetProps
-    extends CollapsibleWidgetRecipeVariantProps,
-        CollapsibleWidgetBaseProps {
+    extends CollapsibleWidgetRecipeVariantProps, CollapsibleWidgetBaseProps {
     children?: ReactNode;
     heading: ReactNode;
     hasArrow?: boolean;

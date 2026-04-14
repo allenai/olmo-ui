@@ -6,7 +6,8 @@ import type { MockReactQueryParameters } from './withReactQuery';
 
 declare module '@storybook/react-vite' {
     interface Parameters
-        extends StorybookParameters,
+        extends
+            StorybookParameters,
             ReactParameters,
             MockReactQueryParameters,
             MockThreadViewParameters {}

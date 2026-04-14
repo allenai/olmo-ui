@@ -1,6 +1,6 @@
 import { cx } from '@allenai/varnish-panda-runtime/css';
 import { Button, Dialog, Label, Popover } from '@allenai/varnish-ui';
-import {
+import type {
     DateInput as AriaDateInput,
     DatePicker as AriaDatePicker,
     DatePickerProps as AriaDatePickerProps,
@@ -12,7 +12,8 @@ import {
 } from 'react-aria-components';
 
 import Calendar from './Calendar';
-import datePickerRecipe, { DatePickerRecipeProps } from './datePicker.styles';
+import type { DatePickerRecipeProps } from './datePicker.styles';
+import datePickerRecipe from './datePicker.styles';
 
 type DatePickerClassNames = {
     className?: string;

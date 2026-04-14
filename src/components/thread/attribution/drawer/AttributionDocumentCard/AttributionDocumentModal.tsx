@@ -1,6 +1,6 @@
 import { Box, Link, Stack, Typography } from '@mui/material';
 
-import { Document } from '@/api/AttributionClient';
+import type { Document } from '@/api/AttributionClient';
 import {
     StandardDialogCloseButton,
     StandardDialogTitle,

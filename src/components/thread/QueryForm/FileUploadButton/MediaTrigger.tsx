@@ -2,7 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { type RefObject } from 'react';
 
 import { AddMediaButton } from './AddMediaButton';
-import { MediaType } from './fileUploadMediaConsts';
+import type { MediaType } from './fileUploadMediaConsts';
 import { FileUploadMenu } from './FileUploadMenu';
 
 interface MediaTriggerProps {

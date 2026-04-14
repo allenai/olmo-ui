@@ -1,6 +1,7 @@
 import { Close } from '@mui/icons-material';
-import { Backdrop, BackdropProps, Dialog, IconButton } from '@mui/material';
-import { ReactNode } from 'react';
+import type { BackdropProps } from '@mui/material';
+import { Backdrop, Dialog, IconButton } from '@mui/material';
+import type { ReactNode } from 'react';
 
 interface MediaLightboxProps {
     open: boolean;

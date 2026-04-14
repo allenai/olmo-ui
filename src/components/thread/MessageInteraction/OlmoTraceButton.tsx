@@ -12,11 +12,12 @@
 
 import Article from '@mui/icons-material/Article';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { FlatMessage } from '@/api/playgroundApi/thread';
+import type { FlatMessage } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { useFeatureToggles } from '@/FeatureToggleContext';

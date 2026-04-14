@@ -26,9 +26,7 @@ export function useExtractFrames({
     maxHeight,
     imageSmoothingQuality,
 }: UseExtractFramesOptions): UseExtractFramesResult {
-    const [frames, setFrames] = useState<(string | undefined)[]>(
-        Array.from({ length: timestamps.length })
-    );
+    const [frames, setFrames] = useState(Array.from({ length: timestamps.length }));
     const [error, setError] = useState<Error | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 

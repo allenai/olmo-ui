@@ -23,7 +23,8 @@ import { Fieldset } from './Fieldset';
 import { InfiniGramIndexInput } from './inputs/InfiniGramIndexInput';
 import { ModelHostSelect } from './inputs/ModelHostSelect';
 import { ModelIdOnHostInput } from './inputs/ModelIdOnHostInput';
-import { MultiModalFields, MultiModalFormValues } from './MultiModalFields';
+import type { MultiModalFormValues } from './MultiModalFields';
+import { MultiModalFields } from './MultiModalFields';
 
 const urlRegex = /^(https?:\/\/)([\w-]+(\.[\w-]+)+)(\/[\w-./?%&=]*)?$/;
 

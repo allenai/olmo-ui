@@ -1,12 +1,14 @@
-import { SxProps, Typography } from '@mui/material';
-import { MouseEvent, ReactNode } from 'react';
+import type { SxProps } from '@mui/material';
+import { Typography } from '@mui/material';
+import type { MouseEvent, ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
-import { MessageProps, sharedMessageStyle } from './shared';
+import type { MessageProps } from './shared';
+import { sharedMessageStyle } from './shared';
 
 const streamingMessageIndicatorStyle = {
     // this assumes a response format like what's generated with react-markdown

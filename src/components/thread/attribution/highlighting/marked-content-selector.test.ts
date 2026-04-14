@@ -1,7 +1,7 @@
-import { DeepPartial } from 'react-hook-form';
+import type { DeepPartial } from 'react-hook-form';
 
 import { Role } from '@/api/Role';
-import { AppContextState } from '@/AppContext';
+import type { AppContextState } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
 import { getAttributionHighlightString } from '../attribution-highlight-utils';

@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports, react-refresh/only-export-components */
+/* eslint-disable react-refresh/only-export-components */
 /* this is the one file allowed to import @testing-library/react since it needs to modify it */
 import type { PropsWithChildren } from 'react';
 

@@ -1,11 +1,18 @@
 import { type TextAreaProps } from '@allenai/varnish-ui';
 import type { ReactNode } from 'react';
-import { FieldPath, FieldValues, useController, type UseControllerProps } from 'react-hook-form';
+import type {
+    FieldPath,
+    FieldValues,
+    useController,
+    type UseControllerProps,
+} from 'react-hook-form';
 
 import { FullWidthTextArea } from './FullWidthTextArea';
 
-export interface ControlledTextAreaProps<TFieldValues extends FieldValues>
-    extends Omit<TextAreaProps, 'onChange' | 'name' | 'errorMessage' | 'onBlur'> {
+export interface ControlledTextAreaProps<TFieldValues extends FieldValues> extends Omit<
+    TextAreaProps,
+    'onChange' | 'name' | 'errorMessage' | 'onBlur'
+> {
     name: FieldPath<TFieldValues>;
     controllerProps?: Omit<UseControllerProps<TFieldValues>, 'name'>;
 }

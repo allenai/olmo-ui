@@ -1,6 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
 
-import { playgroundLoader, PlaygroundLoaderData } from './playgroundLoader';
+import type { PlaygroundLoaderData } from './playgroundLoader';
+import { playgroundLoader } from './playgroundLoader';
 
 describe('root playground loader', () => {
     it('should set the model from a model query param', async () => {

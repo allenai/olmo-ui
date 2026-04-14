@@ -1,5 +1,6 @@
 import { Stack } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useMessage, useThread } from '@/api/playgroundApi/thread';

@@ -1,4 +1,4 @@
-import { Thread } from '@/api/playgroundApi/thread';
+import type { Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';

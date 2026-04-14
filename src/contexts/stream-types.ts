@@ -1,4 +1,4 @@
-import { MessageStreamErrorType } from '@/api/Message';
+import type { MessageStreamErrorType } from '@/api/Message';
 import type { ChatRequest, MessageChunk as ThreadMessageChunk } from '@/api/playgroundApi/thread';
 import type {
     SchemaErrorChunk,

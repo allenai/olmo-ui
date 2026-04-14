@@ -1,15 +1,19 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box, BoxProps, IconButton, Typography } from '@mui/material';
-import { ReactNode, useRef, useState } from 'react';
+import type { BoxProps } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
+import { useRef, useState } from 'react';
 
 import {
     ResponsiveTooltip,
     type ResponsiveTooltipProps,
 } from '@/components/thread/ResponsiveTooltip';
 
-export interface ParameterDrawerInputWrapperProps
-    extends Omit<BoxProps, 'children' | 'aria-label'> {
+export interface ParameterDrawerInputWrapperProps extends Omit<
+    BoxProps,
+    'children' | 'aria-label'
+> {
     label: string;
     'aria-label': string;
     inputId: string;

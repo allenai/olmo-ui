@@ -1,4 +1,4 @@
-import { SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 import { type ReactNode, useId } from 'react';
 
 import { useQueryContext } from '@/contexts/QueryContext';

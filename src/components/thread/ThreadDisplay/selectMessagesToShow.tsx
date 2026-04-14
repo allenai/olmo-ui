@@ -1,5 +1,5 @@
-import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
-import { AppContextState } from '@/AppContext';
+import type { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
+import type { AppContextState } from '@/AppContext';
 
 /**
  * This selector traverses the message tree to get the messages related to

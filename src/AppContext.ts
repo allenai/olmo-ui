@@ -1,21 +1,33 @@
 import deepmerge from 'deepmerge';
-import { DeepPartial } from 'react-hook-form';
-import { StateCreator, useStore } from 'zustand';
+import type { DeepPartial } from 'react-hook-form';
+import type { StateCreator } from 'zustand';
+import { useStore } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { createStore } from 'zustand/vanilla';
 
-import { AttributionSlice, createAttributionSlice } from './slices/attribution/AttributionSlice';
-import { CompareModelSlice, createCompareModelSlice } from './slices/CompareModelSlice';
-import { createDrawerSlice, DrawerSlice } from './slices/DrawerSlice';
-import { createGlobalThreadsUISlice, GlobalThreadsUISlice } from './slices/GlobalThreadsUISlice';
-import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
-import { createModelSlice, ModelSlice } from './slices/ModelSlice';
-import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/SelectedThreadSlice';
-import { createSnackMessageSlice, SnackMessageSlice } from './slices/SnackMessageSlice';
-import { createThreadStreamSlice, ThreadStreamSlice } from './slices/ThreadStreamSlice';
-import { createThreadUpdateSlice, ThreadUpdateSlice } from './slices/ThreadUpdateSlice';
-import { createUserSlice, UserSlice } from './slices/UserSlice';
+import type { AttributionSlice } from './slices/attribution/AttributionSlice';
+import { createAttributionSlice } from './slices/attribution/AttributionSlice';
+import type { CompareModelSlice } from './slices/CompareModelSlice';
+import { createCompareModelSlice } from './slices/CompareModelSlice';
+import type { DrawerSlice } from './slices/DrawerSlice';
+import { createDrawerSlice } from './slices/DrawerSlice';
+import type { GlobalThreadsUISlice } from './slices/GlobalThreadsUISlice';
+import { createGlobalThreadsUISlice } from './slices/GlobalThreadsUISlice';
+import type { LabelSlice } from './slices/LabelSlice';
+import { createLabelSlice } from './slices/LabelSlice';
+import type { ModelSlice } from './slices/ModelSlice';
+import { createModelSlice } from './slices/ModelSlice';
+import type { SelectedThreadSlice } from './slices/SelectedThreadSlice';
+import { createSelectedThreadSlice } from './slices/SelectedThreadSlice';
+import type { SnackMessageSlice } from './slices/SnackMessageSlice';
+import { createSnackMessageSlice } from './slices/SnackMessageSlice';
+import type { ThreadStreamSlice } from './slices/ThreadStreamSlice';
+import { createThreadStreamSlice } from './slices/ThreadStreamSlice';
+import type { ThreadUpdateSlice } from './slices/ThreadUpdateSlice';
+import { createThreadUpdateSlice } from './slices/ThreadUpdateSlice';
+import type { UserSlice } from './slices/UserSlice';
+import { createUserSlice } from './slices/UserSlice';
 
 export type AppContextState = LabelSlice &
     ThreadStreamSlice &
@@ -72,7 +84,6 @@ type SelectorType<TSelectorReturnValue> = Parameters<
     typeof useStore<typeof appContext, TSelectorReturnValue>
 >[1];
 
-/* eslint-disable no-redeclare */
 export function useAppContext(): AppContextState;
 export function useAppContext<TSelectorReturnValue>(
     selector: SelectorType<TSelectorReturnValue>

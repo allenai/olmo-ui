@@ -1,5 +1,5 @@
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
+import type { MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { NavigationListItemIcon } from '@/components/OlmoAppBar/NavigationLink';

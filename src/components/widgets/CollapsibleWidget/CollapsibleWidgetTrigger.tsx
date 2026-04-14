@@ -7,8 +7,7 @@ import {
 } from './collapsibleWidget.styles';
 
 interface CollapsibleWidgetTriggerProps
-    extends CollapsibleWidgetRecipeVariantProps,
-        AriaButtonProps {
+    extends CollapsibleWidgetRecipeVariantProps, AriaButtonProps {
     className?: string;
 }
 

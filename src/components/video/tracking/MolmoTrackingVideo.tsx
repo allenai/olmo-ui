@@ -1,9 +1,10 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Player, PlayerRef } from '@remotion/player';
+import type { PlayerRef } from '@remotion/player';
+import { Player } from '@remotion/player';
 import { useRef, useState } from 'react';
-import { Key } from 'react-aria-components';
+import type { Key } from 'react-aria-components';
 
-import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+import type { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { Controls, ControlsGroup, SplitControls } from '../controls/Controls';
 import { FullScreenButton } from '../controls/FullScreenButton';

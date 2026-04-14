@@ -1,22 +1,19 @@
 import { Check } from '@mui/icons-material';
+import type { InputBaseProps, MenuItemProps, SxProps, Theme } from '@mui/material';
 import {
     alpha,
     Box,
     InputBase,
     inputBaseClasses,
-    InputBaseProps,
     ListItemIcon,
     MenuItem,
     menuItemClasses,
-    MenuItemProps,
     PaletteMode,
     Select,
     selectClasses,
-    SxProps,
-    Theme,
     useColorScheme,
 } from '@mui/material';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 

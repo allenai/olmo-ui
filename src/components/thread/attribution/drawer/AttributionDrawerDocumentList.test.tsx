@@ -1,7 +1,7 @@
 import { render, screen } from '@test-utils';
 import type { ComponentProps } from 'react';
 
-import { Document } from '@/api/AttributionClient';
+import type { Document } from '@/api/AttributionClient';
 import * as appContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -110,7 +110,7 @@ describe('AttributionDrawerDocumentList', () => {
             </FakeAppContextProvider>
         );
         // If these are null something's wrong with the test anyway
-        /* eslint-disable @typescript-eslint/no-non-null-assertion */
+
         const documentCard1 = screen.getByText('"...document 1..."').parentElement!;
         const documentCard2 = screen.getByText('"...document 2..."').parentElement!;
         const documentCard3 = screen.getByText('"...document 3..."').parentElement!;

@@ -33,15 +33,12 @@ export const ContextMenu = ({
     menuOptions = [SearchTrainingDatasetMenuOption],
     children,
 }: Props) => {
-    const [contextPos, setContextPos] = useState<{
-        mouseX: number;
-        mouseY: number;
-    }>({
+    const [contextPos, setContextPos] = useState({
         mouseX: 0,
         mouseY: 0,
     });
 
-    const [showMenu, setShowMenu] = useState<boolean>(false);
+    const [showMenu, setShowMenu] = useState(false);
     const [selText, setSelText] = useState<string>();
 
     const divRef = useRef<HTMLDivElement | null>(null);

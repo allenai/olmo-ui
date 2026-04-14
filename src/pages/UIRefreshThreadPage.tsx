@@ -9,7 +9,7 @@ import { QueryFormContainer } from '@/components/thread/QueryForm/QueryFormConta
 import { useQueryContext } from '@/contexts/QueryContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 
-import { PlaygroundLoaderData } from './playgroundLoader';
+import type { PlaygroundLoaderData } from './playgroundLoader';
 
 // Inner component that has access to QueryContext
 const UIRefreshThreadPageContent = () => {

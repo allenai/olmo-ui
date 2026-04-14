@@ -96,7 +96,7 @@ export default defineConfig([
     {
         files: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
         plugins: {
-            vitest, 
+            vitest,
             // 'jest-dom': jestDom
         },
         rules: {

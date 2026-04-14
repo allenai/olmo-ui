@@ -1,7 +1,7 @@
 import { AddBoxOutlined } from '@mui/icons-material';
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { alpha } from '@mui/system';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { links } from '@/Links';

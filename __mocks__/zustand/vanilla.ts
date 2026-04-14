@@ -1,5 +1,5 @@
 import { act } from '@testing-library/react';
-import * as ZustandVanillaExportedTypes from 'zustand/vanilla';
+import type * as ZustandVanillaExportedTypes from 'zustand/vanilla';
 export * from 'zustand/vanilla';
 
 const { createStore: actualCreateStore } =

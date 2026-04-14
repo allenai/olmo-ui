@@ -1,4 +1,4 @@
-import * as auth0 from '@auth0/auth0-spa-js';
+import type * as auth0 from '@auth0/auth0-spa-js';
 
 export const createAuth0Client = (): Promise<auth0.Auth0Client> =>
     // @ts-expect-error - This just has what we use, nothing else

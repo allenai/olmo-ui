@@ -3,12 +3,13 @@ import React from 'react';
 import * as ReactRouterDom from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
-import { User } from '@/api/User';
+import type { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { createMockUser, setupThreadInCache } from '@/utils/test/createMockModel';
 
-import { ComparisonProvider, ComparisonState } from './ComparisonProvider';
+import type { ComparisonState } from './ComparisonProvider';
+import { ComparisonProvider } from './ComparisonProvider';
 import { useQueryContext } from './QueryContext';
 
 vi.mock('react-router-dom', () => ({

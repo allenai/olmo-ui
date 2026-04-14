@@ -1,10 +1,10 @@
-import { NullishPartial } from '@/util';
+import type { NullishPartial } from '@/util';
 
-import { Label } from './Label';
-import { Thread } from './playgroundApi/thread';
-import { SchemaHttpValidationError } from './playgroundApi/v5playgroundApiSchema';
-import { Role } from './Role';
-import { InferenceOpts, PaginationData } from './Schema';
+import type { Label } from './Label';
+import type { Thread } from './playgroundApi/thread';
+import type { SchemaHttpValidationError } from './playgroundApi/v5playgroundApiSchema';
+import type { Role } from './Role';
+import type { InferenceOpts, PaginationData } from './Schema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;

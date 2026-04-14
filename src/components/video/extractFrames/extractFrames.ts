@@ -1,11 +1,5 @@
-import {
-    ALL_FORMATS,
-    Input,
-    InputDisposedError,
-    UrlSource,
-    VideoSample,
-    VideoSampleSink,
-} from 'mediabunny';
+import type { VideoSample } from 'mediabunny';
+import { ALL_FORMATS, Input, InputDisposedError, UrlSource, VideoSampleSink } from 'mediabunny';
 
 type Options = {
     track: { width: number; height: number };

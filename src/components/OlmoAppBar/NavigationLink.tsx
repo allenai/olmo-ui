@@ -1,14 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { SvgIconComponent } from '@mui/icons-material';
-import {
-    ListItem,
-    ListItemButton,
-    ListItemButtonProps,
-    ListItemIcon,
-    ListItemText,
-    SxProps,
-    Theme,
-} from '@mui/material';
+import type { SvgIconComponent } from '@mui/icons-material';
+import type { ListItemButtonProps, SxProps, Theme } from '@mui/material';
+import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import type { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 import { Focusable } from 'react-aria-components';
 

@@ -1,7 +1,7 @@
 import { cva } from '@allenai/varnish-panda-runtime/css';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 
 import { FeatureToggleButton } from './FeatureToggleButton';
@@ -44,7 +44,7 @@ export const DesktopDefault: Story = {
                     hint="Toggle detail view"
                     onTrack={(next) => {
                         // Keep analytics simple for the storybook demo
-                        // eslint-disable-next-line no-console
+
                         console.log('onTrack', next);
                     }}
                     buttonProps={{ size: 'small' }}

@@ -1,4 +1,4 @@
-import { AppContextState } from '@/AppContext';
+import type { AppContextState } from '@/AppContext';
 
 import { addHighlightsToText } from './add-highlights-to-text';
 

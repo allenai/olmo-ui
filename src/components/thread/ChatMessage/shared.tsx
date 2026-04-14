@@ -1,5 +1,5 @@
-import { SxProps } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import type { SxProps } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 
 export interface MessageProps extends PropsWithChildren {
     messageId: string;
