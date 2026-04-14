@@ -22,15 +22,12 @@ import {
     SchemaToolCall,
 } from '@/api/playgroundApi/playgroundApiSchema';
 import type { ChatRequest, SchemaInputParts } from '@/api/playgroundApi/thread';
-import { useAppContext } from '@/AppContext';
 import { VideoPointingInput } from '@/components/video/pointing/VideoPointing';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
 import { fetchFilesByUrls } from '@/utils/fetchFilesByUrl';
 
 import { getTrackingHiddenInfo } from '../PointResponseMessage/TrackingHiddenAlert';
-import { AudioInputButton } from './AudioTranscription/AudioInputButton';
-import { Waveform } from './AudioTranscription/Waveform';
 import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton/FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { useDataUrls } from './FileUploadThumbnails/useDataUrls';
@@ -93,9 +90,6 @@ export const QueryFormController = ({
     const selectedModel = getThreadViewModel();
     const selectedModelId = selectedModel?.id;
 
-    const isTranscribing = useAppContext((state) => state.isTranscribing);
-    const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
-
     const formContext = useForm<QueryFormValues>({
         mode: 'onSubmit',
         defaultValues: {
@@ -104,8 +98,6 @@ export const QueryFormController = ({
             files: null,
         },
     });
-
-    const [tempPlaceholder, setTempPlaceholder] = useState('');
 
     const [fileMimeTypes, setFileMimeTypes] = useState<null | string[]>(null);
     const [loadingMedia, setLoadingMedia] = useState(false);
@@ -365,44 +357,22 @@ export const QueryFormController = ({
                         )}
                         <PromptContainer
                             startAdornment={
-                                <>
-                                    <Controller
-                                        name="files"
-                                        control={formContext.control}
-                                        rules={{
-                                            validate: validateFilesWithOptions,
-                                        }}
-                                        render={({ field: { name, onBlur, ref } }) => (
-                                            <FileUploadButton
-                                                ref={ref}
-                                                onBlur={onBlur}
-                                                onSelect={handleFileSelect}
-                                                name={name}
-                                                {...fileUploadProps}
-                                            />
-                                        )}
-                                    />
-                                    {isTranscribing ? <Waveform /> : null}
-                                    <AudioInputButton
-                                        isDisabled={isSelectedThreadLoading}
-                                        onTranscriptionBegin={() => {
-                                            setTempPlaceholder('Transcribing...');
-                                        }}
-                                        onRecordingBegin={() => {
-                                            setTempPlaceholder('Recording...');
-                                        }}
-                                        onComplete={() => {
-                                            setTempPlaceholder('');
-                                        }}
-                                        onTranscriptionComplete={(content) => {
-                                            const values = formContext.getValues();
-                                            formContext.setValue(
-                                                'content',
-                                                values.content + content
-                                            );
-                                        }}
-                                    />
-                                </>
+                                <Controller
+                                    name="files"
+                                    control={formContext.control}
+                                    rules={{
+                                        validate: validateFilesWithOptions,
+                                    }}
+                                    render={({ field: { name, onBlur, ref } }) => (
+                                        <FileUploadButton
+                                            ref={ref}
+                                            onBlur={onBlur}
+                                            onSelect={handleFileSelect}
+                                            name={name}
+                                            {...fileUploadProps}
+                                        />
+                                    )}
+                                />
                             }
                             endAdornment={
                                 <SubmitPauseAdornment
@@ -411,8 +381,6 @@ export const QueryFormController = ({
                                     isSubmitDisabled={
                                         isSelectedThreadLoading ||
                                         isLimitReached ||
-                                        isTranscribing ||
-                                        isProcessingAudio ||
                                         !canEditThread ||
                                         loadingMedia
                                     }
@@ -436,12 +404,8 @@ export const QueryFormController = ({
                                         ref={ref}
                                         onKeyDown={handleKeyDown}
                                         aria-label={placeholderText}
-                                        placeholder={tempPlaceholder || placeholderText}
-                                        isDisabled={
-                                            isSelectedThreadLoading ||
-                                            isTranscribing ||
-                                            isProcessingAudio
-                                        }
+                                        placeholder={placeholderText}
+                                        isDisabled={isSelectedThreadLoading}
                                     />
                                 )}
                             />
