@@ -35,8 +35,7 @@
     "watch:css": "panda --watch"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint --fix",
-    "*.{md,json,yaml,yml}": "prettier --write"
+    "*.{js,jsx,ts,tsx,md,json,yaml,yml}": "eslint --fix"
   },
   "resolutions": {
     "@types/react": "^18.2.55",
@@ -121,6 +120,7 @@
   "devDependencies": {
     "@allenai/eslint-config-varnish": "^3.0.0",
     "@eslint-react/eslint-plugin": "^4.2.1",
+    "@eslint/compat": "^2.0.5",
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^1.2.0",
     "@happy-dom/jest-environment": "^20.8.7",
@@ -130,7 +130,7 @@
     "@playwright/test": "^1.55.0",
     "@storybook/addon-themes": "^10.3.5",
     "@storybook/addon-vitest": "^10.3.5",
-    "@tanstack/eslint-plugin-query": "^5.96.0",
+    "@tanstack/eslint-plugin-query": "^5.99.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",

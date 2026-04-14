@@ -1497,6 +1497,13 @@
     "@typescript-eslint/utils" "^8.58.0"
     ts-pattern "^5.9.0"
 
+"@eslint/compat@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@eslint/compat/-/compat-2.0.5.tgz#65421b3f6e5a864e0255ab31884fb26fdc4d0210"
+  integrity sha512-IbHDbHJfkVNv6xjlET8AIVo/K1NQt7YT4Rp6ok/clyBGcpRx1l6gv0Rq3vBvYfPJIZt6ODf66Zq08FJNDpnzgg==
+  dependencies:
+    "@eslint/core" "^1.2.1"
+
 "@eslint/config-array@^0.21.2":
   version "0.21.2"
   resolved "https://registry.yarnpkg.com/@eslint/config-array/-/config-array-0.21.2.tgz#f29e22057ad5316cf23836cee9a34c81fffcb7e6"
@@ -5334,7 +5341,7 @@
   dependencies:
     tslib "^2.8.0"
 
-"@tanstack/eslint-plugin-query@^5.96.0":
+"@tanstack/eslint-plugin-query@^5.99.0":
   version "5.99.2"
   resolved "https://registry.yarnpkg.com/@tanstack/eslint-plugin-query/-/eslint-plugin-query-5.99.2.tgz#a225a285f1afba4dde8b52321460db328433958c"
   integrity sha512-xiazL4CWOHJRDDgs5ZkfW98qlEAisakFDKh1Djc3BIk84tsvt3ow52AC2EiWSMY1q13IB4UI4jSo7yXlC3NL6g==
@@ -6193,7 +6200,7 @@
     tinyglobby "^0.2.15"
     ts-api-utils "^2.5.0"
 
-"@typescript-eslint/utils@8.59.0", "@typescript-eslint/utils@^8.0.0", "@typescript-eslint/utils@^8.58.0", "@typescript-eslint/utils@^8.58.1":
+"@typescript-eslint/utils@8.59.0", "@typescript-eslint/utils@^8.58.0", "@typescript-eslint/utils@^8.58.1":
   version "8.59.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/utils/-/utils-8.59.0.tgz#f50df9bd6967881ef64fba62230111153179ead5"
   integrity sha512-I1R/K7V07XsMJ12Oaxg/O9GfrysGTmCRhvZJBv0RE0NcULMzjqVpR5kRRQjHsz3J/bElU7HwCO7zkqL+MSUz+g==
@@ -8952,13 +8959,6 @@ eslint-plugin-jest-dom@^5.5.0:
   dependencies:
     "@babel/runtime" "^7.16.3"
     requireindex "^1.2.0"
-
-eslint-plugin-jest@^29.15.1:
-  version "29.15.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-29.15.2.tgz#e4ecd1c88dfb8a62b4a0857724792c2aab7e9b6d"
-  integrity sha512-kEN4r9RZl1xcsb4arGq89LrcVdOUFII/JSCwtTPJyv16mDwmPrcuEQwpxqZHeINvcsd7oK5O/rhdGlxFRaZwvQ==
-  dependencies:
-    "@typescript-eslint/utils" "^8.0.0"
 
 eslint-plugin-jsx-a11y@^6.10.2:
   version "6.10.2"

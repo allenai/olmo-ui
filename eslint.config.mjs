@@ -1,34 +1,31 @@
+import { fileURLToPath } from 'node:url';
+
 import varnishEslint from '@allenai/eslint-config-varnish';
+import { includeIgnoreFile } from '@eslint/compat';
 import query from '@tanstack/eslint-plugin-query';
 import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import { importX } from 'eslint-plugin-import-x';
-import jestDom from 'eslint-plugin-jest-dom';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import storybook from 'eslint-plugin-storybook';
 
+const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url));
+
 export default defineConfig([
-    globalIgnores([
-        'dist/**',
-        'build/**',
-        'styled-system/**',
-        'node_modules/**',
-        'test-results/**',
-        'blob-report/**',
-        'api',
-        'playwright-report/**',
-        'playwright/.cache/**',
-    ]),
+    includeIgnoreFile(gitignorePath, 'gitignore'),
+    globalIgnores(['api']),
+    query.configs['flat/recommended-strict'],
+    // @ts-expect-error
+    storybook.configs['flat/recommended'],
     varnishEslint.configs.strictWithReact,
+    varnishEslint.configs.prettier,
     {
         linterOptions: {
-            reportUnusedDisableDirectives: false,
+            reportUnusedDisableDirectives: true,
         },
         plugins: {
-            '@tanstack/query': query,
             'simple-import-sort': simpleImportSort,
-            storybook,
         },
         rules: {
             '@typescript-eslint/no-use-before-define': 0,
@@ -93,13 +90,18 @@ export default defineConfig([
                     ignoreRestSiblings: true,
                 },
             ],
+            '@typescript-eslint/no-unsafe-enum-comparison': 'warn',
         },
     },
     {
         files: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
-        ...jestDom.configs.recommended,
-        ...vitest.configs.recommended,
+        plugins: {
+            vitest, 
+            // 'jest-dom': jestDom
+        },
         rules: {
+            ...vitest.configs.recommended.rules,
+            // ...jestDom.configs['flat/recommended'].rules,
             'no-restricted-imports': [
                 'warn',
                 {
@@ -119,5 +121,11 @@ export default defineConfig([
             camelcase: 'warn',
         },
     },
-    varnishEslint.configs.prettier,
+    {
+        files: ['**/*.stories*'],
+        rules: {
+            '@eslint-react/rules-of-hooks': 'off',
+            '@eslint-react/component-hook-factories': 'off',
+        },
+    },
 ]);
