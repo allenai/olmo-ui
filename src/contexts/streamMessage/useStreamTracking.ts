@@ -6,7 +6,7 @@ import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
 import type {
     SchemaHttpValidationError,
     SchemaProblem,
-    type SchemaStartThreadChunk,
+    SchemaStartThreadChunk,
 } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { useAppContext } from '@/AppContext';
 import type { ThreadViewId } from '@/pages/comparison/ThreadViewContext';

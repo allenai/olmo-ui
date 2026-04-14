@@ -1,14 +1,16 @@
 import { cx } from '@allenai/varnish-panda-runtime/css';
 import { Button, Dialog, Label, Popover } from '@allenai/varnish-ui';
 import type {
+    DatePickerProps as AriaDatePickerProps,
+    DateValue,
+    ValidationResult,
+} from 'react-aria-components';
+import {
     DateInput as AriaDateInput,
     DatePicker as AriaDatePicker,
-    DatePickerProps as AriaDatePickerProps,
     DateSegment as AriaDateSegment,
-    DateValue,
     FieldError,
     Group as AriaGroup,
-    type ValidationResult,
 } from 'react-aria-components';
 
 import Calendar from './Calendar';

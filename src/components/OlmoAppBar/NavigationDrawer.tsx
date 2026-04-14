@@ -5,7 +5,7 @@ import ScienceIcon from '@mui/icons-material/Science';
 import SortIcon from '@mui/icons-material/Sort';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import { IconButton, Stack } from '@mui/material';
-import type { ComponentProps, type ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import { Helmet } from 'react-helmet';
 import type { UIMatch } from 'react-router-dom';
 import { useMatches } from 'react-router-dom';

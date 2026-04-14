@@ -1,11 +1,7 @@
 import { type TextAreaProps } from '@allenai/varnish-ui';
 import type { ReactNode } from 'react';
-import type {
-    FieldPath,
-    FieldValues,
-    useController,
-    type UseControllerProps,
-} from 'react-hook-form';
+import type { FieldPath, FieldValues, UseControllerProps } from 'react-hook-form';
+import { useController } from 'react-hook-form';
 
 import { FullWidthTextArea } from './FullWidthTextArea';
 

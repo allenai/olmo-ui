@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
-import type { PropsWithChildren, type ReactNode, useEffect } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
+import { useEffect } from 'react';
 
 import type { AppContextState } from '@/AppContext';
 import { useAppContext } from '@/AppContext';

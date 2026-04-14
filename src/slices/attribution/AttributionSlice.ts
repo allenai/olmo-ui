@@ -11,7 +11,7 @@ import {
 } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
-import type { type AppContextState, OlmoStateCreator } from '@/AppContext';
+import type { AppContextState, OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
 export interface MessageWithAttributionDocuments {

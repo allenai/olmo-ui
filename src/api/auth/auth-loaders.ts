@@ -4,7 +4,8 @@ import type { ActionFunction, ErrorResponse, LoaderFunction } from 'react-router
 import { json, redirect, useRouteLoaderData } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
-import type { User as ApiUser, UserClient } from '@/api/User';
+import type { User as ApiUser } from '@/api/User';
+import { UserClient } from '@/api/User';
 import { appContext, useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
