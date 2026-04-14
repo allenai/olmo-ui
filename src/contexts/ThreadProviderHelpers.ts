@@ -1,10 +1,10 @@
 import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { ChatRequest, FlatMessage } from '@/api/playgroundApi/thread';
+import { threadOptions } from '@/api/playgroundApi/thread';
 import type {
     SchemaPromptTemplateResponse,
     SchemaToolDefinition,
-} from '@/api/playgroundApi/playgroundApiSchema';
-import type { ChatRequest, FlatMessage } from '@/api/playgroundApi/thread';
-import { threadOptions } from '@/api/playgroundApi/thread';
+} from '@/api/playgroundApi/v5playgroundApiSchema';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { areModelsCompatibleForThread } from '@/components/thread/ModelSelect/useModels';

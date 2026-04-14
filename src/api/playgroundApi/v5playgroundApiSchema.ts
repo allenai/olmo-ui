@@ -538,7 +538,7 @@ export type components = {
          * ErrorCode
          * @enum {string}
          */
-        ErrorCode: 'toolCallError' | 'otherError';
+        ErrorCode: 'toolCallError' | 'otherError' | 'finalizeError';
         /**
          * ErrorSeverity
          * @enum {string}
@@ -598,7 +598,7 @@ export type components = {
             /** Content */
             content: string;
             /** Inputparts */
-            inputParts?: components['schemas']['Molmo2PointPart'][] | null;
+            inputParts?: components['schemas']['InputPart'][] | null;
             /** Creator */
             creator: string;
             role: components['schemas']['Role'];
@@ -697,6 +697,26 @@ export type components = {
             /** Logprobs */
             logprobs?: number | null;
         };
+        /** Molmo2PointPart */
+        InputPart: {
+            /**
+             * Type
+             * @default molmo_2_input_point
+             * @constant
+             */
+            type?: 'molmo_2_input_point';
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+            /** Time */
+            time: number;
+            /**
+             * Label
+             * @default object
+             */
+            label?: string;
+        };
         /** Label */
         Label: {
             /** Id */
@@ -791,26 +811,6 @@ export type components = {
          * @enum {string}
          */
         ModelType: 'base' | 'chat';
-        /** Molmo2PointPart */
-        Molmo2PointPart: {
-            /**
-             * Type
-             * @default molmo_2_input_point
-             * @constant
-             */
-            type?: 'molmo_2_input_point';
-            /** X */
-            x: number;
-            /** Y */
-            y: number;
-            /** Time */
-            time: number;
-            /**
-             * Label
-             * @default object
-             */
-            label?: string;
-        };
         /** MultiModalModelConfigResponse */
         MultiModalModelConfigResponse: {
             /** Id */
@@ -1724,7 +1724,7 @@ export type components = {
             /** Content */
             content?: string | null;
             /** Inputparts */
-            inputParts?: string | null;
+            inputParts?: string[] | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -1795,6 +1795,7 @@ export type SchemaFinishReason = components['schemas']['FinishReason'];
 export type SchemaFlatMessage = components['schemas']['FlatMessage'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
 export type SchemaInferenceOptionsResponse = components['schemas']['InferenceOptionsResponse'];
+export type SchemaInputPart = components['schemas']['InputPart'];
 export type SchemaLabel = components['schemas']['Label'];
 export type SchemaLabelCreateRequest = components['schemas']['LabelCreateRequest'];
 export type SchemaLabelRequest = components['schemas']['LabelRequest'];
@@ -1808,7 +1809,6 @@ export type SchemaModelOrder = components['schemas']['ModelOrder'];
 export type SchemaModelResponse = components['schemas']['ModelResponse'];
 export type SchemaModelResponseChunk = components['schemas']['ModelResponseChunk'];
 export type SchemaModelType = components['schemas']['ModelType'];
-export type SchemaMolmo2PointPart = components['schemas']['Molmo2PointPart'];
 export type SchemaMultiModalModelConfigResponse =
     components['schemas']['MultiModalModelConfigResponse'];
 export type SchemaMultiModalModelResponse = components['schemas']['MultiModalModelResponse'];
@@ -2827,6 +2827,7 @@ export const createMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
 export const errorCodeValues: ReadonlyArray<components['schemas']['ErrorCode']> = [
     'toolCallError',
     'otherError',
+    'finalizeError',
 ];
 export const errorSeverityValues: ReadonlyArray<components['schemas']['ErrorSeverity']> = [
     'error',

@@ -1,7 +1,7 @@
 import { LoadingSpinner } from '@allenai/varnish-ui';
 import { ContentCopy } from '@mui/icons-material';
 
-import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaToolCall } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { useAppContext } from '@/AppContext';
 import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
 import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';

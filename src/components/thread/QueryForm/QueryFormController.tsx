@@ -17,11 +17,11 @@ import { useNavigation } from 'react-router-dom';
 
 import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import {
+import type { ChatRequest, SchemaInputParts } from '@/api/playgroundApi/thread';
+import type {
     SchemaPromptTemplateResponse,
     SchemaToolCall,
-} from '@/api/playgroundApi/playgroundApiSchema';
-import type { ChatRequest, SchemaInputParts } from '@/api/playgroundApi/thread';
+} from '@/api/playgroundApi/v5playgroundApiSchema';
 import { VideoPointingInput } from '@/components/video/pointing/VideoPointing';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';

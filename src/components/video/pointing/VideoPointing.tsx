@@ -3,7 +3,7 @@ import { Player, PlayerRef } from '@remotion/player';
 import { useRef, useState } from 'react';
 import { AbsoluteFill, Html5Video, OffthreadVideo } from 'remotion';
 
-import type { SchemaMolmo2PointPart } from '@/api/playgroundApi/v5playgroundApiSchema';
+import type { SchemaInputPart } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { Controls, ControlsGroup, SplitControls } from '../controls/Controls';
@@ -31,8 +31,8 @@ export function VideoPointingInput({
     videoUrl: string | null;
     videoUrlFallBack: string | null;
     onRemoveFile: () => void;
-    userPoint: SchemaMolmo2PointPart | null;
-    setUserPoint: (value: SchemaMolmo2PointPart | null) => void;
+    userPoint: SchemaInputPart | null;
+    setUserPoint: (value: SchemaInputPart | null) => void;
     isDisabled?: boolean;
     isPointSelectDisabled?: boolean;
 }) {
@@ -65,7 +65,7 @@ export function VideoPointingInput({
         );
     }
 
-    const mapPointToData = (userPoint: SchemaMolmo2PointPart | null) => {
+    const mapPointToData = (userPoint: SchemaInputPart | null) => {
         // TODO refactor seekbar to generic type
         const point: VideoTrackingPoints = {
             label: '1',

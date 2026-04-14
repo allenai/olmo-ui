@@ -1,7 +1,7 @@
 import { Link } from '@allenai/varnish-ui';
 import type { ReactNode } from 'react';
 
-import type { SchemaModelHost } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaModelHost } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 interface HostIdMeta {
     label: string;

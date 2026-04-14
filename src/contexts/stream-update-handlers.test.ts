@@ -1,11 +1,11 @@
+import type { FlatMessage } from '@/api/playgroundApi/thread';
 import type {
     SchemaErrorChunk,
     SchemaModelResponseChunk,
     SchemaThinkingChunk,
     SchemaToolCall,
     SchemaToolCallChunk,
-} from '@/api/playgroundApi/playgroundApiSchema';
-import type { FlatMessage } from '@/api/playgroundApi/thread';
+} from '@/api/playgroundApi/v5playgroundApiSchema';
 
 import type { MessageChunk, StreamingThread } from './stream-types';
 import {

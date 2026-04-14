@@ -1,6 +1,6 @@
 import { processPageMetadata } from '@/api/playgroundApi/pagination-utils';
-import { SchemaGetThreadsRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { apiQueryClient } from '@/api/playgroundApi/v5';
+import type { operations } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { queryClient } from '@/api/query-client';
 
 // NOTE: It looks like a new infiniteQueryOptions method has been introduced. If it's accepted
@@ -37,7 +37,10 @@ import { queryClient } from '@/api/query-client';
 //     );
 // };
 
-export const useThreads = (initParams?: SchemaGetThreadsRequest) => {
+// `operations` types not exported as root :(
+type UseThreadsInitParams = operations['get_all_v5_threads__get']['parameters']['query'];
+
+export const useThreads = (initParams?: UseThreadsInitParams) => {
     const { offset, ...rest } = initParams ?? {};
     return apiQueryClient.useInfiniteQuery(
         'get',

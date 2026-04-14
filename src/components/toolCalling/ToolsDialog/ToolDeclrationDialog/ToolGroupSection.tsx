@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Checkbox, Link, LinkProps } from '@allenai/varnish-ui';
+import { Checkbox, Link, type LinkProps } from '@allenai/varnish-ui';
 import { ArrowOutwardOutlined } from '@mui/icons-material';
 import { useContext } from 'react';
 import {
@@ -11,12 +11,12 @@ import {
 } from 'react-aria-components';
 import { useController, type UseControllerProps } from 'react-hook-form';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
-import { SchemaAvailableTool } from '@/api/playgroundApi/playgroundApiSchema';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { SchemaAvailableTool } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
 
-import { DataFields } from './ToolDeclarationDialog';
+import type { DataFields } from './ToolDeclarationDialog';
 import {
     addToolsToSelected,
     allToolsInGroupSelected,

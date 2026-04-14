@@ -1,6 +1,6 @@
 import { parse } from 'partial-json';
 
-import type { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaToolCall } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 export const mapToolCallArgs = (toolCall: SchemaToolCall): Record<string, unknown> | undefined => {
     if (typeof toolCall.args === 'string') {
