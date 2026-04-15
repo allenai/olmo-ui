@@ -7,11 +7,6 @@ export const trackModelSelection = (modelId: string) => {
     analyticsClient.trackModelUpdate({ modelChosen: modelId });
 };
 
-// Find model by ID in models array
-export const findModelById = (models: Model[], modelId: string): Model | undefined => {
-    return models.find((model) => model.id === modelId);
-};
-
 // Get current model for a specific thread view
 export const getCurrentModelForThreadView = (
     selectedCompareModels: CompareModelState[],

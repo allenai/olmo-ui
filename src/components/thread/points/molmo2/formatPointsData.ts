@@ -146,7 +146,7 @@ interface CoordsOrTracks {
 
 const parseCoordsOrTracks = (imagesOrFramesList: string[][]): CoordsOrTracks[] => {
     return imagesOrFramesList.map((imageOrFramePoints) => {
-        let imageOrFrameId: string = '';
+        let imageOrFrameId: string;
         if (imageOrFramePoints.length % 3 === 1) {
             imageOrFrameId = imageOrFramePoints.shift() ?? '';
         } else if (imageOrFramePoints.length % 3 === 0) {

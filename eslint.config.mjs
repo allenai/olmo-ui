@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, URL } from 'node:url';
 
 import varnishEslint from '@allenai/eslint-config-varnish';
 import { includeIgnoreFile } from '@eslint/compat';
@@ -111,6 +111,7 @@ export default defineConfig([
                 },
             ],
             '@typescript-eslint/no-non-null-assertion': 'off',
+            '@eslint-react/component-hook-factories': 'off',
         },
     },
     {

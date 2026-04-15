@@ -74,7 +74,9 @@ export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
                 )
             );
             set({ userRemoteState: RemoteState.Error });
-            throw new Error(`Error getting user.`);
+            throw new Error(`Error getting user.`, {
+                cause: err,
+            });
         }
     },
     updateUserTermsAndDataCollection: async (payload: UpdateUserTermsAndDataCollectionPayload) => {
