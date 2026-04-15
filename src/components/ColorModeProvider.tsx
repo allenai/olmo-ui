@@ -1,14 +1,6 @@
-import { ErrorBoundary } from '@allenai/varnish2/components';
-import { varnishTheme } from '@allenai/varnish2/theme';
+import { VarnishApp } from '@allenai/varnish2/components';
 import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
-import {
-    createTheme,
-    CssBaseline,
-    PaletteMode,
-    ThemeOptions,
-    ThemeProvider,
-    useColorScheme,
-} from '@mui/material';
+import { PaletteMode, ThemeOptions, useColorScheme } from '@mui/material';
 import { PropsWithChildren, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -40,32 +32,12 @@ export const VarnishAppWithColorMode = ({
     defaultThemeColorMode = 'dark',
     theme = uiRefreshOlmoTheme,
 }: VarnishAppWithColorModeProps) => {
-    const mergedTheme = useMemo(() => {
-        const routerOverrides = getRouterOverriddenTheme(Link, theme);
-        // TODO: fox varnishTheme's createTheme to properly handle the CSS variables path so we don't have to pass it in here.
-        //
-        // varnishTheme.cssVariables is undefined on the processed object, so we must pass
-        // cssVariables explicitly as the first arg to ensure createTheme takes the CSS vars path
-        // and properly processes colorSchemes overrides.
-        //
-        // Once varnish's getTheme is fixed to do:
-        //   createTheme({ cssVariables: { colorSchemeSelector: 'data' } }, varnishTheme, overrides)
-        // this can be simplified to:
-        //   return <VarnishApp theme={routerOverrides} defaultMode={defaultThemeColorMode}>
-        return createTheme(
-            { cssVariables: { colorSchemeSelector: 'data' } },
-            varnishTheme,
-            routerOverrides
-        );
-    }, [theme]);
+    const routerOverrides = useMemo(() => getRouterOverriddenTheme(Link, theme), [theme]);
 
     return (
-        <ThemeProvider theme={mergedTheme} defaultMode={defaultThemeColorMode}>
-            <CssBaseline />
-            <ErrorBoundary>
-                <PandaColorModeSetter />
-                {children}
-            </ErrorBoundary>
-        </ThemeProvider>
+        <VarnishApp theme={routerOverrides} defaultMode={defaultThemeColorMode}>
+            <PandaColorModeSetter />
+            {children}
+        </VarnishApp>
     );
 };
