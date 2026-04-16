@@ -48,10 +48,9 @@ const AttributionDocumentCardBase = ({
             data-document-relevance={relevanceBucket}
             sx={(theme) => ({
                 bgcolor:
-                    // TODO: eval if this is still needed or if varnish proper is fine
                     colorMode === 'dark'
                         ? theme.vars?.palette.background.drawer.primary
-                        : theme.palette.background.default,
+                        : theme.vars?.palette.background.default,
                 overflow: 'visible',
                 borderRadius: 3,
 

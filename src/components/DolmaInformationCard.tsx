@@ -20,7 +20,7 @@ export const DolmaInformationCard = ({
         <Card
             variant="outlined"
             sx={(theme) => ({
-                background: (theme) => theme.palette.background.reversed,
+                background: (theme) => theme.vars?.palette.background.reversed,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start',

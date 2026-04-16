@@ -1,7 +1,7 @@
 // Shared base component logic and layout for both desktop and mobile avatar menus.
 
 import { Close, ShieldOutlined, StorageOutlined } from '@mui/icons-material';
-import { Box, IconButton, ListItemText, Stack, Typography, useColorScheme } from '@mui/material';
+import { Box, IconButton, ListItemText, Stack, Typography } from '@mui/material';
 import { ReactNode, useState } from 'react';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
@@ -32,23 +32,16 @@ export const AvatarMenuBase = ({
     const hasAcceptedTermsAndConditions = userInfo?.hasAcceptedTermsAndConditions === true;
     const hasAcceptedDataCollection = userInfo?.hasAcceptedDataCollection === true;
     const hasAcceptedMediaCollection = userInfo?.hasAcceptedMediaCollection === true;
-    const { mode, systemMode } = useColorScheme();
-    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
 
     const content = (
         <Box
             sx={(theme) => {
-                console.log(colorMode);
                 return {
                     p: 2.5,
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 1,
-                    bgcolor:
-                        // TODO: eval if we can do this better via palette augmentation in olmotheme or varnish proper
-                        colorMode === 'light'
-                            ? theme.palette.common.white
-                            : theme.vars?.palette.background.drawer.secondary,
+                    backgroundColor: theme.vars?.palette.background.drawer.secondary,
                 };
             }}>
             {showHeader && (

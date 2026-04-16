@@ -49,6 +49,7 @@ const BackdropWithCloseButton = (props: BackdropProps) => {
                     top: '10dvh',
                     color: theme.palette.grey[500],
                     border: '2px solid currentColor',
+                    borderRadius: '999rem',
                 })}>
                 <Close />
             </IconButton>
