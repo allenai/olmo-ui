@@ -20,26 +20,25 @@ declare module '@mui/material/styles' {
 // extended theme to hold olmo specific values and overrides\
 // TODO: eval if this is still needed or if varnish proper is fine
 export const uiRefreshOlmoTheme = {
-    // Top-level palette defines CSS variable structure available in all modes
-    palette: {
-        background: {
-            code: varnishTheme.palette.background.reversed,
-            drawer: {
-                primary: varnishTheme.palette.background.reversed,
-                secondary: varnishTheme.palette.background.default,
-            },
-        },
-        text: {
-            drawer: {
-                primary: varnishTheme.palette.text.reversed,
-                secondary: varnishTheme.palette.primary.dark,
-            },
-        },
-    },
     colorSchemes: {
         light: {
             palette: {
                 error: { main: '#d50000' },
+                background: {
+                    code: varnishTheme.palette.background.reversed,
+                    // varnish-theme sets background to 'cream', it was white before
+                    default: varnishTheme.color.white.hex,
+                    drawer: {
+                        primary: varnishTheme.palette.background.reversed,
+                        secondary: varnishTheme.color.white.hex,
+                    },
+                },
+                text: {
+                    drawer: {
+                        primary: varnishTheme.palette.text.reversed,
+                        secondary: varnishTheme.palette.primary.dark,
+                    },
+                },
             },
         },
         dark: {
@@ -83,11 +82,11 @@ export const uiRefreshOlmoTheme = {
             styleOverrides: {
                 root: ({ theme }) => ({
                     '&.Mui-selected': {
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
+                        backgroundColor: theme.vars.palette.primary.main,
+                        color: theme.vars.palette.primary.contrastText,
 
                         '&:focus-visible,&:hover': {
-                            backgroundColor: theme.palette.primary.dark,
+                            backgroundColor: theme.vars.palette.primary.dark,
                         },
                     },
                 }),
@@ -99,8 +98,8 @@ export const uiRefreshOlmoTheme = {
                     fontSize: theme.typography.body1.fontSize,
                     fontWeight: 'bold',
                     '&.Mui-selected': {
-                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                        color: theme.palette.text.primary,
+                        backgroundColor: `rgba(${theme.vars.palette.primary.mainChannel} / 0.08)`,
+                        color: theme.vars.palette.text.primary,
                     },
                 }),
             },
@@ -108,7 +107,7 @@ export const uiRefreshOlmoTheme = {
         MuiAccordion: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    backgroundColor: theme.palette.background.default,
+                    backgroundColor: theme.vars.palette.background.default,
                     '&.Mui-expanded': {
                         margin: 0,
                     },
@@ -118,7 +117,7 @@ export const uiRefreshOlmoTheme = {
         MuiAccordionSummary: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    color: theme.palette.primary.main,
+                    color: theme.vars.palette.primary.main,
                     '.MuiAccordionSummary-expandIconWrapper': {
                         color: 'inherit',
                     },
