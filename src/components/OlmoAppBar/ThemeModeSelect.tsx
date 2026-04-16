@@ -41,7 +41,7 @@ const ThemeModeSelectMenuItem = ({
 
         '&[data-theme-mode-adaptive="true"]': {
             '--theme-select-text-color': theme.vars?.palette.text.primary,
-            '--theme-select-background-color': alpha(theme.palette.background.paper, 0.6),
+            '--theme-select-background-color': `rgba(${theme.vars?.palette.background.paperChannel} / 0.6)`,
         },
 
         color: 'var(--theme-select-text-color)',
