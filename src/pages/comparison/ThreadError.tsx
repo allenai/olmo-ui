@@ -14,11 +14,11 @@ export const ThreadError = () => {
                 gridColumnEnd: 'span 2',
             }}>
             <ErrorOutline
-                sx={(theme) => ({
+                sx={{
                     fontSize: 48,
-                    color: theme.vars?.palette.error.main,
+                    color: 'error.main',
                     opacity: 0.7,
-                })}
+                }}
             />
         </Box>
     );

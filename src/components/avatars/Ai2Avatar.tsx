@@ -1,5 +1,3 @@
-import { Theme } from '@mui/material';
-
 import ai2AvatarURL from '../assets/ai2.svg';
 import { ChatAvatar } from './ChatAvatar';
 
@@ -8,9 +6,9 @@ export const Ai2Avatar = () => {
         <ChatAvatar
             src={ai2AvatarURL}
             alt=""
-            sx={(theme: Theme) => ({
-                background: theme.vars?.palette.primary.main,
-            })}
+            sx={{
+                backgroundColor: 'primary.main',
+            }}
         />
     );
 };

@@ -35,11 +35,11 @@ export const CustomLink = ({
         {...props}
         target="_blank"
         rel="noopener noreferrer"
-        sx={(theme) => ({
+        sx={{
             '&, &:visited': {
-                color: theme.vars?.palette.primary.main,
+                color: 'primary.main',
             },
-        })}
+        }}
     />
 );
 

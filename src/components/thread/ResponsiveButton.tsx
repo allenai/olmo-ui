@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Theme } from '@mui/material';
+import { Button, ButtonProps } from '@mui/material';
 
 import { LARGE_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
 
@@ -47,17 +47,17 @@ const ResponsiveButtonBase = ({
             variant={btnVariant}
             aria-label={title}
             startIcon={layout === 'both' ? startIcon : undefined}
-            sx={(theme: Theme) => ({
+            sx={{
                 ...sizeStyles(),
-                borderColor: theme.vars?.palette.primary.contrastText,
-                color: theme.vars?.palette.primary.contrastText,
+                borderColor: 'primary.contrastText',
+                color: 'primary.contrastText',
                 '&:hover': {
-                    color: theme.vars?.palette.primary.contrastText,
-                    borderColor: theme.vars?.palette.primary.contrastText,
+                    color: 'primary.contrastText',
+                    borderColor: 'primary.contrastText',
                 },
                 justifyContent: variant === 'list' ? 'start' : 'center',
                 flexBasis: layout === 'icon' ? 'min-content' : undefined,
-            })}>
+            }}>
             {layout === 'icon' ? startIcon : title}
         </Button>
     );

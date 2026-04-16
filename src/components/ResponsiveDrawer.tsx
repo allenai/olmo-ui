@@ -67,7 +67,7 @@ export const ResponsiveDrawer = ({
                     PaperProps={{
                         elevation: 2,
                         sx: (theme) => ({
-                            background: theme.vars?.palette.background.drawer.primary,
+                            backgroundColor: 'background.drawer.primary',
                             maxWidth: theme.spacing(50),
                             position: 'unset',
                             borderRight: 'none',
@@ -86,10 +86,10 @@ export const ResponsiveDrawer = ({
                     disableScrollLock={false}
                     onKeyDown={onKeyDownHandler}
                     PaperProps={{
-                        sx: (theme) => ({
-                            background: theme.vars?.palette.background.drawer.primary,
+                        sx: {
+                            backgroundColor: 'background.drawer.primary',
                             width: 'clamp(20rem, 100vw - 44px, 23rem)',
-                        }),
+                        },
                     }}
                     sx={mobileDrawerSx}
                     data-testid="Drawer">

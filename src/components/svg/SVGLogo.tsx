@@ -1,4 +1,4 @@
-import { Box, BoxProps, useTheme } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 
 export type SVGLogoProps = Pick<BoxProps, 'children' | 'sx'> & {
     color?: string;
@@ -19,14 +19,12 @@ export const SVGLogo = ({
     children,
     sx,
 }: SVGLogoProps) => {
-    const theme = useTheme();
-
     const svgDefaultProps = {
         width: '100%',
         maxWidth: width ?? intrinsicWidth,
         height: 'auto',
         fill: 'currentColor',
-        color: color ?? theme.vars?.palette.primary.main,
+        color: color ?? 'primary.main',
     };
     // Follows best practices for SVG images inline:
     // https://css-tricks.com/accessible-svgs/#aa-2-inline-svg

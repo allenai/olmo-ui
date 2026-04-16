@@ -40,7 +40,7 @@ export const DeleteThreadDialog = ({
                 <Button
                     variant="text"
                     onClick={handleDeleteThread}
-                    sx={{ color: (theme) => theme.vars?.palette.error.main }}>
+                    sx={{ color: 'error.main' }}>
                     Delete Thread
                 </Button>
                 <Button variant="text" onClick={onCancel}>

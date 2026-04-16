@@ -1,5 +1,3 @@
-import { Theme } from '@mui/material';
-
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
 import defaultUserAvatarURL from '../assets/user.svg';
@@ -33,10 +31,10 @@ export const UserAvatar = ({ useProfilePicture = false }: UserAvatarProps) => {
             src={defaultUserAvatarURL}
             alt=""
             color="primary"
-            sx={(theme: Theme) => ({
-                background: theme.vars?.palette.secondary.main,
+            sx={{
+                backgroundColor: 'secondary.main',
                 border: 'none',
-            })}
+            }}
         />
     );
 };

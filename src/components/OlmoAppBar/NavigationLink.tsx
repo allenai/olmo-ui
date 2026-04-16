@@ -111,7 +111,7 @@ export const NavigationLink = ({
                 paddingBlock: 1,
                 paddingInline: 4,
                 gap: theme.spacing(2),
-                color: theme.vars?.palette.text.drawer.primary,
+                color: 'text.drawer.primary',
 
                 ':hover': {
                     backgroundColor: 'transparent',
@@ -119,21 +119,21 @@ export const NavigationLink = ({
 
                 '&.Mui-selected': {
                     backgroundColor: 'transparent',
-                    color: theme.vars?.palette.secondary.main,
+                    color: 'secondary.main',
 
                     ':hover': {
                         backgroundColor: 'transparent',
                     },
 
                     ':focus-visible': {
-                        backgroundColor: theme.vars?.palette.secondary.light,
-                        color: theme.vars?.palette.secondary.contrastText,
+                        backgroundColor: 'secondary.light',
+                        color: 'secondary.contrastText',
                     },
                 },
 
                 '&.Mui-focusVisible': {
-                    backgroundColor: theme.vars?.palette.secondary.light,
-                    color: theme.vars?.palette.secondary.contrastText,
+                    backgroundColor: 'secondary.light',
+                    color: 'secondary.contrastText',
                 },
             })}
             {...linkPropsMerged}>
@@ -170,7 +170,7 @@ export const NavigationLink = ({
                             opacity: 0.5,
 
                             '&[data-experimental="true"]': {
-                                color: (theme) => theme.vars?.palette.secondary.main,
+                                color: 'secondary.main',
                                 opacity: 1,
                             },
                         }}

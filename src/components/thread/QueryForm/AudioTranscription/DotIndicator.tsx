@@ -3,13 +3,13 @@ import { Box } from '@mui/material';
 export const DotIndicator = () => {
     return (
         <Box
-            sx={(theme) => ({
+            sx={{
                 '&': {
                     position: 'relative',
                     width: '4px',
                     height: '4px',
                     borderRadius: '999rem',
-                    backgroundColor: theme.vars?.palette.secondary.light,
+                    backgroundColor: 'secondary.light',
                     animation: 'color-pulse 1s infinite linear alternate',
                     animationDelay: '600ms',
                     margin: '0 6px',
@@ -26,7 +26,7 @@ export const DotIndicator = () => {
                     width: '4px',
                     height: '4px',
                     borderRadius: '999rem',
-                    backgroundColor: theme.vars?.palette.secondary.light,
+                    backgroundColor: 'secondary.light',
                     animation: 'color-pulse 1s infinite alternate',
                     animationDelay: '0ms',
                 },
@@ -35,21 +35,21 @@ export const DotIndicator = () => {
                     width: '4px',
                     height: '4px',
                     borderRadius: '999rem',
-                    backgroundColor: theme.vars?.palette.secondary.light,
+                    backgroundColor: 'secondary.light',
                     animation: 'color-pulse 1s infinite alternate',
                     animationDelay: '1000ms',
                 },
                 '@keyframes color-pulse': {
                     '0%': {
                         opacity: '0.6',
-                        backgroundColor: theme.vars?.palette.secondary.light,
+                        backgroundColor: 'secondary.light',
                     },
                     '50%,100%': {
                         opacity: '1',
-                        backgroundColor: theme.vars?.palette.text.primary,
+                        backgroundColor: 'text.primary',
                     },
                 },
-            })}
+            }}
         />
     );
 };

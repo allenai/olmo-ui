@@ -83,7 +83,7 @@ const ThemeModeSelectMenuItem = ({
                         flexDirection: 'row-reverse',
                         justifySelf: 'end',
                         color: themeModeAdaptive
-                            ? theme.vars?.palette.primary.contrastText
+                            ? 'primary.contrastText'
                             : theme.palette.common.white,
                     })}>
                     <Check />
@@ -137,6 +137,7 @@ export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptiv
                                 paddingBlock: '0',
                                 boxShadow: 'none',
                                 overflow: 'visible',
+                                border: '0',
                             }),
                         },
                     },
@@ -144,8 +145,8 @@ export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptiv
                         sx: (theme) => ({
                             borderRadius: theme.spacing(1),
                             backgroundColor: themeModeAdaptive
-                                ? theme.vars?.palette.background.drawer.secondary
-                                : theme.vars?.palette.background.drawer.primary,
+                                ? 'background.drawer.secondary'
+                                : 'background.drawer.primary',
                             overflow: 'hidden',
                             padding: 0,
                             boxShadow: 1,
@@ -184,7 +185,7 @@ const ThemeModeInput = ({ themeModeAdaptive, ...props }: ThemeModeInputProps) =>
         marginBottom: theme.spacing(1),
         border: '1px solid rgba(0, 0, 0, 0.10)',
         '&.Mui-focused': {
-            borderColor: theme.vars?.palette.secondary.main,
+            borderColor: 'secondary.main',
         },
         [`.${inputBaseClasses.input}`]: {
             paddingBlock: theme.spacing(1),
@@ -198,13 +199,13 @@ const ThemeModeInput = ({ themeModeAdaptive, ...props }: ThemeModeInputProps) =>
                 paddingInlineEnd: theme.spacing(6),
             },
             [`.${inputBaseClasses.focused}`]: {
-                borderColor: theme.vars?.palette.secondary.main,
+                borderColor: 'secondary.main',
             },
         },
         [`.${selectClasses.icon}`]: {
             marginInlineEnd: theme.spacing(1),
             transform: 'scale(1.2) translateY(0px)',
-            fill: theme.vars?.palette.secondary.main,
+            fill: (theme) => theme.vars?.palette.secondary.main,
         },
     });
 
