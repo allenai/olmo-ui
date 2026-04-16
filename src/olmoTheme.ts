@@ -81,6 +81,7 @@ export const uiRefreshOlmoTheme = {
         MuiListItemButton: {
             styleOverrides: {
                 root: ({ theme }) => ({
+                    fontSize: theme.typography.body1.fontSize,
                     '&.Mui-selected': {
                         backgroundColor: theme.vars.palette.primary.main,
                         color: theme.vars.palette.primary.contrastText,
@@ -154,13 +155,6 @@ export const uiRefreshOlmoTheme = {
         MuiListItemText: {
             styleOverrides: {
                 primary: ({ theme }) => ({
-                    fontSize: theme.typography.body1.fontSize,
-                }),
-            },
-        },
-        MuiListItemButton: {
-            styleOverrides: {
-                root: ({ theme }) => ({
                     fontSize: theme.typography.body1.fontSize,
                 }),
             },
