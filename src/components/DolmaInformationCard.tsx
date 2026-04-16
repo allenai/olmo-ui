@@ -41,9 +41,7 @@ export const DolmaInformationCard = ({
                     alignItems: 'flex-start',
                     padding: 4,
                 }}>
-                <Typography
-                    variant="subtitle2"
-                    sx={{ color: 'secondary.light' }}>
+                <Typography variant="subtitle2" sx={{ color: 'secondary.light' }}>
                     {linkText}
                 </Typography>
                 <Typography

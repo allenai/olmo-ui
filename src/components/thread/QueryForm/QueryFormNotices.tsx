@@ -1,4 +1,4 @@
-import { alpha, Typography, useColorScheme } from '@mui/material';
+import { Typography, useColorScheme } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { familySpecificQueryFormNoticesMap } from './family-specific-query-form-notices-map';

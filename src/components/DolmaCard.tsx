@@ -20,10 +20,7 @@ export const DolmaCard = () => {
                         })}>
                         OlmoE-Mix is proven, trusted, and fully open.
                     </Typography>
-                    <Typography
-                        variant="subtitle1"
-                        align="center"
-                        sx={{ color: 'text.reversed' }}>
+                    <Typography variant="subtitle1" align="center" sx={{ color: 'text.reversed' }}>
                         <Link
                             href={links.olmoeMixAnnouncement}
                             target="_blank"

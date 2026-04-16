@@ -1,14 +1,7 @@
 import { AutoAwesome } from '@mui/icons-material';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
-import {
-    alpha,
-    MenuItem,
-    menuItemClasses,
-    type MenuItemProps,
-    styled,
-    Typography,
-} from '@mui/material';
+import { MenuItem, menuItemClasses, type MenuItemProps, styled, Typography } from '@mui/material';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import ThinkingSvg from '@/components/assets/thinking.svg?react';

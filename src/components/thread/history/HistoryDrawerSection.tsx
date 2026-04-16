@@ -21,9 +21,7 @@ export const HistoryDrawerSection = ({
     return (
         <>
             <List>
-                <NavigationHeading color="secondary.light">
-                    {heading}
-                </NavigationHeading>
+                <NavigationHeading color="secondary.light">{heading}</NavigationHeading>
                 {history.map((item) => {
                     return <ThreadLink key={item.threadId} {...item} />;
                 })}
