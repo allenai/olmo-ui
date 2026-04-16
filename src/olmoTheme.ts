@@ -137,7 +137,31 @@ export const uiRefreshOlmoTheme = {
                 select: ({ theme }) => ({
                     '&&': {
                         paddingRight: theme.spacing(6),
+                        // TODO: remove once fixed in varnish — blanket sm override lacks design backing
+                        fontSize: theme.typography.body1.fontSize,
                     },
+                }),
+            },
+        },
+        // TODO: remove once fixed in varnish — these blanket sm overrides lack design backing
+        MuiInputBase: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    fontSize: theme.typography.body1.fontSize,
+                }),
+            },
+        },
+        MuiListItemText: {
+            styleOverrides: {
+                primary: ({ theme }) => ({
+                    fontSize: theme.typography.body1.fontSize,
+                }),
+            },
+        },
+        MuiListItemButton: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    fontSize: theme.typography.body1.fontSize,
                 }),
             },
         },
