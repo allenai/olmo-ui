@@ -64,14 +64,17 @@ export const ResponsiveDrawer = ({
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                         ...(Array.isArray(desktopDrawerSx) ? desktopDrawerSx : [desktopDrawerSx]),
                     ]}
-                    PaperProps={{
-                        elevation: 2,
-                        sx: (theme) => ({
-                            backgroundColor: 'background.drawer.primary',
-                            maxWidth: theme.spacing(50),
-                            position: 'unset',
-                            borderRight: 'none',
-                        }),
+                    slotProps={{
+                        paper: {
+                            elevation: 2,
+                            sx: (theme) => ({
+                                backgroundColor: 'background.drawer.primary',
+                                backgroundImage: 'none',
+                                maxWidth: theme.spacing(50),
+                                position: 'unset',
+                                borderRight: 'none',
+                            }),
+                        },
                     }}
                     data-testid="Drawer">
                     {heading}
@@ -85,10 +88,13 @@ export const ResponsiveDrawer = ({
                     onClose={onClose}
                     disableScrollLock={false}
                     onKeyDown={onKeyDownHandler}
-                    PaperProps={{
-                        sx: {
-                            backgroundColor: 'background.drawer.primary',
-                            width: 'clamp(20rem, 100vw - 44px, 23rem)',
+                    slotProps={{
+                        paper: {
+                            sx: {
+                                backgroundColor: 'background.drawer.primary',
+                                backgroundImage: 'none',
+                                width: 'clamp(20rem, 100vw - 44px, 23rem)',
+                            },
                         },
                     }}
                     sx={mobileDrawerSx}
