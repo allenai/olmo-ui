@@ -112,7 +112,7 @@ export const ParameterSlider = ({
                                 '&:hover:not(.Mui-disabled):before': {
                                     borderBottom: 'none', // Remove hover underline
                                 },
-                                color: 'text.primary',
+                                color: (theme) => theme.vars?.palette.text.primary,
                             })}
                             inputProps={{
                                 step,

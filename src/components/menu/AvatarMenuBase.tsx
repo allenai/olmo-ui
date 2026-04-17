@@ -35,12 +35,14 @@ export const AvatarMenuBase = ({
 
     const content = (
         <Box
-            sx={{
-                p: 2.5,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                backgroundColor: 'background.drawer.secondary',
+            sx={(theme) => {
+                return {
+                    p: 2.5,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1,
+                    backgroundColor: theme.vars?.palette.background.drawer.secondary,
+                };
             }}>
             {showHeader && (
                 <Stack direction="row" gap={2} mb={2}>

@@ -57,21 +57,21 @@ export const AvatarMenuItem = ({
 
                     '&.Mui-selected': {
                         backgroundColor: 'transparent',
-                        color: 'secondary.main',
+                        color: theme.vars?.palette.secondary.main,
 
                         ':hover': {
                             backgroundColor: 'transparent',
                         },
 
                         ':focus-visible': {
-                            backgroundColor: 'secondary.light',
-                            color: 'secondary.contrastText',
+                            backgroundColor: theme.vars?.palette.secondary.light,
+                            color: theme.vars?.palette.secondary.contrastText,
                         },
                     },
 
                     '&.Mui-focusVisible': {
-                        backgroundColor: 'secondary.light',
-                        color: 'secondary.contrastText',
+                        backgroundColor: theme.vars?.palette.secondary.light,
+                        color: theme.vars?.palette.secondary.contrastText,
                     },
                 })}
                 {...linkPropsMerged}>

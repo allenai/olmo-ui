@@ -39,7 +39,7 @@ export const AvatarMenuLink = () => {
                 sx={(theme) => ({
                     padding: theme.spacing(1.5),
                     gap: theme.spacing(2),
-                    color: 'text.drawer.primary',
+                    color: theme.vars?.palette.text.drawer.primary,
                     border: '2px solid rgba(255, 255, 255, 0.10)',
                     borderRadius: '28px',
 
@@ -49,21 +49,21 @@ export const AvatarMenuLink = () => {
 
                     '&.Mui-selected': {
                         backgroundColor: 'transparent',
-                        color: 'secondary.main',
+                        color: theme.vars?.palette.secondary.main,
 
                         ':hover': {
                             backgroundColor: 'transparent',
                         },
 
                         ':focus-visible': {
-                            backgroundColor: 'secondary.light',
-                            color: 'secondary.contrastText',
+                            backgroundColor: theme.vars?.palette.secondary.light,
+                            color: theme.vars?.palette.secondary.contrastText,
                         },
                     },
 
                     '&.Mui-focusVisible': {
-                        backgroundColor: 'secondary.light',
-                        color: 'secondary.contrastText',
+                        backgroundColor: theme.vars?.palette.secondary.light,
+                        color: theme.vars?.palette.secondary.contrastText,
                     },
                 })}>
                 <NavigationListItemIcon

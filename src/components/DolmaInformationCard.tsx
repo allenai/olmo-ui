@@ -20,7 +20,7 @@ export const DolmaInformationCard = ({
         <Card
             variant="outlined"
             sx={(theme) => ({
-                backgroundColor: 'background.reversed',
+                background: (theme) => theme.vars?.palette.background.reversed,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start',
@@ -41,13 +41,15 @@ export const DolmaInformationCard = ({
                     alignItems: 'flex-start',
                     padding: 4,
                 }}>
-                <Typography variant="subtitle2" sx={{ color: 'secondary.light' }}>
+                <Typography
+                    variant="subtitle2"
+                    sx={{ color: (theme) => theme.vars?.palette.secondary.light }}>
                     {linkText}
                 </Typography>
                 <Typography
                     variant="h3"
                     sx={{
-                        color: 'text.reversed',
+                        color: (theme) => theme.vars?.palette.text.reversed,
                         marginY: 1,
                     }}>
                     {title}

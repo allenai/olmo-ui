@@ -43,21 +43,21 @@ export const NewChatButton = ({
 
                     '&.Mui-selected': {
                         backgroundColor: alpha(theme.palette.common.white, 0.1),
-                        color: 'secondary.main',
+                        color: theme.vars?.palette.secondary.main,
 
                         ':hover': {
                             backgroundColor: alpha(theme.palette.common.white, 0.1),
                         },
 
                         ':focus-visible': {
-                            backgroundColor: 'secondary.light',
-                            color: 'secondary.contrastText',
+                            backgroundColor: theme.vars?.palette.secondary.light,
+                            color: theme.vars?.palette.secondary.contrastText,
                         },
                     },
 
                     '&.Mui-focusVisible': {
-                        backgroundColor: 'secondary.light',
-                        color: 'secondary.contrastText',
+                        backgroundColor: theme.vars?.palette.secondary.light,
+                        color: theme.vars?.palette.secondary.contrastText,
                     },
                 })}>
                 <ListItemIcon

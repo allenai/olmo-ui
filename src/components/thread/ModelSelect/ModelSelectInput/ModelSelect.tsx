@@ -75,7 +75,8 @@ export const ModelSelect = ({
                                     paddingInline: 0,
                                     paddingBlock: 0,
                                     boxShadow: 1,
-                                    backgroundColor: 'background.drawer.secondary',
+                                    backgroundColor:
+                                        theme.vars?.palette.background.drawer.secondary,
                                 }),
                             },
                         },

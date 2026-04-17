@@ -37,12 +37,12 @@ export const IconButtonWithTooltip = ({
                 color={color}
                 aria-label={label}
                 sx={[
-                    {
+                    (theme) => ({
                         '&[data-active="true"]': {
-                            backgroundColor: 'background.paper',
+                            backgroundColor: theme.vars?.palette.background.paper,
                             borderRadius: '10px',
                         },
-                    },
+                    }),
                     // Array.isArray doesn't preserve Sx's array type
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     ...(Array.isArray(sx) ? sx : [sx]),

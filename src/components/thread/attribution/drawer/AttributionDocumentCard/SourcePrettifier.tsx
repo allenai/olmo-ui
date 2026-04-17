@@ -33,12 +33,12 @@ export const PrettifySource = ({ document }: PrettySourceProps): ReactNode => {
                 <Typography
                     variant="body2"
                     component="span"
-                    sx={{
-                        color: 'text.secondary',
+                    sx={(theme) => ({
+                        color: theme.vars?.palette.text.secondary,
                         '[data-selected-document=true] &': {
                             color: 'inherit',
                         },
-                    }}>
+                    })}>
                     {' > '}
                     {document.secondaryName}
                 </Typography>

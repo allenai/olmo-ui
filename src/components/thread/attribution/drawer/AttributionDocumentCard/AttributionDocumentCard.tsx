@@ -72,9 +72,9 @@ const AttributionDocumentCardBase = ({
                 },
 
                 '&[data-selected-document="true"]': {
-                    backgroundColor: 'secondary.main',
-                    color: 'secondary.contrastText',
-                    borderColor: 'secondary.main',
+                    backgroundColor: theme.vars?.palette.secondary.main,
+                    color: theme.vars?.palette.secondary.contrastText,
+                    borderColor: (theme) => theme.vars?.palette.secondary.main,
                 },
             })}>
             <CardContent component={Stack} direction="column" gap={1}>
@@ -237,7 +237,7 @@ const LocateSpanButton = ({
                     fontWeight: 'semiBold',
                     '[data-selected-document="true"] &': {
                         fontWeight: theme.typography.fontWeightMedium,
-                        color: 'secondary.contrastText',
+                        color: theme.vars?.palette.secondary.contrastText,
                     },
                 })}
                 onClick={() => {

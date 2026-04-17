@@ -172,7 +172,9 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 justifyContent="center"
                 alignItems="center"
                 gap={3.5}
-                sx={{ color: 'primary.main' }}>
+                sx={(theme) => ({
+                    color: theme.vars?.palette.primary.main,
+                })}>
                 <ImageSpinner
                     src="/arrow-spin.svg"
                     alt=""

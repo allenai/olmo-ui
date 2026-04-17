@@ -37,7 +37,10 @@ export const DeleteThreadDialog = ({
                 <DialogContentText>This action cannot be undone</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button variant="text" onClick={handleDeleteThread} sx={{ color: 'error.main' }}>
+                <Button
+                    variant="text"
+                    onClick={handleDeleteThread}
+                    sx={{ color: (theme) => theme.vars?.palette.error.main }}>
                     Delete Thread
                 </Button>
                 <Button variant="text" onClick={onCancel}>

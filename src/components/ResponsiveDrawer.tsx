@@ -68,8 +68,7 @@ export const ResponsiveDrawer = ({
                         paper: {
                             elevation: 2,
                             sx: (theme) => ({
-                                backgroundColor: 'background.drawer.primary',
-                                backgroundImage: 'none',
+                                background: theme.vars?.palette.background.drawer.primary,
                                 maxWidth: theme.spacing(50),
                                 position: 'unset',
                                 borderRight: 'none',
@@ -90,11 +89,10 @@ export const ResponsiveDrawer = ({
                     onKeyDown={onKeyDownHandler}
                     slotProps={{
                         paper: {
-                            sx: {
-                                backgroundColor: 'background.drawer.primary',
-                                backgroundImage: 'none',
+                            sx: (theme) => ({
+                                background: theme.vars?.palette.background.drawer.primary,
                                 width: 'clamp(20rem, 100vw - 44px, 23rem)',
-                            },
+                            }),
                         },
                     }}
                     sx={mobileDrawerSx}
