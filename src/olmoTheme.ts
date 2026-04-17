@@ -229,5 +229,21 @@ export const uiRefreshOlmoTheme = {
                 fontSizeLarge: { fontSize: undefined },
             },
         },
+        // reset to mui defaults for icon sizes
+        MuiList: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: undefined,
+                },
+            },
+        },
+        // reset from varnish-mui not sure if this is playground specific or should be varnish
+        MuiMenu: {
+            styleOverrides: {
+                paper: {
+                    border: '0',
+                },
+            },
+        },
     },
 } satisfies Partial<ThemeOptions>;
