@@ -9,7 +9,8 @@ import { ResponsiveCard } from './ResponsiveCard';
 export const DolmaCard = () => {
     return (
         <>
-            <ResponsiveCard sx={{ backgroundColor: (theme) => theme.vars?.palette.background.reversed }}>
+            <ResponsiveCard
+                sx={{ backgroundColor: (theme) => theme.vars?.palette.background.reversed }}>
                 <CardContent sx={{ padding: (theme) => theme.spacing(4, 2) }}>
                     <Typography
                         variant="h1"
