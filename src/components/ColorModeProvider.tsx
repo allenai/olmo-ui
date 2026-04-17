@@ -9,7 +9,7 @@ import { uiRefreshOlmoTheme } from '../olmoTheme';
 export type ColorPreference = PaletteMode | 'system';
 
 type VarnishAppWithColorModeProps = PropsWithChildren<{
-    defaultThemeColorMode?: PaletteMode;
+    defaultThemeColorMode?: ColorPreference;
     theme: ThemeOptions;
 }>;
 
@@ -29,7 +29,7 @@ const PandaColorModeSetter = () => {
 
 export const VarnishAppWithColorMode = ({
     children,
-    defaultThemeColorMode = 'dark',
+    defaultThemeColorMode = 'system',
     theme = uiRefreshOlmoTheme,
 }: VarnishAppWithColorModeProps) => {
     const routerOverrides = useMemo(() => getRouterOverriddenTheme(Link, theme), [theme]);
