@@ -138,16 +138,16 @@ export const uiRefreshOlmoTheme = {
                 select: ({ theme }) => ({
                     '&&': {
                         paddingRight: theme.spacing(6),
-                        // TODO: remove once fixed in varnish — blanket sm override lacks design backing
+                        // override varnish-mui
                         fontSize: theme.typography.body1.fontSize,
                     },
                 }),
             },
         },
-        // TODO: remove once fixed in varnish — these blanket sm overrides lack design backing
         MuiInputBase: {
             styleOverrides: {
                 root: ({ theme }) => ({
+                    // override varnish-mui
                     fontSize: theme.typography.body1.fontSize,
                 }),
             },
@@ -155,6 +155,7 @@ export const uiRefreshOlmoTheme = {
         MuiListItemText: {
             styleOverrides: {
                 primary: ({ theme }) => ({
+                    // override varnish-mui
                     fontSize: theme.typography.body1.fontSize,
                 }),
             },
@@ -201,6 +202,31 @@ export const uiRefreshOlmoTheme = {
                     marginBlockStart: theme.spacing(1),
                     marginInline: theme.spacing(0),
                 }),
+            },
+        },
+        // reset to mui defaults for icon sizes
+        MuiIconButton: {
+            styleOverrides: {
+                sizeSmall: {
+                    fontSize: undefined,
+                    padding: undefined,
+                },
+                sizeMedium: {
+                    fontSize: undefined,
+                    padding: undefined,
+                },
+                sizeLarge: {
+                    fontSize: undefined,
+                    padding: undefined,
+                },
+            },
+        },
+        // reset to mui defaults for icon sizes
+        MuiSvgIcon: {
+            styleOverrides: {
+                fontSizeSmall: { fontSize: undefined },
+                fontSizeMedium: { fontSize: undefined },
+                fontSizeLarge: { fontSize: undefined },
             },
         },
     },
