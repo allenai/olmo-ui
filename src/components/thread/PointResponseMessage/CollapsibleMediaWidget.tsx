@@ -69,7 +69,7 @@ const mediaWidgetRecipe = sva({
 
 interface MediaCollapsibleWidgetProps
     extends Omit<CollapsibleWidgetBaseProps, 'children'>, PropsWithChildren {
-    fileType: FileTypes;
+    fileType?: FileTypes;
     fileCount: number;
     isPending?: boolean;
 }
@@ -77,7 +77,7 @@ interface MediaCollapsibleWidgetProps
 export const MediaCollapsibleWidget = ({
     className,
     children,
-    fileType,
+    fileType = 'file',
     fileCount,
     isPending,
     ...rest
