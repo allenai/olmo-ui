@@ -24,15 +24,15 @@ const preview: Preview = {
       },
     },
     backgrounds: {
-      default: 'background',
-      values: [
-        {
+      options: {
+        background: {
           name: 'background', 
           value: 'var(--vui-colors-background)'
         }
-      ]
+      }
     }
   },
+
   decorators: [
     withThemeByClassName<ReactRenderer>({
       themes: {
@@ -55,7 +55,13 @@ const preview: Preview = {
       )
     }),
 (Story) => { const router = createMemoryRouter([{ path: '/', element: <Story />, errorElement: <BubbleError />}]); return <RouterProvider router={router} />}
-  ]
+  ],
+
+  initialGlobals: {
+    backgrounds: {
+      value: 'background'
+    }
+  }
 };
 
 export default preview;
