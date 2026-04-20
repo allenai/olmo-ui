@@ -1,7 +1,10 @@
 import * as z from 'zod';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { SchemaAvailableTool, SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
+import type {
+    SchemaAvailableTool,
+    SchemaToolDefinition,
+} from '@/api/playgroundApi/v5playgroundApiSchema';
 import { MCP_SERVER_INFO } from '@/components/toolCalling/mcpServerInfo';
 
 import { ToolGroupInfo } from './ToolGroupSection';

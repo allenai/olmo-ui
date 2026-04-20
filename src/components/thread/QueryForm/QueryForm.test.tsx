@@ -186,7 +186,6 @@ describe('QueryForm', () => {
             onAbort: () => undefined,
             getThreadViewModel: () => undefined,
             threadStarted: false,
-            isTranscribing: false,
             autofocus: false,
             areFilesAllowed: false,
             canPauseThread: false,

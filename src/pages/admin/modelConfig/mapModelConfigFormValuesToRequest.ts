@@ -1,7 +1,7 @@
-import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { Mutable } from '@/util';
 
-import { ModelConfigFormValues } from './components/ModelConfigForm/ModelConfigForm';
+import type { ModelConfigFormValues } from './components/ModelConfigForm/ModelConfigForm';
 
 export const mapModelConfigFormValuesToRequest = (
     formData: ModelConfigFormValues

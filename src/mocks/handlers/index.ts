@@ -2,24 +2,17 @@ import { http, HttpResponse, passthrough } from 'msw';
 
 import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
 
-import { messageHandlers } from './messageHandlers';
-import { messageStreamHandlers } from './messageStreamHandlers';
 import { datasetDocumentResponse } from './responses/datasetDocumentResponse';
 import { datasetSearchResponse } from './responses/datasetSearchResponse';
 import { v5AttributionHandlers } from './v5AttributionHandlers';
 import { v5ModelsHandlers } from './v5ModelsHandlers';
 import { v5PromptTemplatesHandlers } from './v5PromptTemplatesHandlers';
 import { v5ThreadHandlers } from './v5ThreadHandlers';
-import { v5TranscriptionHandlers } from './v5TranscriptionHandlers';
 
 export const handlers = [
-    ...messageStreamHandlers,
-    ...messageHandlers,
-
     ...v5AttributionHandlers,
     ...v5ThreadHandlers,
     ...v5ModelsHandlers,
-    ...v5TranscriptionHandlers,
     ...v5PromptTemplatesHandlers,
 
     http.get(`${process.env.VITE_API_URL}${WhoamiApiUrl}`, () => {

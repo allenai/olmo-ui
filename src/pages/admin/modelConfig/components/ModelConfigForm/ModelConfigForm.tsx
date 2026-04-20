@@ -6,7 +6,7 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { DisclosureGroup } from 'react-aria-components';
 import { useFormContext } from 'react-hook-form';
 
-import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { ControlledDatePicker } from '@/components/form/ControlledDatePicker';
 import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';

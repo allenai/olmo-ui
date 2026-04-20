@@ -1,9 +1,9 @@
 import { Link, SelectListBoxItem, Stack } from '@allenai/varnish-ui';
 import { Autocomplete, TextField } from '@mui/material';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import { SchemaCreateMultiModalModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaCreateMultiModalModelConfigRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
 import { ControlledSwitch } from '@/components/form/ControlledSwitch';

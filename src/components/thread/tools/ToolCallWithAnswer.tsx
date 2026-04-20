@@ -1,5 +1,5 @@
-import type { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { useThread } from '@/api/playgroundApi/thread';
+import type { SchemaToolCall } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 import { ToolCallWidget } from './ToolCallWidget';
 

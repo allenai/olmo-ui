@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaToolCall } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { useAppContext } from '@/AppContext';
 import {
     type FormContextWithContent,
