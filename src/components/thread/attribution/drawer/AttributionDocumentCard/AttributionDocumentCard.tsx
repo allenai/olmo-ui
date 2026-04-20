@@ -49,8 +49,8 @@ const AttributionDocumentCardBase = ({
             sx={(theme) => ({
                 bgcolor:
                     colorMode === 'dark'
-                        ? theme.vars?.palette.background.drawer.primary
-                        : theme.vars?.palette.background.default,
+                        ? theme.vars.palette.background.drawer.primary
+                        : theme.vars.palette.background.default,
                 overflow: 'visible',
                 borderRadius: 3,
 
@@ -58,7 +58,7 @@ const AttributionDocumentCardBase = ({
                 // These need are related to opacity for spans in
                 // `../../AttributionHilight.tsx`
                 //
-                '--base-border-color': theme.vars?.palette.secondary.main,
+                '--base-border-color': theme.vars.palette.secondary.main,
                 borderLeft: '9px solid var(--base-border-color)',
 
                 '&[data-document-relevance="high"]': {
@@ -72,9 +72,9 @@ const AttributionDocumentCardBase = ({
                 },
 
                 '&[data-selected-document="true"]': {
-                    backgroundColor: theme.vars?.palette.secondary.main,
-                    color: theme.vars?.palette.secondary.contrastText,
-                    borderColor: (theme) => theme.vars?.palette.secondary.main,
+                    backgroundColor: theme.vars.palette.secondary.main,
+                    color: theme.vars.palette.secondary.contrastText,
+                    borderColor: (theme) => theme.vars.palette.secondary.main,
                 },
             })}>
             <CardContent component={Stack} direction="column" gap={1}>
@@ -237,7 +237,7 @@ const LocateSpanButton = ({
                     fontWeight: 'semiBold',
                     '[data-selected-document="true"] &': {
                         fontWeight: theme.typography.fontWeightMedium,
-                        color: theme.vars?.palette.secondary.contrastText,
+                        color: theme.vars.palette.secondary.contrastText,
                     },
                 })}
                 onClick={() => {

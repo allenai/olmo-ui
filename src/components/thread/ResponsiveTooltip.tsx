@@ -58,7 +58,7 @@ export const ResponsiveTooltip = ({
                 {dialogTitle}
             </DialogTitle>
             <DialogContent
-                sx={{ paddingBlockEnd: 0, color: (theme) => theme.vars?.palette.text.primary }}>
+                sx={{ paddingBlockEnd: 0, color: (theme) => theme.vars.palette.text.primary }}>
                 <DialogContentText id={tooltipContentId}>{dialogContent}</DialogContentText>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'flex-start' }} disableSpacing>
@@ -82,7 +82,7 @@ export const ResponsiveTooltip = ({
                         paddingBottom: theme.spacing(0.5),
                         borderRadius: theme.spacing(1.5),
                         position: 'relative',
-                        background: theme.vars?.palette.background.drawer.secondary,
+                        background: theme.vars.palette.background.drawer.secondary,
                     }),
                     className: tooltipClassName,
                 },

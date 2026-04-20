@@ -41,7 +41,7 @@ export const AvatarMenuBase = ({
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 1,
-                    backgroundColor: theme.vars?.palette.background.drawer.secondary,
+                    backgroundColor: theme.vars.palette.background.drawer.secondary,
                 };
             }}>
             {showHeader && (
@@ -78,10 +78,12 @@ export const AvatarMenuBase = ({
                         opacity: 0.5,
                         marginBottom: 1.5,
                     }}
-                    primaryTypographyProps={{
-                        variant: 'body1',
-                        fontWeight: 500,
-                        component: 'span',
+                    slotProps={{
+                        primary: {
+                            variant: 'body1',
+                            fontWeight: 500,
+                            component: 'span',
+                        },
                     }}>
                     {userAuthInfo.email}
                 </ListItemText>

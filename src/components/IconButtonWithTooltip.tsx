@@ -39,7 +39,7 @@ export const IconButtonWithTooltip = ({
                 sx={[
                     (theme) => ({
                         '&[data-active="true"]': {
-                            backgroundColor: theme.vars?.palette.background.paper,
+                            backgroundColor: theme.vars.palette.background.paper,
                             borderRadius: '10px',
                         },
                     }),

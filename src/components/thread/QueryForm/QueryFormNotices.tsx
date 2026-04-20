@@ -25,7 +25,7 @@ export const QueryFormNotice = ({ selectedModelFamilyId }: QueryFormNoticeProps)
                 fontSize: '0.7rem',
                 lineHeight: '1.5',
                 margin: '0',
-                color: `rgba(${theme.vars?.palette.text.primaryChannel} / ${colorMode === 'dark' ? 0.5 : 0.75})`,
+                color: `rgba(${theme.vars.palette.text.primaryChannel} / ${colorMode === 'dark' ? 0.5 : 0.75})`,
                 paddingInline: 2,
             })}>
             Always fact-check your results.

@@ -209,12 +209,12 @@ export const AttributionHighlight = ({ span, children }: AttributionHighlightPro
                 return {
                     cursor: 'pointer',
 
-                    '--base-highlight-color': theme.vars?.palette.secondary.main,
+                    '--base-highlight-color': theme.vars.palette.secondary.main,
                     borderBottom: '2px solid var(--base-highlight-color)',
 
                     // fallback if relative colors aren't supported
                     backgroundColor: 'var(--base-highlight-color)',
-                    color: theme.vars?.palette.secondary.contrastText,
+                    color: theme.vars.palette.secondary.contrastText,
 
                     '@supports (color: rgb(from white r g b))': {
                         '&[data-span-relevance="high"]': {
@@ -231,14 +231,14 @@ export const AttributionHighlight = ({ span, children }: AttributionHighlightPro
 
                         backgroundColor:
                             'rgb(from var(--base-highlight-color) r g b / var(--background-opacity, 10%))',
-                        color: theme.vars?.palette.text.primary,
+                        color: theme.vars.palette.text.primary,
                     },
 
                     // We only have a special highlight state for spans when the selection type is span
                     // If this is shown through a document selection we want to keep the normal span highlights
                     '&[data-selection-type="span"]': {
                         backgroundColor: 'var(--base-highlight-color)',
-                        color: theme.vars?.palette.secondary.contrastText,
+                        color: theme.vars.palette.secondary.contrastText,
                     },
 
                     ':focus-visible': {

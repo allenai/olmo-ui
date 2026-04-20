@@ -1,5 +1,6 @@
 import { varnishTheme } from '@allenai/varnish2/theme';
 import { ThemeOptions } from '@mui/material';
+import type {} from '@mui/material/themeCssVarsAugmentation';
 
 declare module '@mui/material/styles' {
     interface TypeBackground {

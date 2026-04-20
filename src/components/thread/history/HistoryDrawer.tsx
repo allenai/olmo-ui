@@ -148,7 +148,7 @@ export const HistoryDrawer = (): ReactNode => {
                         <IconButton
                             onClick={handleDrawerClose}
                             sx={{
-                                color: (theme) => theme.vars?.palette.text.drawer.primary,
+                                color: (theme) => theme.vars.palette.text.drawer.primary,
                                 opacity: 0.5,
                             }}
                             aria-label="close history drawer">
@@ -175,7 +175,7 @@ export const HistoryDrawer = (): ReactNode => {
                         <HistoryDivider />
                         <CircularProgress
                             sx={{
-                                color: (theme) => theme.vars?.palette.secondary.light,
+                                color: (theme) => theme.vars.palette.secondary.light,
                                 marginLeft: (theme) => theme.spacing(3),
                             }}
                         />

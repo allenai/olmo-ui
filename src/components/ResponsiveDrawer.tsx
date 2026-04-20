@@ -68,7 +68,7 @@ export const ResponsiveDrawer = ({
                         paper: {
                             elevation: 2,
                             sx: (theme) => ({
-                                background: theme.vars?.palette.background.drawer.primary,
+                                background: theme.vars.palette.background.drawer.primary,
                                 maxWidth: theme.spacing(50),
                                 position: 'unset',
                                 borderRight: 'none',
@@ -90,7 +90,7 @@ export const ResponsiveDrawer = ({
                     slotProps={{
                         paper: {
                             sx: (theme) => ({
-                                background: theme.vars?.palette.background.drawer.primary,
+                                background: theme.vars.palette.background.drawer.primary,
                                 width: 'clamp(20rem, 100vw - 44px, 23rem)',
                             }),
                         },

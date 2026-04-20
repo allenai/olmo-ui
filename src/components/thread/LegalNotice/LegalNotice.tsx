@@ -13,7 +13,7 @@ import {
 export const getLegalNoticeTextColor =
     (opacity: number = 0.75) =>
     (theme: Theme): string =>
-        `color-mix(in srgb, ${theme.vars?.palette.text.primary} ${Math.round(opacity * 100)}%, transparent)`;
+        `color-mix(in srgb, ${theme.vars.palette.text.primary} ${Math.round(opacity * 100)}%, transparent)`;
 
 export const LegalNoticeTypography = ({ children }: PropsWithChildren) => {
     return (

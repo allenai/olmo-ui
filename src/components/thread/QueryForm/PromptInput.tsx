@@ -100,8 +100,8 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
 
                             return {
                                 ...textareaStyles,
-                                color: theme.vars?.palette.text.primary,
-                                caretColor: theme.vars?.palette.secondary.main,
+                                color: theme.vars.palette.text.primary,
+                                caretColor: theme.vars.palette.secondary.main,
 
                                 // start styles stolen from MUI https://github.com/mui/material-ui/blob/e0894407dd8c564f853452dbed278f3fa7c04933/packages/mui-material/src/InputBase/InputBase.js#L109
                                 '&::-webkit-input-placeholder': placeholderStyles,

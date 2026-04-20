@@ -75,8 +75,7 @@ export const ModelSelect = ({
                                     paddingInline: 0,
                                     paddingBlock: 0,
                                     boxShadow: 1,
-                                    backgroundColor:
-                                        theme.vars?.palette.background.drawer.secondary,
+                                    backgroundColor: theme.vars.palette.background.drawer.secondary,
                                 }),
                             },
                         },
@@ -110,13 +109,13 @@ export const ModelSelect = ({
 
 const CustomInput = styled((props: InputBaseProps) => <InputBase {...props} />)(({ theme }) => ({
     borderRadius: '999px',
-    backgroundColor: theme.vars?.palette.background.drawer.secondary,
+    backgroundColor: theme.vars.palette.background.drawer.secondary,
     backgroundImage: 'none',
-    color: theme.vars?.palette.text.primary,
+    color: theme.vars.palette.text.primary,
     minWidth: '16rem',
     border: '2px solid transparent',
     '&.Mui-focused': {
-        borderColor: theme.vars?.palette.secondary.main,
+        borderColor: theme.vars.palette.secondary.main,
     },
     [`.${inputBaseClasses.input}`]: {
         paddingBlock: theme.spacing(1),
@@ -130,12 +129,12 @@ const CustomInput = styled((props: InputBaseProps) => <InputBase {...props} />)(
             paddingInlineEnd: theme.spacing(6),
         },
         [`.${inputBaseClasses.focused}`]: {
-            borderColor: theme.vars?.palette.secondary.main,
+            borderColor: theme.vars.palette.secondary.main,
         },
     },
     [`.${selectClasses.icon}`]: {
         marginInlineEnd: theme.spacing(2),
         transform: 'scale(1.2) translateY(0px)',
-        fill: theme.vars?.palette.primary.main,
+        fill: theme.vars.palette.primary.main,
     },
 }));

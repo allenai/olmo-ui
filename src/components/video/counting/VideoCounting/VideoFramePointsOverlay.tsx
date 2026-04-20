@@ -52,7 +52,7 @@ export const VideoFramePointsOverlay = memo(function VideoFramePoints({
                     r={'1.5%'}
                     stroke={'white'}
                     strokeWidth={'0.3%'}
-                    fill={onFrame ? varnishTheme.vars?.palette.primary.main : 'transparent'}
+                    fill={onFrame ? varnishTheme.vars.palette.primary.main : 'transparent'}
                 />
             ))}
         </svg>

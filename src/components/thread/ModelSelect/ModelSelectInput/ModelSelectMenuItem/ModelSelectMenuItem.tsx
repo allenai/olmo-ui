@@ -25,19 +25,19 @@ const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
     background: 'transparent',
 
     [`&.${menuItemClasses.focusVisible}`]: {
-        backgroundColor: `color-mix(in srgb, ${theme.vars?.palette.background.reversed} 12%, transparent)`,
+        backgroundColor: `color-mix(in srgb, ${theme.vars.palette.background.reversed} 12%, transparent)`,
     },
     ':hover': {
-        backgroundColor: `color-mix(in srgb, ${theme.vars?.palette.background.reversed} 4%, transparent)`,
+        backgroundColor: `color-mix(in srgb, ${theme.vars.palette.background.reversed} 4%, transparent)`,
     },
     [`&.${menuItemClasses.selected}`]: {
-        background: `rgba(${theme.vars?.palette.background.paperChannel} / 0.6)`,
-        color: theme.vars?.palette.text.primary,
+        background: `rgba(${theme.vars.palette.background.paperChannel} / 0.6)`,
+        color: theme.vars.palette.text.primary,
         [`&.${menuItemClasses.focusVisible}`]: {
-            backgroundColor: `color-mix(in srgb, ${theme.vars?.palette.background.reversed} 12%, transparent)`,
+            backgroundColor: `color-mix(in srgb, ${theme.vars.palette.background.reversed} 12%, transparent)`,
         },
         ':hover': {
-            backgroundColor: `color-mix(in srgb, ${theme.vars?.palette.background.reversed} 4%, transparent)`,
+            backgroundColor: `color-mix(in srgb, ${theme.vars.palette.background.reversed} 4%, transparent)`,
         },
     },
 }));

@@ -29,7 +29,7 @@ export const ThreadLink = ({
         <ListItem
             disablePadding
             sx={{
-                color: (theme) => theme.vars?.palette.text.drawer.primary,
+                color: (theme) => theme.vars.palette.text.drawer.primary,
                 position: 'relative',
                 minHeight: (theme) => theme.spacing(5),
                 '& .MuiIconButton-root': {
@@ -55,15 +55,15 @@ export const ThreadLink = ({
                     minHeight: (theme) => theme.spacing(5),
                     gap: (theme) => theme.spacing(1),
                     '&.Mui-selected': {
-                        backgroundColor: (theme) => theme.vars?.palette.secondary.light,
+                        backgroundColor: (theme) => theme.vars.palette.secondary.light,
                         color: (theme) => theme.color['dark-teal-100'].hex,
                         '&:hover': {
-                            backgroundColor: (theme) => theme.vars?.palette.secondary.light,
+                            backgroundColor: (theme) => theme.vars.palette.secondary.light,
                             color: (theme) => theme.color['dark-teal-100'].hex,
                         },
                     },
                     '&&.Mui-focusVisible': (theme) => ({
-                        backgroundColor: theme.vars?.palette.secondary.light,
+                        backgroundColor: theme.vars.palette.secondary.light,
                         color: theme.color['dark-teal-100'].hex,
                     }),
                     '& .MuiListItemIcon-root': {

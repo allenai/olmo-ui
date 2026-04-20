@@ -37,7 +37,7 @@ export const CustomLink = ({
         rel="noopener noreferrer"
         sx={(theme) => ({
             '&, &:visited': {
-                color: theme.vars?.palette.primary.main,
+                color: theme.vars.palette.primary.main,
             },
         })}
     />
