@@ -57,7 +57,7 @@ export default defineConfig(({ mode }) => {
                 {
                     extends: true,
                     optimizeDeps: {
-                        include: ['react', 'react-dom/client', '@wojtekmaj/react-recaptcha-v3']
+                        include: ['react', 'react-dom/client', '@wojtekmaj/react-recaptcha-v3', '@allenai/varnish2/components', '@allenai/varnish2/utils']
                     },
                     plugins: [
                         // The plugin will run tests for the stories defined in your Storybook config
