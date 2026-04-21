@@ -36,4 +36,7 @@ prettier.config.js
 
 # Claude
 CLAUDE.md
-.claude
+.claude/*
+!.claude/
+!.claude/skills/
+!.claude/skills/*
