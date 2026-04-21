@@ -12,6 +12,8 @@ This project uses [Remotion](https://www.remotion.dev/) as a dependency. Users a
 
 If you'd like to have linting on commit, run `yarn run add-git-hooks`. This will use `husky` to set up our standard git hooks.
 
+To ignore git-blame for previous bulk updates, run `git config blame.ignoreRevsFile .git-blame-ignore-revs` to ignore commits listed in `.git-blame-ignore-revs` of this project.
+
 ### Local Development (without Docker)
 
 By default olmo points to a local instance of olmo-api which must be running.
