@@ -201,7 +201,7 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
             <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
             <InlineAlertMessage messageId={messageId} />
             <MessageInteraction
-                role={role as Role}
+                role={role}
                 content={rawMode ? escapeForDisplay(content) : content}
                 messageLabels={labels}
                 messageId={messageId}

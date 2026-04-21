@@ -18,9 +18,7 @@ export const Auth0LoginLink = () => {
     }
 
     return (
-        <AvatarMenuItem
-            icon={<LoginIcon />}
-            href={links.login(window.location.href)}>
+        <AvatarMenuItem icon={<LoginIcon />} href={links.login(window.location.href)}>
             Log in
         </AvatarMenuItem>
     );

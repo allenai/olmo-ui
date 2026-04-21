@@ -8,7 +8,8 @@ import {
     Typography,
     useColorScheme,
 } from '@mui/material';
-import { PropsWithChildren, ReactNode, useState } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
+import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import type { Document as AttributionDocument, Document } from '@/api/AttributionClient';
@@ -39,7 +40,7 @@ const AttributionDocumentCardBase = ({
     relevanceBucket,
 }: AttributionDocumentCardBaseProps): ReactNode => {
     const { mode, systemMode } = useColorScheme();
-    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+    const colorMode = mode === 'system' || !mode ? (systemMode ?? 'dark') : mode;
 
     return (
         <Card

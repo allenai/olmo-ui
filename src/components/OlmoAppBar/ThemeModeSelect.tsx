@@ -1,5 +1,5 @@
 import { Check } from '@mui/icons-material';
-import type { InputBaseProps, MenuItemProps, SxProps, Theme } from '@mui/material';
+import type { InputBaseProps, MenuItemProps, PaletteMode, SxProps, Theme } from '@mui/material';
 import {
     alpha,
     Box,
@@ -8,7 +8,6 @@ import {
     ListItemIcon,
     MenuItem,
     menuItemClasses,
-    PaletteMode,
     Select,
     selectClasses,
     useColorScheme,

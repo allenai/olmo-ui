@@ -67,7 +67,7 @@ interface RelevanceGroup {
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
     const { mode, systemMode } = useColorScheme();
-    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+    const colorMode = mode === 'system' || !mode ? (systemMode ?? 'dark') : mode;
     const isThereASelectedMessage = useAppContext((state) =>
         Boolean(state.attribution.selectedMessageId)
     );

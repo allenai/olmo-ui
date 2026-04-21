@@ -1,8 +1,10 @@
 // Shared base component logic and layout for both desktop and mobile avatar menus.
 
 import { Close, ShieldOutlined, StorageOutlined } from '@mui/icons-material';
-import { Box, IconButton, ListItemText, PaletteMode, Stack, Typography } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import type { PaletteMode } from '@mui/material';
+import { Box, IconButton, ListItemText, Stack, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { UserAvatar } from '@/components/avatars/UserAvatar';

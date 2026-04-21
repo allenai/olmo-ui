@@ -1,6 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { LoginOutlined as LoginIcon } from '@mui/icons-material';
-import { Button, PaletteMode, Typography, useColorScheme } from '@mui/material';
+import type { PaletteMode } from '@mui/material';
+import { Button, Typography, useColorScheme } from '@mui/material';
 
 import { links } from '@/Links';
 
@@ -25,7 +26,7 @@ interface AuthErrorPageProps {
 
 export const AuthErrorPage = ({ title, message, redirectTo }: AuthErrorPageProps) => {
     const { mode, systemMode } = useColorScheme();
-    const colorMode: PaletteMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+    const colorMode: PaletteMode = mode === 'system' || !mode ? (systemMode ?? 'dark') : mode;
     const colorModeColor = colorMode === 'light' ? 'primary' : 'secondary';
 
     const loginRedirectUrl = redirectTo ?? window.location.href;

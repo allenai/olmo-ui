@@ -1,5 +1,6 @@
-import { IconButton, IconButtonOwnProps, SxProps, Theme } from '@mui/material';
-import { MouseEventHandler } from 'react';
+import type { IconButtonOwnProps, SxProps, Theme } from '@mui/material';
+import { IconButton } from '@mui/material';
+import type { MouseEventHandler } from 'react';
 
 import { StyledTooltip, type StyledTooltipProps } from './StyledTooltip';
 

@@ -14,7 +14,7 @@ export const ThemeSyntaxHighlighter = ({
     ...rest
 }: ThemeSyntaxHighlighterProps) => {
     const { mode, systemMode } = useColorScheme();
-    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+    const colorMode = mode === 'system' || !mode ? (systemMode ?? 'dark') : mode;
     if (language === 'math') {
         return <MathBlock inline={inline}>{children}</MathBlock>;
     }

@@ -1,7 +1,9 @@
 import { Check } from '@mui/icons-material';
 import TVOutlinedIcon from '@mui/icons-material/TvOutlined';
-import { Box, ListItemIcon, Menu, MenuItem, MenuItemProps, useColorScheme } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import type { MenuItemProps } from '@mui/material';
+import { Box, ListItemIcon, Menu, MenuItem, useColorScheme } from '@mui/material';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 

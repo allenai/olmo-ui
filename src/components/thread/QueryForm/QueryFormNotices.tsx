@@ -1,5 +1,5 @@
 import { Typography, useColorScheme } from '@mui/material';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { familySpecificQueryFormNoticesMap } from './family-specific-query-form-notices-map';
 
@@ -13,7 +13,7 @@ export const QueryFormNotice = ({ selectedModelFamilyId }: QueryFormNoticeProps)
             ? familySpecificQueryFormNoticesMap[selectedModelFamilyId]
             : undefined;
     const { mode, systemMode } = useColorScheme();
-    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+    const colorMode = mode === 'system' || !mode ? (systemMode ?? 'dark') : mode;
 
     return (
         <Typography

@@ -122,7 +122,7 @@ export namespace error {
             err !== null &&
             typeof err === 'object' &&
             'error' in err &&
-            isErrorDetailsPayload((err as { error: unknown }).error)
+            isErrorDetailsPayload(err.error)
         );
     }
 }

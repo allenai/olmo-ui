@@ -1,13 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
-import {
-    Box,
-    IconButton,
-    ListSubheader,
-    PaletteMode,
-    Stack,
-    Typography,
-    useColorScheme,
-} from '@mui/material';
+import type { PaletteMode } from '@mui/material';
+import { Box, IconButton, ListSubheader, Stack, Typography, useColorScheme } from '@mui/material';
 import type { PropsWithChildren, ReactElement } from 'react';
 
 import { useAppContext } from '@/AppContext';
@@ -20,7 +13,7 @@ export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 export const DesktopParameterDrawer = ({ children }: PropsWithChildren): ReactElement => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
     const { mode, systemMode } = useColorScheme();
-    const colorMode: PaletteMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+    const colorMode: PaletteMode = mode === 'system' || !mode ? (systemMode ?? 'dark') : mode;
 
     return (
         <DesktopExpandingDrawer open={open} id="desktop-parameter-drawer">

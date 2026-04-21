@@ -46,7 +46,7 @@ export function extractPointData(input: string): ImagePoints[] | null {
                 pointId: `${count}`,
                 x: Number(x),
                 y: Number(y),
-            } as Point);
+            });
 
             return acc;
         }, []);
