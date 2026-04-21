@@ -1,8 +1,6 @@
 import { cx } from '@allenai/varnish-ui';
-import {
-    DisclosurePanel as AriaDisclosurePanel,
-    DisclosurePanelProps as AriaDisclosurePanelProps,
-} from 'react-aria-components';
+import type { DisclosurePanelProps as AriaDisclosurePanelProps } from 'react-aria-components';
+import { DisclosurePanel as AriaDisclosurePanel } from 'react-aria-components';
 
 import {
     collapsibleWidgetRecipe,
@@ -10,8 +8,7 @@ import {
 } from './collapsibleWidget.styles';
 
 interface CollapsibleWidgetPanelProps
-    extends CollapsibleWidgetRecipeVariantProps,
-        AriaDisclosurePanelProps {
+    extends CollapsibleWidgetRecipeVariantProps, AriaDisclosurePanelProps {
     className?: string;
 }
 

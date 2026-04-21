@@ -38,7 +38,7 @@ export const ModelCard = ({
 }: ModelCardProps) => {
     const isExternal = type === 'link';
     const url = isExternal
-        ? informationUrl ?? '/' // we probably shouldn't be showing a card without an informationUrl, but it _is_ optional
+        ? (informationUrl ?? '/') // we probably shouldn't be showing a card without an informationUrl, but it _is_ optional
         : links.selectModel(id);
 
     return (

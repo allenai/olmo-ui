@@ -1,4 +1,5 @@
-import { Box, SxProps } from '@mui/material';
+import type { SxProps } from '@mui/material';
+import { Box } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
 export const ATTRIBUTION_HIGHLIGHT_DESCRIPTION_ID = 'attribution-highlight-description';

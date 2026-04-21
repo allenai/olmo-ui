@@ -8,15 +8,16 @@ import {
     Typography,
     useColorScheme,
 } from '@mui/material';
-import { PropsWithChildren, ReactNode, useState } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
+import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import { Document as AttributionDocument, Document } from '@/api/AttributionClient';
+import type { Document as AttributionDocument, Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { StyledTooltip } from '@/components/StyledTooltip';
 
-import { AttributionBucket } from '../../calculate-relevance-score';
+import type { AttributionBucket } from '../../calculate-relevance-score';
 import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
 import { AttributionDocumentModal } from './AttributionDocumentModal';
 import { PrettifySource } from './SourcePrettifier';
@@ -39,7 +40,7 @@ const AttributionDocumentCardBase = ({
     relevanceBucket,
 }: AttributionDocumentCardBaseProps): ReactNode => {
     const { mode, systemMode } = useColorScheme();
-    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+    const colorMode = mode === 'system' || !mode ? (systemMode ?? 'dark') : mode;
 
     return (
         <Card

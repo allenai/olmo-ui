@@ -1,7 +1,7 @@
 import { render, screen, within } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 
-import { Document } from '@/api/AttributionClient';
+import type { Document } from '@/api/AttributionClient';
 import * as appContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 

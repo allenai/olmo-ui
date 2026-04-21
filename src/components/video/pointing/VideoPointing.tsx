@@ -1,10 +1,11 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
-import { Player, PlayerRef } from '@remotion/player';
+import type { PlayerRef } from '@remotion/player';
+import { Player } from '@remotion/player';
 import { useRef, useState } from 'react';
 import { AbsoluteFill, Html5Video, OffthreadVideo } from 'remotion';
 
 import type { SchemaInputPart } from '@/api/playgroundApi/v5playgroundApiSchema';
-import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+import type { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 import { Controls, ControlsGroup, SplitControls } from '../controls/Controls';
 import { PlayPause } from '../controls/PlayPause';

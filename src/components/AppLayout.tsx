@@ -1,5 +1,6 @@
-import { Container, Paper, PaperProps } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import type { PaperProps } from '@mui/material';
+import { Container, Paper } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';

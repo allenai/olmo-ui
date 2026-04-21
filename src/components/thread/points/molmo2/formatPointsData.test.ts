@@ -1,4 +1,4 @@
-import { ImagePoints, VideoFramePoints, VideoTrackingPoints } from '../pointsDataTypes';
+import type { ImagePoints, VideoFramePoints, VideoTrackingPoints } from '../pointsDataTypes';
 import { extractPointsData } from './formatPointsData';
 
 describe('Parse Points', () => {

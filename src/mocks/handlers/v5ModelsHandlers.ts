@@ -1,4 +1,4 @@
-import {
+import type {
     SchemaModelConfigListResponse,
     SchemaModelListResponse,
 } from '@/api/playgroundApi/v5playgroundApiSchema';

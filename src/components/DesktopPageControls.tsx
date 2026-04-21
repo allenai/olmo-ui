@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 

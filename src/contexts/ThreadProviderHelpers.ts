@@ -1,4 +1,4 @@
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { ChatRequest, FlatMessage } from '@/api/playgroundApi/thread';
 import { threadOptions } from '@/api/playgroundApi/thread';
 import type {
@@ -11,7 +11,7 @@ import { areModelsCompatibleForThread } from '@/components/thread/ModelSelect/us
 import { clipToMinMax } from '@/utils/clipToMinMax';
 
 import type { ExtraParameters } from './QueryContext';
-import { StreamingThread } from './stream-types';
+import type { StreamingThread } from './stream-types';
 
 // TODO: we can probably remove these defaults once we have per-thread settings in comparison mode
 const DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON = {

@@ -21,7 +21,6 @@ export const useFileInputTrigger = ({
             const maxFiles = mediaConf.maxFiles ?? maxFilesPerMessage;
 
             // maybe move this back to component?
-            // eslint-disable-next-line react-compiler/react-compiler
             inputRef.current.accept = mediaConf.accept;
             inputRef.current.multiple = typeof maxFiles === 'number' && maxFiles > 1;
             inputRef.current.value = '';

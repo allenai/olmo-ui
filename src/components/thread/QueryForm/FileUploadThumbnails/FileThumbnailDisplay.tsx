@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import { PropsWithChildren, ReactNode } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 
 import { filesMatchingTypesAllowed } from '../FileUploadButton/fileTypeHelpers';
 import { Thumbnail } from './Thumbnail';

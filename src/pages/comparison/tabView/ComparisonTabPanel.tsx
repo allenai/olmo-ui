@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
 import { useDesktopOrUp } from '@/components/dolma/shared';
 

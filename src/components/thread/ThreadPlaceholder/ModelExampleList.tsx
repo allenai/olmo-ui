@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { createSearchParams } from 'react-router-dom';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { LinkCard } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCard';
 import { LinkCardList } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCardList';
 import { links } from '@/Links';

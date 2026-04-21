@@ -1,6 +1,6 @@
 import Plausible from 'plausible-tracker';
 
-import { AnalyticsEvent } from './AnalyticsClient';
+import type { AnalyticsEvent } from './AnalyticsClient';
 
 const plausibleClient = Plausible({ domain: 'playground.allenai.org' });
 

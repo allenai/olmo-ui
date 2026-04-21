@@ -2,14 +2,14 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, ModalActions, Tab, TabPanel, Tabs } from '@allenai/varnish-ui';
 import { type ReactElement } from 'react';
 import { type Key } from 'react-aria-components';
-import { Control, UseFormSetValue } from 'react-hook-form';
+import type { Control, UseFormSetValue } from 'react-hook-form';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextArea';
 
 import { ControlledToolToggleTable } from './ControlledToolToggleTable';
 import { EXAMPLE_DECLARATIONS } from './exampleDeclarations';
-import { DataFields } from './ToolDeclarationDialog';
+import type { DataFields } from './ToolDeclarationDialog';
 import { validateToolDefinitions } from './toolDeclarationUtils';
 
 type Items = {

@@ -1,5 +1,5 @@
 import { Role } from '@/api/Role';
-import { Chunk } from '@/contexts/stream-types';
+import type { Chunk } from '@/contexts/stream-types';
 
 export const MULTI_MODAL_USER_MESSAGE_ID = 'multi-modal-count';
 const MULTI_MODAL_MESSAGE_ID = 'multi-modal-count-response';

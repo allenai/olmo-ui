@@ -1,5 +1,6 @@
 import { act } from '@testing-library/react';
-import * as ZustandVanillaExportedTypes from 'zustand/vanilla';
+import type * as ZustandVanillaExportedTypes from 'zustand/vanilla';
+// eslint-disable-next-line import-x/export
 export * from 'zustand/vanilla';
 
 const { createStore: actualCreateStore } =
@@ -18,6 +19,7 @@ const createStoreUncurried = <T>(stateCreator: ZustandVanillaExportedTypes.State
 };
 
 // when creating a store, we get its initial state, create a reset function and add it in the set
+// eslint-disable-next-line import-x/export
 export const createStore = (<T>(stateCreator: ZustandVanillaExportedTypes.StateCreator<T>) => {
     console.log('zustand/vanilla createStore mock');
 

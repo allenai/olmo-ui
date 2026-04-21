@@ -1,5 +1,5 @@
 import { Role } from '@/api/Role';
-import { Chunk } from '@/contexts/stream-types';
+import type { Chunk } from '@/contexts/stream-types';
 
 import { newMessageId } from './default';
 

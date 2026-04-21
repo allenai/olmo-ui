@@ -1,8 +1,10 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Alert, Box, CircularProgress, Typography } from '@mui/material';
-import { PropsWithChildren, type ReactNode, useState } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
+import { useState } from 'react';
 
-import { MessageId, useMessage } from '@/api/playgroundApi/thread';
+import type { MessageId } from '@/api/playgroundApi/thread';
+import { useMessage } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { Ai2Avatar } from '@/components/avatars/Ai2Avatar';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
@@ -199,7 +201,7 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
             <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
             <InlineAlertMessage messageId={messageId} />
             <MessageInteraction
-                role={role as Role}
+                role={role}
                 content={rawMode ? escapeForDisplay(content) : content}
                 messageLabels={labels}
                 messageId={messageId}

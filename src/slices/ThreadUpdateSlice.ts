@@ -1,9 +1,10 @@
-import { Model } from '@/api/playgroundApi/additionalTypes';
-import { OlmoStateCreator } from '@/AppContext';
-import { RemoteState } from '@/contexts/util';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { OlmoStateCreator } from '@/AppContext';
+import type { RemoteState } from '@/contexts/util';
 import { getModelFamilyNameFromId } from '@/util';
 
-import { AlertMessageSeverity, SnackMessage, SnackMessageType } from './SnackMessageSlice';
+import type { SnackMessage } from './SnackMessageSlice';
+import { AlertMessageSeverity, SnackMessageType } from './SnackMessageSlice';
 
 export const createModelAbortErrorMessage = (model: Model): SnackMessage => {
     const modelFamilyName = model.familyName ?? getModelFamilyNameFromId(model.id) ?? 'the model';

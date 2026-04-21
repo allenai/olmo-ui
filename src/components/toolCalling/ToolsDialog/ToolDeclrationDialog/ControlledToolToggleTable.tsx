@@ -2,9 +2,9 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { type ReactNode } from 'react';
 import { type UseControllerProps } from 'react-hook-form';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 
-import { DataFields } from './ToolDeclarationDialog';
+import type { DataFields } from './ToolDeclarationDialog';
 import { groupTools, toolGroupInfoById } from './toolDeclarationUtils';
 import { ToolGroupSection } from './ToolGroupSection';
 

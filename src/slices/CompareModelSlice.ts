@@ -1,6 +1,6 @@
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { ThreadId } from '@/api/playgroundApi/thread';
-import { OlmoStateCreator } from '@/AppContext';
+import type { ThreadId } from '@/api/playgroundApi/thread';
+import type { OlmoStateCreator } from '@/AppContext';
 
 export type ThreadViewId = string;
 

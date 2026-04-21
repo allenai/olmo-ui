@@ -1,5 +1,6 @@
 import { Box, useColorScheme } from '@mui/material';
-import { CSSProperties, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
+import type { CSSProperties, PropsWithChildren, ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
 const DEFAULT_DRAWER_WIDTH = '20rem';
 
@@ -26,7 +27,7 @@ export const DesktopExpandingDrawer = ({
         }
     }, [open]);
     const { mode, systemMode } = useColorScheme();
-    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+    const colorMode = mode === 'system' || !mode ? (systemMode ?? 'dark') : mode;
 
     return (
         <Box

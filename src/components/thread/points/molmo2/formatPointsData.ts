@@ -1,7 +1,8 @@
-import { ParseResult, PartialXMLStreamParser } from 'partial-xml-stream-parser';
+import type { ParseResult } from 'partial-xml-stream-parser';
+import { PartialXMLStreamParser } from 'partial-xml-stream-parser';
 import * as z from 'zod';
 
-import {
+import type {
     AllPointsFormats,
     ImagePoints,
     Point,
@@ -145,7 +146,7 @@ interface CoordsOrTracks {
 
 const parseCoordsOrTracks = (imagesOrFramesList: string[][]): CoordsOrTracks[] => {
     return imagesOrFramesList.map((imageOrFramePoints) => {
-        let imageOrFrameId: string = '';
+        let imageOrFrameId: string;
         if (imageOrFramePoints.length % 3 === 1) {
             imageOrFrameId = imageOrFramePoints.shift() ?? '';
         } else if (imageOrFramePoints.length % 3 === 0) {

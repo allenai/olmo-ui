@@ -1,7 +1,7 @@
 import { Dialog, DialogTitle } from '@mui/material';
 import styled from 'styled-components';
 
-import { Message } from '../api/Message';
+import type { Message } from '../api/Message';
 
 interface Props {
     onClose: () => void;

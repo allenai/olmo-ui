@@ -1,7 +1,7 @@
-import { GridSortDirection } from '@mui/x-data-grid';
+import type { GridSortDirection } from '@mui/x-data-grid';
 
 import { ClientBase } from './ClientBase';
-import { PaginationData } from './Schema';
+import type { PaginationData } from './Schema';
 
 export const LabelApiUrl = '/v3/label';
 export const LabelsApiUrl = '/v3/labels';

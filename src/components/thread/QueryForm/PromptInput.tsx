@@ -1,11 +1,5 @@
-import {
-    Box,
-    FormControl,
-    FormHelperText,
-    formHelperTextClasses,
-    SxProps,
-    Theme,
-} from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
+import { Box, FormControl, FormHelperText, formHelperTextClasses } from '@mui/material';
 import { type ChangeEventHandler, forwardRef, type KeyboardEventHandler } from 'react';
 
 // The textarea and div that holds the contents need to have the same styles so they don't get out of sync
@@ -55,7 +49,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
             placeholder,
             onChange,
             'aria-label': ariaLabel,
-            value = '',
+            value,
             isDisabled,
             onKeyDown,
             name,

@@ -1,4 +1,5 @@
-import { expect, Locator, Page, test as base } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test as base } from '@playwright/test';
 
 import type { Fixtures } from './playwright-types';
 

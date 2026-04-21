@@ -1,8 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useDragAndDrop } from 'react-aria-components';
 import { useListData } from 'react-stately';
 
-import { SchemaModelConfigResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
+import type { SchemaModelConfigResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 import { ModelConfigurationList } from './ModelConfigurationList';
 import { ModelConfigurationListItem } from './ModelConfigurationListItem';

@@ -21,7 +21,6 @@ export const mathTexText = {
  * @type {Tokenizer}
  */
 function tokenizeMathText(effects, ok, nok) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     /** @type {Token} */
     let token;

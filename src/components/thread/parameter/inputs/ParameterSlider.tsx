@@ -2,7 +2,8 @@
  * A slider with a number control next to it.
  */
 
-import { Box, Input, PaletteMode, Slider, useColorScheme } from '@mui/material';
+import type { PaletteMode } from '@mui/material';
+import { Box, Input, Slider, useColorScheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -46,7 +47,7 @@ export const ParameterSlider = ({
     }, [initialValue]);
 
     const { mode, systemMode } = useColorScheme();
-    const colorMode: PaletteMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+    const colorMode: PaletteMode = mode === 'system' || !mode ? (systemMode ?? 'dark') : mode;
 
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 

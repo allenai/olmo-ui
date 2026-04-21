@@ -30,8 +30,7 @@ type CollapsibleWidgetFooterVariantProps = Exclude<
 >;
 
 interface CollapsibleWidgetFooterProps
-    extends HTMLAttributes<HTMLDivElement>,
-        CollapsibleWidgetFooterVariantProps {
+    extends HTMLAttributes<HTMLDivElement>, CollapsibleWidgetFooterVariantProps {
     className?: string;
 }
 

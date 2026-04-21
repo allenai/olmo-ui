@@ -3,13 +3,13 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
-import {
+import type {
     SchemaHttpValidationError,
     SchemaProblem,
-    type SchemaStartThreadChunk,
+    SchemaStartThreadChunk,
 } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { useAppContext } from '@/AppContext';
-import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
+import type { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 
 import type { StreamCallbacks } from './streamMessageUtils';
 

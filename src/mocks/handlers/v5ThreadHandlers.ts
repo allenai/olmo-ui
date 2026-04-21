@@ -1,7 +1,7 @@
 import { delay, HttpResponse } from 'msw';
 
-import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
-import { PaginationData } from '@/api/Schema';
+import type { MessageChunk, Thread } from '@/api/playgroundApi/thread';
+import type { PaginationData } from '@/api/Schema';
 import type { StreamingMessageResponse } from '@/contexts/stream-types';
 
 import { formatStreamMessage } from '../mockUtils';
@@ -209,7 +209,6 @@ export const v5ThreadHandlers = [
 
                         await delay();
 
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         const message = response[responsePosition];
                         // @ts-expect-error - should probably add a type guard or something here instead of just forcing this
                         message.type = chunkType;

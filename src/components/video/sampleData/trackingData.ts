@@ -1,4 +1,4 @@
-import { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+import type { VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
 
 export const MCLAREN_VIDEO_TRACKING_DATA: VideoTrackingPoints = {
     label: 'track this car',

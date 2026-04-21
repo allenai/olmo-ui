@@ -1,6 +1,7 @@
 // Mobile-specific avatar menu using Popover, built on top of AvatarMenuBase.
 
-import { Popover, PopoverProps } from '@mui/material';
+import type { PopoverProps } from '@mui/material';
+import { Popover } from '@mui/material';
 
 import { AvatarMenuBase } from './AvatarMenuBase';
 

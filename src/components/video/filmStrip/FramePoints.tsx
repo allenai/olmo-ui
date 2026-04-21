@@ -2,7 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { varnishTheme } from '@allenai/varnish2/theme';
 import { memo, type ReactNode } from 'react';
 
-import { Point } from '@/components/thread/points/pointsDataTypes';
+import type { Point } from '@/components/thread/points/pointsDataTypes';
 
 const svgClassName = css({
     position: 'absolute',

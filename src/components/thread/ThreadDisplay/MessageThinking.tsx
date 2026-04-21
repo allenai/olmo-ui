@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { type MessageId, useMessage } from '@/api/playgroundApi/thread';
 import { ThinkingWidget } from '@/components/widgets/ThinkingWidget';

@@ -36,7 +36,7 @@ export const VideoDotControl = ({
     const [state, setState] = useState<'idle' | 'placing' | 'placed'>('idle');
     const [showShockwave, setShowShockwave] = useState(false);
     const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
-    const [onSelectedFrame, setOnSelectedFrame] = useState<boolean>(false);
+    const [onSelectedFrame, setOnSelectedFrame] = useState(false);
 
     useEffect(() => {
         const { current } = playerRef;
@@ -132,7 +132,6 @@ export const VideoDotControl = ({
     }
 
     return (
-        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
         <div
             ref={containerRef}
             className={cx(videoDotControlClassNames, className)}

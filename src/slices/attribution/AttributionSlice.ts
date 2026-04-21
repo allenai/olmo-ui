@@ -1,6 +1,7 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { AttributionClient, Document, TopLevelAttributionSpan } from '@/api/AttributionClient';
+import type { Document, TopLevelAttributionSpan } from '@/api/AttributionClient';
+import { AttributionClient } from '@/api/AttributionClient';
 import { error } from '@/api/error';
 import {
     type MessageId,
@@ -10,7 +11,7 @@ import {
 } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
-import { type AppContextState, OlmoStateCreator } from '@/AppContext';
+import type { AppContextState, OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
 export interface MessageWithAttributionDocuments {

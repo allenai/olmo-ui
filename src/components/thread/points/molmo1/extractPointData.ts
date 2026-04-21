@@ -1,4 +1,4 @@
-import { ImagePoints, Point } from '../pointsDataTypes';
+import type { ImagePoints, Point } from '../pointsDataTypes';
 import { pointRegex } from './pointRegex';
 
 export function extractPointData(input: string): ImagePoints[] | null {
@@ -46,7 +46,7 @@ export function extractPointData(input: string): ImagePoints[] | null {
                 pointId: `${count}`,
                 x: Number(x),
                 y: Number(y),
-            } as Point);
+            });
 
             return acc;
         }, []);

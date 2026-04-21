@@ -37,3 +37,5 @@ prettier.config.js
 # Claude
 CLAUDE.md
 .claude
+
+**/.cache/puppeteer/

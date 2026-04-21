@@ -1,6 +1,6 @@
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { apiQueryClient } from '@/api/playgroundApi/v5';
-import { SchemaLabelRequest, SchemaThread } from '@/api/playgroundApi/v5playgroundApiSchema';
+import type { SchemaLabelRequest, SchemaThread } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { queryClient } from '@/api/query-client';
 
 // type MessageId = paths['/v5/message/{message_id}/label/']['put']['parameters']['path']['message_id'];

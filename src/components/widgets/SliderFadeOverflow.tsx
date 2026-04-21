@@ -4,7 +4,8 @@ import {
     ArrowBackIosNew as ArrowBackward,
     ArrowForwardIos as ArrowForward,
 } from '@mui/icons-material';
-import { HTMLAttributes, useState } from 'react';
+import type { HTMLAttributes } from 'react';
+import { useState } from 'react';
 import { Button } from 'react-aria-components';
 import { useInView } from 'react-intersection-observer';
 

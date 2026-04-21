@@ -1,7 +1,9 @@
 import { Box } from '@mui/material';
-import { PropsWithChildren, type ReactNode, useEffect } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
+import { useEffect } from 'react';
 
-import { AppContextState, useAppContext } from '@/AppContext';
+import type { AppContextState } from '@/AppContext';
+import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import {
     hasSelectedAttributionSelector,
@@ -45,7 +47,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
                               // spanId is a string here but a number in corresponding_spans. It's always a number in a string right now
                               document?.correspondingSpans.includes(Number(spanId))
                           )
-                        : document?.correspondingSpans.includes(Number(spanIds)) ?? false;
+                        : (document?.correspondingSpans.includes(Number(spanIds)) ?? false);
 
                     return [isSelectedSpan, 'document'];
                 }

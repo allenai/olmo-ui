@@ -6,9 +6,9 @@ import { PageContainer } from '@/components/PageContainer';
 import { ResponsiveControlsDrawer } from '@/components/ResponsiveControlsDrawer';
 import { QueryFormContainer } from '@/components/thread/QueryForm/QueryFormContainer';
 import { ComparisonProvider } from '@/contexts/ComparisonProvider';
-import { CompareModelState } from '@/slices/CompareModelSlice';
+import type { CompareModelState } from '@/slices/CompareModelSlice';
 
-import { ComparisonLoaderData } from './comparisonPageLoader';
+import type { ComparisonLoaderData } from './comparisonPageLoader';
 
 // Convert CompareModelState[] to ComparisonProvider's initial state format
 function convertLoaderDataToState(comparisonModels: CompareModelState[]) {

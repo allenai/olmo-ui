@@ -1,5 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Slider, SliderProps } from '@allenai/varnish-ui';
+import type { SliderProps } from '@allenai/varnish-ui';
+import { Slider } from '@allenai/varnish-ui';
 import { type ReactNode } from 'react';
 
 import { clipToMinMax } from '@/utils/clipToMinMax';

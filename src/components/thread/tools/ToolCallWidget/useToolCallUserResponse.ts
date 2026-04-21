@@ -7,7 +7,7 @@ import {
     type FormContextWithContent,
     handleFormSubmitException,
 } from '@/components/thread/QueryForm/handleFormSubmitException';
-import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
+import type { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 

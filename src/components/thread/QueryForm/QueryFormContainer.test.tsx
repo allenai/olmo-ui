@@ -1,5 +1,4 @@
 // @vitest-environment happy-dom
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen, waitFor } from '@test-utils';
@@ -8,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
-import { User } from '@/api/User';
+import type { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import {
@@ -113,7 +112,6 @@ describe('QueryFormContainer', () => {
         expect(onStreamStartCallback).toBeDefined();
 
         await act(async () => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             onStreamStartCallback!('0');
         });
 

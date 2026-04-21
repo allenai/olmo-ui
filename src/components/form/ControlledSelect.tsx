@@ -3,11 +3,10 @@ import type { ReactNode } from 'react';
 import { useController, type UseControllerProps } from 'react-hook-form';
 
 type SelectItem = { id: string | number; name: string };
-interface ControlledSelectProps
-    extends Omit<
-        SelectProps<SelectItem>,
-        'onSelectionChange' | 'name' | 'errorMessage' | 'onBlur'
-    > {
+interface ControlledSelectProps extends Omit<
+    SelectProps<SelectItem>,
+    'onSelectionChange' | 'name' | 'errorMessage' | 'onBlur'
+> {
     name: string;
     controllerProps?: Omit<UseControllerProps, 'name'>;
 }

@@ -1,4 +1,5 @@
-import { Autocomplete, AutocompleteProps, Chip, TextField } from '@mui/material';
+import type { AutocompleteProps } from '@mui/material';
+import { Autocomplete, Chip, TextField } from '@mui/material';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 

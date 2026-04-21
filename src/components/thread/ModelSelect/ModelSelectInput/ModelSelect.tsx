@@ -1,12 +1,11 @@
+import type { InputBaseProps, SelectProps } from '@mui/material';
 import {
     Box,
     FormControl,
     InputBase,
     inputBaseClasses,
-    InputBaseProps,
     Select,
     selectClasses,
-    SelectProps,
     styled,
 } from '@mui/material';
 import { type ReactNode, useId } from 'react';

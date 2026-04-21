@@ -1,6 +1,6 @@
 import { IosShareOutlined } from '@mui/icons-material';
 import { alpha } from '@mui/material';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';

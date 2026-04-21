@@ -11,8 +11,8 @@ export function parseComparisonSearchParams(
     minCount = MIN_COMPARE_THREAD_COUNT,
     maxCount = MAX_COMPARE_THREAD_COUNT
 ): ThreadParams[] {
-    const threadParamsList = Array.from({ length: minCount }, () => {
-        return {} as ThreadParams;
+    const threadParamsList: ThreadParams[] = Array.from({ length: minCount }, () => {
+        return {};
     });
 
     search.forEach((value, key) => {

@@ -1,15 +1,16 @@
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { MessageStreamError, MessageStreamErrorReason, StreamBadRequestError } from '@/api/Message';
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { type ChatRequest, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
 import { invalidateThreadsCache } from '@/components/thread/history/useThreads';
 import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFormSubmitException';
-import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
-import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
-import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
+import type { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
+import type { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
+import type { SnackMessage } from '@/slices/SnackMessageSlice';
+import { errorToAlert } from '@/slices/SnackMessageSlice';
 import { createModelAbortErrorMessage } from '@/slices/ThreadUpdateSlice';
 
 import type { ExtraParameters } from './QueryContext';
@@ -41,7 +42,7 @@ import type {
     OnStreamStartCallback,
 } from './StreamEventRegistry';
 import type { ThreadStreamMutationVariables } from './streamMessage/useStreamMessage';
-import { MessageInferenceParameters } from './ThreadProviderHelpers';
+import type { MessageInferenceParameters } from './ThreadProviderHelpers';
 
 const clearStreamingState = (threadId: string | undefined) => {
     if (!threadId) {

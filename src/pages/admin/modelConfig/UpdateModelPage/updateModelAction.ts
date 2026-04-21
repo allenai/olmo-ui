@@ -1,4 +1,4 @@
-import { QueryClient } from '@tanstack/react-query';
+import type { QueryClient } from '@tanstack/react-query';
 import { type ActionFunction, redirect } from 'react-router-dom';
 
 import { fetchClient } from '@/api/playgroundApi/v5';
@@ -22,10 +22,9 @@ export const updateModelAction =
             body: (await request.json()) as SchemaRootUpdateModelConfigRequest,
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (response.error) {
             // @ts-expect-error - Our error responses aren't typed correctly
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return response.error.error ?? response.error;
         }
 

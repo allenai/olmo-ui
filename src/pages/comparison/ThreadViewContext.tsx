@@ -6,11 +6,9 @@ import type { ThreadId } from '@/api/playgroundApi/thread';
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
-import { StreamingThread } from '@/contexts/stream-types';
-import {
-    THREAD_STREAM_MUTATION_KEY,
-    ThreadStreamMutationVariables,
-} from '@/contexts/streamMessage/useStreamMessage';
+import type { StreamingThread } from '@/contexts/stream-types';
+import type { ThreadStreamMutationVariables } from '@/contexts/streamMessage/useStreamMessage';
+import { THREAD_STREAM_MUTATION_KEY } from '@/contexts/streamMessage/useStreamMessage';
 import { RemoteState } from '@/contexts/util';
 
 export type ThreadViewId = string;

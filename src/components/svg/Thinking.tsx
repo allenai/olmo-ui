@@ -1,4 +1,5 @@
-import { Icon, IconProps } from '@allenai/varnish-ui';
+import type { IconProps } from '@allenai/varnish-ui';
+import { Icon } from '@allenai/varnish-ui';
 
 import ThinkingSvg from '@/components/assets/thinking.svg?react';
 

@@ -8,7 +8,7 @@ import { useQueryContext } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';
 import { useAgents } from '@/pages/agent/useAgents';
 
-import { PromptTemplate } from './PromptTemplateList';
+import type { PromptTemplate } from './PromptTemplateList';
 import { PromptTemplatesAndSpinner } from './PromptTemplatesAndSpinner';
 
 const promptTemplates: PromptTemplate[] = [];

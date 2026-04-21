@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { apiQueryClient } from '@/api/playgroundApi/v5';
-import { SchemaModelResponse as Model } from '@/api/playgroundApi/v5playgroundApiSchema';
+import type { SchemaModelResponse as Model } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 export const getModelsQueryOptions = apiQueryClient.queryOptions('get', '/v5/models/');
 

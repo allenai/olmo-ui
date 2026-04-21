@@ -1,9 +1,10 @@
-/* eslint-disable no-restricted-imports, react-refresh/only-export-components */
+/* eslint-disable react-refresh/only-export-components */
 /* this is the one file allowed to import @testing-library/react since it needs to modify it */
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
-import { QueryContext, QueryContextValue } from '@/contexts/QueryContext';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { QueryContextValue } from '@/contexts/QueryContext';
+import { QueryContext } from '@/contexts/QueryContext';
 import { getInferenceConstraints } from '@/contexts/ThreadProviderHelpers';
 
 import { customRender } from './TestWrapper';
@@ -76,9 +77,9 @@ export const FakeQueryContextProvider = ({
 };
 
 // re-export everything - we overwrite render with our customRender so we're ignoring import/export here
-// eslint-disable-next-line import/export
+// eslint-disable-next-line import-x/export
 export * from '@testing-library/react';
 
 // override render method
-// eslint-disable-next-line import/export
+// eslint-disable-next-line import-x/export
 export { customRender as render };

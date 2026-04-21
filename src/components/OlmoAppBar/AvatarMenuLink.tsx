@@ -13,7 +13,7 @@ export const AvatarMenuLink = () => {
     const isDesktop = useDesktopOrUp();
     const { userAuthInfo } = useUserAuthInfo();
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-    const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false);
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const toggleMenu = (event: React.MouseEvent<HTMLElement>) => {
         if (anchorEl == null) {
             setAnchorEl(event.currentTarget);

@@ -1,5 +1,5 @@
 import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/v5playgroundApiSchema';
-import { Mutable } from '@/util';
+import type { Mutable } from '@/util';
 
 import type { ModelConfigFormValues } from './components/ModelConfigForm/ModelConfigForm';
 

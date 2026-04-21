@@ -1,8 +1,9 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Box, BoxProps, styled } from '@mui/material';
-import { ReactNode } from 'react';
+import type { BoxProps } from '@mui/material';
+import { Box, styled } from '@mui/material';
+import type { ReactNode } from 'react';
 
-import { Point } from '../points/pointsDataTypes';
+import type { Point } from '../points/pointsDataTypes';
 import { PointCircle } from './PointCircle';
 import { usePointColors } from './usePointColors';
 

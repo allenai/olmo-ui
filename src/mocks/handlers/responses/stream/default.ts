@@ -1,4 +1,4 @@
-import { MessageStreamPart } from '@/api/Message';
+import type { MessageStreamPart } from '@/api/Message';
 import { Role } from '@/api/Role';
 
 export const newMessageId = 'msg_A8E5H1X2O4';

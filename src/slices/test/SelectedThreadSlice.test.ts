@@ -1,4 +1,5 @@
-import { Message, parseMessage } from '@/api/Message';
+import type { Message } from '@/api/Message';
+import { parseMessage } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
 

@@ -1,13 +1,13 @@
 import * as z from 'zod';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type {
     SchemaAvailableTool,
     SchemaToolDefinition,
 } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { MCP_SERVER_INFO } from '@/components/toolCalling/mcpServerInfo';
 
-import { ToolGroupInfo } from './ToolGroupSection';
+import type { ToolGroupInfo } from './ToolGroupSection';
 
 export const allToolsInGroupSelected = (selectedTools: string[], tools: string[]): boolean => {
     return new Set(tools).isSubsetOf(new Set(selectedTools));
@@ -25,7 +25,7 @@ export const addToolsToSelected = (selectedTools: string[], toolsToAdd: string[]
 };
 
 export const isMcpServer = (mcpId: string): mcpId is keyof typeof MCP_SERVER_INFO =>
-    Boolean(mcpId in MCP_SERVER_INFO);
+    mcpId in MCP_SERVER_INFO;
 
 export const toolGroupInfoById = (serverId: string): ToolGroupInfo => {
     if (isMcpServer(serverId)) {

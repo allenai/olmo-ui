@@ -1,4 +1,4 @@
-import { OlmoStateCreator } from '@/AppContext';
+import type { OlmoStateCreator } from '@/AppContext';
 
 export type DrawerId = 'history' | 'parameters' | 'category' | 'attribution';
 export type ThreadTabId = 'parameters' | 'attribution';

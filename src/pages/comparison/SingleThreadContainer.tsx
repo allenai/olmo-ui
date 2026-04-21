@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
-import { ThreadId } from '@/api/playgroundApi/thread';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { ThreadId } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 import { ThreadDisplayContent } from '@/components/thread/ThreadDisplay/ThreadDisplayContainer';

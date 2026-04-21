@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Button } from 'react-aria-components';
 import { fn } from 'storybook/test';
 
-import { ToolDeclarationDialog, ToolDeclarationDialogProps } from './ToolDeclarationDialog';
+import type { ToolDeclarationDialogProps } from './ToolDeclarationDialog';
+import { ToolDeclarationDialog } from './ToolDeclarationDialog';
 
 const meta = {
     component: ToolDeclarationDialog,

@@ -2,7 +2,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Divider, IconButton, ListSubheader, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 
-import { DrawerId } from '@/slices/DrawerSlice';
+import type { DrawerId } from '@/slices/DrawerSlice';
 
 import { FullScreenDrawer, FullScreenDrawerHeader } from '../FullScreenDrawer';
 import { FAQCategorySection } from './FAQCategorySection';

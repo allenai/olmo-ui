@@ -1,4 +1,4 @@
-import { MessageStreamPart } from '@/api/Message';
+import type { MessageStreamPart } from '@/api/Message';
 import { Role } from '@/api/Role';
 
 export const MULTI_MODAL_USER_MESSAGE_ID = 'multi-modal-count';

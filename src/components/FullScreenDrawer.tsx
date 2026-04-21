@@ -1,8 +1,8 @@
 import { Box, Drawer } from '@mui/material';
-import { KeyboardEvent, KeyboardEventHandler, PropsWithChildren, ReactNode } from 'react';
+import type { KeyboardEvent, KeyboardEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
-import { DrawerId } from '@/slices/DrawerSlice';
+import type { DrawerId } from '@/slices/DrawerSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 interface FullScreenDrawerProps extends PropsWithChildren {

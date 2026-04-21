@@ -1,4 +1,4 @@
-import { QueryClient } from '@tanstack/react-query';
+import type { QueryClient } from '@tanstack/react-query';
 import { type ActionFunction, redirect } from 'react-router-dom';
 
 import { fetchClient } from '@/api/playgroundApi/v5';

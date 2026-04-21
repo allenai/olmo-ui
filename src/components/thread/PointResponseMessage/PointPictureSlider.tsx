@@ -1,12 +1,13 @@
 import { Box, IconButton } from '@mui/material';
-import { SxProps, Theme } from '@mui/material/styles';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import type { SxProps, Theme } from '@mui/material/styles';
+import type { ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { ChevronIcon } from '@/components/assets/ChevronIcon';
 
-import { ImagePoints } from '../points/pointsDataTypes';
+import type { ImagePoints } from '../points/pointsDataTypes';
 import { MIN_THREAD_IMAGE_HEIGHT_PX } from '../ThreadDisplay/threadDisplayConsts';
-import { PointPicture, PointsSets } from './PointPicture';
+import { PointPicture } from './PointPicture';
 import { PointPictureCaption } from './PointPictureCaption';
 
 interface PointPictureSliderProps {
@@ -30,7 +31,7 @@ export const PointPictureSlider = ({
 }: PointPictureSliderProps): ReactNode => {
     const sliderRef = useRef<HTMLUListElement | null>(null);
     const itemsRef = useRef<HTMLLIElement[]>([]);
-    const [activeItems, setActiveItems] = useState<Array<boolean>>(
+    const [activeItems, setActiveItems] = useState(
         fileUrls.map((_, index) => index === moveToItem)
     );
 
@@ -97,7 +98,7 @@ export const PointPictureSlider = ({
         }
     }, [moveToItem]);
 
-    const pointsSetsByFileUrl = fileUrls.reduce<Map<string, PointsSets[]>>((acc, url, index) => {
+    const pointsSetsByFileUrl = fileUrls.reduce((acc, url, index) => {
         imagePointsSets.forEach(({ label, alt, imageList }) => {
             const pointsPerImageId = imageList.find(
                 ({ imageId }) => imageId === `${index + 1}`

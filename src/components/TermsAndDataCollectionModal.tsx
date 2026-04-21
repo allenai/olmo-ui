@@ -30,7 +30,7 @@ export const TermsAndDataCollectionModal = ({
     initialDataCollectionValue,
     initialMediaCollectionValue,
 }: TermsAndDataCollectionModalProps) => {
-    const [isOpen, setIsOpen] = useState<boolean>(true);
+    const [isOpen, setIsOpen] = useState(true);
 
     const updateTermsAndOrConsent = useAppContext(
         (state) => state.updateUserTermsAndDataCollection
@@ -190,7 +190,7 @@ export const TermsAndDataCollectionModal = ({
                                             className={checkboxClass}
                                             color="default"
                                             size="large"
-                                            isSelected={Boolean(value)}
+                                            isSelected={value}
                                             onChange={onChange}>
                                             <p>
                                                 <strong>Yes, I contribute my conversations.</strong>{' '}
@@ -209,7 +209,7 @@ export const TermsAndDataCollectionModal = ({
                                             className={checkboxClass}
                                             color="default"
                                             size="large"
-                                            isSelected={Boolean(value)}
+                                            isSelected={value}
                                             onChange={onChange}>
                                             <p>
                                                 <strong>Yes, I contribute my uploads.</strong> I

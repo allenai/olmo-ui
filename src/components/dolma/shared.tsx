@@ -1,12 +1,5 @@
-import {
-    Breakpoint,
-    Card,
-    CardProps,
-    Container,
-    Grid,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+import type { Breakpoint, CardProps } from '@mui/material';
+import { Card, Container, Grid, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';

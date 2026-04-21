@@ -36,7 +36,6 @@ export function mathText(options) {
      * @type {Tokenizer}
      */
     function tokenizeMathText(effects, ok, nok) {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this;
         let sizeOpen = 0;
         /** @type {number} */

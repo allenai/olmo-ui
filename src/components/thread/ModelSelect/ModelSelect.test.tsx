@@ -1,9 +1,10 @@
 import { FakeQueryContextProvider, render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
-import { act, ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
+import { act } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { Role } from '@/api/Role';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';

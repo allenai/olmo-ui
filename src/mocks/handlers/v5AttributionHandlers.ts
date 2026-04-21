@@ -1,4 +1,4 @@
-import { SchemaAttributionResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
+import type { SchemaAttributionResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
 
 import documentWithMultipleSnippetsResponse from './responses/v5/attribution/documentWithMultipleSnippetsAttributionResponse';
 import duplicateDocumentsResponse from './responses/v5/attribution/duplicateDocumentAttributionResponse';

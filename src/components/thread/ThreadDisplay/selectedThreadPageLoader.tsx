@@ -1,7 +1,9 @@
-import { defer, LoaderFunction, redirect } from 'react-router-dom';
+import type { LoaderFunction } from 'react-router-dom';
+import { defer, redirect } from 'react-router-dom';
 
 import { error } from '@/api/error';
-import { Thread, threadOptions } from '@/api/playgroundApi/thread';
+import type { Thread } from '@/api/playgroundApi/thread';
+import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';

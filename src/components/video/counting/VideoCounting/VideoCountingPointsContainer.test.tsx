@@ -1,5 +1,6 @@
 import { render } from '@test-utils';
-import { useCurrentFrame, useVideoConfig, VideoConfig } from 'remotion';
+import type { VideoConfig } from 'remotion';
+import { useCurrentFrame, useVideoConfig } from 'remotion';
 
 import type { VideoFramePoints } from '@/components/thread/points/pointsDataTypes';
 

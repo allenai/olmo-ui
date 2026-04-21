@@ -1,4 +1,4 @@
-import { VideoFramePoints } from '@/components/thread/points/pointsDataTypes';
+import type { VideoFramePoints } from '@/components/thread/points/pointsDataTypes';
 
 export const MCLAREN_VIDEO_COUNTING_DATA = {
     label: 'cars',

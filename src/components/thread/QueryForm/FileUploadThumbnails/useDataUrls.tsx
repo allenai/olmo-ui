@@ -12,8 +12,8 @@ const fileToDataUrl = (file: File): Promise<string> => {
 };
 
 export const useDataUrls = () => {
-    const [urlMap, setUrlMap] = useState<Map<File, string>>(new Map());
-    const pendingRef = useRef<Set<File>>(new Set());
+    const [urlMap, setUrlMap] = useState(new Map());
+    const pendingRef = useRef(new Set());
 
     const getDataUrl = useCallback(
         (file: File | null): string | null => {

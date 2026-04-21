@@ -24,8 +24,6 @@ const emptyOptions = {};
  *   Nothing.
  */
 export default function remarkMath(options) {
-    // @ts-expect-error `this`` is set by unfied
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-this-alias
     const self = /** @type {Processor<Root>} */ (this);
     const settings = options || emptyOptions;
     const data = self.data();

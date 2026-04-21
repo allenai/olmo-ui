@@ -1,5 +1,5 @@
-import { Model } from '@/api/playgroundApi/additionalTypes';
-import { CompareModelState } from '@/slices/CompareModelSlice';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { CompareModelState } from '@/slices/CompareModelSlice';
 
 interface FileUploadDef {
     acceptsFileUpload: boolean;

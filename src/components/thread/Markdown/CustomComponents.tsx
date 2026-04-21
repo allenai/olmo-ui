@@ -1,15 +1,15 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
 import { alpha, Divider, Link, useColorScheme } from '@mui/material';
-import { AnchorHTMLAttributes, HTMLAttributes } from 'react';
-import { ExtraProps } from 'react-markdown';
+import type { AnchorHTMLAttributes, HTMLAttributes } from 'react';
+import type { ExtraProps } from 'react-markdown';
 
 export const CustomDivider = ({
     node: _node,
     ...props
 }: HTMLAttributes<HTMLHRElement> & ExtraProps) => {
     const { mode, systemMode } = useColorScheme();
-    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
+    const colorMode = mode === 'system' || !mode ? (systemMode ?? 'dark') : mode;
 
     return (
         <Divider

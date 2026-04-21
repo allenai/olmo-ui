@@ -2,10 +2,11 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, IconButton, Modal, ModalActions, Switch } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useId, useState } from 'react';
-import { Key } from 'react-aria-components';
-import { Resolver, useForm } from 'react-hook-form';
+import type { Key } from 'react-aria-components';
+import type { Resolver } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 
 import { TabbedContent } from './TabbedContent';
 import { validateToolDefinitions } from './toolDeclarationUtils';

@@ -19,9 +19,7 @@ const titleAlignClassName = css({
 });
 
 interface CollapsibleWidgetHeadingBaseProps
-    extends CollapsibleWidgetRecipeVariantProps,
-        AriaHeadingProps,
-        PropsWithChildren {
+    extends CollapsibleWidgetRecipeVariantProps, AriaHeadingProps, PropsWithChildren {
     className?: string;
 }
 

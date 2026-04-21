@@ -3,15 +3,15 @@
 1. Modify the code in monitor folder.
 2. Shut down olmo-ui since the command below run on port 8080.
 3. Run the command below:
-   ```
-       npx functions-framework --target=SyntheticFunction
-   ```
+    ```
+        npx functions-framework --target=SyntheticFunction
+    ```
 4. Navigate to the localhost:8080 if you see json object with synthetic_generic_result_v1 oke true you are good.
 5. Raise PR for review.
 6. Once PR gets approval please merge the PR and run the command (Make sure you are in the monitor directory before running this):
-   ```
-       gcloud functions deploy  Ai2-Playground-Monitor --gen2 --runtime=nodejs20 --region=us-west1 --source=. --entry-point=SyntheticFunction --memory=2G --timeout=60 --trigger-http
-   ```
+    ```
+        gcloud functions deploy  Ai2-Playground-Monitor --gen2 --runtime=nodejs20 --region=us-west1 --source=. --entry-point=SyntheticFunction --memory=2G --timeout=60 --trigger-http
+    ```
 
 ## Helpful Links
 

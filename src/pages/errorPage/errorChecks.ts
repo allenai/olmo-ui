@@ -1,6 +1,7 @@
 import { isRouteErrorResponse } from 'react-router-dom';
 
-import { LOGIN_ERROR_TYPE, LoginError } from '@/api/auth/auth-loaders';
+import type { LoginError } from '@/api/auth/auth-loaders';
+import { LOGIN_ERROR_TYPE } from '@/api/auth/auth-loaders';
 
 export const HANDLED_STATUSES = {
     404: 'We cannot find that page, if you typed the URL, check the spelling.',

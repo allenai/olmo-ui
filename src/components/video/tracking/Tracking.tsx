@@ -3,7 +3,7 @@ import { varnishTheme } from '@allenai/varnish2/theme';
 import { useMemo } from 'react';
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 
-import {
+import type {
     PerFrameTrackPoints,
     VideoTrackingPoints,
 } from '@/components/thread/points/pointsDataTypes';

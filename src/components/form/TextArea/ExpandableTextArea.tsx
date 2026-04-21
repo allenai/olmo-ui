@@ -1,8 +1,9 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, DialogCloseButton, Modal, ModalTrigger } from '@allenai/varnish-ui';
-import { FieldValues } from 'react-hook-form';
+import type { FieldValues } from 'react-hook-form';
 
-import { ControlledTextArea, ControlledTextAreaProps } from './ControlledTextArea';
+import type { ControlledTextAreaProps } from './ControlledTextArea';
+import { ControlledTextArea } from './ControlledTextArea';
 
 const modalTriggerButton = css({
     marginTop: '1',

@@ -2,8 +2,10 @@ import { RadioGroup, type RadioGroupProps } from '@allenai/varnish-ui';
 import type { ReactNode } from 'react';
 import { useController, type UseControllerProps } from 'react-hook-form';
 
-interface ControlledRadioGroupProps
-    extends Omit<RadioGroupProps, 'onChange' | 'name' | 'errorMessage' | 'onBlur'> {
+interface ControlledRadioGroupProps extends Omit<
+    RadioGroupProps,
+    'onChange' | 'name' | 'errorMessage' | 'onBlur'
+> {
     name: string;
     controllerProps?: Omit<UseControllerProps, 'name'>;
 }

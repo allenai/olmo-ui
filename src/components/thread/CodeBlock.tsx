@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
 import { ThemeSyntaxHighlighter } from '../ThemeSyntaxHighlighter';
 import { useAttributionHighlights } from './attribution/AttributionHighlight';
@@ -31,7 +31,7 @@ export const CodeBlock = ({
     const mathDisplay = langComputed === 'math' && mathMatches?.groups?.mathDisplay;
 
     // inline = explcitly passed OR (lang = math AND mathDisplay = inline)
-    const inlineComputed = inline ?? mathDisplay ? mathDisplay === 'inline' : undefined;
+    const inlineComputed = (inline ?? mathDisplay) ? mathDisplay === 'inline' : undefined;
     const spansInsideThisCodeBlock =
         typeof children === 'string'
             ? Array.from(children.matchAll(attributionHighlightRegex))

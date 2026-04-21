@@ -1,17 +1,10 @@
-import { GridSortDirection } from '@mui/x-data-grid';
+import type { GridSortDirection } from '@mui/x-data-grid';
 
-import { OlmoStateCreator } from '@/AppContext';
+import type { OlmoStateCreator } from '@/AppContext';
 
-import {
-    CreateLabelRequest,
-    Label,
-    LabelApiUrl,
-    LabelClient,
-    LabelList,
-    LabelsApiUrl,
-    LabelsClient,
-} from '../api/Label';
-import { Message } from '../api/Message';
+import type { CreateLabelRequest, Label, LabelList } from '../api/Label';
+import { LabelApiUrl, LabelClient, LabelsApiUrl, LabelsClient } from '../api/Label';
+import type { Message } from '../api/Message';
 import { RemoteState } from '../contexts/util';
 import { errorToAlert } from './SnackMessageSlice';
 
@@ -125,7 +118,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
         return returnLabel;
     },
 
-    getAllLabels: async (offset: number = 0, limit: number = 10) => {
+    getAllLabels: async (offset: number, limit: number) => {
         const { addSnackMessage } = get();
         set({ allLabelsRemoteState: RemoteState.Loading });
         try {

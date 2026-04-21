@@ -4,7 +4,8 @@
 import { render, screen, waitFor } from '@test-utils';
 import { createMemoryRouter, json, RouterProvider } from 'react-router-dom';
 
-import { LOGIN_ERROR_TYPE, LoginError } from '@/api/auth/auth-loaders';
+import type { LoginError } from '@/api/auth/auth-loaders';
+import { LOGIN_ERROR_TYPE } from '@/api/auth/auth-loaders';
 import { AppWrapper } from '@/components/AppWrapper';
 import { links } from '@/Links';
 

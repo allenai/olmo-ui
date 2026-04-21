@@ -1,7 +1,12 @@
 import type { PlayerRef } from '@remotion/player';
-import React, { KeyboardEventHandler, useCallback, useMemo } from 'react';
+import type { KeyboardEventHandler } from 'react';
+import type React from 'react';
+import { useCallback, useMemo } from 'react';
 
-import { VideoFramePoints, VideoTrackingPoints } from '@/components/thread/points/pointsDataTypes';
+import type {
+    VideoFramePoints,
+    VideoTrackingPoints,
+} from '@/components/thread/points/pointsDataTypes';
 
 type JumpDirection = 'forward' | 'back';
 

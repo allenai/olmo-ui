@@ -1,21 +1,15 @@
-import { User as Auth0User } from '@auth0/auth0-spa-js';
-import { QueryClient } from '@tanstack/react-query';
-import {
-    ActionFunction,
-    ErrorResponse,
-    json,
-    LoaderFunction,
-    redirect,
-    useRouteLoaderData,
-} from 'react-router-dom';
+import type { User as Auth0User } from '@auth0/auth0-spa-js';
+import type { QueryClient } from '@tanstack/react-query';
+import type { ActionFunction, ErrorResponse, LoaderFunction } from 'react-router-dom';
+import { json, redirect, useRouteLoaderData } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
-import { User as ApiUser } from '@/api/User';
+import type { User as ApiUser } from '@/api/User';
+import { UserClient } from '@/api/User';
 import { appContext, useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
-import { UserClient } from '../User';
-import { UserInfoLoaderResponse } from '../user-info-loader';
+import type { UserInfoLoaderResponse } from '../user-info-loader';
 import { createLoginRedirectURL } from './auth-utils';
 import { auth0Client } from './auth0Client';
 

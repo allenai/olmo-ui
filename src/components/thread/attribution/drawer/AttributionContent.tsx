@@ -81,7 +81,7 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
 };
 
 export const AttributionContent = () => {
-    const [open, setOpen] = useState<boolean>(false);
+    const [open, setOpen] = useState(false);
     const closeModal = () => {
         setOpen(false);
     };

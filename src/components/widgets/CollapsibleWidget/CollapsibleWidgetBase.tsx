@@ -10,8 +10,7 @@ import {
 } from './collapsibleWidget.styles';
 
 interface CollapsibleWidgetBaseProps
-    extends CollapsibleWidgetRecipeVariantProps,
-        AriaDisclosureProps {
+    extends CollapsibleWidgetRecipeVariantProps, AriaDisclosureProps {
     className?: string; // overwrite RAC's className which takes a fn
 }
 

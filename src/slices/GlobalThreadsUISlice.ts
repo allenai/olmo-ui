@@ -1,4 +1,4 @@
-import { OlmoStateCreator } from '@/AppContext';
+import type { OlmoStateCreator } from '@/AppContext';
 
 export interface GlobalThreadsUISlice {
     isShareReady: boolean;

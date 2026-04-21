@@ -1,5 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { DragAndDropHooks, GridList } from 'react-aria-components';
+import type { DragAndDropHooks } from 'react-aria-components';
+import { GridList } from 'react-aria-components';
 
 import type { SchemaModelConfigResponse } from '@/api/playgroundApi/v5playgroundApiSchema';
 

@@ -1,4 +1,5 @@
-import { Button, ButtonProps, Theme } from '@mui/material';
+import type { ButtonProps, Theme } from '@mui/material';
+import { Button } from '@mui/material';
 
 import { LARGE_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
 

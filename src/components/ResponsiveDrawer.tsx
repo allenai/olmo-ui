@@ -1,4 +1,5 @@
-import { Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@mui/material';
+import type { DrawerProps, SxProps, Theme } from '@mui/material';
+import { Drawer, GlobalStyles } from '@mui/material';
 import type { KeyboardEvent, ReactNode } from 'react';
 
 import { useDesktopOrUp } from './dolma/shared';

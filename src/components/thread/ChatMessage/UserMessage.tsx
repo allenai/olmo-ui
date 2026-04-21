@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material';
 
-import { MessageProps, sharedMessageStyle } from './shared';
+import type { MessageProps } from './shared';
+import { sharedMessageStyle } from './shared';
 
 export const UserMessage = ({ children }: MessageProps): JSX.Element => {
     return (

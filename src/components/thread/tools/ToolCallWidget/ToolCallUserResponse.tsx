@@ -6,7 +6,8 @@ import { ControlledInput } from '@/components/form/ControlledInput';
 import { QueryFormButton } from '@/components/thread/QueryForm/QueryFormButton';
 import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
 
-import { ToolCallUserResponseFormValues, useToolCallUserResponse } from './useToolCallUserResponse';
+import type { ToolCallUserResponseFormValues } from './useToolCallUserResponse';
+import { useToolCallUserResponse } from './useToolCallUserResponse';
 
 const toolCallResponseRecipe = sva({
     slots: ['widget', 'wrapper', 'inputContainer', 'label', 'input', 'error'],

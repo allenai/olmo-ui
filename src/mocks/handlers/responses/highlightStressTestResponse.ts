@@ -1,4 +1,4 @@
-import { Thread } from '@/api/playgroundApi/thread';
+import type { Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 
 import highlightStressTestMessage from './highlightStressTestMessage';

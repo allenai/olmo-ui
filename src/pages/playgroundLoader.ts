@@ -1,5 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { LoaderFunction, ShouldRevalidateFunction } from 'react-router-dom';
+import type { LoaderFunction, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { appContext } from '@/AppContext';

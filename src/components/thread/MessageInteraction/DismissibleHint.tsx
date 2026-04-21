@@ -13,8 +13,9 @@
  */
 
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton, Stack, StackProps, Typography } from '@mui/material';
-import { ReactNode } from 'react';
+import type { StackProps } from '@mui/material';
+import { IconButton, Stack, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
 
 /**
  * Props for the {@link DismissibleHint} component.

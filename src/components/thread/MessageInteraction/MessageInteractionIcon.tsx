@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { IconButton } from '@allenai/varnish-ui';
-import { SvgIconComponent } from '@mui/icons-material';
+import type { SvgIconComponent } from '@mui/icons-material';
 
 import { StyledTooltip } from '@/components/StyledTooltip';
 

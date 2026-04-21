@@ -7,7 +7,7 @@ import {
     DialogTitle,
     Tooltip,
 } from '@mui/material';
-import { ComponentProps, ReactElement } from 'react';
+import type { ComponentProps, ReactElement } from 'react';
 
 import { useSmallLayoutOrUp } from '../dolma/shared';
 

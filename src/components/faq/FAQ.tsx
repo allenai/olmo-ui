@@ -7,7 +7,8 @@ import {
     Link,
     Typography,
 } from '@mui/material';
-import { ComponentProps, createRef, useEffect } from 'react';
+import type { ComponentProps, ReactElement } from 'react';
+import { useEffect, useRef } from 'react';
 import Markdown from 'react-markdown';
 import { useLocation } from 'react-router-dom';
 
@@ -54,10 +55,10 @@ interface FAQProps {
     answer: string;
 }
 
-export const FAQ = ({ question, answer }: FAQProps): JSX.Element => {
+export const FAQ = ({ question, answer }: FAQProps): ReactElement => {
     const location = useLocation();
     const isDesktopOrUp = useDesktopOrUp();
-    const accordionRef = createRef<HTMLDivElement>();
+    const accordionRef = useRef<HTMLDivElement>(null);
     const faqId = createFAQId(question);
     const faqContentId = faqId + '-content';
 

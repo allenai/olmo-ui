@@ -1,8 +1,9 @@
-import { GlobalStyles, ThemeOptions } from '@mui/material';
+import type { ThemeOptions } from '@mui/material';
+import { GlobalStyles } from '@mui/material';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReCaptchaProvider } from '@wojtekmaj/react-recaptcha-v3';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
 import { queryClient } from '@/api/query-client';
 

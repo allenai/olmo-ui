@@ -4,8 +4,10 @@ import type { ComponentProps } from 'react';
 import { availableInfiniGramIndexIdValues } from '@/api/playgroundApi/v5playgroundApiSchema';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
 
-interface InfiniGramIndexInputProps
-    extends Omit<ComponentProps<typeof ControlledSelect>, 'children' | 'label'> {
+interface InfiniGramIndexInputProps extends Omit<
+    ComponentProps<typeof ControlledSelect>,
+    'children' | 'label'
+> {
     label?: string;
 }
 

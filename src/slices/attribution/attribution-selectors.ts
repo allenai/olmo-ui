@@ -1,6 +1,6 @@
 import type { AppContextState } from '@/AppContext';
 
-import { MessageWithAttributionDocuments } from './AttributionSlice';
+import type { MessageWithAttributionDocuments } from './AttributionSlice';
 
 export const hasSelectedAttributionSelector = (
     state: AppContextState,

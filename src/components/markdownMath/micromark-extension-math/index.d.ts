@@ -1,6 +1,5 @@
 import type { KatexOptions } from 'katex';
 
-export { mathHtml } from './lib/html.js';
 export { math } from './lib/syntax.js';
 
 /**

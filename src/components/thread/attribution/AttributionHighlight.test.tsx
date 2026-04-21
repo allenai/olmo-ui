@@ -1,8 +1,8 @@
 import { render, screen } from '@test-utils';
-import { DeepPartial } from 'react-hook-form';
+import type { DeepPartial } from 'react-hook-form';
 
+import type { AppContextState } from '@/AppContext';
 import * as AppContext from '@/AppContext';
-import { AppContextState } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 

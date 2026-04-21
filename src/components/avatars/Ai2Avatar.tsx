@@ -1,4 +1,4 @@
-import { Theme } from '@mui/material';
+import type { Theme } from '@mui/material';
 
 import ai2AvatarURL from '../assets/ai2.svg';
 import { ChatAvatar } from './ChatAvatar';

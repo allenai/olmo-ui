@@ -1,16 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRef } from 'react';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
-import type { ChatRequest, SchemaChatRequest } from '@/api/playgroundApi/thread';
-import { Thread } from '@/api/playgroundApi/thread';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { ChatRequest, SchemaChatRequest, Thread } from '@/api/playgroundApi/thread';
 import { fetchClient } from '@/api/playgroundApi/v5';
-import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
+import type { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import type { ExtraParameters } from '../QueryContext';
 import type { StreamMessageRequest } from '../stream-types';
-import { MessageInferenceParameters } from '../ThreadProviderHelpers';
+import type { MessageInferenceParameters } from '../ThreadProviderHelpers';
 import {
     mapToRemoteState,
     type StreamCallbacks,
@@ -36,7 +35,7 @@ export const THREAD_STREAM_MUTATION_KEY = ['thread-stream'];
 export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> = (
     callbacks?: StreamCallbacks
 ) => {
-    const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
+    const abortControllersRef = useRef(new Map<ThreadViewId, AbortController>());
 
     const {
         activeStreams,

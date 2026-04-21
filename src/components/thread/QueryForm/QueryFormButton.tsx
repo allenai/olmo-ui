@@ -1,8 +1,9 @@
 import { IconButton } from '@mui/material';
-import { ComponentProps, PropsWithChildren } from 'react';
+import type { ComponentProps, PropsWithChildren } from 'react';
 
 interface QueryFormButtonProps
-    extends PropsWithChildren,
+    extends
+        PropsWithChildren,
         Pick<
             ComponentProps<typeof IconButton>,
             'type' | 'aria-label' | 'children' | 'disabled' | 'onKeyDown' | 'onClick' | 'sx'

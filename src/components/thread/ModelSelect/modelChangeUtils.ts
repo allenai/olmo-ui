@@ -1,15 +1,10 @@
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { CompareModelState } from '@/slices/CompareModelSlice';
+import type { CompareModelState } from '@/slices/CompareModelSlice';
 
 // Track model selection for analytics
 export const trackModelSelection = (modelId: string) => {
     analyticsClient.trackModelUpdate({ modelChosen: modelId });
-};
-
-// Find model by ID in models array
-export const findModelById = (models: Model[], modelId: string): Model | undefined => {
-    return models.find((model) => model.id === modelId);
 };
 
 // Get current model for a specific thread view

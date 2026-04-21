@@ -12,7 +12,7 @@ import {
     modelById,
 } from '@/components/thread/ModelSelect/useModels';
 import { selectModelIdForThread } from '@/contexts/modelSelectionUtils';
-import { CompareModelState } from '@/slices/CompareModelSlice';
+import type { CompareModelState } from '@/slices/CompareModelSlice';
 
 import { parseComparisonSearchParams } from './parseComparisonSearchParams';
 

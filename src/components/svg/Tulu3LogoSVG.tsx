@@ -1,11 +1,7 @@
-import { SVGLogo, SVGLogoComponentProps } from './SVGLogo';
+import type { SVGLogoComponentProps } from './SVGLogo';
+import { SVGLogo } from './SVGLogo';
 
-export const Tulu3LogoSVG = ({
-    width = 252,
-    title = 'Tülu3',
-    color,
-    sx,
-}: SVGLogoComponentProps) => {
+export const Tulu3LogoSVG = ({ width = 252, title, color, sx }: SVGLogoComponentProps) => {
     return (
         <SVGLogo
             intrinsicWidth={252}

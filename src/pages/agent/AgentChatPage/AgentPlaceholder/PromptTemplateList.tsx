@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 
-import { Agent } from '@/api/playgroundApi/additionalTypes';
+import type { Agent } from '@/api/playgroundApi/additionalTypes';
 import { LinkCard } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCard';
 import { LinkCardList } from '@/components/thread/ThreadPlaceholder/LinkCard/LinkCardList';
 

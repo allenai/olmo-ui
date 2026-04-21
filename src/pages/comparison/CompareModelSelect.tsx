@@ -1,6 +1,6 @@
-import { SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelectInput';
 import { useQueryContext } from '@/contexts/QueryContext';
 

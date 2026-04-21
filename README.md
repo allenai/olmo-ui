@@ -43,28 +43,28 @@ to the production API to get things working.
 
 1. Start by connecting to the Kubernetes cluster:
 
-   ```
-   gcloud container clusters get-credentials --project ai2-reviz --zone us-west1-b skiff-prod
-   ```
+    ```
+    gcloud container clusters get-credentials --project ai2-reviz --zone us-west1-b skiff-prod
+    ```
 
-   You might encounter this error message in your terminal: "CRITICAL: ACTION REQUIRED: gke-gcloud-auth-plugin, which is needed for continued use of kubectl, was not found or is not executable..."
-   If it happens, install the plugin as it suggests with this command:
+    You might encounter this error message in your terminal: "CRITICAL: ACTION REQUIRED: gke-gcloud-auth-plugin, which is needed for continued use of kubectl, was not found or is not executable..."
+    If it happens, install the plugin as it suggests with this command:
 
-   ```
-   gcloud components install gke-gcloud-auth-plugin
-   ```
+    ```
+    gcloud components install gke-gcloud-auth-plugin
+    ```
 
 2. Then port forward `8000` to the API:
 
-   ```
-   kubectl port-forward -n olmo-api service/olmo-api-prod 8000
-   ```
+    ```
+    kubectl port-forward -n olmo-api service/olmo-api-prod 8000
+    ```
 
 3. Next open another terminal and launch the application like so:
 
-   ```
-   docker compose up --build
-   ```
+    ```
+    docker compose up --build
+    ```
 
 ### Running Tests
 
@@ -87,21 +87,21 @@ The `E2E_TEST_PASSWORD` can be found in 1Password: https://start.1password.com/o
 
 1. Start the E2E development server:
 
-   ```
-   yarn test:e2e:server
-   ```
+    ```
+    yarn test:e2e:server
+    ```
 
 2. Run the tests (in a separate terminal):
 
-   ```
-   yarn test:e2e:local:chromium  # Run only Chromium tests
-   yarn test:e2e:local           # Run all browser tests
-   ```
+    ```
+    yarn test:e2e:local:chromium  # Run only Chromium tests
+    yarn test:e2e:local           # Run all browser tests
+    ```
 
 3. Run an individual test file:
-   ```
-   yarn test:e2e:local:chromium e2e/olmo.spec.ts
-   ```
+    ```
+    yarn test:e2e:local:chromium e2e/olmo.spec.ts
+    ```
 
 The scripts automatically configure all necessary environment variables for E2E testing (mocking, Auth0 dev environment, feature flags, etc.).
 

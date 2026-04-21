@@ -1,10 +1,13 @@
 import type { ReactNode } from 'react';
 import { useController, type UseControllerProps } from 'react-hook-form';
 
-import { SliderWithInput, SliderWithInputProps } from './SliderWithInput';
+import type { SliderWithInputProps } from './SliderWithInput';
+import { SliderWithInput } from './SliderWithInput';
 
-interface ControlledSliderWithInputProps<T>
-    extends Omit<SliderWithInputProps<T>, 'onChange' | 'name' | 'errorMessage'> {
+interface ControlledSliderWithInputProps<T> extends Omit<
+    SliderWithInputProps<T>,
+    'onChange' | 'name' | 'errorMessage'
+> {
     name: string;
     controllerProps?: Omit<UseControllerProps, 'name'>;
 }

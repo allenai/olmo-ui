@@ -18,10 +18,7 @@ export const Auth0LoginLink = () => {
     }
 
     return (
-        <AvatarMenuItem
-            // eslint-disable-next-line react/jsx-no-undef
-            icon={<LoginIcon />}
-            href={links.login(window.location.href)}>
+        <AvatarMenuItem icon={<LoginIcon />} href={links.login(window.location.href)}>
             Log in
         </AvatarMenuItem>
     );

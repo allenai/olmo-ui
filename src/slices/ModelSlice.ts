@@ -1,5 +1,5 @@
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { OlmoStateCreator } from '@/AppContext';
+import type { OlmoStateCreator } from '@/AppContext';
 
 export interface ModelSlice {
     selectedModel?: Model;
