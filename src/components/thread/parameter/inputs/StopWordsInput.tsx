@@ -28,7 +28,7 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
                 options={[]}
                 onChange={onChange}
                 sx={{ gridColumn: '1 / -1' }}
-                renderTags={(stopWords: readonly string[], getTagProps) =>
+                renderValue={(stopWords: readonly string[], getTagProps) =>
                     stopWords.map((word: string, index: number) => {
                         // Show special characters '\n' & '\t' in text on UI
                         const visibleWords = word.replace(/\n/g, '\\n').replace(/\t/g, '\\t');
@@ -42,6 +42,10 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
                 renderInput={(params) => (
                     <TextField
                         {...params}
+                        sx={{
+                            // the fieldset is doing some weird positioning
+                            paddingTop: 1,
+                        }}
                         hiddenLabel
                         helperText='Press "Enter" to add a new word.'
                     />
