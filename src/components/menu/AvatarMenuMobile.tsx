@@ -10,7 +10,7 @@ type AvatarMenuMobileProps = Pick<PopoverProps, 'anchorEl' | 'open' | 'sx'> & {
 
 export const AvatarMenuMobile = ({ anchorEl, open, onClose, sx }: AvatarMenuMobileProps) => {
     return (
-        <AvatarMenuBase onClose={onClose} showEmail={false} showHeader themeModeAdaptive={false}>
+        <AvatarMenuBase onClose={onClose} showEmail={false} showHeader colorScheme="light">
             {(content) => (
                 <Popover
                     data-testid="avatar-mobile-menu"
@@ -24,6 +24,8 @@ export const AvatarMenuMobile = ({ anchorEl, open, onClose, sx }: AvatarMenuMobi
                     }}
                     slotProps={{
                         paper: {
+                            // @ts-expect-error set the color scheme on the paper element
+                            'data-color-scheme': 'light',
                             sx: (theme) => ({
                                 minWidth: '320px',
                                 borderRadius: '16px',

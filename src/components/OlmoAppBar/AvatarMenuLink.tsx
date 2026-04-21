@@ -75,10 +75,12 @@ export const AvatarMenuLink = () => {
                 </NavigationListItemIcon>
                 <ListItemText
                     sx={{ margin: 0, marginInlineEnd: 'auto' }}
-                    primaryTypographyProps={{
-                        variant: 'body1',
-                        fontWeight: 500,
-                        component: 'span',
+                    slotProps={{
+                        primary: {
+                            variant: 'body1',
+                            fontWeight: 500,
+                            component: 'span',
+                        },
                     }}>
                     {userAuthInfo?.email || 'Preferences'}
                 </ListItemText>

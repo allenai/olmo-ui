@@ -1,7 +1,7 @@
 // Shared base component logic and layout for both desktop and mobile avatar menus.
 
 import { Close, ShieldOutlined, StorageOutlined } from '@mui/icons-material';
-import { Box, IconButton, ListItemText, Stack, Typography } from '@mui/material';
+import { Box, IconButton, ListItemText, PaletteMode, Stack, Typography } from '@mui/material';
 import { ReactNode, useState } from 'react';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
@@ -16,7 +16,7 @@ type AvatarMenuBaseProps = {
     showEmail?: boolean;
     showHeader?: boolean;
     onClose?: () => void;
-    themeModeAdaptive?: boolean;
+    colorScheme?: PaletteMode;
     children: (content: ReactNode) => ReactNode;
 };
 
@@ -25,7 +25,7 @@ export const AvatarMenuBase = ({
     showEmail = true,
     showHeader = false,
     onClose,
-    themeModeAdaptive = true, // todo, remove thmeModeAdaptive
+    colorScheme,
 }: AvatarMenuBaseProps) => {
     const [showModal, setShowModal] = useState(false);
     const { userAuthInfo, userInfo } = useUserAuthInfo();
@@ -50,11 +50,10 @@ export const AvatarMenuBase = ({
                     <Typography
                         component="span"
                         variant="body1"
-                        sx={(theme) => ({
+                        sx={{
                             fontWeight: 500,
                             alignSelf: 'center',
-                            color: theme.palette.common.white,
-                        })}>
+                        }}>
                         Preferences
                     </Typography>
                     <IconButton
@@ -88,13 +87,12 @@ export const AvatarMenuBase = ({
                     {userAuthInfo.email}
                 </ListItemText>
             )}
-            <ThemeModeSelect themeModeAdaptive={themeModeAdaptive} />
+            <ThemeModeSelect colorScheme={colorScheme} />
             <AvatarMenuItem
                 icon={<StorageOutlined />}
                 onClick={() => {
                     setShowModal(true);
-                }}
-                themeModeAdaptive={themeModeAdaptive}>
+                }}>
                 Data Collection
             </AvatarMenuItem>
             {process.env.VITE_IS_ANALYTICS_ENABLED === 'true' && (
@@ -102,12 +100,11 @@ export const AvatarMenuBase = ({
                     icon={<ShieldOutlined />}
                     onClick={() => {
                         window.Osano?.cm?.showDrawer();
-                    }}
-                    themeModeAdaptive={themeModeAdaptive}>
+                    }}>
                     Privacy settings
                 </AvatarMenuItem>
             )}
-            <Auth0LoginLink themeModeAdaptive={themeModeAdaptive} />
+            <Auth0LoginLink />
         </Box>
     );
 

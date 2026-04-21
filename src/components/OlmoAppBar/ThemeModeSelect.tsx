@@ -9,6 +9,7 @@ import {
     MenuItem,
     menuItemClasses,
     MenuItemProps,
+    PaletteMode,
     Select,
     selectClasses,
     SxProps,
@@ -22,13 +23,11 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 interface ThemeModeSelectMenuItemProps extends MenuItemProps {
     title: string;
     mode: 'light' | 'dark' | 'system';
-    themeModeAdaptive?: boolean;
 }
 
 const ThemeModeSelectMenuItem = ({
     title,
     mode,
-    themeModeAdaptive = true,
     onClick,
     ...menuItemProps
 }: ThemeModeSelectMenuItemProps): ReactNode => {
@@ -36,12 +35,12 @@ const ThemeModeSelectMenuItem = ({
     const isSelected = mode === muiMode;
 
     const sx: SxProps<Theme> = (theme) => ({
-        '--theme-select-text-color': theme.palette.common.white,
-        '--theme-select-background-color': alpha('#032629', 0.6),
+        '--theme-select-text-color': theme.vars.palette.text.primary,
+        '--theme-select-background-color': `rgba(${theme.vars.palette.background.paperChannel} / 0.6)`,
 
-        '&[data-theme-mode-adaptive="true"]': {
-            '--theme-select-text-color': theme.vars.palette.text.primary,
-            '--theme-select-background-color': `rgba(${theme.vars.palette.background.paperChannel} / 0.6)`,
+        '&[data-color-scheme="dark"]': {
+            '--theme-select-text-color': theme.palette.common.white,
+            '--theme-select-background-color': alpha('#032629', 0.6),
         },
 
         color: 'var(--theme-select-text-color)',
@@ -69,7 +68,6 @@ const ThemeModeSelectMenuItem = ({
     return (
         <MenuItem
             sx={sx}
-            data-theme-mode-adaptive={themeModeAdaptive}
             {...menuItemProps}
             onClick={(e) => {
                 analyticsClient.trackColorModeChange({ colorMode: mode });
@@ -82,9 +80,7 @@ const ThemeModeSelectMenuItem = ({
                     sx={(theme) => ({
                         flexDirection: 'row-reverse',
                         justifySelf: 'end',
-                        color: themeModeAdaptive
-                            ? theme.vars.palette.primary.contrastText
-                            : theme.palette.common.white,
+                        color: theme.vars.palette.primary.contrastText,
                     })}>
                     <Check />
                 </ListItemIcon>
@@ -93,11 +89,7 @@ const ThemeModeSelectMenuItem = ({
     );
 };
 
-type ThemeModeInputProps = InputBaseProps & {
-    themeModeAdaptive?: boolean;
-};
-
-export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptive?: boolean }) => {
+export const ThemeModeSelect = ({ colorScheme }: { colorScheme?: PaletteMode }) => {
     const { mode } = useColorScheme();
     const themeOptions: Array<{
         title: string;
@@ -127,10 +119,12 @@ export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptiv
                 fullWidth
                 size="small"
                 onChange={() => {}}
-                input={<ThemeModeInput themeModeAdaptive={themeModeAdaptive} />}
+                input={<ThemeModeInput />}
                 MenuProps={{
                     slotProps: {
                         paper: {
+                            // @ts-expect-error setting a data attr on paper
+                            'data-color-scheme': colorScheme,
                             sx: (theme) => ({
                                 background: 'transparent',
                                 paddingInline: theme.spacing(1.5),
@@ -143,9 +137,7 @@ export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptiv
                     MenuListProps: {
                         sx: (theme) => ({
                             borderRadius: theme.spacing(1),
-                            backgroundColor: themeModeAdaptive
-                                ? theme.vars.palette.background.drawer.secondary
-                                : theme.vars.palette.background.drawer.primary,
+                            backgroundColor: theme.vars.palette.background.drawer.secondary,
                             overflow: 'hidden',
                             padding: 0,
                             boxShadow: 1,
@@ -158,8 +150,7 @@ export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptiv
                         key={option.mode}
                         value={option.mode}
                         title={option.title}
-                        mode={option.mode}
-                        themeModeAdaptive={themeModeAdaptive}>
+                        mode={option.mode}>
                         {option.title}
                     </ThemeModeSelectMenuItem>
                 ))}
@@ -168,13 +159,13 @@ export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptiv
     );
 };
 
-const ThemeModeInput = ({ themeModeAdaptive, ...props }: ThemeModeInputProps) => {
+const ThemeModeInput = (props: InputBaseProps) => {
     const sx: SxProps<Theme> = (theme) => ({
-        '--theme-select-text-color': theme.palette.common.white,
+        '--theme-select-text-color': theme.vars.palette.text.primary,
         '--theme-select-background-color': alpha(theme.palette.common.white, 0.1),
 
-        '&[data-theme-mode-adaptive="true"]': {
-            '--theme-select-text-color': theme.vars.palette.text.primary,
+        '[data-color-scheme="dark"]': {
+            '--theme-select-text-color': theme.palette.common.white,
         },
 
         borderRadius: '8px',
@@ -208,5 +199,5 @@ const ThemeModeInput = ({ themeModeAdaptive, ...props }: ThemeModeInputProps) =>
         },
     });
 
-    return <InputBase sx={sx} data-theme-mode-adaptive={themeModeAdaptive} {...props} />;
+    return <InputBase sx={sx} {...props} />;
 };
