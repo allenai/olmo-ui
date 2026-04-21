@@ -21,6 +21,10 @@ export const QueryFormNotice = ({ selectedModelFamilyId }: QueryFormNoticeProps)
             variant="caption"
             textAlign="center"
             sx={(theme) => ({
+                '--notice-color': `rgba(${theme.vars.palette.text.primaryChannel} / 0.75)`,
+                '[data-color-scheme="dark"] &': {
+                    '--notice-color': `rgba(${theme.vars.palette.text.primaryChannel} / 0.5)`,
+                },
                 display: 'block',
                 fontSize: '0.7rem',
                 lineHeight: '1.5',

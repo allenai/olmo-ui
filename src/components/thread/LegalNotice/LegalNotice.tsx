@@ -1,4 +1,4 @@
-import { Theme, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { TermAndConditionsLink } from '@/components/TermsAndConditionsLink';
@@ -9,23 +9,21 @@ import {
     getModelSpecificLegalNotices,
 } from './specific-legal-notices-map';
 
-// Returns an sx-compatible (theme) => string using CSS variables so color resolves per scheme.
-export const getLegalNoticeTextColor =
-    (opacity: number = 0.75) =>
-    (theme: Theme): string =>
-        `color-mix(in srgb, ${theme.vars.palette.text.primary} ${Math.round(opacity * 100)}%, transparent)`;
-
 export const LegalNoticeTypography = ({ children }: PropsWithChildren) => {
     return (
         <Typography
             component="p"
             variant="caption"
             sx={(theme) => ({
+                '--legal-notice-color': `rgba(${theme.vars.palette.text.primaryChannel} / 0.75)`,
+                '[data-color-scheme="dark"] &': {
+                    '--legal-notice-color': `rgba(${theme.vars.palette.text.primaryChannel} / 0.5)`,
+                },
                 textWrap: 'pretty',
                 fontSize: '0.7rem',
                 lineHeight: '1.33',
                 margin: '0',
-                color: getLegalNoticeTextColor()(theme),
+                color: 'var(--legal-notice-color)',
             })}>
             {children}
         </Typography>

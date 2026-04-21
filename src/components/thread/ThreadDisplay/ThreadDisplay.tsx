@@ -7,7 +7,7 @@ import { ThreadError } from '@/pages/comparison/ThreadError';
 
 import { AttributionHighlightDescription } from '../attribution/AttributionHighlightDescription';
 import { ChatMessage, ChatMessageAssistantLoading } from '../ChatMessage/ChatMessage';
-import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
+import { LegalNotice } from '../LegalNotice/LegalNotice';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
 
@@ -252,11 +252,15 @@ export const ThreadDisplay = ({
             selectedMessageId={selectedMessageId}>
             {(childMessageIds.length > 0 || hasError) && (
                 <Divider
-                    sx={{
+                    sx={(theme) => ({
+                        '--divider-color': `rgba(${theme.vars.palette.text.primaryChannel} / 0.75`,
+                        '[data-color-scheme="dark"] &': {
+                            '--divider-color': `rgba(${theme.vars.palette.text.primaryChannel} / 0.25`,
+                        },
                         gridColumn: '1 / -1',
-                        borderColor: getLegalNoticeTextColor(0.25),
+                        borderColor: 'var(--divider-color)',
                         marginY: '1em',
-                    }}
+                    })}
                 />
             )}
             {childMessageIds.map((messageId) => (
