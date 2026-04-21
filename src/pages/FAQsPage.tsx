@@ -49,7 +49,7 @@ export const FAQsPage = (): JSX.Element => {
                             minHeight: (theme) => theme.spacing(6),
                             position: 'sticky',
                             background: (theme) =>
-                                `linear-gradient(0deg, ${theme.palette.background.default} 0%, #0000 42.5%)`,
+                                `linear-gradient(0deg, ${theme.vars.palette.background.default} 0%, #0000 42.5%)`,
                             marginTop: (theme) => theme.spacing(-3),
                         }}
                     />

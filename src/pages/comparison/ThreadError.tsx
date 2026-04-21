@@ -16,7 +16,7 @@ export const ThreadError = () => {
             <ErrorOutline
                 sx={(theme) => ({
                     fontSize: 48,
-                    color: theme.palette.error.main,
+                    color: theme.vars.palette.error.main,
                     opacity: 0.7,
                 })}
             />

@@ -1,5 +1,5 @@
 import { Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@mui/material';
-import React, { ReactNode } from 'react';
+import type { KeyboardEvent, ReactNode } from 'react';
 
 import { useDesktopOrUp } from './dolma/shared';
 
@@ -12,7 +12,7 @@ type BaseResponsiveDrawerProps = {
     mobileDrawerSx?: SxProps<Theme>;
     desktopDrawerSx?: SxProps<Theme>;
 
-    onKeyDownHandler?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+    onKeyDownHandler?: (event: KeyboardEvent<HTMLDivElement>) => void;
 };
 
 type ResponsiveDrawerProps = Pick<
@@ -31,10 +31,6 @@ const GlobalStyle = () => (
     />
 );
 
-const sharedDrawerStyle: SxProps<Theme> = (theme) => ({
-    background: theme.palette.background.drawer.primary,
-});
-
 export const ResponsiveDrawer = ({
     children,
     open,
@@ -46,7 +42,7 @@ export const ResponsiveDrawer = ({
     desktopDrawerSx,
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
-}: ResponsiveDrawerProps): JSX.Element => {
+}: ResponsiveDrawerProps): ReactNode => {
     const isPersistentDrawerClosed = !open && desktopDrawerVariant === 'persistent';
     const isDesktop = useDesktopOrUp();
 
@@ -68,16 +64,16 @@ export const ResponsiveDrawer = ({
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                         ...(Array.isArray(desktopDrawerSx) ? desktopDrawerSx : [desktopDrawerSx]),
                     ]}
-                    PaperProps={{
-                        elevation: 2,
-                        sx: [
-                            sharedDrawerStyle,
-                            {
-                                maxWidth: (theme) => theme.spacing(50),
+                    slotProps={{
+                        paper: {
+                            elevation: 2,
+                            sx: (theme) => ({
+                                background: theme.vars.palette.background.drawer.primary,
+                                maxWidth: theme.spacing(50),
                                 position: 'unset',
                                 borderRight: 'none',
-                            },
-                        ],
+                            }),
+                        },
                     }}
                     data-testid="Drawer">
                     {heading}
@@ -91,13 +87,13 @@ export const ResponsiveDrawer = ({
                     onClose={onClose}
                     disableScrollLock={false}
                     onKeyDown={onKeyDownHandler}
-                    PaperProps={{
-                        sx: [
-                            sharedDrawerStyle,
-                            {
+                    slotProps={{
+                        paper: {
+                            sx: (theme) => ({
+                                background: theme.vars.palette.background.drawer.primary,
                                 width: 'clamp(20rem, 100vw - 44px, 23rem)',
-                            },
-                        ],
+                            }),
+                        },
                     }}
                     sx={mobileDrawerSx}
                     data-testid="Drawer">

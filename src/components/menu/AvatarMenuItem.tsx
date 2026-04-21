@@ -6,7 +6,6 @@ import { NavigationListItemIcon } from '@/components/OlmoAppBar/NavigationLink';
 
 type AvatarMenuItemProps = PropsWithChildren & {
     icon?: ReactNode;
-    themeModeAdaptive?: boolean;
 } & (
         | {
               href?: never;
@@ -15,13 +14,7 @@ type AvatarMenuItemProps = PropsWithChildren & {
         | { href: string; onClick?: never }
     );
 
-export const AvatarMenuItem = ({
-    icon,
-    themeModeAdaptive = true,
-    children,
-    href,
-    onClick,
-}: AvatarMenuItemProps) => {
+export const AvatarMenuItem = ({ icon, children, href, onClick }: AvatarMenuItemProps) => {
     const isInternalLink = href != null && href.startsWith('/');
 
     const linkPropsMerged = {
@@ -29,7 +22,7 @@ export const AvatarMenuItem = ({
             ? {}
             : {
                   href,
-                  target: href == null ? undefined : isInternalLink ? '_self' : '_blank',
+                  target: isInternalLink ? '_self' : '_blank',
               }),
     };
 
@@ -57,21 +50,21 @@ export const AvatarMenuItem = ({
 
                     '&.Mui-selected': {
                         backgroundColor: 'transparent',
-                        color: theme.palette.secondary.main,
+                        color: theme.vars.palette.secondary.main,
 
                         ':hover': {
                             backgroundColor: 'transparent',
                         },
 
                         ':focus-visible': {
-                            backgroundColor: theme.palette.secondary.light,
-                            color: theme.palette.secondary.contrastText,
+                            backgroundColor: theme.vars.palette.secondary.light,
+                            color: theme.vars.palette.secondary.contrastText,
                         },
                     },
 
                     '&.Mui-focusVisible': {
-                        backgroundColor: theme.palette.secondary.light,
-                        color: theme.palette.secondary.contrastText,
+                        backgroundColor: theme.vars.palette.secondary.light,
+                        color: theme.vars.palette.secondary.contrastText,
                     },
                 })}
                 {...linkPropsMerged}>
@@ -82,24 +75,17 @@ export const AvatarMenuItem = ({
                         '& svg': { fontSize: '1.25rem' },
                         opacity: 0.5,
                         '.Mui-selected &, &.Mui-focusVisible': { opacity: 1 },
-                        color: (theme) => {
-                            return themeModeAdaptive ? 'inherit' : theme.palette.common.white;
-                        },
+                        color: 'inherit',
                     }}>
                     {icon}
                 </NavigationListItemIcon>
                 <ListItemText
                     sx={{ margin: 0, marginInlineEnd: 'auto' }}
-                    primaryTypographyProps={{
-                        variant: 'body1',
-                        fontWeight: 500,
-                        component: 'span',
-                        sx: (theme) => {
-                            return themeModeAdaptive
-                                ? {}
-                                : {
-                                      color: theme.palette.common.white,
-                                  };
+                    slotProps={{
+                        primary: {
+                            variant: 'body1',
+                            fontWeight: 500,
+                            component: 'span',
                         },
                     }}>
                     {children}

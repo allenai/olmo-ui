@@ -39,7 +39,7 @@ export const AvatarMenuLink = () => {
                 sx={(theme) => ({
                     padding: theme.spacing(1.5),
                     gap: theme.spacing(2),
-                    color: theme.palette.text.drawer.primary,
+                    color: theme.vars.palette.text.drawer.primary,
                     border: '2px solid rgba(255, 255, 255, 0.10)',
                     borderRadius: '28px',
 
@@ -49,21 +49,21 @@ export const AvatarMenuLink = () => {
 
                     '&.Mui-selected': {
                         backgroundColor: 'transparent',
-                        color: theme.palette.secondary.main,
+                        color: theme.vars.palette.secondary.main,
 
                         ':hover': {
                             backgroundColor: 'transparent',
                         },
 
                         ':focus-visible': {
-                            backgroundColor: theme.palette.secondary.light,
-                            color: theme.palette.secondary.contrastText,
+                            backgroundColor: theme.vars.palette.secondary.light,
+                            color: theme.vars.palette.secondary.contrastText,
                         },
                     },
 
                     '&.Mui-focusVisible': {
-                        backgroundColor: theme.palette.secondary.light,
-                        color: theme.palette.secondary.contrastText,
+                        backgroundColor: theme.vars.palette.secondary.light,
+                        color: theme.vars.palette.secondary.contrastText,
                     },
                 })}>
                 <NavigationListItemIcon
@@ -75,10 +75,12 @@ export const AvatarMenuLink = () => {
                 </NavigationListItemIcon>
                 <ListItemText
                     sx={{ margin: 0, marginInlineEnd: 'auto' }}
-                    primaryTypographyProps={{
-                        variant: 'body1',
-                        fontWeight: 500,
-                        component: 'span',
+                    slotProps={{
+                        primary: {
+                            variant: 'body1',
+                            fontWeight: 500,
+                            component: 'span',
+                        },
                     }}>
                     {userAuthInfo?.email || 'Preferences'}
                 </ListItemText>

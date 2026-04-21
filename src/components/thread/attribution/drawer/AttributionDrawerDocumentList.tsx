@@ -1,5 +1,5 @@
-import { Box, Card, CardContent, Stack, styled, Typography } from '@mui/material';
-import { Fragment, useMemo } from 'react';
+import { Box, Card, CardContent, Stack, styled, Typography, useColorScheme } from '@mui/material';
+import { Fragment, type ReactNode, useMemo } from 'react';
 
 import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
@@ -27,9 +27,7 @@ interface DedupedDocument extends Document {
 interface MatchingDocumentsTextProps {
     documentCount: number;
 }
-const MatchingDocumentsText = ({
-    documentCount,
-}: MatchingDocumentsTextProps): JSX.Element | null => {
+const MatchingDocumentsText = ({ documentCount }: MatchingDocumentsTextProps): ReactNode | null => {
     const hasSelectedSpan = useAppContext((context) =>
         hasSelectedAttributionSelector(context, 'span')
     );
@@ -47,15 +45,20 @@ const MatchingDocumentsText = ({
     );
 };
 
-const AttributionDocumentGroupTitle = styled(Typography)(({ theme }) => ({
-    fontWeight: theme.font.weight.semiBold,
-    color:
-        theme.palette.mode === 'dark' ? theme.palette.secondary.main : theme.palette.text.primary,
-    opacity: theme.palette.mode === 'light' ? 0.5 : undefined,
-    paddingInline: theme.spacing(3),
-    paddingBlockStart: theme.spacing(2.5),
-    textTransform: 'uppercase',
-}));
+const AttributionDocumentGroupTitle = styled(Typography)<{ $colorMode: 'light' | 'dark' }>(
+    ({ theme, $colorMode }) => ({
+        fontWeight: theme.typography.fontWeightMedium,
+        color:
+            // TODO: eval if this is still needed or if varnish proper is fine
+            $colorMode === 'dark'
+                ? theme.vars.palette.secondary.main
+                : theme.vars.palette.text.primary,
+        opacity: $colorMode === 'light' ? 0.5 : undefined,
+        paddingInline: theme.spacing(3),
+        paddingBlockStart: theme.spacing(2.5),
+        textTransform: 'uppercase',
+    })
+);
 
 interface RelevanceGroup {
     title: string;
@@ -63,6 +66,8 @@ interface RelevanceGroup {
 }
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
+    const { mode, systemMode } = useColorScheme();
+    const colorMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
     const isThereASelectedMessage = useAppContext((state) =>
         Boolean(state.attribution.selectedMessageId)
     );
@@ -166,7 +171,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 alignItems="center"
                 gap={3.5}
                 sx={(theme) => ({
-                    color: theme.palette.primary.main,
+                    color: theme.vars.palette.primary.main,
                 })}>
                 <ImageSpinner
                     src="/arrow-spin.svg"
@@ -243,7 +248,9 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
 
                     return (
                         <Fragment key={key}>
-                            <AttributionDocumentGroupTitle variant="subtitle2">
+                            <AttributionDocumentGroupTitle
+                                variant="subtitle2"
+                                $colorMode={colorMode}>
                                 {group.title}
                             </AttributionDocumentGroupTitle>
                             {group.collections.map((doc) => (

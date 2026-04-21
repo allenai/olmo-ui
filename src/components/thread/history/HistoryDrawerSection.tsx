@@ -23,7 +23,7 @@ export const HistoryDrawerSection = ({
     return (
         <>
             <List>
-                <NavigationHeading color={theme.palette.secondary.light}>
+                <NavigationHeading color={theme.vars.palette.secondary.light}>
                     {heading}
                 </NavigationHeading>
                 {history.map((item) => {
@@ -36,7 +36,7 @@ export const HistoryDrawerSection = ({
 };
 
 export const HistoryDivider = styled(Divider)(({ theme }) => ({
-    borderColor: theme.palette.text.primary,
+    borderColor: theme.vars.palette.text.primary,
     opacity: 0.5,
     marginInline: theme.spacing(2),
 }));

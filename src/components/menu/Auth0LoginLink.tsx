@@ -6,15 +6,12 @@ import { links } from '@/Links';
 
 import { AvatarMenuItem } from './AvatarMenuItem';
 
-export const Auth0LoginLink = ({ themeModeAdaptive = true }: { themeModeAdaptive?: boolean }) => {
+export const Auth0LoginLink = () => {
     const { isAuthenticated } = useUserAuthInfo();
 
     if (isAuthenticated) {
         return (
-            <AvatarMenuItem
-                icon={<LogoutIcon />}
-                href={links.logout}
-                themeModeAdaptive={themeModeAdaptive}>
+            <AvatarMenuItem icon={<LogoutIcon />} href={links.logout}>
                 Log out
             </AvatarMenuItem>
         );
@@ -24,8 +21,7 @@ export const Auth0LoginLink = ({ themeModeAdaptive = true }: { themeModeAdaptive
         <AvatarMenuItem
             // eslint-disable-next-line react/jsx-no-undef
             icon={<LoginIcon />}
-            href={links.login(window.location.href)}
-            themeModeAdaptive={themeModeAdaptive}>
+            href={links.login(window.location.href)}>
             Log in
         </AvatarMenuItem>
     );

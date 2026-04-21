@@ -1,18 +1,17 @@
 import { Check } from '@mui/icons-material';
 import TVOutlinedIcon from '@mui/icons-material/TvOutlined';
-import { Box, ListItemIcon, Menu, MenuItem, MenuItemProps } from '@mui/material';
+import { Box, ListItemIcon, Menu, MenuItem, MenuItemProps, useColorScheme } from '@mui/material';
 import { ReactNode, useState } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 
-import { ColorPreference, useColorMode } from '../ColorModeProvider';
 import { NavigationLink } from './NavigationLink';
 
 // We need the autoFocus prop from MenuItemProps so the MenuList can automatically focus the right item
 // Including all the props just in case we need something else
 interface ColorModeSelectionMenuItemProps extends MenuItemProps {
     title: string;
-    mode: ColorPreference;
+    mode: 'light' | 'dark' | 'system';
 }
 
 const ColorModeSelectionMenuItem = ({
@@ -21,15 +20,15 @@ const ColorModeSelectionMenuItem = ({
     onClick,
     ...menuItemProps
 }: ColorModeSelectionMenuItemProps): ReactNode => {
-    const { colorPreference, setColorPreference } = useColorMode();
-    const isSelected = mode === colorPreference;
+    const { mode: muiMode, setMode } = useColorScheme();
+    const isSelected = mode === muiMode;
 
     return (
         <MenuItem
             {...menuItemProps}
             onClick={(e) => {
                 analyticsClient.trackColorModeChange({ colorMode: mode });
-                setColorPreference(mode);
+                setMode(mode);
                 onClick?.(e);
             }}>
             <Box flexGrow={1}>{title}</Box>

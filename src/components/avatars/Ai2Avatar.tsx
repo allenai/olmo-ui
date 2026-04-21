@@ -9,7 +9,7 @@ export const Ai2Avatar = () => {
             src={ai2AvatarURL}
             alt=""
             sx={(theme: Theme) => ({
-                background: theme.palette.primary.main,
+                background: theme.vars.palette.primary.main,
             })}
         />
     );

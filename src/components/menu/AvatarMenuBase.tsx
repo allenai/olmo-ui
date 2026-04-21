@@ -1,7 +1,7 @@
 // Shared base component logic and layout for both desktop and mobile avatar menus.
 
 import { Close, ShieldOutlined, StorageOutlined } from '@mui/icons-material';
-import { Box, IconButton, ListItemText, Stack, Typography } from '@mui/material';
+import { Box, IconButton, ListItemText, PaletteMode, Stack, Typography } from '@mui/material';
 import { ReactNode, useState } from 'react';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
@@ -16,7 +16,7 @@ type AvatarMenuBaseProps = {
     showEmail?: boolean;
     showHeader?: boolean;
     onClose?: () => void;
-    themeModeAdaptive?: boolean;
+    colorScheme?: PaletteMode;
     children: (content: ReactNode) => ReactNode;
 };
 
@@ -25,7 +25,7 @@ export const AvatarMenuBase = ({
     showEmail = true,
     showHeader = false,
     onClose,
-    themeModeAdaptive = true,
+    colorScheme,
 }: AvatarMenuBaseProps) => {
     const [showModal, setShowModal] = useState(false);
     const { userAuthInfo, userInfo } = useUserAuthInfo();
@@ -35,27 +35,25 @@ export const AvatarMenuBase = ({
 
     const content = (
         <Box
-            sx={(theme) => ({
-                p: 2.5,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                bgcolor:
-                    themeModeAdaptive && theme.palette.mode === 'light'
-                        ? theme.palette.background.default
-                        : theme.palette.background.drawer.primary,
-            })}>
+            sx={(theme) => {
+                return {
+                    p: 2.5,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1,
+                    backgroundColor: theme.vars.palette.background.drawer.secondary,
+                };
+            }}>
             {showHeader && (
                 <Stack direction="row" gap={2} mb={2}>
                     <UserAvatar useProfilePicture={true} />
                     <Typography
                         component="span"
                         variant="body1"
-                        sx={(theme) => ({
+                        sx={{
                             fontWeight: 500,
                             alignSelf: 'center',
-                            color: theme.palette.common.white,
-                        })}>
+                        }}>
                         Preferences
                     </Typography>
                     <IconButton
@@ -79,21 +77,22 @@ export const AvatarMenuBase = ({
                         opacity: 0.5,
                         marginBottom: 1.5,
                     }}
-                    primaryTypographyProps={{
-                        variant: 'body1',
-                        fontWeight: 500,
-                        component: 'span',
+                    slotProps={{
+                        primary: {
+                            variant: 'body1',
+                            fontWeight: 500,
+                            component: 'span',
+                        },
                     }}>
                     {userAuthInfo.email}
                 </ListItemText>
             )}
-            <ThemeModeSelect themeModeAdaptive={themeModeAdaptive} />
+            <ThemeModeSelect colorScheme={colorScheme} />
             <AvatarMenuItem
                 icon={<StorageOutlined />}
                 onClick={() => {
                     setShowModal(true);
-                }}
-                themeModeAdaptive={themeModeAdaptive}>
+                }}>
                 Data Collection
             </AvatarMenuItem>
             {process.env.VITE_IS_ANALYTICS_ENABLED === 'true' && (
@@ -101,12 +100,11 @@ export const AvatarMenuBase = ({
                     icon={<ShieldOutlined />}
                     onClick={() => {
                         window.Osano?.cm?.showDrawer();
-                    }}
-                    themeModeAdaptive={themeModeAdaptive}>
+                    }}>
                     Privacy settings
                 </AvatarMenuItem>
             )}
-            <Auth0LoginLink themeModeAdaptive={themeModeAdaptive} />
+            <Auth0LoginLink />
         </Box>
     );
 

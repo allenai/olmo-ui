@@ -105,10 +105,8 @@ export const TermsAndDataCollectionModal = ({
                             gridTemplateRows: 'auto 1fr',
                             gap: 2,
                             fontSize: {
-                                // eslint-disable-next-line @typescript-eslint/no-deprecated
-                                xs: theme.font.size['2xl'],
-                                // eslint-disable-next-line @typescript-eslint/no-deprecated
-                                md: theme.font.size['4xl'],
+                                xs: theme.typography.h3.fontSize,
+                                md: theme.typography.h1.fontSize,
                             },
                             lineHeight: '[1.2em]',
                             padding: {

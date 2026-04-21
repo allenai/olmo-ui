@@ -1,5 +1,6 @@
 import { varnishTheme } from '@allenai/varnish2/theme';
-import { alpha, createTheme, PaletteMode, Theme, ThemeOptions } from '@mui/material';
+import { ThemeOptions } from '@mui/material';
+import type {} from '@mui/material/themeCssVarsAugmentation';
 
 declare module '@mui/material/styles' {
     interface TypeBackground {
@@ -17,20 +18,66 @@ declare module '@mui/material/styles' {
     }
 }
 
-// extended theme to hold olmo specific values and overrides
+// extended theme to hold olmo specific values and overrides\
+// TODO: eval if this is still needed or if varnish proper is fine
 export const uiRefreshOlmoTheme = {
-    palette: {
-        background: {
-            code: varnishTheme.palette.background.reversed,
-            drawer: {
-                primary: varnishTheme.palette.background.reversed,
-                secondary: varnishTheme.palette.background.default,
+    cssVariables: {
+        cssVarPrefix: 'ai2',
+        colorSchemeSelector: 'data-color-scheme',
+    },
+    colorSchemes: {
+        light: {
+            palette: {
+                error: { main: '#d50000' },
+                background: {
+                    code: varnishTheme.palette.background.reversed,
+                    // varnish-theme sets background to 'cream', it was white before
+                    default: varnishTheme.color.white.hex,
+                    drawer: {
+                        primary: varnishTheme.palette.background.reversed,
+                        secondary: varnishTheme.color.white.hex,
+                    },
+                },
+                text: {
+                    drawer: {
+                        primary: varnishTheme.palette.text.reversed,
+                        secondary: varnishTheme.palette.primary.dark,
+                    },
+                },
             },
         },
-        text: {
-            drawer: {
-                primary: varnishTheme.palette.text.reversed,
-                secondary: varnishTheme.palette.primary.dark,
+        dark: {
+            palette: {
+                background: {
+                    paper: '#032629',
+                    reversed: varnishTheme.palette.background.paper,
+                    default: '#032629',
+                    drawer: {
+                        primary: varnishTheme.color['dark-teal-100'].hex,
+                        secondary: varnishTheme.color['dark-teal-100'].hex,
+                    },
+                    code: varnishTheme.palette.background.reversed,
+                },
+                text: {
+                    primary: varnishTheme.palette.text.reversed ?? '#FFF',
+                    reversed: varnishTheme.palette.text.primary,
+                    secondary: `color-mix(in srgb, ${varnishTheme.palette.text.reversed} 60%, white)`,
+                    disabled: `color-mix(in srgb, ${varnishTheme.palette.text.reversed} 38%, white)`,
+                    drawer: {
+                        primary: varnishTheme.palette.text.reversed,
+                        secondary: varnishTheme.palette.secondary.main,
+                    },
+                },
+                primary: {
+                    main: varnishTheme.palette.primary.main,
+                    contrastText: varnishTheme.palette.text.reversed ?? '#FFF',
+                },
+                error: { main: '#fe3e3e' },
+                action: {
+                    active: 'rgba(255, 255, 255, 0.54)',
+                    disabled: 'rgba(255, 255, 255, 0.26)',
+                    disabledBackground: 'rgba(255, 255, 255, 0.12)',
+                },
             },
         },
     },
@@ -39,12 +86,13 @@ export const uiRefreshOlmoTheme = {
         MuiListItemButton: {
             styleOverrides: {
                 root: ({ theme }) => ({
+                    fontSize: theme.typography.body1.fontSize,
                     '&.Mui-selected': {
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
+                        backgroundColor: theme.vars.palette.primary.main,
+                        color: theme.vars.palette.primary.contrastText,
 
                         '&:focus-visible,&:hover': {
-                            backgroundColor: theme.palette.primary.dark,
+                            backgroundColor: theme.vars.palette.primary.dark,
                         },
                     },
                 }),
@@ -56,8 +104,8 @@ export const uiRefreshOlmoTheme = {
                     fontSize: theme.typography.body1.fontSize,
                     fontWeight: 'bold',
                     '&.Mui-selected': {
-                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                        color: theme.palette.text.primary,
+                        backgroundColor: `rgba(${theme.vars.palette.primary.mainChannel} / 0.08)`,
+                        color: theme.vars.palette.text.primary,
                     },
                 }),
             },
@@ -65,7 +113,7 @@ export const uiRefreshOlmoTheme = {
         MuiAccordion: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    backgroundColor: theme.palette.background.default,
+                    backgroundColor: theme.vars.palette.background.default,
                     '&.Mui-expanded': {
                         margin: 0,
                     },
@@ -75,7 +123,7 @@ export const uiRefreshOlmoTheme = {
         MuiAccordionSummary: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    color: theme.palette.primary.main,
+                    color: theme.vars.palette.primary.main,
                     '.MuiAccordionSummary-expandIconWrapper': {
                         color: 'inherit',
                     },
@@ -95,7 +143,25 @@ export const uiRefreshOlmoTheme = {
                 select: ({ theme }) => ({
                     '&&': {
                         paddingRight: theme.spacing(6),
+                        // override varnish-mui
+                        fontSize: theme.typography.body1.fontSize,
                     },
+                }),
+            },
+        },
+        MuiInputBase: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    // override varnish-mui
+                    fontSize: theme.typography.body1.fontSize,
+                }),
+            },
+        },
+        MuiListItemText: {
+            styleOverrides: {
+                primary: ({ theme }) => ({
+                    // override varnish-mui
+                    fontSize: theme.typography.body1.fontSize,
                 }),
             },
         },
@@ -143,80 +209,29 @@ export const uiRefreshOlmoTheme = {
                 }),
             },
         },
+        // reset from varnish-mui not sure if this is playground specific or should be varnish
+        MuiMenu: {
+            styleOverrides: {
+                paper: {
+                    border: '0',
+                },
+            },
+        },
+        MuiSlider: {
+            styleOverrides: {
+                track: {
+                    border: 'currentColor',
+                    backgroundColor: 'currentColor',
+                },
+                rail: {
+                    backgroundColor: 'currentColor',
+                },
+                thumb: {
+                    '&:hover': {
+                        boxShadow: 'none',
+                    },
+                },
+            },
+        },
     },
 } satisfies Partial<ThemeOptions>;
-
-const lightPaletteFromTheme = (theme: Theme): Theme => {
-    return createTheme(theme, {
-        palette: {
-            error: theme.palette.augmentColor({ color: { main: '#d50000' } }),
-        },
-    });
-};
-
-const darkPaletteFromTheme = (theme: Theme): Theme => {
-    const { palette } = theme;
-    const { background, text, primary, action } = palette;
-    return {
-        ...theme,
-        palette: {
-            ...palette,
-            mode: 'dark',
-
-            background: {
-                paper: '#032629',
-                reversed: background.paper,
-                default: '#032629',
-                drawer: {
-                    primary: varnishTheme.color['dark-teal-100'].hex,
-                    secondary: varnishTheme.color['dark-teal-100'].hex,
-                },
-                code: background.reversed,
-            },
-            text: {
-                // ...text,
-                primary: text.reversed ?? '#FFF', // this is required
-                reversed: text.primary,
-
-                // sane-ish defaults? -- MUIs alpha() - ?
-                secondary: `color-mix(in srgb, ${text.reversed} 60%, white)`, // 'rgba(0, 0, 0, 0.6)',
-                disabled: `color-mix(in srgb, ${text.reversed} 38%, white)`, // 'rgba(0, 0, 0, 0.38)',
-
-                drawer: {
-                    primary: text.reversed,
-                    secondary: palette.secondary.main,
-                },
-            },
-            primary: {
-                ...primary,
-
-                contrastText: text.reversed ?? '#FFF', // default
-            },
-            secondary: {
-                ...palette.secondary,
-            },
-            tertiary: {
-                ...palette.tertiary,
-            },
-            error: theme.palette.augmentColor({ color: { main: '#fe3e3e' } }),
-            warning: {
-                ...palette.warning,
-            },
-            info: {
-                ...palette.info,
-            },
-            success: {
-                ...palette.success,
-            },
-            action: {
-                ...action,
-                active: 'rgba(255, 255, 255, 0.54)',
-                disabled: 'rgba(255, 255, 255, 0.26)',
-                disabledBackground: 'rgba(255, 255, 255, 0.12)',
-            },
-        },
-    };
-};
-
-export const olmoThemePaletteMode = (theme: Theme, mode: PaletteMode): Theme =>
-    mode === 'dark' ? darkPaletteFromTheme(theme) : lightPaletteFromTheme(theme);

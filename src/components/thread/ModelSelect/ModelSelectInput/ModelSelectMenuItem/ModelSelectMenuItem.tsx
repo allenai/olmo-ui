@@ -1,14 +1,7 @@
 import { AutoAwesome } from '@mui/icons-material';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
-import {
-    alpha,
-    MenuItem,
-    menuItemClasses,
-    type MenuItemProps,
-    styled,
-    Typography,
-} from '@mui/material';
+import { MenuItem, menuItemClasses, type MenuItemProps, styled, Typography } from '@mui/material';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import ThinkingSvg from '@/components/assets/thinking.svg?react';
@@ -32,23 +25,19 @@ const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
     background: 'transparent',
 
     [`&.${menuItemClasses.focusVisible}`]: {
-        // @ts-expect-error - we need to type the variants with reversed better
-        backgroundColor: alpha(theme.palette.background.reversed, 0.12),
+        backgroundColor: `color-mix(in srgb, ${theme.vars.palette.background.reversed} 12%, transparent)`,
     },
     ':hover': {
-        // @ts-expect-error - we need to type the variants with reversed better
-        backgroundColor: alpha(theme.palette.background.reversed, 0.04),
+        backgroundColor: `color-mix(in srgb, ${theme.vars.palette.background.reversed} 4%, transparent)`,
     },
     [`&.${menuItemClasses.selected}`]: {
-        background: alpha(theme.palette.background.paper, 0.6),
-        color: theme.palette.text.primary,
+        background: `rgba(${theme.vars.palette.background.paperChannel} / 0.6)`,
+        color: theme.vars.palette.text.primary,
         [`&.${menuItemClasses.focusVisible}`]: {
-            // @ts-expect-error - we need to type the variants with reversed better
-            backgroundColor: alpha(theme.palette.background.reversed, 0.12),
+            backgroundColor: `color-mix(in srgb, ${theme.vars.palette.background.reversed} 12%, transparent)`,
         },
         ':hover': {
-            // @ts-expect-error - we need to type the variants with reversed better
-            backgroundColor: alpha(theme.palette.background.reversed, 0.04),
+            backgroundColor: `color-mix(in srgb, ${theme.vars.palette.background.reversed} 4%, transparent)`,
         },
     },
 }));

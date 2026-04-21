@@ -1,4 +1,4 @@
-import { color2 } from '@allenai/varnish2/theme';
+import { color } from '@allenai/varnish2/theme';
 
 interface Props {
     width?: string;
@@ -6,7 +6,11 @@ interface Props {
     fill?: string;
 }
 
-export const DolmaLogo = ({ width = '122', height = '52', fill = color2.B3.hex }: Props) => {
+export const DolmaLogo = ({
+    width = '122',
+    height = '52',
+    fill = color['info-blue-100'].hex,
+}: Props) => {
     return (
         <svg
             role="img"

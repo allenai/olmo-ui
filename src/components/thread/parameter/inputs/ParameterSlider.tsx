@@ -2,12 +2,11 @@
  * A slider with a number control next to it.
  */
 
-import { Box, Input, Slider } from '@mui/material';
+import { Box, Input, PaletteMode, Slider, useColorScheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { useAppContext } from '@/AppContext';
-import { useColorMode } from '@/components/ColorModeProvider';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { clipToMinMax } from '@/utils/clipToMinMax';
 
@@ -46,7 +45,8 @@ export const ParameterSlider = ({
         _setValue(initialValue);
     }, [initialValue]);
 
-    const { colorMode } = useColorMode();
+    const { mode, systemMode } = useColorScheme();
+    const colorMode: PaletteMode = mode === 'system' || !mode ? systemMode ?? 'dark' : mode;
 
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
@@ -112,7 +112,7 @@ export const ParameterSlider = ({
                                 '&:hover:not(.Mui-disabled):before': {
                                     borderBottom: 'none', // Remove hover underline
                                 },
-                                color: (theme) => theme.palette.text.primary,
+                                color: (theme) => theme.vars.palette.text.primary,
                             })}
                             inputProps={{
                                 step,

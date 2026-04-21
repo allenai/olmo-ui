@@ -1,4 +1,4 @@
-import { alpha, Theme, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { TermAndConditionsLink } from '@/components/TermsAndConditionsLink';
@@ -9,23 +9,22 @@ import {
     getModelSpecificLegalNotices,
 } from './specific-legal-notices-map';
 
-export const getLegalNoticeTextColor =
-    (darkModeAlpha: number = 0.5) =>
-    (theme: Theme) =>
-        alpha(theme.palette.text.primary, theme.palette.mode === 'dark' ? darkModeAlpha : 0.75);
-
 export const LegalNoticeTypography = ({ children }: PropsWithChildren) => {
     return (
         <Typography
             component="p"
             variant="caption"
-            sx={{
+            sx={(theme) => ({
+                '--legal-notice-color': `rgba(${theme.vars.palette.text.primaryChannel} / 0.75)`,
+                '[data-color-scheme="dark"] &': {
+                    '--legal-notice-color': `rgba(${theme.vars.palette.text.primaryChannel} / 0.5)`,
+                },
                 textWrap: 'pretty',
                 fontSize: '0.7rem',
                 lineHeight: '1.33',
                 margin: '0',
-                color: getLegalNoticeTextColor(),
-            }}>
+                color: 'var(--legal-notice-color)',
+            })}>
             {children}
         </Typography>
     );

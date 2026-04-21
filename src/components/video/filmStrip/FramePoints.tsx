@@ -27,7 +27,7 @@ export const FramePoints = memo(function FramePoints({ points }: FramePointsProp
                     r="4px"
                     stroke={'white'}
                     strokeWidth={'2px'}
-                    fill={varnishTheme.palette.primary.main}
+                    fill={varnishTheme.vars.palette.primary.main}
                 />
             ))}
         </svg>

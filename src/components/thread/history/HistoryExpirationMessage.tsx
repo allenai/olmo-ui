@@ -21,10 +21,7 @@ export const HistoryExpirationMessage = (): ReactNode => {
             paddingInline={3}
             paddingBlockEnd={3}>
             Logged-in users get to keep their thread history forever.{' '}
-            <Link
-                href={links.login(location.pathname)}
-                fontWeight={600}
-                color={(theme) => theme.palette.primary.main}>
+            <Link href={links.login(location.pathname)} fontWeight={600} color="primary">
                 Log in
             </Link>{' '}
             now to save future threads.

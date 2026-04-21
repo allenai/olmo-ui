@@ -137,7 +137,7 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): ReactNode => {
             <HomeLink sx={{ transform: 'translateY(5px) ' }} />
             <IconButton
                 onClick={onClose}
-                sx={{ color: (theme) => theme.palette.text.drawer.primary, opacity: 0.5 }}
+                sx={{ color: (theme) => theme.vars.palette.text.drawer.primary, opacity: 0.5 }}
                 aria-label="Close navigation drawer">
                 <CloseIcon />
             </IconButton>

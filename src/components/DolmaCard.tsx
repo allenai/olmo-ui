@@ -9,13 +9,14 @@ import { ResponsiveCard } from './ResponsiveCard';
 export const DolmaCard = () => {
     return (
         <>
-            <ResponsiveCard sx={{ backgroundColor: (theme) => theme.palette.background.reversed }}>
+            <ResponsiveCard
+                sx={{ backgroundColor: (theme) => theme.vars.palette.background.reversed }}>
                 <CardContent sx={{ padding: (theme) => theme.spacing(4, 2) }}>
                     <Typography
                         variant="h1"
                         align="center"
                         sx={(theme) => ({
-                            color: theme.palette.text.reversed,
+                            color: theme.vars.palette.text.reversed,
                             marginBottom: theme.spacing(2),
                         })}>
                         OlmoE-Mix is proven, trusted, and fully open.
@@ -23,11 +24,11 @@ export const DolmaCard = () => {
                     <Typography
                         variant="subtitle1"
                         align="center"
-                        sx={{ color: (theme) => theme.palette.text.reversed }}>
+                        sx={{ color: (theme) => theme.vars.palette.text.reversed }}>
                         <Link
                             href={links.olmoeMixAnnouncement}
                             target="_blank"
-                            sx={{ color: (theme) => theme.palette.secondary.light }}>
+                            sx={{ color: (theme) => theme.vars.palette.secondary.light }}>
                             OlmoE-Mix
                         </Link>{' '}
                         is a dataset of 4.07 trillion tokens from a diverse mix of web content,

@@ -38,20 +38,14 @@ export const AppLayout = ({ children }: AppLayout) => {
                         gridTemplateRows: 'subgrid',
                         backgroundColor: 'transparent',
                     },
-                    {
-                        '--color-transparent-text-accent': (theme) =>
-                            theme.palette.mode === 'light'
-                                ? theme.color['gray-50'].hex
-                                : theme.color['gray-10'].hex,
-
-                        '@supports(color: rgb(from white r g b))': {
-                            // This matches the placeholder color in the prompt input
-                            '--color-transparent-text-accent': (theme) =>
-                                `rgb(from currentColor r g b / ${theme.palette.mode === 'light' ? 0.42 : 0.5})`,
+                    (theme) => ({
+                        '--color-transparent-text-accent': `color-mix(in srgb, ${theme.color['gray-50'].hex} 42%, transparent)`,
+                        '[data-color-scheme="dark"] &': {
+                            '--color-transparent-text-accent': `rgba(in srgb, ${theme.color['gray-10'].hex} 50%, transparent)`,
                         },
 
                         scrollbarColor: `var(--color-transparent-text-accent, currentColor) transparent`,
-                    },
+                    }),
                 ]}
                 maxWidth={false}>
                 <ErrorBoundary
