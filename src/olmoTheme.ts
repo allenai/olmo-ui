@@ -217,5 +217,21 @@ export const uiRefreshOlmoTheme = {
                 },
             },
         },
+        MuiSlider: {
+            styleOverrides: {
+                track: {
+                    border: 'currentColor',
+                    backgroundColor: 'currentColor',
+                },
+                rail: {
+                    backgroundColor: 'currentColor',
+                },
+                thumb: {
+                    '&:hover': {
+                        boxShadow: 'none',
+                    },
+                },
+            },
+        },
     },
 } satisfies Partial<ThemeOptions>;
