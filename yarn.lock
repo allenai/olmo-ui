@@ -22,20 +22,15 @@
   resolved "https://registry.yarnpkg.com/@allenai/varnish-panda-runtime/-/varnish-panda-runtime-1.2.15-alpha.0.tgz#101040b28f9880b645ca81d53f49ca2cdb6c8e4e"
   integrity sha512-zmAhaIm1bwOjlpxTQqF+P+rxVmavgn514wwO90iASlA8158EETOxzB3tDjRUvZ6RcvCVYSU8sOwbzvfH9vrwwA==
 
-"@allenai/varnish-theme@^3.0.10-alpha.0":
-  version "3.0.10-alpha.0"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-3.0.10-alpha.0.tgz#9526a1fac744079ebfbed101523e5ca5aab9b80a"
-  integrity sha512-V5rxrdyavGpa1lw/j+faHiYjzcavvIAjUHaOyrHHCC1FBrFQa5dpHee8ip+8g98vk5i9jxLlKqV094qOHjlR8Q==
+"@allenai/varnish-theme@^3.0.11-alpha.0":
+  version "3.0.11-alpha.0"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-3.0.11-alpha.0.tgz#3aca3182ec9e5bc180a4378a76aebcbc49314e27"
+  integrity sha512-f1V4gWMnuNfDhSOiDW+Km/W/x2YyQaMpEZZzMmU+JdokU8t1hUz6nafwJ98qpTXcFuSlpjXCofET3AfxiVLhjw==
 
 "@allenai/varnish-theme@^3.0.8-alpha.0":
   version "3.0.8-alpha.0"
   resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-3.0.8-alpha.0.tgz#2184e582615eb2afa9dfeb609cc2d57f6de44eea"
   integrity sha512-YiyVLr+b50F2jurjQLIOOZ7l8SXihie45OsfVH0bXeQpWHSR2WCSJ2t2U1DO+8efevO2Sy/oP4nNp4P0e9ZoSQ==
-
-"@allenai/varnish-theme@^3.0.9-alpha.0":
-  version "3.0.9-alpha.0"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-3.0.9-alpha.0.tgz#0ab102e927de0330ade04bc0f4f9aee078cd79f7"
-  integrity sha512-F0A5Hv4gJWzU+nLuaTEI9Jihzq5gHFOfWomR6H/m7HmIwzpiY88dhivOZY1QNhzJ/LWGNceTnXC1bLjW3/kIjw==
 
 "@allenai/varnish-ui@^1.2.15-alpha.0":
   version "1.2.15-alpha.0"
@@ -46,12 +41,12 @@
     react-markdown "^10.1.0"
     react-syntax-highlighter "^15.6.6"
 
-"@allenai/varnish2@^4.0.2-alpha.0":
-  version "4.0.2-alpha.0"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-4.0.2-alpha.0.tgz#c31f8bda6b7eae35d4c48bbadeb1bd0ce6b00797"
-  integrity sha512-QuetG6VLFwjZj6m26c16REKeivn7p0aYYsxMTps7OOYi+gXcf6ptmSeic0uXUzTAY+ktsHGTQ0WDfXs/z1frOg==
+"@allenai/varnish2@^4.0.3-alpha.0":
+  version "4.0.3-alpha.0"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-4.0.3-alpha.0.tgz#352b83015cb8f219c6ce1a9be288499774e2b9ce"
+  integrity sha512-59G2gqkdb+000jushxMUmPdrbwNlRN26sE63jdathUXlxI8ay3Jcg/txEgSlVgG931+p3EIkqhVE+aH8MFvP+A==
   dependencies:
-    "@allenai/varnish-theme" "^3.0.10-alpha.0"
+    "@allenai/varnish-theme" "^3.0.11-alpha.0"
     react-markdown "^9.0.1"
     react-syntax-highlighter "^15.6.6"
     remark-gfm "^4.0.0"

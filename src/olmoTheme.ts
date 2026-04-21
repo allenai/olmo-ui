@@ -21,6 +21,10 @@ declare module '@mui/material/styles' {
 // extended theme to hold olmo specific values and overrides\
 // TODO: eval if this is still needed or if varnish proper is fine
 export const uiRefreshOlmoTheme = {
+    cssVariables: {
+        cssVarPrefix: 'ai2',
+        colorSchemeSelector: 'data-color-scheme',
+    },
     colorSchemes: {
         light: {
             palette: {
@@ -203,39 +207,6 @@ export const uiRefreshOlmoTheme = {
                     marginBlockStart: theme.spacing(1),
                     marginInline: theme.spacing(0),
                 }),
-            },
-        },
-        // reset to mui defaults for icon sizes
-        MuiIconButton: {
-            styleOverrides: {
-                sizeSmall: {
-                    fontSize: undefined,
-                    padding: undefined,
-                },
-                sizeMedium: {
-                    fontSize: undefined,
-                    padding: undefined,
-                },
-                sizeLarge: {
-                    fontSize: undefined,
-                    padding: undefined,
-                },
-            },
-        },
-        // reset to mui defaults for icon sizes
-        MuiSvgIcon: {
-            styleOverrides: {
-                fontSizeSmall: { fontSize: undefined },
-                fontSizeMedium: { fontSize: undefined },
-                fontSizeLarge: { fontSize: undefined },
-            },
-        },
-        // reset to mui defaults for icon sizes
-        MuiList: {
-            styleOverrides: {
-                root: {
-                    backgroundColor: undefined,
-                },
             },
         },
         // reset from varnish-mui not sure if this is playground specific or should be varnish
